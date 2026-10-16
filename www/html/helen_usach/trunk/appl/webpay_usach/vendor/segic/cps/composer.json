@@ -1,0 +1,18 @@
+{
+    "name": "segic/cps",
+    "description": "Modulo ayuda para pago online",
+    "keywords": ["webpay", "servipag"],
+    "type": "yii-extension",
+    "authors": [
+        {
+            "name": "Gilles Grandguillaume",
+            "email": "gilles.grandguillaume@segic.usach.cl"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "segic\\cps\\": ""
+        }
+    },
+    "minimum-stability": "dev"
+}
