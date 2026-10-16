@@ -1,0 +1,214 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../../appl.ini");
+
+class wo_carga_tgr extends w_output {
+	function __construct() {
+		
+    	$sql = sql_carga_tgr::get_sql('OUTPUT'); 
+    	parent::__construct('carga_tgr', $sql, $_REQUEST['cod_item_menu']);
+    	
+        // headers
+    	$COD_CARGA_TGR = new header_num('COD_CARGA_TGR', 'COD_CARGA_TGR', 'Carga TGR');
+    	$FECHA_REGISTRO = new header_date('FECHA_REGISTRO', 'FECHA_REGISTRO', 'Fecha Registro');
+    	$FECHA_CARGA_TGR = new header_date('FECHA_CARGA_TGR', 'FECHA_CARGA_TGR', 'Fecha Carga');
+    	$TOTAL_REG_CARGA = new header_num('TOTAL_REG_CARGA', 'TOTAL_REG_CARGA', 'Total Registros');
+    	$TOTAL_REG_EXITOSO = new header_num('TOTAL_REG_EXITOSO', 'TOTAL_REG_EXITOSO', 'Total Exitoso');
+    	$TOTAL_REG_PDTE = new header_num('TOTAL_REG_PDTE', 'TOTAL_REG_PDTE', 'Total Pendientes');
+    	$NOM_USUARIO = new header_text('NOM_USUARIO', 'NOM_USUARIO', 'Usuario');
+    		
+    	$this->add_header($COD_CARGA_TGR);
+    	$this->add_header($FECHA_REGISTRO);
+    	$this->add_header($FECHA_CARGA_TGR);
+    	$this->add_header($TOTAL_REG_CARGA);		
+    	$this->add_header($TOTAL_REG_EXITOSO);
+    	$this->add_header($TOTAL_REG_PDTE);
+    	$this->add_header($NOM_USUARIO);
+	}
+	
+	function cb_new(){
+		//FORMATO ARCHIVO RECAUDACION UTEM  		
+		$columnas = array(	'RUT_DEUDOR'			=> array('TIPO' => 'TEXT',		'FORMATO' => '20',				'NULL' => 'N')
+							,'FOLIO_CARGA' 			=> array('TIPO' => 'TEXT',   	'FORMATO' => '20',				'NULL' => 'S')
+							,'MONTO_DEUDA_UTM' 		=> array('TIPO' => 'TEXT',   	'FORMATO' => '14',				'NULL' => 'N')
+							,'MONTO_RETENIDO_UTM' 	=> array('TIPO' => 'TEXT',   	'FORMATO' => '14',				'NULL' => 'N')
+							,'MONTO_RETENIDO_PESOS' => array('TIPO' => 'TEXT',   	'FORMATO' => '14',				'NULL' => 'N')
+							,'FECHA_REAL_PAGO' 		=> array('TIPO' => 'TEXT',   	'FORMATO' => '20',				'NULL' => 'N')
+							);
+	
+		$archivo = new archivo_datos('FILE_NAME', "archivos/", $columnas);	
+		$u = $archivo->upLoadFile();
+		$error = false;
+		//comprobar el formato del archivo antes de cargar 
+		$archivo->open();
+		$x = 1;
+		$lista_error = "";
+		while (!$archivo->feof()){
+			$record = $archivo->read_record($x);			
+			if (!is_array($record)){
+				$error = true;
+				if($record == ""){
+				   $record ="El registro esta vacío, borrar salto de linea";
+				}
+				$error= "<tr><td>ERROR FORMATO $x : $record</td></tr>";
+				$lista_error = $lista_error.''.$error;
+			}
+			$x++;
+		}
+		$archivo->close();
+		
+		if($lista_error != ""){
+			session::set('lista_error_formato', $lista_error);
+			$this->_redraw();
+			print "<script>document.getElementById('lista_errores').style.display='';</script>";
+			print "<script>document.getElementById('origen_pago').style.display='none';</script>";
+			$this->alert('El archivo presenta errores de formato, ver "Lista errores"');
+		}
+		else
+		{
+			print "<script>document.getElementById('lista_errores').style.display='none';</script>";
+			print "<script>document.getElementById('origen_pago').style.display='';</script>";
+		}
+		
+		if (!$error) {
+			//--------insert a carga banco (TABLA PADRE)
+			$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+			$param = "'INSERT'
+					  ,1
+					  ,$this->cod_usuario
+	                  ,null
+	                  ,0
+	                  ,0
+	                  ,0
+	                  ,null";
+	                  
+	     	$sp="spu_carga_tgr";
+			if (!$db->EXECUTE_SP($sp, $param)){
+	    		$error = true;
+				$db->ROLLBACK_TRANSACTION();
+				$error_sp = $db->GET_ERROR();
+				$this->alert('No se pudo grabar el registro.\n\n'.$db->make_msg_error_bd());
+				//break;				
+			}
+	    	//---------------OBTENGO EL COD_CARGA_BANCO(RECIEN CREADO)	
+			//$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+			$sql= 	"SELECT max(COD_CARGA_TGR) COD_CARGA_TGR
+					FROM CARGA_TGR";
+			$result = $db->build_results($sql); 
+			$COD_CARGA_TGR = $result[0]['COD_CARGA_TGR'];
+			
+			//---------INSERT A LA TABLA ITEM_CARGA_ORSAN(HIJO)
+			$sp = 'spu_item_carga_tgr';
+			$db->BEGIN_TRANSACTION();
+			$error = false;
+			$cod_usuario= $this->cod_usuario;
+			
+			// procesa el archivo
+			//$fp_r = fopen($archivo->directorio.$archivo->nombre.".".$archivo->tipoArchivo, "r");//$archivo->open();
+			$archivo->open();
+			$x=0;
+			$i = 1;
+			while (!$archivo->feof()){
+				$record = $archivo->read_record($i);			
+				
+				if (is_array($record)) {
+					
+					$rut_deudor		= $record['RUT_DEUDOR'];
+					$folio_carga 	= $record['FOLIO_CARGA'];
+					$monto_retenido = $record['MONTO_RETENIDO_PESOS'];
+					$fecha_pago 	= $record['FECHA_REAL_PAGO'];
+					
+					$monto_retenido = str_replace(',', '.', $monto_retenido);
+					$fecha_pago 	= str_replace('-', '/', $fecha_pago);
+					$fecha_pago 	= "to_date('$fecha_pago', 'dd/mm/yyyy')";
+					
+					
+					$monto_deuda_utm = $record['MONTO_DEUDA_UTM'];
+					$monto_deuda_utm = str_replace(',', '.', $monto_deuda_utm);
+					
+					$monto_retenido_utm = $record['MONTO_RETENIDO_UTM'];
+					$monto_retenido_utm = str_replace(',', '.', $monto_retenido_utm);
+					
+					//seperar el dig_verif si viene en el rut
+					$array_rut = explode("-", $rut_deudor);
+					$rut_deudor =  $array_rut[0]; 
+					$dig_verif =  $array_rut[1]; 
+					
+					$fecha_deposito= '';
+					$folio_carga = ($folio_carga == '') ? "null" : $folio_carga;
+					$dig_verif = ($dig_verif == '') ? "null" : $dig_verif;
+					$fecha_deposito = ($fecha_deposito == '') ? "null" : $fecha_deposito;
+					
+					$param = "'INSERT'
+	               			,null
+							,$COD_CARGA_TGR
+							,1
+	               			,'$rut_deudor'
+	               			,'$dig_verif'
+	               			,'$folio_carga'
+	               			,$monto_deuda_utm
+	               			,$monto_retenido_utm
+							,$monto_retenido
+	                		,$fecha_pago
+	                		,$fecha_deposito
+	                		,$cod_usuario";			
+								
+								
+					
+					if (!$db->EXECUTE_SP($sp, $param)){
+			    		$error = true;
+						$db->ROLLBACK_TRANSACTION();
+						$error_sp = $db->GET_ERROR();
+						$this->alert('No se pudo grabar el registro.\n\n'.$db->make_msg_error_bd());
+						break;				
+			    	}
+		    	}					    	
+	    		$i++;
+			} //while (!feof($fp_r))
+			$archivo->close();
+			
+			if (!$error) {
+				$db->COMMIT_TRANSACTION();
+				$this->detalle_record_desde(true);// este metodo me envia al input desde el output despues de registrar la carga
+			}
+		}
+		
+	}
+	
+	function procesa_event() {		
+		if(isset($_POST['b_load_x'])){
+			$this->cb_new();
+		}else{
+			parent::procesa_event();
+		}
+	}
+	
+	function redraw(&$temp) {
+		parent::redraw($temp);
+		$this->habilita_boton($temp, 'load', true);		
+	}
+	
+	function habilita_boton(&$temp, $boton, $habilita) {
+		if ($boton=='load' && $habilita)
+			$temp->setVar("WO_".strtoupper($boton), '<input name="b_'.$boton.'" id="b_'.$boton.'" src="../../../../commonlib_seven/trunk/images/b_'.$boton.'.jpg" type="image" '.
+																							'onMouseDown="MM_swapImage(\'b_'.$boton.'\',\'\',\'../../../../commonlib_seven/trunk/images/b_'.$boton.'_click.jpg\',1)" '.
+																							'onMouseUp="MM_swapImgRestore()" onMouseOut="MM_swapImgRestore()" '.
+																							'onMouseOver="MM_swapImage(\'b_'.$boton.'\',\'\',\'../../../../commonlib_seven/trunk/images/b_'.$boton.'_over.jpg\',1)" '.
+																							'onClick="return validate_load();" />');
+		else
+			parent::habilita_boton($temp, $boton, $habilita);
+	
+	}
+	
+}
+class archivo_cb extends archivo_datos {
+    function __construct($file, $dir, $columnas) {
+        parent::__construct($file, $dir, $columnas);
+	}
+	function valida_record($record, $num_linea) {
+		$record = parent::valida_record($record, $num_linea);
+		if (!is_array($record))
+			return $record;
+	}
+}
+?>

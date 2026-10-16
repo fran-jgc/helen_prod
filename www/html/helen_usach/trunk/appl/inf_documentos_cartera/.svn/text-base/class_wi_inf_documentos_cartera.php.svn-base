@@ -1,0 +1,51 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_w_param_informe_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+ini_set('memory_limit', '480M');
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes
+class wi_inf_documentos_cartera extends w_param_informe_helen {
+    function __construct($cod_item_menu) {
+		$xml = session::get('K_ROOT_DIR').'appl/inf_documentos_cartera/inf_documentos_cartera.xml';
+		$sql_informe = sql_inf_documentos_cartera::get_sql('INPUT');
+		parent::__construct('inf_documentos_cartera', $cod_item_menu, 'Documentos en Cartera', $xml, $sql_informe, 'spi_documentos_cartera');
+		
+		$sql = sql_inf_documentos_cartera::get_sql('FECHA');
+		
+		$this->dws['dw_param'] = new datawindow($sql);
+			
+		$this->dws['dw_param']->add_control(new edit_date('FECHA'));
+		$this->dws['dw_param']->add_control(new edit_num('RUT',10,10));
+		$sql = sql_inf_documentos_cartera::get_sql('DD_ESTADO_DOCUMENTO_PAGO');
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_ESTADO_DOCUMENTO_PAGO', $sql));
+
+		// mandatorys		
+		$this->dws['dw_param']->set_mandatory('FECHA', 'Fecha');	
+		$this->dws['dw_param']->set_mandatory('COD_DOCUMENTO_PAGO', 'Estado Documento Pago');	
+	}
+	function make_filtro() {
+		$fecha					= $this->dws['dw_param']->get_item(0, 'FECHA');
+		$rut    				= $this->dws['dw_param']->get_item(0, 'RUT');
+		$cod_estadod_doc_pago 	= $this->dws['dw_param']->get_item(0, 'COD_ESTADO_DOCUMENTO_PAGO');
+		$nom_estadod_doc_pago 	= $this->dws['dw_param']->controls['COD_ESTADO_DOCUMENTO_PAGO']->get_label_from_value($cod_estadod_doc_pago);
+		
+		$rut = ($rut == "") ? "null" : $rut;
+		
+		// Filtro
+		$this->filtro = "Fecha = $fecha\n";
+		if ($rut == "null")
+			$this->filtro .= "Rut = TODOS;\n";
+		else
+			$this->filtro .= "Rut = $rut;\n";
+			
+		$this->filtro .= "Estado Documento Pago = $nom_estadod_doc_pago\n";
+		
+		$fecha = $this->str2date($fecha);
+		// Arma los paramaetros para el SP
+		$this->param = "$fecha, $rut, $cod_estadod_doc_pago";
+		
+	}	
+}
+?>

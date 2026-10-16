@@ -1,0 +1,87 @@
+<Report>
+	<Font name="Arial" size="16" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="B" id="ArialBold"/>
+	<Font name="Arial" size="9" style="B" id="ArialBoldBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="12" style="B" id="ArialBoldBlueBig" red="0" green="0" blue="128"/>	
+	<Font name="Arial" size="9" style="" id="Arial"/>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="" id="ArialBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8.5" style="" id="ArialItem"/>
+	<Font name="Arial" size="8.5" style="B" id="ArialBoldBlueItem" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="BU" id="ArialBoldUItem"/>
+	
+	<PageHeader>	
+		<Cell text="" height="7" newline="1" />
+		<Cell text="" newline="1"/>
+		<Cell text="" newline="1"/>
+		<Cell text="{strHORA_FECHA}" align="R" font="ArialSmall" newline="1" />	
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="PAGARÉS" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="" border="B" newline="1" height="1" redl="199" greenl="199" bluel="199"/>
+		<Cell text="" height="4" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{FOLIO_PAGARE}" width="18%" border="LR" align="R" font="ArialItem"/>
+		<Cell text="{FECHA_PAGARE}" width="15%" border="R" align="C" font="ArialItem"/>
+		<Cell text="{MONTO_MONEDA}" width="15%" border="R" align="R" format="N4,." font="ArialItem"/>
+		<Cell text="{MONTO_PESOS}" width="15%" border="R" align="R" format="N0,." font="ArialItem"/>
+		<Cell text="{MONTO_MONEDA_ACT}" width="15%" border="R" align="R" format="N4,." font="ArialItem"/>
+		<Cell text="{NOM_ESTADO_PAGARE}" width="22%" border="R" font="ArialItem" newline="1"/>
+
+	</Content>
+	<Group local="COD_DEUDA">
+		<GroupHeader>	
+			<Cell text="" newline="1" />
+			<Cell text="" newline="1" />		
+			<Cell text="" height="1" newline="1" />			
+			<Cell height="4" newline="1"/>	
+			<Cell text="Rut                                :" width="19%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{RUT}" width="10%" border="B" align="R" font="Arial" format="N0,." redl="192" greenl="192" bluel="192"/>
+			<Cell text="- {DIG_VERIF}" width="6%" border="B" align="L" font="Arial" redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="2%"/>
+			<Cell text="Nº Deuda        :" width="12%" font="ArialBoldBlue"/>
+			<Cell text="{strCOD_DEUDA}" width="18%" border="B" align="L" font="Arial" redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="2%"/>
+			<Cell text="Tipo Deuda    :" width="12%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{COD_TIPO_DEUDA}" width="18%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			
+			 										
+			<Cell text="Nombre                         :" width="19%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{NOMBRE}" width="59%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			
+			<Cell text="Fecha Inicio Cobranza:" width="19%" font="ArialBoldBlue"/>
+			<Cell text="{FECHA_INICIO_COBRO}" width="16%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="2%"/>
+			<Cell text="Estado Deuda:" width="12%" font="ArialBoldBlue"/>
+			<Cell text="{NOM_ESTADO_DEUDA}" width="29%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			<Cell text="" newline="1"/>
+			
+				
+			<Cell text="Folio" width="18%" border="LRTB" align="C" font="ArialBoldBlueItem"/>
+			<Cell text="Fecha Suscripción" width="15%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Monto UTM Suscrito" width="15%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Monto $ Suscritos" width="15%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Monto UTM Actualizado" width="15%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Estado" width="22%" border="LRTB" align="C" font="ArialBoldBlueItem" newline="1"/>
+	</GroupHeader>
+	<GroupFooter>
+			<Cell text="" newline="1"/>
+			<Cell text="" newline="1"/>
+			<Cell text="" newline="1"/>
+	</GroupFooter>
+	</Group>
+	<Group local="COD_DEUDA">
+		<Variable name="SUM_MONTO_MONEDA" function="SUM" value="MONTO_MONEDA"/>
+		<Variable name="SUM_MONTO_PESOS" function="SUM" value="MONTO_PESOS"/>
+		<Variable name="SUM_MONTO_MONEDA_ACT" function="SUM" value="MONTO_MONEDA_ACT"/>
+		<GroupFooter>
+			<Cell text="TOTAL" border="T" align="R" width="33%" font="ArialBoldBlueItem"/>
+			<Cell text="{SUM_MONTO_MONEDA}" width="15%" border="LRTB" align="R" font="ArialItem" format="N4,. "/>
+			<Cell text="{SUM_MONTO_PESOS}" width="15%" border="LRTB" align="R" font="ArialItem" format="N0,. "/>
+			<Cell text="{SUM_MONTO_MONEDA_ACT}" width="15%" border="LRTB" align="R" font="ArialItem" format="N4,. "/>
+			<Cell text="" width="22%" border="T" />
+		</GroupFooter>
+	</Group>
+</Report>
+

@@ -1,0 +1,46 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="DEUDA CANCELADA" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{TIPO_DEUDA}" width="15%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{RUT}" width="15%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{COD_DEUDA}" width="15%" align="C" border="LRTB" font="Arial"/>		
+		<Cell text="{MONTO_DESCTO}" width="15%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ABONO}" width="20%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_TOTAL}" width="20%" align="R" border="LRTB" format="N4,." font="Arial" newline="1"/>
+		
+	</Content>
+	<Group>
+		<Variable name="sum_descto" function="SUM" value="MONTO_DESCTO"/>
+		<Variable name="sum_abono" function="SUM" value="MONTO_ABONO"/>
+		<Variable name="sum_total" function="SUM" value="MONTO_TOTAL"/>
+		<Variable name="cant_reg" function="COUNT"  value="RUT"/>
+		<GroupHeader>
+			<Cell text="Cantidad de Registros: " width="17%" align="L"  font="ArialBold"/>
+			<Cell text="{cant_reg}" width="10%" align="L" font="ArialBold" newline="1"/>
+			<Cell text="Tipo Deuda" width="15%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Rut" width="15%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Nº Deuda" width="15%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Descuentos" width="15%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Abonos" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Totales" width="20%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+</GroupHeader>
+		<GroupFooter>
+			<Cell text="Total:" width="45%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_descto}" width="15%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_abono}" width="20%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_total}" width="20%"  align="R" border="LRTB" format="N4,." font="ArialBold" newline="1"/>
+		</GroupFooter> 
+	</Group>
+</Report>

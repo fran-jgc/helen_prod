@@ -1,0 +1,82 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+include("../../appl.ini");
+
+if (file_exists(K_CLIENTE.'/dlg_print_devolucion.htm')) 
+	$temp = new Template_appl(K_CLIENTE.'/dlg_print_devolucion.htm');	
+else 
+	$temp = new Template_appl('dlg_print_devolucion.htm');	
+
+$cod_deudor = $_REQUEST['cod_deudor'];
+$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+$current_date = $db->current_date();
+$cod_usuario = session::get("COD_USUARIO");
+$nom_usuario = session::get("NOM_USUARIO");
+
+$entrable = true;
+
+if (K_TIPO_BD=="oci"){
+	$sql = "select NOMBRE || ' ' || APELLIDO_PATERNO || ' ' || APELLIDO_MATERNO NOM_DEUDOR
+			from DEUDOR
+			where COD_DEUDOR = $cod_deudor";
+	$result = $db->build_results($sql);
+	$nom_dev = $result[0]['NOM_DEUDOR'];
+
+	$sql = "SELECT '' NOM_DEV
+					,null FECHA
+					,'' USUARIO
+					,'' COD_USUARIO
+					,'' MOTIVO
+					,'' RUT_RECIBE
+					,'' DIG_VERIF
+			FROM DUAL";
+}else if (K_TIPO_BD=="mssql"){
+	$sql = "select NOMBRE + ' ' + APELLIDO_PATERNO + ' ' +APELLIDO_MATERNO NOM_DEUDOR
+			from DEUDOR
+			where COD_DEUDOR = $cod_deudor";
+	$result = $db->build_results($sql);
+	$nom_dev = $result[0]['NOM_DEUDOR'];
+
+	$sql = "SELECT ''  NOM_DEV
+					,null FECHA
+					,'' USUARIO
+					,'' COD_USUARIO
+					,'' MOTIVO
+					,'' RUT_RECIBE
+					,'' DIG_VERIF";	
+
+}
+$dw_datos = new datawindow($sql);
+
+$dw_datos->add_control(new edit_text_hidden('COD_USUARIO'));
+$dw_datos->add_control(new edit_text_upper('NOM_DEV',50,50));
+$dw_datos->add_control(new static_text('FECHA'));
+$dw_datos->add_control(new static_text('USUARIO'));
+$dw_datos->add_control(new edit_text_upper('MOTIVO',50,50));
+
+
+$dw_datos->add_control($control = new edit_num('RUT_RECIBE', 10, 8,'DIG_VERIF'));
+$dw_datos->add_control(new edit_dig_verif('DIG_VERIF', 'RUT_RECIBE'));
+$dw_datos->add_control(new edit_text_upper('NOM_RECIBE',50,50));
+
+
+
+
+$dw_datos->insert_row();
+$dw_datos->set_item(0, 'NOM_DEV',$nom_dev);
+$dw_datos->set_item(0, 'FECHA',$current_date);
+$dw_datos->set_item(0, 'USUARIO',$nom_usuario);
+$dw_datos->set_item(0, 'COD_USUARIO',$cod_usuario);
+$dw_datos->set_item(0, 'MOTIVO','');
+$dw_datos->set_item(0, 'RUT_RECIBE','');
+$dw_datos->set_item(0, 'DIG_VERIF','');
+
+
+
+	
+
+$dw_datos->habilitar($temp, $entrable);
+$menu = unserialize(session::get('menu_appl'));
+$menu->draw($temp);	
+print $temp->toString();
+?>

@@ -1,0 +1,2449 @@
+
+
+***********************************************************************
+Fatal NI connect error 12514, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 14-APR-2021 19:33:15
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: Message 12564 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12514, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 14-APR-2021 19:33:15
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: Message 12564 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 06-JUN-2021 02:36:24
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 110
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:18:46
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:20:38
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:20:38
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:24:47
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:24:47
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:25:55
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:26:24
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:26:24
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:26:24
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:30:00
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:30:00
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:30:00
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:31:46
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:31:49
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:31:53
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:31:53
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:31:53
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:31:53
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:40:09
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:40:09
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:40:09
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:42:35
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:42:35
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:42:35
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:45:50
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:45:50
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:45:50
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:47:35
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:50:42
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:50:43
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:50:43
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 00:53:18
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:02:02
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:02:02
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:02:02
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:03:42
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:03:42
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:03:42
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:04:07
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:04:07
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:04:07
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:05:27
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:05:27
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:05:27
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:05:27
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:09:09
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:09:09
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:09:09
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:13:43
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:13:43
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:13:43
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:21:06
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:26:44
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:30:55
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 01:53:48
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:00:23
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:00:25
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:00:25
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:00:25
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:01:19
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:01:19
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:01:19
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:22
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:22
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:22
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:22
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:26
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:26
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:26
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:26
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:26
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:28
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:29
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:32
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:32
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:02:32
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:03:46
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:03:46
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:03:46
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:12:15
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:12:15
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:12:15
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:12:15
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:34:01
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:34:01
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 02:34:01
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:00:14
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:00:14
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:00:14
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:00:19
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:00:19
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:00:19
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:00:19
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:00:19
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:00:22
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:00:24
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:10:38
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:10:39
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:10:39
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:10:39
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:10:39
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:10:39
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:10:42
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:11:57
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:11:57
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:12:31
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:13:05
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:13:07
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:17:01
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:17:01
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:17:01
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:35:32
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:38:45
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:58:10
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:58:10
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:58:10
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 03:59:12
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 04:00:17
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 04:00:17
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=158.170.10.209)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=HELEN)(SRVR=DEDICATED)(CID=(PROGRAM=apache2)(HOST=PHP-7)(USER=www-data))))
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 16-JUL-2021 04:00:17
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: Message 12541 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: Message 511 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 111
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 19-JUL-2021 19:00:37
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 110
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=158.170.10.206)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 07-APR-2022 23:48:07
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 08-APR-2022 00:12:03
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 110
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=158.170.10.206)(PORT=1521))
+    nt secondary err code: 110
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=158.170.10.206)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 08-APR-2022 08:42:14
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 110
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=158.170.10.206)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 08-APR-2022 09:11:23
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 110
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=158.170.10.206)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for Linux: Version 10.2.0.5.0 - Production
+	TCP/IP NT Protocol Adapter for Linux: Version 10.2.0.5.0 - Production
+  Time: 08-APR-2022 09:15:33
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 110
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=158.170.10.206)(PORT=1521))

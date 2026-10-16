@@ -1,0 +1,30 @@
+eclipse.preferences.version=1
+<<<<<<< .mine
+encoding//trunk/appl/abono/class_wo_abono.php=UTF-8
+=======
+encoding//trunk/appl/anula_abono/class_wo_anula_abono.php=UTF-8
+encoding//trunk/appl/carga_consolidado_project/class_wo_carga_consolidado_project.php=UTF-8
+encoding//trunk/appl/comprobante/class_wo_comprobante.php=UTF-8
+encoding//trunk/appl/conciliacion/class_wo_conciliacion.php=UTF-8
+encoding//trunk/appl/condonacion_cs/class_wo_condonacion_cs.php=UTF-8
+encoding//trunk/appl/convenio/class_wo_convenio.php=UTF-8
+encoding//trunk/appl/deposito/class_wi_deposito.php=UTF-8
+encoding//trunk/appl/deposito/class_wo_deposito.php=UTF-8
+encoding//trunk/appl/documento/class_wo_documento.php=UTF-8
+encoding//trunk/appl/excedente/class_wo_excedente.php=UTF-8
+encoding//trunk/appl/ingreso/class_wo_ingreso.php=UTF-8
+encoding//trunk/appl/novacion/class_wo_novacion.php=UTF-8
+>>>>>>> .r27453
+encoding//trunk/appl/perfil/class_wo_perfil.php=ISO-8859-1
+encoding//trunk/appl/rendicion/class_wo_rendicion.php=UTF-8
+encoding//trunk/appl/rendicion_ley/class_wo_rendicion_ley.php=UTF-8
+encoding//trunk/appl/repro_rcs/class_wo_repro_rcs.php=UTF-8
+encoding//trunk/appl/reprogramacion/class_wo_reprogramacion.php=UTF-8
+encoding//trunk/appl/simulacion/class_wo_simulacion.php=UTF-8
+encoding//trunk/appl/usuario/class_wo_usuario.php=ISO-8859-1
+<<<<<<< .mine
+encoding/<project>=UTF-8
+=======
+encoding//trunk/menu/USACH/menu.php=UTF-8
+>>>>>>> .r27453
+encoding/trunk=ISO-8859-1

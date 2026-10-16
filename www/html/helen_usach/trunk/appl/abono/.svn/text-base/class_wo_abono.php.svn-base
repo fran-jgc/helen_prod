@@ -1,0 +1,149 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+include_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/PHP_XLSXWriter_master/xlsxwriter.class.php");
+ini_set('memory_limit', '480M');
+ini_set('max_execution_time', 900);
+
+class wo_abono extends w_output {
+	const K_VIGENTE = 1;
+	function __construct() {
+		$this->b_add_visible  = false;
+		$sql = sql_abono::get_sql('OUTPUT');
+		//echo $sql;
+		parent::__construct('abono', $sql, $_REQUEST['cod_item_menu']);
+		
+		//formato numeros
+		$RUT_S = new static_num('RUT');
+		$MONTO_MONEDA_S = new static_num('MONTO_MONEDA',4);
+		$MONTO_PESOS_S = new static_num('MONTO_PESOS'); 
+		
+		$this->dw->add_control($RUT_S);
+		$this->dw->add_control($MONTO_MONEDA_S);
+		$this->dw->add_control($MONTO_PESOS_S);
+		
+		// headers
+		$COD_INGRESO = new header_num('COD_INGRESO', 'AI.COD_INGRESO', 'N° Ingreso');
+		$COD_ABONO = new header_num('COD_ABONO', 'A.COD_ABONO', 'N° Abono');
+		$RUT = new header_rut('RUT', 'DEU', 'Rut');
+		$COD_DEUDA = new header_num('COD_DEUDA', 'A.COD_DEUDA', 'N° Deuda');
+		
+		$sql_tipo_deuda = sql_abono::get_sql('DD_COD_TIPO_DEUDA');
+		$NOM_TIPO_DEUDA = new header_drop_down_string('NOM_TIPO_DEUDA', 'TD.COD_TIPO_DEUDA', 'Tipo Deuda', $sql_tipo_deuda);
+		$ANO_COBRO = new header_num('ANO_COBRO', 'ANO_COBRO', 'Año');
+		
+		$sql_estado_pp = sql_abono::get_sql('DD_COD_ESTADO_PAGO');
+		$NOM_ESTADO_PAGO = new header_drop_down('NOM_ESTADO_PAGO', 'A.COD_ESTADO_PAGO', 'Estado Abono', $sql_estado_pp);
+		
+		$FECHA_ABONO = new header_date('FECHA_ABONO', 'FECHA_ABONO', 'Fecha Abono');
+		$FECHA_REGISTRO = new header_date('FECHA_REGISTRO', 'FECHA_REGISTRO', 'Fecha Registro');
+		$MONTO_MONEDA = new header_num('MONTO_MONEDA', 'MONTO_MONEDA', 'Abono UTM',4);
+		$MONTO_PESOS = new header_num('MONTO_PESOS', 'MONTO_PESOS', 'Abono $');
+		$NOM_ORIGEN_PAGO = new header_text('NOM_ORIGEN_PAGO', 'NOM_ORIGEN_PAGO', 'Origen Pago');
+		$MONTO_CAPITAL = new header_num('MONTO_CAPITAL', 'MONTO_CAPITAL', 'Capital UTM',4);
+		$MONTO_INTERES = new header_num('MONTO_INTERES', 'MONTO_INTERES', 'Interés UTM',4);
+		$MONTO_MULTA = new header_num('MONTO_MULTA', 'MONTO_MULTA', 'Multa UTM',4);
+		$MONTO_CAPITAL_PESOS = new header_num('MONTO_CAPITAL_PESOS', 'MONTO_CAPITAL_PESOS', 'Capital $',4);
+		$MONTO_INTERES_PESOS = new header_num('MONTO_INTERES_PESOS', 'MONTO_INTERES_PESOS', 'Interés $',4);
+		$MONTO_MULTA_PESOS = new header_num('MONTO_MULTA_PESOS', 'MONTO_MULTA_PESOS', 'Multa $',4);
+		$COD_COMPROBANTE = new header_num('COD_COMPROBANTE', 'COD_COMPROBANTE', 'Cod. Comprob.');
+		
+		$this->add_header($COD_INGRESO);
+		$this->add_header($COD_ABONO);
+		$this->add_header($RUT);
+		$this->add_header($COD_DEUDA);
+		$this->add_header($NOM_TIPO_DEUDA);
+		$this->add_header($ANO_COBRO);
+		$this->add_header($NOM_ESTADO_PAGO);
+		$this->add_header($FECHA_ABONO);
+		$this->add_header($FECHA_REGISTRO);
+		$this->add_header($MONTO_MONEDA);
+		$this->add_header($MONTO_PESOS);
+		$this->add_header($NOM_ORIGEN_PAGO);
+		$this->add_header($MONTO_CAPITAL);
+		$this->add_header($MONTO_INTERES);
+		$this->add_header($MONTO_MULTA);
+		$this->add_header($MONTO_CAPITAL_PESOS);
+		$this->add_header($MONTO_INTERES_PESOS);
+		$this->add_header($MONTO_MULTA_PESOS);
+        $this->add_header($COD_COMPROBANTE);
+
+		$NOM_ESTADO_PAGO->valor_filtro = self::K_VIGENTE;
+		$this->make_filtros();
+	}
+	
+	function redraw(&$temp) {
+		parent::redraw($temp);
+		$this->habilita_boton($temp, 'load', true);		
+	}
+	function export() {
+	   $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+	    
+	    $filename = "Abonos.xlsx";
+	    header('Content-disposition: attachment; filename="'.XLSXWriter::sanitize_filename($filename).'"');
+	    header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	    header('Content-Transfer-Encoding: binary');
+	    header('Cache-Control: must-revalidate');
+	    header('Pragma: public');
+	    
+	    $writer = new XLSXWriter();
+	    $writer->setAuthor('Integrasystem');
+	    $sheet_name = "Abonos";
+	    
+	    
+	    $this->make_filtros();
+	    $sql = $this->dw->get_sql();
+	    
+	    $res = $db->query($sql);
+	    
+	    $header = array(
+	        utf8_encode('N° Ingreso'),
+	        utf8_encode('N° Abono'),
+	        utf8_encode('N° Deuda'),
+	        'Rut'	,
+	        'Tipo Deuda',
+	        utf8_encode('Año'),
+	        'Estado Abono',
+	        'Fecha Abono',
+	        'Fecha Registro',
+	        'Abono UTM',
+	        utf8_encode('Abono $'),
+	        'Origen Pago',
+	        'Capital UTM',
+	        utf8_encode('Interés UTM'),
+	        'Multa UTM',
+	        utf8_encode('Capital $'),
+	        utf8_encode('Interés $'),
+	        utf8_encode('Multa $'),
+	        'Cod. Comprob.'
+	    );
+	    $writer->writeSheetRow($sheet_name, $header);
+	    $data1 = array();
+	    while($my_row = $db->get_row()){
+	        $array_row = array(
+	            $my_row['COD_INGRESO']
+	            ,$my_row['COD_ABONO']
+	            ,$my_row['COD_DEUDA']
+	            ,utf8_encode($my_row['RUT'])
+	            ,$my_row['ANO_COBRO']
+	            ,$my_row['NOM_ESTADO_PAGO']
+	            ,$my_row['FECHA_ABONO']
+	            ,$my_row['FECHA_REGISTRO']
+	            ,$my_row['MONTO_MONEDA']
+	            ,$my_row['MONTO_PESOS']
+	            ,$my_row['NOM_ORIGEN_PAGO']
+	            ,$my_row['MONTO_CAPITAL']
+	            ,$my_row['MONTO_INTERES']
+	            ,$my_row['MONTO_MULTA']
+	            ,$my_row['MONTO_CAPITAL_PESOS']
+	            ,$my_row['MONTO_INTERES_PESOS']
+	            ,$my_row['MONTO_MULTA_PESOS']
+	            ,$my_row['COD_COMPROBANTE']
+	        );
+	        
+	        $writer->writeSheetRow($sheet_name, $array_row);
+	    }
+	    $writer->writeToStdOut();
+	    exit(0);
+	}
+}
+?>

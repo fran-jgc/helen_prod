@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<script src="gestion_operador.js" type="text/javascript"></script>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Ingrese Comentario</title>
+</head>
+<body bgcolor="lightgray">
+	<form action="" method="post" name="input" id="input">
+			<table width='450' >
+				<b>Bitacora</b>
+				<tr>
+					<td class='titulo_tabla'>Fecha</td>
+					<td class='titulo_tabla'>Usuario</td>
+					<td class='titulo_tabla'>Observación</td>
+				</tr>
+					{ITEM_BITACORA}
+			</table>			
+	</form>	
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Crear Ingreso Desde</title>
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="utf-8" src="novacion.js" type="text/javascript"></script>
+<link href="{W_CSS}" rel="stylesheet" type="text/css"/>
+<style type="text/css">
+<!--
+body 
+{
+	background-color: #E5E5E5;
+	text-align:center;
+	font-size:14px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+.msg {
+	color:#000;
+	text-align:center;
+	font-size:11px;
+	font-weight:bolder;
+}
+
+.table{
+	font-size: 11px;
+	font-weight: bold; 
+	color: #FFF;
+	margin-top:1em;
+	border:#000033 1px solid;
+	margin-left:2px;
+	background: #919191;
+}
+
+.table2{
+	font-size: 10px;
+	font-weight: bold; 
+	color: #666666;	
+	border-top: #fff  1px solid;
+	border-left: #fff  1px solid;
+	border-bottom:#fff  1px solid;
+	border-right: #fff  1px solid;
+	margin-left:2px;
+	background-color:#CCCCCC;	
+}
+
+.titulo_tabla{
+	background-color: #E5E5E5;
+	font-size: 12px;
+	font-weight:bold;	
+	color: #000066;
+	text-align:left;
+	padding-top:9px;
+	margin-left:-5px;
+	width:200px;	
+}
+-->
+</style>
+<script type="text/javascript">
+function get_returnVal(){
+	var nro_seleccion	= document.getElementById('NRO_SELECCION_0').value;
+	var seleccion_boleta = document.getElementById('SELECCION_BOLETA_0').checked;
+	var seleccion_simulacion = document.getElementById('SELECCION_SIMULACION_0').checked;
+		
+	if (nro_seleccion == ''){
+		alert('Debe Ingresar Nro. de Boleta ó Simulación para continuar');
+		set_null();
+		return false;
+	}else{
+		if(seleccion_boleta == true){
+			var boleta = document.getElementById('SELECCION_BOLETA_0').value;
+			return boleta + "|" + nro_seleccion;
+		}else if(seleccion_simulacion == true){
+			var simulacion = document.getElementById('SELECCION_SIMULACION_0').value;
+			return simulacion + "|" + nro_seleccion;
+		}
+	}
+}
+
+function set_null() {
+	document.getElementById('NRO_SELECCION_0').value 		= null;
+	document.getElementById('NRO_SELECCION_0').focus();
+	document.getElementById('RUT_0').innerHTML 				= null;
+	document.getElementById('DIG_VERIF_0').innerHTML 		= null;
+	document.getElementById('NOMBRE_0').innerHTML 			= null;
+}
+
+function checked_radio_button() {
+	document.getElementById('NRO_SELECCION_0').value 		= null;
+	document.getElementById('NRO_SELECCION_0').focus();
+	document.getElementById('RUT_0').innerHTML 				= null;
+	document.getElementById('DIG_VERIF_0').innerHTML 		= null;
+	document.getElementById('NOMBRE_0').innerHTML 			= null;
+}
+
+function f_get_info_seleccion() {
+	var nro_seleccion	= document.getElementById('NRO_SELECCION_0').value;
+	if(nro_seleccion == ''){
+		alert('Debe Ingresar Nro. de Boleta ó Simulación para continuar');
+		set_null();
+		return;
+	}else{
+		var seleccion_boleta = document.getElementById('SELECCION_BOLETA_0').checked;
+		var seleccion_simulacion = document.getElementById('SELECCION_SIMULACION_0').checked;
+		if(seleccion_boleta == true || seleccion_simulacion == true){
+			if(seleccion_boleta == true){
+				ajax			= nuevoAjax();
+				nro_seleccion	= URLEncode(nro_seleccion);
+				ajax.open("GET", "ajax_info_boleta.php?nro_boleta="+nro_seleccion,false);
+				ajax.send(null);
+					
+				var resp 	= URLDecode(ajax.responseText);
+				var lista 	= resp.split('|');
+				
+				if (lista[0] == "NO_EXISTE") {
+			   		alert("No Existe Boleta Nro. " + nro_seleccion);
+			   		set_null();
+			   		return;
+				}
+				else if (lista[0] == "NO_EXISTE_SB") {
+					alert('La boleta ingresada no posee "Sub Boletas".');
+					set_null();
+					return false;
+				}
+				else if (lista[0] == "SUB_BOLETA_PAGADA") {
+					alert('La boleta no posee Sub Boletas por Pagar"');
+					set_null();
+					return;
+				}
+				else if (lista[0] == 0) {
+					alert('La deuda asociada a la boleta tiene un estado distinto a: "No Exigible" ó "Cobranza Normal"');
+					set_null();
+					return;
+				}
+				else if (lista[0] == "BOLETA_CON_CARTERA") {
+                    alert('El Deudor tiene una deuda con otra Cartera distinta a la por defecto');
+                    set_null();
+                    return;
+				}
+				else if (lista[0] == "NO_TIENE_VALIDEZ") {
+					alert('Las Sub Boletas de la Boleta ingresada estan vencidas.');
+                    set_null();
+                    return;   
+				}else{
+					document.getElementById('RUT_0').innerHTML 				= number_format(lista[0],0,',','.');	
+					document.getElementById('DIG_VERIF_0').innerHTML 		= lista[1];	
+					document.getElementById('NOMBRE_0').innerHTML 			= lista[2];
+				}
+			}else if(seleccion_simulacion == true){
+				ajax			= nuevoAjax();
+				nro_seleccion	= URLEncode(nro_seleccion);
+				ajax.open("GET", "ajax_info_simulacion.php?codigo_simulacion="+nro_seleccion,false);
+				ajax.send(null);
+				
+				var resp 	= URLDecode(ajax.responseText);
+				var lista 	= resp.split('|');
+
+				if (lista[0] == "NO_EXISTE") {
+			   		alert("No Existe Simulacion Nro. " + nro_seleccion);
+			   		set_null();
+			   		return;
+				}else if (lista[0] == "TIENE_INGRESO") {
+					var cod_ingreso = lista[1]; 
+                    alert('La simulación ya tiene un ingreso creado. Ingreso Nro: '+cod_ingreso);
+                    set_null();
+                    return;
+				}else if (lista[0] == "NO_TIENE_VALIDEZ") {
+					var fecha_simulacion = lista[1]; 
+                    alert('La simulación es válida sólo por el día de emisión.\n\n-Fecha simulación: '+fecha_simulacion);
+                    set_null();
+                    return;
+                }else if (lista[0] == "SIMULACION_NO_VALIDA") {
+					var fecha_simulacion = lista[1];
+					var fecha_valida = lista[2]; 
+                    alert('La simulación solo era valida hasta el día: '+fecha_valida);
+                    set_null();
+                    return;
+				}else{
+					document.getElementById('RUT_0').innerHTML 			= number_format(lista[0],0,',','.');	
+					document.getElementById('DIG_VERIF_0').innerHTML 	= lista[1];	
+					document.getElementById('NOMBRE_0').innerHTML 		= lista[2];
+				}
+			}
+		}else{
+			alert("Seleccione una Opción: Boleta ó Simulación");
+			set_null();
+		}
+	}
+}
+	//DIALOG Required Code
+	var prntWindow = getParentWindowWithDialog(); //$(top)[0];
+	
+	var $dlg = prntWindow && prntWindow.$dialog;
+	
+	function getParentWindowWithDialog() {
+		var p = window.parent;
+		var previousParent = p;
+		while (p != null) {
+			if ($(p.document).find('#iframeDialog').length) return p;
+	
+			p = p.parent;
+	
+			if (previousParent == p) return null;
+	
+			// save previous parent
+	
+			previousParent = p;
+		}
+		return null;
+	}
+	
+	function setWindowReturnValue(value) {
+		if ($dlg) $dlg.returnValue = value;
+		window.returnValue = value; // in case popup is called using showModalDialog
+	
+	}
+	
+	function getWindowReturnValue() {
+		// in case popup is called using showModalDialog
+	
+		if (!$dlg && window.returnValue != null)
+			return window.returnValue;
+	
+		return $dlg && $dlg.returnValue;
+	}
+	
+	if ($dlg) window.dialogArguments = $dlg.dialogArguments;
+	if ($dlg) window.close = function() { if ($dlg) $dlg.dialogWindow.dialog('close'); };
+	// END of dialog Required Code
+	
+	function okMe() {
+		if(!(get_returnVal())) 
+			return false; 
+		else{ 
+			returnValue=get_returnVal();
+			setWindowReturnValue(returnValue);
+		}	
+		window.close();	
+	}
+	function closeMe() {
+	    setWindowReturnValue(null);
+	    window.close();
+	}
+</script>
+</head>
+<body onLoad="window.document.form1.NRO_BOLETA_0.focus();">
+<form id="form1" name="form1" method="post" action="">
+	<div class="titulo_tabla_wm">&nbsp;&nbsp;Crear Ingreso Desde:</div>
+	<br></br>
+	<div style="overflow-x:hidden; overflow-y:auto; height:180; margin-top:-1em;">
+		<table width="500" border="0" rules="none" align="center">
+			<tr class="encabezado_right">
+				<td width="15%">Opcion:</td>
+				<td width="20%" class="claro" align="left">{SELECCION_BOLETA}</td>
+				<td width="65%" colspan=2 class="claro" align="left">{SELECCION_SIMULACION}</td>
+			</tr>
+			<tr class="encabezado_right">
+				<td width="15%">Nro.</td>
+				<td width="85%" colspan=3 class="oscuro" align="left">{NRO_SELECCION}</td>
+				
+			</tr>
+			<tr class="encabezado_right">
+				<td width="15%">Rut:</td>
+				<td width="20%" class="claro" align="left">{RUT}-{DIG_VERIF}</td>
+				<td width="15%">Nombre:</td>
+				<td width="50%" class="claro" align="left">{NOMBRE}</td>
+			</tr>
+		</table>
+	</div>
+	<table width="500" border="0" align="center">
+		<tr>
+			<td align="right"><br/><input name="Aceptar" type="button" value="Aceptar" onclick="okMe();" class="button"/></td>
+			<td align="left"><br/><input name="cancelar" type="button" value="Cancelar" onclick="closeMe();" class="button"/></td>
+		</tr>
+	</table>
+</form>
+</body>
+</html>

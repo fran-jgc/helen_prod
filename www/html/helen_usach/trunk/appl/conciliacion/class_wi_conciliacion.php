@@ -1,0 +1,634 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+/*
+ Clase : WI_CONCILIACION
+ */
+class dw_conciliacion_ing extends datawindow{
+	const K_TIPO_CONCEPTO_INGRESO		= 'I';
+	
+	function __construct() {
+		$sql = sql_conciliacion::get_sql('CONCILIACION_ING');
+		
+		parent::__construct($sql, 'CONCILIACION_ING', true, true);
+		
+		$this->add_control(new edit_text('COD_CONCILIACION_INGRESO_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('COD_CONCILIACION_ING_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('NOM_CONCILIACION_INGRESO', 160, 100));
+		$this->add_control(new edit_num('MONTO_INGRESO',20,14));
+		
+		$this->set_computed('MONTO_INGRESO_C', '[MONTO_INGRESO]');
+		$this->controls['MONTO_INGRESO_C']->type = 'hidden';
+		$this->accumulate('MONTO_INGRESO_C','set_montos_resumen()');
+		
+		//MANDATORY
+		$this->set_mandatory('NOM_CONCILIACION_INGRESO', 'Concepto Ingreso');
+		$this->set_mandatory('MONTO_INGRESO', 'Monto Ingreso');
+	}
+	function new_conciliacion() {
+		// llamado en new record de proyecto
+		$sql_original = $this->get_sql();
+		$sql = sql_conciliacion::get_sql('NEW_CONCILIACION_INGRESO',self::K_TIPO_CONCEPTO_INGRESO);
+		$this->set_sql($sql);
+		$this->retrieve();
+		for($i=0; $i<$this->row_count(); $i++)
+			$this->set_status_row($i, K_ROW_NEW_MODIFIED);
+		$this->set_sql($sql_original);
+	}
+	function update($db,$cod_conciliacion) {
+		$sp = 'spu_conciliacion_ingreso';
+
+		for ($i = 0; $i < $this->row_count(); $i++){	
+			$statuts = $this->get_status_row($i);
+			if ($statuts == K_ROW_NOT_MODIFIED || $statuts == K_ROW_NEW)
+				continue;
+				
+			if ($statuts == K_ROW_NEW_MODIFIED){
+				$operacion = 'INSERT';
+			}
+			elseif ($statuts == K_ROW_MODIFIED){
+				$operacion = 'UPDATE';
+			}
+
+			$cod_conciliacion_ingreso	= $this->get_item($i, 'COD_CONCILIACION_INGRESO_H');
+			$cod_conciliacion_ing		= $this->get_item($i, 'COD_CONCILIACION_ING_H');
+			$nom_conciliacion_ingreso 	= $this->get_item($i, 'NOM_CONCILIACION_INGRESO');
+			$monto_ingreso				= $this->get_item($i, 'MONTO_INGRESO');
+
+			$cod_conciliacion_ingreso	= ($cod_conciliacion_ingreso=='') ? "null" : $cod_conciliacion_ingreso;
+				
+			$param = "	'$operacion'
+						,$cod_conciliacion_ingreso
+						,$cod_conciliacion_ing
+						,'$nom_conciliacion_ingreso'
+						,$monto_ingreso";
+						
+			if (!$db->EXECUTE_SP($sp, $param))
+			return false;
+
+		}
+		for ($i = 0; $i < $this->row_count('delete'); $i++){
+			$statuts_d = $this->get_status_row($i, 'delete');
+			if ($statuts_d == K_ROW_NEW || $statuts_d == K_ROW_NEW_MODIFIED){
+				continue;
+			}
+			$cod_conciliacion_ingreso   = $this->get_item($i, 'COD_CONCILIACION_INGRESO_H', 'delete');
+
+			if (!$db->EXECUTE_SP($sp, "'DELETE', $cod_conciliacion_ingreso")){
+				return false;
+			}
+		}
+		return true;
+	}
+}
+class dw_conciliacion_egr extends datawindow{
+	const K_TIPO_CONCEPTO_EGRESO		= 'E';
+	function __construct() {
+		$sql = sql_conciliacion::get_sql('CONCILIACION_EGR');
+		
+		parent::__construct($sql, 'CONCILIACION_EGR', true, true);
+		
+		$this->add_control(new edit_text('COD_CONCILIACION_EGRESO_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('COD_CONCILIACION_EGR_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('NRO_CHEQUE_EGRESO',20,20));
+		$this->add_control(new edit_text('NOM_CONCILIACION_EGRESO', 160, 100));
+		$this->add_control(new edit_text('MONTO_EGRESO',20,14));
+		
+		$this->set_computed('MONTO_EGRESO_C', '[MONTO_EGRESO]');
+		$this->controls['MONTO_EGRESO_C']->type = 'hidden';
+		$this->accumulate('MONTO_EGRESO_C','set_montos_resumen()');
+		
+		//MANDATORY
+		$this->set_mandatory('NRO_CHEQUE_EGRESO', 'N° Cheque Egreso');
+		$this->set_mandatory('NOM_CONCILIACION_EGRESO', 'Concepto Egreso');
+		$this->set_mandatory('MONTO_EGRESO', 'Monto Egreso');
+	}
+	function new_conciliacion() {
+		// llamado en new record de proyecto
+		$sql_original = $this->get_sql();
+		$sql = sql_conciliacion::get_sql('NEW_CONCILIACION_EGRESO',self::K_TIPO_CONCEPTO_EGRESO);
+		$this->set_sql($sql);
+		$this->retrieve();
+		for($i=0; $i<$this->row_count(); $i++)
+			$this->set_status_row($i, K_ROW_NEW_MODIFIED);
+		$this->set_sql($sql_original);
+	}
+	function update($db,$cod_conciliacion) {
+		$sp = 'spu_conciliacion_egreso';
+
+		for ($i = 0; $i < $this->row_count(); $i++){	
+			$statuts = $this->get_status_row($i);
+			if ($statuts == K_ROW_NOT_MODIFIED || $statuts == K_ROW_NEW)
+				continue;
+				
+			if ($statuts == K_ROW_NEW_MODIFIED){
+				$operacion = 'INSERT';
+			}
+			elseif ($statuts == K_ROW_MODIFIED){
+				$operacion = 'UPDATE';
+			}
+
+			$cod_conciliacion_egreso	= $this->get_item($i, 'COD_CONCILIACION_EGRESO_H');
+			$cod_conciliacion_egr		= $this->get_item($i, 'COD_CONCILIACION_EGR_H');
+			$nro_cheque_egreso			= $this->get_item($i, 'NRO_CHEQUE_EGRESO');
+			$nom_conciliacion_egreso 	= $this->get_item($i, 'NOM_CONCILIACION_EGRESO');
+			$monto_egreso				= $this->get_item($i, 'MONTO_EGRESO');
+			
+			$cod_conciliacion_egreso	= ($cod_conciliacion_egreso=='') ? "null" : $cod_conciliacion_egreso;
+				
+			$param = "	'$operacion'
+						,$cod_conciliacion_egreso
+						,$cod_conciliacion_egr
+						,'$nro_cheque_egreso'
+						,'$nom_conciliacion_egreso'
+						,$monto_egreso";
+			if (!$db->EXECUTE_SP($sp, $param))
+				return false;
+		}
+		for ($i = 0; $i < $this->row_count('delete'); $i++){
+			$statuts_d = $this->get_status_row($i, 'delete');
+			if ($statuts_d == K_ROW_NEW || $statuts_d == K_ROW_NEW_MODIFIED){
+				continue;
+			}
+			$cod_conciliacion_egreso   = $this->get_item($i, 'COD_CONCILIACION_EGRESO_H', 'delete');
+
+			if (!$db->EXECUTE_SP($sp, "'DELETE', $cod_conciliacion_egreso")){
+				return false;
+			}
+		}
+		return true;
+	}
+}
+class dw_conciliacion_che extends datawindow{
+	const K_TIPO_CONCEPTO_CHEQUE		= 'C';
+	function __construct() {
+		$sql = sql_conciliacion::get_sql('CONCILIACION_CHE');
+		
+		parent::__construct($sql, 'CONCILIACION_CHE', true, true);
+	
+		$this->add_control(new edit_text('COD_CONCILIACION_CHEQUE_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('COD_CONCILIACION_CHE_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('NRO_CHEQUE_CHEQUE',20,20));
+		$this->add_control(new edit_text('NOM_CONCILIACION_CHEQUE', 160, 100));
+		$this->add_control(new edit_num('MONTO_CHEQUE',20,14));
+		
+		$this->set_computed('MONTO_CHEQUE_C', '[MONTO_CHEQUE]');
+		$this->controls['MONTO_CHEQUE_C']->type = 'hidden';
+		$this->accumulate('MONTO_CHEQUE_C','set_montos_resumen()');
+		
+		//MANDATORY
+		$this->set_mandatory('NRO_CHEQUE_CHEQUE', 'N° Cheque Girado y No Cobrado');
+		$this->set_mandatory('NOM_CONCILIACION_CHEQUE', 'Concepto Cheque Girado y No Cobrado');
+		$this->set_mandatory('MONTO_CHEQUE', 'Monto Cheque Girado y No Cobrado');
+	}
+	function new_conciliacion() {
+		// llamado en new record de proyecto
+		$sql_original = $this->get_sql();
+		$sql = sql_conciliacion::get_sql('NEW_CONCILIACION_CHEQUE',self::K_TIPO_CONCEPTO_CHEQUE);
+		$this->set_sql($sql);
+		$this->retrieve();
+		for($i=0; $i<$this->row_count(); $i++)
+			$this->set_status_row($i, K_ROW_NEW_MODIFIED);
+		$this->set_sql($sql_original);
+	}
+	function update($db,$cod_conciliacion) {
+		$sp = 'spu_conciliacion_cheque';
+
+		for ($i = 0; $i < $this->row_count(); $i++){	
+			$statuts = $this->get_status_row($i);
+			if ($statuts == K_ROW_NOT_MODIFIED || $statuts == K_ROW_NEW)
+				continue;
+				
+			if ($statuts == K_ROW_NEW_MODIFIED){
+				$operacion = 'INSERT';
+			}
+			elseif ($statuts == K_ROW_MODIFIED){
+				$operacion = 'UPDATE';
+			}
+
+			$cod_conciliacion_cheque	= $this->get_item($i, 'COD_CONCILIACION_CHEQUE_H');
+			$cod_conciliacion_che		= $this->get_item($i, 'COD_CONCILIACION_CHE_H');
+			$nro_cheque_cheque			= $this->get_item($i, 'NRO_CHEQUE_CHEQUE');
+			$nom_conciliacion_cheque 	= $this->get_item($i, 'NOM_CONCILIACION_CHEQUE');
+			$monto_cheque				= $this->get_item($i, 'MONTO_CHEQUE');
+			
+			$cod_conciliacion_cheque	= ($cod_conciliacion_cheque=='') ? "null" : $cod_conciliacion_cheque;
+				
+			$param = "	'$operacion'
+						,$cod_conciliacion_cheque
+						,$cod_conciliacion_che
+						,'$nro_cheque_cheque'
+						,'$nom_conciliacion_cheque'
+						,$monto_cheque";
+			if (!$db->EXECUTE_SP($sp, $param))
+				return false;
+		}
+		for ($i = 0; $i < $this->row_count('delete'); $i++){
+			$statuts_d = $this->get_status_row($i, 'delete');
+			if ($statuts_d == K_ROW_NEW || $statuts_d == K_ROW_NEW_MODIFIED){
+				continue;
+			}
+			$cod_conciliacion_cheque   = $this->get_item($i, 'COD_CONCILIACION_CHEQUE_H', 'delete');
+
+			if (!$db->EXECUTE_SP($sp, "'DELETE', $cod_conciliacion_cheque")){
+				return false;
+			}
+		}
+		return true;
+	}
+}
+class wi_conciliacion extends w_input {
+	const K_ESTADO_CONCILIACION_EMITIDA	= 1;
+	const K_TIPO_COMPROBANTE_INGRESO	= 1;
+	const K_TIPO_COMPROBANTE_EGRESO		= 2;
+	const K_TIPO_CONCILIACION_INGRESO	= 'I';
+	const K_TIPO_CONCILIACION_EGRESO	= 'E';
+	const K_TIPO_CONCILIACION_CHEQUE	= 'C';
+	
+	function __construct($cod_item_menu) {
+	    parent::__construct('conciliacion', $cod_item_menu);
+		$this->b_delete_visible  = false;
+		$this->b_print_visible  = true;
+
+		$sql = sql_conciliacion::get_sql('INPUT',self::K_TIPO_COMPROBANTE_INGRESO,self::K_TIPO_COMPROBANTE_EGRESO,self::K_TIPO_CONCILIACION_INGRESO,self::K_TIPO_CONCILIACION_EGRESO,self::K_TIPO_CONCILIACION_CHEQUE);
+
+		$this->dws['dw_conciliacion'] 		= new datawindow($sql);
+		$this->dws['dw_conciliacion_ing']	= new dw_conciliacion_ing($sql);
+		$this->dws['dw_conciliacion_egr'] 	= new dw_conciliacion_egr($sql);
+		$this->dws['dw_conciliacion_che'] 	= new dw_conciliacion_che($sql);
+
+		//CONTROLES
+		$this->dws['dw_conciliacion']->add_control(new edit_text('COD_CONCILIACION', 10, 10, 'hidden'));
+		$this->dws['dw_conciliacion']->add_control(new edit_text('COD_USUARIO', 10, 10, 'hidden'));
+		
+		$this->dws['dw_conciliacion']->add_control(new static_text('{FECHA_CONCILIACION_NO_ING}', 0));
+		
+		$sql = sql_conciliacion::get_sql('DD_CTACTE');
+		$this->dws['dw_conciliacion']->add_control($control = new drop_down_dw('COD_CUENTA_CORRIENTE', $sql, 140));
+		$control->set_onChange("set_valores();set_cabecera();");
+
+		$this->dws['dw_conciliacion']->add_control($control = new edit_mes('MES'));
+		$control->set_onChange("set_valores();set_cabecera();");
+		$this->dws['dw_conciliacion']->add_control($control = new edit_ano('ANO'));
+		$control->set_onChange("set_valores();set_cabecera();");
+		
+		$this->dws['dw_conciliacion']->add_control(new edit_mes('MES_NO_ING'));
+		$this->dws['dw_conciliacion']->set_entrable('MES_NO_ING', false);
+		$this->dws['dw_conciliacion']->add_control(new static_text('{ANO_NO_ING}', 0));
+		
+		
+		$this->dws['dw_conciliacion']->add_control(new static_num('INGRESO_MES'));
+		$this->dws['dw_conciliacion']->add_control(new static_num('INGRESO_MES_RESUMEN'));
+		$this->dws['dw_conciliacion']->add_control(new edit_text('INGRESO_MES_H', 10, 10, 'hidden'));
+		
+		$this->dws['dw_conciliacion']->add_control(new static_num('MONTO_ANTERIOR_RESUMEN'));
+		$this->dws['dw_conciliacion']->add_control(new edit_text('MONTO_ANTERIOR_RESUMEN_H', 10, 10, 'hidden'));
+
+		$this->dws['dw_conciliacion']->add_control(new static_text('MES_ACTUAL', 0));
+		$this->dws['dw_conciliacion']->add_control(new static_text('ANO_ACTUAL', 0));
+		$this->dws['dw_conciliacion']->add_control(new static_text('MES_ANTERIOR', 0));
+		$this->dws['dw_conciliacion']->add_control(new static_text('ANO_ANTERIOR', 0));
+
+		$this->dws['dw_conciliacion']->add_control(new static_num('EGRESO_MES'));
+		$this->dws['dw_conciliacion']->add_control(new static_num('EGRESO_MES_RESUMEN'));
+		$this->dws['dw_conciliacion']->add_control(new edit_text('EGRESO_MES_H', 10, 10, 'hidden'));
+		
+		$this->dws['dw_conciliacion']->add_control(new static_num('CARTOLA_INGRESO_MES'));
+		$this->dws['dw_conciliacion']->add_control(new edit_text('CARTOLA_INGRESO_MES_H', 10, 10, 'hidden'));
+		$this->dws['dw_conciliacion']->add_control(new static_num('CARTOLA_EGRESO_MES'));
+		$this->dws['dw_conciliacion']->add_control(new edit_text('CARTOLA_EGRESO_MES_H', 10, 10, 'hidden'));
+		$this->dws['dw_conciliacion']->add_control(new static_num('CARTOLA_CHEQUE_MES'));
+		$this->dws['dw_conciliacion']->add_control(new edit_text('CARTOLA_CHEQUE_MES_H', 10, 10, 'hidden'));
+		
+		$this->dws['dw_conciliacion']->set_computed('MONTO_MES_ACTUAL', '[MONTO_ANTERIOR_RESUMEN_H] + [CARTOLA_INGRESO_MES_H] - [CARTOLA_EGRESO_MES_H]'); //???
+		$this->dws['dw_conciliacion']->set_computed('SALDO_SEGUN_CARTOLA', '[MONTO_MES_ACTUAL] + [CARTOLA_CHEQUE_MES_H]');
+
+		//MANDATORY
+		$this->dws['dw_conciliacion']->set_mandatory('COD_CUENTA_CORRIENTE', 'Cuenta Corriente');
+		$this->dws['dw_conciliacion']->set_mandatory('MES', 'Mes Conciliación');
+		$this->dws['dw_conciliacion']->set_mandatory('ANO', 'año Conciliación');
+	}
+	function new_record() {
+		$this->dws['dw_conciliacion']->insert_row();
+
+		$this->dws['dw_conciliacion']->set_item(0, 'COD_USUARIO', $this->cod_usuario);
+		$this->dws['dw_conciliacion']->set_item(0, 'NOM_USUARIO', $this->nom_usuario);
+		$this->dws['dw_conciliacion']->set_item(0, 'FECHA_CONCILIACION', $this->current_date());
+		$this->dws['dw_conciliacion']->set_item(0, 'FECHA_CONCILIACION_NO_ING', $this->current_date());
+		
+		$this->dws['dw_conciliacion']->set_item(0, 'MONTO_ANTERIOR_RESUMEN', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'MONTO_ANTERIOR_RESUMEN_H', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'INGRESO_MES_RESUMEN', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'CARTOLA_INGRESO_MES', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'CARTOLA_INGRESO_MES_H', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'EGRESO_MES_RESUMEN', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'CARTOLA_EGRESO_MES', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'CARTOLA_EGRESO_MES_H', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'CARTOLA_CHEQUE_MES', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'CARTOLA_CHEQUE_MES_H', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'MONTO_MES_ACTUAL', 0);
+		$this->dws['dw_conciliacion']->set_item(0, 'SALDO_SEGUN_CARTOLA', 0);
+		
+		$this->dws['dw_conciliacion']->set_item(0, 'MES_NO_ING', 1);
+		
+		$sql 		= sql_conciliacion::get_sql('ANO_ACTUAL');
+		$db 		= new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$ano_actual	= $db->build_results($sql);
+		$ano_actual	= $ano_actual[0]['ANO_ACTUAL'];
+		
+		$this->dws['dw_conciliacion']->set_item(0, 'ANO',$ano_actual);
+		$this->dws['dw_conciliacion']->set_item(0, 'ANO_NO_ING', $ano_actual);
+		
+		
+		$sql = sql_conciliacion::get_sql('DD_ESTADO_CONCILIACION');
+		$this->dws['dw_conciliacion']->add_control($control = new drop_down_dw('COD_ESTADO_CONCILIACION', $sql, 140));
+		
+		$this->dws['dw_conciliacion']->set_item(0, 'COD_ESTADO_CONCILIACION', self::K_ESTADO_CONCILIACION_EMITIDA);
+		$this->dws['dw_conciliacion']->set_entrable('COD_ESTADO_CONCILIACION', false);
+
+		$this->dws['dw_conciliacion_ing']->new_conciliacion();
+		$this->dws['dw_conciliacion_egr']->new_conciliacion();
+		$this->dws['dw_conciliacion_che']->new_conciliacion();
+	}
+
+	function load_record() {
+		$cod_conciliacion		= $this->get_item_wo($this->current_record, 'COD_CONCILIACION');
+		$this->dws['dw_conciliacion']->retrieve($cod_conciliacion);
+		$this->dws['dw_conciliacion']->set_entrable('COD_CUENTA_CORRIENTE', false);
+		$this->dws['dw_conciliacion']->set_entrable('MES', false);
+		$this->dws['dw_conciliacion']->set_entrable('ANO', false);
+		$this->dws['dw_conciliacion_ing']->retrieve($cod_conciliacion);
+		$this->dws['dw_conciliacion_egr']->retrieve($cod_conciliacion);
+		$this->dws['dw_conciliacion_che']->retrieve($cod_conciliacion);
+		$sql = sql_conciliacion::get_sql('DD_ESTADO_CONCILIACION'); 
+		unset($this->dws['dw_conciliacion']->controls['COD_ESTADO_CONCILIACION']);
+		$this->dws['dw_conciliacion']->add_control($control = new drop_down_dw('COD_ESTADO_CONCILIACION',$sql,125));
+	}
+
+	function get_key() {
+		return $this->dws['dw_conciliacion']->get_item(0, 'COD_CONCILIACION');
+	}
+	function save_record($db) {
+		$cod_conciliacion        = $this->dws['dw_conciliacion']->get_item(0, 'COD_CONCILIACION');
+        $fecha_conciliacion      = $this->dws['dw_conciliacion']->get_item(0, 'FECHA_CONCILIACION');
+        $cod_usuario             = $this->cod_usuario;
+        $cod_estado_conciliacion = $this->dws['dw_conciliacion']->get_item(0, 'COD_ESTADO_CONCILIACION');
+        $mes                     = $this->dws['dw_conciliacion']->get_item(0, 'MES');
+        $ano                     = $this->dws['dw_conciliacion']->get_item(0, 'ANO');
+        $cod_cuenta_corriente    = $this->dws['dw_conciliacion']->get_item(0, 'COD_CUENTA_CORRIENTE');
+        $saldo_anterior          = $this->dws['dw_conciliacion']->get_item(0, 'MONTO_ANTERIOR_RESUMEN_H');
+        $ingreso_mes             = $this->dws['dw_conciliacion']->get_item(0, 'CARTOLA_INGRESO_MES_H');
+        $egreso_mes              = $this->dws['dw_conciliacion']->get_item(0, 'CARTOLA_EGRESO_MES_H');
+        $cheques_mes             = $this->dws['dw_conciliacion']->get_item(0, 'CARTOLA_CHEQUE_MES_H');
+
+        $cod_conciliacion		= ($cod_conciliacion=='') ? "null" : $cod_conciliacion;
+        $saldo_anterior			= ($saldo_anterior=='') ? 0 : $saldo_anterior;
+        $ingreso_mes			= ($ingreso_mes=='') ? 0 : $ingreso_mes;
+        $egreso_mes				= ($egreso_mes=='') ? 0 : $egreso_mes;
+        $cheques_mes			= ($cheques_mes=='') ? 0 : $cheques_mes;
+        
+        if(K_TIPO_BD == "oci"){
+        	$fecha_conciliacion = "to_Date('$fecha_conciliacion','dd/mm/yyyy')";
+        }
+        else if(K_TIPO_BD == "mssql"){
+        	$fecha_conciliacion = $this->str2date($fecha_conciliacion);
+        }
+
+        $sp = 'sp_conciliacion';
+		if ($this->is_new_record()){
+			$operacion = 'INSERT';
+		}
+		else {
+			$operacion = 'UPDATE';
+		}
+
+		$param = "	'$operacion'
+					,$cod_conciliacion
+					,$fecha_conciliacion
+					,$cod_usuario
+					,$cod_estado_conciliacion
+					,$mes
+					,$ano
+					,$cod_cuenta_corriente
+					,$saldo_anterior
+					,$ingreso_mes
+					,$egreso_mes
+					,$cheques_mes";
+		if ($db->EXECUTE_SP($sp, $param)) {
+			if ($this->is_new_record()) {
+				$cod_conciliacion = $db->GET_IDENTITY("conciliacion");
+				$this->dws['dw_conciliacion']->set_item(0, 'COD_CONCILIACION', $cod_conciliacion);
+			}
+
+			for ($i=0; $i<$this->dws['dw_conciliacion_ing']->row_count(); $i++){
+				$this->dws['dw_conciliacion_ing']->set_item($i, 'COD_CONCILIACION_ING_H', $cod_conciliacion);
+			}
+			for ($i=0; $i<$this->dws['dw_conciliacion_egr']->row_count(); $i++){
+				$this->dws['dw_conciliacion_egr']->set_item($i, 'COD_CONCILIACION_EGR_H', $cod_conciliacion);
+			}
+			for ($i=0; $i<$this->dws['dw_conciliacion_che']->row_count(); $i++){
+				$this->dws['dw_conciliacion_che']->set_item($i, 'COD_CONCILIACION_CHE_H', $cod_conciliacion);
+			}
+			
+			if (!$this->dws['dw_conciliacion_ing']->update($db,$cod_conciliacion)){
+				return false;
+			}
+			if (!$this->dws['dw_conciliacion_egr']->update($db,$cod_conciliacion)){
+				return false;
+			}
+			if (!$this->dws['dw_conciliacion_che']->update($db,$cod_conciliacion)){
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+	function print_record() {
+		$cod_conciliacion = $this->get_key();
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+	 	$sql = sql_conciliacion::get_sql('PRINT_RECORD',$cod_conciliacion,self::K_TIPO_COMPROBANTE_INGRESO,self::K_TIPO_COMPROBANTE_EGRESO,self::K_TIPO_CONCILIACION_CHEQUE);
+	 	$result = $db->build_results($sql);	 	 
+		// reporte
+		$labels = array();
+		$file_name = $this->find_file('conciliacion', 'conciliacion.xml');					
+		$rpt = new print_conciliacion($sql, $file_name, $labels, "conciliacion".$cod_conciliacion.'.pdf', 0);												
+		$this->_load_record();
+	}
+}
+/////////***********dibujo**************/////////
+class print_conciliacion extends reporte {	
+	const K_PARAM_UNIVERSIDAD = 5;
+	var $result;
+	
+	function __construct($sql, $xml, $labels=array(), $titulo, $con_logo, $vuelve_a_presentacion=false) {
+		parent::reporte($sql, $xml, $labels, $titulo, $con_logo, $vuelve_a_presentacion);			
+	}
+	function text(&$pdf, $x, $y,  $text) {
+		if ($y > 655) {
+			$pdf->AddPage(); 
+	
+			$this->dibuja_encabezado($pdf);	//deberia incluir el nro de pagina
+			
+			$y = 300;
+		}
+		$pdf->Text($x, $y, $text);
+		return $y;		
+	}
+	function dibuja_encabezado(&$pdf){
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql= sql_declaracion::get_sql('PRINT_PARAM',self::K_PARAM_UNIVERSIDAD);
+		$result = $db->build_results($sql);	
+		
+		$pdf->SetFont('Helvetica','i',10);
+		
+		//$pdf->Image(dirname(__FILE__)."/../../images_appl/".session::get('K_CLIENTE')."/logo-color.jpg", 50, 50,  50, 50);
+		$factor = 0.2;
+		$pdf->Image(dirname(__FILE__)."/../../images_appl/".session::get('K_CLIENTE')."/logo_universidad.jpg", 50, 50, $factor * 300, $factor * 357);
+		
+		
+		
+		$pdf->Text( 115, 70,'FONDO DE CREDITO SOLIDARIO');
+		$pdf->Text( 115, 80,$result[0]['NOM_UNIVERSIDAD']);
+		$pdf->Cell(0,100,$pdf->PageNo().'/{nb}',0,0,'R');
+		$pdf->SetFont('Helvetica','i',12);
+		$pdf->Text( 200, 150,'CONCILIACION '.$this->result['MES_ACTUAL'].' / '.$this->result['ANO_ACTUAL']);
+		$pdf->SetFont('Helvetica','i',10);
+		$pdf->Text( 60, 180,'Fecha	          		       :');
+		$pdf->Text( 180, 180,$this->result['FECHA_CONCILIACION']);		
+		$pdf->Line( 150,  182,  270,  182);
+		$pdf->Text( 60, 200,'Cuenta Coriente   :');
+		$pdf->Text( 180, 200,$this->result['NOM_CUENTA_CORRIENTE']);
+		$pdf->Line( 150,  202,  270,  202);
+		$pdf->Text( 300, 200,'Usuario              :');
+		$pdf->Text( 420, 200,utf8_decode($this->result['NOM_USUARIO']));
+		$pdf->Line( 390,  202,  510,  202);
+		$pdf->SetFont('Helvetica','i',10);
+		$pdf->Text( 510, 240,'VALOR');
+		$pdf->SetFont('Helvetica','i',10);
+		$pdf->Text( 60, 260,'Saldo Libro Banco Mes Anterior ');
+		$pdf->Text( 225, 260,number_format($this->result['MES_ANTERIOR']));		
+		$pdf->Text( 235, 260,' / ');
+		$pdf->Text( 245, 260,$this->result['ANO_ANTERIOR']);
+		$pdf->Text( 510, 260, number_format($this->result['MONTO_ANTERIOR_RESUMEN']));
+		$pdf->Text( 60, 280,'Ingreso Mes');
+		$pdf->Text( 510, 280,number_format( $this->result['INGRESO_MES_RESUMEN']));
+		$pdf->Line( 60,  282,  560,  282);
+	}
+
+	function modifica_pdf(&$pdf) {
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$result = $db->build_results($this->sql);
+		$this->result = $result[0];
+		$count = count($result);
+		$this->dibuja_encabezado($pdf);
+		$pdf->SetFont('Helvetica','i',10);
+		$pdf->Text( 60, 260,'Saldo Libro Banco Mes Anterior ');
+		$pdf->Text( 225, 260,number_format($this->result['MES_ANTERIOR']));		
+		$pdf->Text( 235, 260,' / ');
+		$pdf->Text( 245, 260,$this->result['ANO_ANTERIOR']);
+		//$pdf->Text( 510, 260, number_format($this->result['MONTO_ANTERIOR_RESUMEN']));
+		$pdf->Cell(510, 260, number_format($this->result['MONTO_ANTERIOR_RESUMEN']),0,0,'R');
+		$pdf->Text( 60, 280,'Ingreso Mes');
+		$pdf->Text( 510, 280,number_format( $this->result['INGRESO_MES_RESUMEN']));
+		$pdf->Text( 60, 295,'DETALLE CONCILIACION INGRESO');				
+		$pdf->Line( 60,  296,  560,  296);
+		$pdf->Text( 60, 305,'Concepto');
+		//	INGRESO
+	  	$db =new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql_ingreso = 	"SELECT  C.COD_CONCILIACION
+						,CI.NOM_CONCILIACION_INGRESO
+						,CI.MONTO_INGRESO
+				FROM 	CONCILIACION C
+						,CONCILIACION_INGRESO CI						
+				WHERE 	C.COD_CONCILIACION ={$this->result['COD_CONCILIACION']}
+				AND		CI.COD_CONCILIACION = C.COD_CONCILIACION";
+		$res = $db->build_results($sql_ingreso);	
+		$count = count($res);
+		for ($i=0, $y=320; $i <count($res); $i++,$y+=15) {
+		    $y = $this->text($pdf, 60, $y,  utf8_decode($res[$i]['NOM_CONCILIACION_INGRESO']));
+			 $y = $this->text($pdf, 510, $y,number_format($res[$i]['MONTO_INGRESO']));	
+	 	}
+		$pdf->Text( 60, $y + 10,'TOTAL DETALLE INGRESO');
+		$pdf->Text( 510, $y +10,number_format(  $this->result['CARTOLA_INGRESO_MES']));
+		$pdf->Line( 60,  $y + 20,  560,  $y + 20);
+		$pdf->Text( 60, $y + 30,'Egresos Mes');
+		$pdf->Text( 510, $y +40,number_format( $this->result['EGRESO_MES_RESUMEN']));		
+		$pdf->Text( 60, $y +50,'DETALLE CONCILIACION EGRESO');		
+		$pdf->Line( 60,  $y + 60,  560,  $y + 60);
+		$pdf->Text( 60, $y + 70,'N° de Cheque');
+		$pdf->Text( 200, $y + 70,'Concepto');
+		// Select EGRESO	
+ 		 $db =new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+ 		 if(K_TIPO_BD == "oci"){
+	 		 $sql_egreso =  "SELECT C.COD_CONCILIACION	
+							        ,CE.NRO_CHEQUE	NRO_CHEQUE_EGRESO
+							        ,CE.NOM_CONCILIACION_EGRESO
+							        ,CE.MONTO_EGRESO
+							FROM    CONCILIACION C
+									,CONCILIACION_EGRESO CE
+							WHERE   C.COD_CONCILIACION = {$this->result['COD_CONCILIACION']}
+							AND		CE.COD_CONCILIACION(+) = C.COD_CONCILIACION ";
+ 		 }	
+ 		 else if(K_TIPO_BD == "mssql"){
+			$sql_egreso =  "SELECT C.COD_CONCILIACION	
+							        ,CE.NRO_CHEQUE	NRO_CHEQUE_EGRESO
+							        ,CE.NOM_CONCILIACION_EGRESO
+							        ,CE.MONTO_EGRESO
+							FROM    CONCILIACION C left outer join CONCILIACION_EGRESO CE on C.COD_CONCILIACION = CE.COD_CONCILIACION  
+							WHERE   C.COD_CONCILIACION = {$this->result['COD_CONCILIACION']}"; 		 						
+ 		 }
+		$res1 = $db->build_results($sql_egreso);	
+		$count = count($res1);				
+		for ($i=0, $y=$y+80; $i <count($res1); $i++,$y+=15) {				
+			$y = $this->text($pdf, 60, $y,$res1[$i]['NRO_CHEQUE_EGRESO']);
+			$y = $this->text($pdf, 200, $y,$res1[$i]['NOM_CONCILIACION_EGRESO']);
+			$y = $this->text($pdf, 510, $y,number_format($res1[$i]['MONTO_EGRESO']));
+		}
+		$pdf->Text( 60, $y + 10,'TOTAL DETALLE EGRESO');
+		$pdf->Text( 510, $y + 10,number_format(  $this->result['CARTOLA_EGRESO_MES']));
+		$pdf->Line( 60,  $y +15,  560,  $y +15);
+		$pdf->Text( 60, $y +30,'DETALLE CONCILIACION CHEQUES GIRADOS Y NO GIRADOS');
+		$pdf->Line( 60,  $y +40,  560,  $y +40);
+		$pdf->Text( 60, $y +50,'N° de Cheque');
+		$pdf->Text( 200, $y +50,'Concepto');
+		// Select CHEQUE
+		$db =new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		if(K_TIPO_BD == "oci"){
+			$sql_cheque=  "SELECT  	C.COD_CONCILIACION
+							        ,CC.NRO_CHEQUE		NRO_CHEQUE_CHEQUE
+							        ,CC.NOM_CONCILIACION_CHEQUE
+							        ,CC.MONTO_CHEQUE
+							FROM    CONCILIACION C
+									,CONCILIACION_CHEQUE CC
+							WHERE   C.COD_CONCILIACION = {$this->result['COD_CONCILIACION']}
+							AND		CC.COD_CONCILIACION(+) = C.COD_CONCILIACION";
+		}
+		else if(K_TIPO_BD == "mssql"){
+			$sql_cheque=  "SELECT  	C.COD_CONCILIACION
+							        ,CC.NRO_CHEQUE		NRO_CHEQUE_CHEQUE
+							        ,CC.NOM_CONCILIACION_CHEQUE
+							        ,CC.MONTO_CHEQUE
+							FROM    CONCILIACION C left outer join CONCILIACION_CHEQUE CC on C.COD_CONCILIACION = CC.COD_CONCILIACION  
+							WHERE   C.COD_CONCILIACION = {$this->result['COD_CONCILIACION']}";											
+		}
+		$res2 = $db->build_results($sql_cheque);	
+		$count = count($res2);	
+		for ($i=0, $y=$y+60; $i <count($res2); $i++,$y+=15) {
+			$y = $this->text($pdf, 60, $y,$res2[$i]['NRO_CHEQUE_CHEQUE']);
+			$y = $this->text($pdf, 200, $y,$res2[$i]['NOM_CONCILIACION_CHEQUE']);
+			$y = $this->text($pdf, 510, $y,number_format($res2[$i]['MONTO_CHEQUE']));
+		}
+		$pdf->Text( 60, $y+10,'TOTAL DETALLE CHEQUES');
+		$pdf->Text( 510, $y+10,number_format(  $this->result['CARTOLA_CHEQUE_MES']));
+		$pdf->Line( 60,  $y+20,  560,  $y+20);
+		$pdf->Text( 60, $y+30,'Saldo Libro Banco Mes Actual ');
+		$pdf->Text( 225, $y+30,number_format($this->result['MES_ACTUAL']));
+		$pdf->Text( 235, $y+30,' / ');
+		$pdf->Text( 245, $y+30,$this->result['ANO_ACTUAL']);
+		$pdf->Text( 510, $y+30,number_format($this->result['MONTO_MES_ACTUAL']));
+		$pdf->Text( 60, $y+40,'Saldo según Cartola');
+		$pdf->Text( 510, $y+40,number_format($this->result['SALDO_SEGUN_CARTOLA']));
+	}
+}
+?>

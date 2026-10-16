@@ -1,0 +1,444 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/class_print_convenio.php");
+
+class dw_plan_pago_convenio extends datawindow {
+	function __construct() {
+		
+		$sql = sql_convenio::get_sql('DW_PLAN_PAGO_CONVENIO');
+		parent::__construct($sql, 'PP_CONVENIO');
+		
+		$this->add_control($control = new edit_check_box('SELECCION', 'S', 'N'));
+		$control->set_onChange("change_seleccion(this);");
+		$this->add_control(new static_text('ANO_COBRO'));
+		$this->add_control(new static_text('FECHA_VENCTO'));
+		$this->add_control(new static_num('SALDO_CUOTA', 4));
+		$this->add_control(new static_num('SALDO_MULTA', 4));
+		$this->add_control(new static_num('TOTAL_SALDO_MONEDA', 4));
+		$this->add_control(new static_num('TOTAL_SALDO_PESOS', 0));
+
+		$this->add_control(new edit_text('COD_PLAN_PAGO_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('SALDO_CUOTA_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('SALDO_MULTA_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('TOTAL_SALDO_MONEDA_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('TOTAL_SALDO_PESOS_H', 10, 10, 'hidden'));
+	}
+	function update($db, $cod_convenio){
+		$sp = 'spu_plan_pago_convenio';
+		for ($i = 0; $i < $this->row_count(); $i++){
+			$statuts = $this->get_status_row($i);
+			if ($statuts == K_ROW_NOT_MODIFIED || $statuts == K_ROW_NEW)
+				continue;
+			$seleccion = $this->get_item($i, 'SELECCION');
+			if ($seleccion!='S')
+				continue;
+				
+			$cod_plan_pago = $this->get_item($i, 'COD_PLAN_PAGO_H');
+			$saldo_cuota = $this->get_item($i, 'SALDO_CUOTA_H');
+			$saldo_multa = $this->get_item($i, 'SALDO_MULTA_H');
+			$total_saldo_moneda = $this->get_item($i, 'TOTAL_SALDO_MONEDA_H');
+			$total_saldo_pesos = $this->get_item($i, 'TOTAL_SALDO_PESOS_H');
+
+			$param = "'INSERT',$cod_convenio, $cod_plan_pago, $saldo_cuota, $saldo_multa, $total_saldo_moneda, $total_saldo_pesos";
+			if (!$db->EXECUTE_SP($sp, $param)){
+				return false;
+			}
+		}
+		return true;
+	}
+}
+class dw_suma_plan_pago extends datawindow {
+    function __construct() {
+		
+		$sql = sql_convenio::get_sql('DW_SUMA_PLAN_PAGO');
+		parent::__construct($sql);
+		$this->add_control(new static_num('SUMA_SALDO_CUOTA', 4));
+		$this->add_control(new static_num('SUMA_SALDO_MULTA', 4));
+		$this->add_control(new static_num('SUMA_TOTAL_SALDO_MONEDA', 4));
+		$this->add_control(new static_num('SUMA_TOTAL_SALDO_PESOS', 0));
+	}
+}
+class dw_cuotas extends datawindow {
+    function __construct() {
+		$sql = sql_convenio::get_sql('DW_CU_CUOTAS');
+		parent::__construct($sql, 'CU_CUOTAS');
+		$this->add_control(new static_text('CUOTA_INGRESO'));
+		$this->add_control(new static_num('SALDO_CUOTA_CONVENIO', 4,4));
+		$this->add_control(new static_num('CU_MONTO_CUOTA_MONEDA', 4,4));
+		
+	}
+}
+class wi_convenio extends w_input {
+	const K_ESTADO_CONVENIO_EMITIDA	= 1;
+	const K_ESTADO_CONVENIO_CONFIRMADA	= 2;
+	const K_ESTADO_CONVENIO_ANULADA	= 3;
+	const K_PARAM_PORC_PAGO_CONV = 31;
+	const K_PARAM_PORC_INTERES_CONVENIO = 30;
+	const K_OPCION_ESPECIAL = '993005';  //numero perteneciente a item_menu de CONVENIO, opcion especial.
+
+	function __construct($cod_item_menu)	{
+	    parent::__construct('convenio', $cod_item_menu);
+		$this->b_delete_visible  = false;
+
+		$sql = sql_convenio::get_sql('INPUT');
+		
+		$this->dws['dw_convenio'] = new datawindow($sql);
+		$this->dws['dw_convenio']->add_control(new static_text('FECHA_CONVENIO'));
+		$this->dws['dw_convenio']->add_control($control = new edit_num('RUT', 10, 10));
+		$this->dws['dw_convenio']->add_control(new static_text('DIG_VERIF'));
+		$this->dws['dw_convenio']->add_control(new static_text('NOM_DEUDOR'));
+		$control->set_onChange("change_rut(this);");
+		$sql = sql_convenio::get_sql('DD_ESTADO_PAGO');
+		$this->dws['dw_convenio']->add_control($control = new drop_down_dw('COD_ESTADO_CONVENIO', $sql,0,'',false));
+		$control->set_onChange("valida_saldo();");
+		$this->dws['dw_convenio']->add_control(new static_text('COD_DEUDA'));
+		$this->dws['dw_convenio']->add_control(new edit_text('COD_DEUDA_H', 10, 10, 'hidden'));
+		$this->dws['dw_convenio']->add_control(new static_text('SIMBOLO'));
+		$this->dws['dw_convenio']->add_control(new static_text('NOM_CARTERA'));
+		$this->dws['dw_convenio']->add_control(new static_text('NOM_ESTADO_DEUDA'));
+		$this->dws['dw_convenio']->add_control(new static_text('CANT_CUOTA_DEUDA'));
+		$this->dws['dw_convenio']->add_control(new edit_text('PORC_PAGO_SUGERIDO_H', 10, 10, 'hidden'));
+		$this->dws['dw_convenio']->add_control(new static_num('PAGO_INICIAL_SUGERIDO'));
+		$this->dws['dw_convenio']->add_control(new edit_text('PAGO_INICIAL_SUGERIDO_H', 10, 10, 'hidden'));
+		$this->dws['dw_convenio']->add_control($control = new edit_num('PAGO_INICIAL', 10, 10));
+		$control->set_onChange("change_pago_inicial(this);valida_saldo();");
+		$this->dws['dw_convenio']->add_control(new static_num('CU_PAGO_INICIAL'));
+		$this->dws['dw_convenio']->add_control(new static_num('MONTO_CONVENIO'));
+		$this->dws['dw_convenio']->add_control(new edit_text('MONTO_CONVENIO_H', 10, 10, 'hidden'));
+		$this->dws['dw_convenio']->add_control(new static_num('MONTO_CONVENIO_MONEDA', 4));
+		$this->dws['dw_convenio']->add_control(new edit_text('MONTO_CONVENIO_MONEDA_H', 10, 10, 'hidden'));
+		$this->dws['dw_convenio']->add_control($control = new edit_date('FECHA_INICIO_COBRO'));
+		$control->set_onChange("change_cant_cuota(document.getElementById('CANT_CUOTA_0'));");
+		$this->dws['dw_convenio']->add_control(new static_num('MONTO_CONVENIO_ACT', 4));
+		$this->dws['dw_convenio']->add_control(new edit_text('MONTO_CONVENIO_ACT_H', 10, 10, 'hidden'));
+		$this->dws['dw_convenio']->add_control(new edit_text('VALOR_MONEDA', 10, 10, 'hidden'));
+		$aCuotas = array(1,2,3,4,5,6,7,8,9,10,11,12);
+		$this->dws['dw_convenio']->add_control($control = new drop_down_list('CANT_CUOTA', $aCuotas, $aCuotas));
+		$control->set_onChange("change_cant_cuota(this);");
+		$this->dws['dw_convenio']->add_control(new static_num('CUOTA_MENSUAL_MONEDA', 4));
+		$this->dws['dw_convenio']->add_control(new edit_text('CUOTA_MENSUAL_MONEDA_H', 10, 10, 'hidden'));
+        $this->dws['dw_convenio']->add_control(new edit_text_multiline('OBS', 100, 3));
+        $this->dws['dw_convenio']->add_control(new static_num('CUOTA_MENSUAL'));
+        $this->dws['dw_convenio']->add_control(new edit_text('SALDO_CONVENIO_H', 10, 10, 'hidden'));
+        $this->dws['dw_convenio']->add_control(new static_text('COD_INGRESO'));
+        $this->dws['dw_convenio']->add_control(new static_num('SALDO_ACTUAL'));
+        $this->dws['dw_convenio']->add_control(new edit_text('COD_ESTADO_ACTUAL', 10, 10, 'hidden'));
+        $this->dws['dw_convenio']->add_control(new edit_text('COD_USUARIO_H', 10, 10, 'hidden'));
+        $this->dws['dw_convenio']->add_control(new edit_check_box('AUTORIZADO', 'S', 'N', ''));
+        $this->dws['dw_convenio']->add_control(new static_text('FECHA_AUTORIZA'));
+        $this->dws['dw_convenio']->add_control(new static_text('USUARIO_AUTORIZA'));
+        
+        
+        
+		// dw_plan_pago_convenio
+		$this->dws['dw_plan_pago_convenio'] = new dw_plan_pago_convenio();
+		$this->dws['dw_suma_plan_pago'] = new dw_suma_plan_pago();
+		
+		$this->dws['dw_cuotas'] = new dw_cuotas();
+
+		// asigna los mandatorys
+		$this->dws['dw_convenio']->set_mandatory('RUT', 'Rut');
+		$this->dws['dw_convenio']->set_mandatory('OBS', 'Observaciones');
+
+		//audoria
+		$this->add_auditoria('COD_ESTADO_CONVENIO');
+		$this->add_auditoria('AUTORIZADO');
+
+		$this->set_first_focus('RUT');
+	}
+	function new_record() {
+		$this->dws['dw_convenio']->insert_row();
+		$this->dws['dw_convenio']->set_item(0, 'FECHA_CONVENIO', $this->current_date());
+		$this->dws['dw_convenio']->set_item(0, 'NOM_USUARIO', $this->nom_usuario);
+		$this->dws['dw_convenio']->set_item(0, 'COD_ESTADO_CONVENIO', self::K_ESTADO_CONVENIO_EMITIDA);
+		$this->dws['dw_convenio']->set_entrable('COD_ESTADO_CONVENIO', false);
+		$this->dws['dw_convenio']->set_item(0, 'PORC_PAGO_SUGERIDO', $this->get_parametro(self::K_PARAM_PORC_PAGO_CONV));
+		$this->dws['dw_convenio']->set_item(0, 'PORC_PAGO_SUGERIDO_H', $this->get_parametro(self::K_PARAM_PORC_PAGO_CONV));
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		
+		$sql = sql_convenio::get_sql('INICIO_COBRO_MES');
+		$result = $db->build_results($sql);
+		$this->dws['dw_convenio']->set_item(0, 'FECHA_INICIO_COBRO', $result[0]['FECHA_INICIO_COBRO']);
+		
+		
+		$sql = sql_convenio::get_sql('DD_TIPO_DEUDA');
+		// control para seleccionar tipo deuda
+		$this->dws['dw_convenio']->add_control($control = new drop_down_dw('COD_TIPO_DEUDA', $sql));
+		$control->set_onChange("change_tipo_deuda(this);");
+
+		// valor UTM
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql = sql_convenio::get_sql('VALOR_MONEDA');
+		$result = $db->build_results($sql);
+		$this->dws['dw_convenio']->set_item(0, 'VALOR_MONEDA', $result[0]['VALOR_MONEDA']);
+
+		$this->dws['dw_suma_plan_pago']->insert_row();
+
+		if (session::is_set("CREADA_DESDE_DEUDA")) {
+			$this->b_modify_visible	 	= false;
+			$cod_deuda = session::get("CREADA_DESDE_DEUDA");
+			session::un_set("CREADA_DESDE_DEUDA");
+			$this->crear_desde_deuda($cod_deuda);
+		}
+		$this->dws['dw_convenio']->set_entrable('AUTORIZADO', false);
+	}
+	function crear_desde_deuda($cod_deuda) {
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		if(K_TIPO_BD == "oci"){
+			$sql = "falta";
+		}
+		else if(K_TIPO_BD == "mssql"){
+			$sql = "select 	D.RUT
+							,D.DIG_VERIF
+							,NOMBRE+' '+APELLIDO_PATERNO+' '+APELLIDO_MATERNO NOM_DEUDOR
+							,DA.COD_TIPO_DEUDA
+							,C.NOM_CARTERA
+							,E.NOM_ESTADO_DEUDA
+							,DA.CANT_CUOTA
+							,M.SIMBOLO
+					FROM 	DEUDA DA, DEUDOR D, CARTERA C, ESTADO_DEUDA E, TIPO_DEUDA T, MONEDA M 
+					WHERE 	DA.COD_DEUDA = $cod_deuda
+					  and 	D.COD_DEUDOR = DA.COD_DEUDOR
+					  and 	C.COD_CARTERA = DA.COD_CARTERA
+					  and 	E.COD_ESTADO_DEUDA = DA.COD_ESTADO_DEUDA
+					  and 	T.COD_TIPO_DEUDA = DA.COD_TIPO_DEUDA 
+					  and 	M.COD_MONEDA = T.COD_MONEDA";
+		}			
+		$result = $db->build_results($sql);
+		$this->dws['dw_convenio']->set_item(0, 'RUT', $result[0]['RUT']);
+		$this->dws['dw_convenio']->set_item(0, 'DIG_VERIF', $result[0]['DIG_VERIF']);
+		$this->dws['dw_convenio']->set_item(0, 'NOM_DEUDOR', $result[0]['NOM_DEUDOR']);
+
+		$cod_tipo_deuda = $result[0]['COD_TIPO_DEUDA'];
+		$sql = "select $cod_deuda COD_DEUDA
+						,'$cod_tipo_deuda' COD_TIPO_DEUDA";
+		$this->dws['dw_convenio']->controls['COD_TIPO_DEUDA']->set_sql($sql);
+		$this->dws['dw_convenio']->controls['COD_TIPO_DEUDA']->retrieve();
+		$this->dws['dw_convenio']->set_item(0, 'COD_TIPO_DEUDA', $cod_deuda);
+		$this->dws['dw_convenio']->set_item(0, 'COD_DEUDA', $cod_deuda);
+		$this->dws['dw_convenio']->set_item(0, 'COD_DEUDA_H', $cod_deuda);
+		$this->dws['dw_convenio']->set_item(0, 'NOM_CARTERA', $result[0]['NOM_CARTERA']);
+		$this->dws['dw_convenio']->set_item(0, 'NOM_ESTADO_DEUDA', $result[0]['NOM_ESTADO_DEUDA']);
+		$this->dws['dw_convenio']->set_item(0, 'CANT_CUOTA_DEUDA', $result[0]['CANT_CUOTA']);
+		$this->dws['dw_convenio']->set_item(0, 'SIMBOLO', $result[0]['SIMBOLO']);
+		
+		// cuotas
+		$sql = sql_convenio::get_sql('AJAX_CHANGE_TIPO_DEUDA',$cod_deuda);
+		$result = $db->build_results($sql);
+		if (count($result)==0) {
+			$this->redraw();
+			$this->message('Esta Deuda No contiene Cuotas a Convenir, escoja otro tipo de Deuda');
+		}
+		else {
+			for($i=0; $i < count($result); $i++) {
+				$row = $this->dws['dw_plan_pago_convenio']->insert_row();
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'SELECCION', $result[$i]['SELECCION']);
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'ANO_COBRO', $result[$i]['ANO_COBRO']);
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'FECHA_VENCTO', $result[$i]['FECHA_VENCTO']);
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'SALDO_CUOTA', $result[$i]['SALDO_CUOTA']);
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'SALDO_MULTA', $result[$i]['SALDO_MULTA']);
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'TOTAL_SALDO_MONEDA', $result[$i]['TOTAL_SALDO_MONEDA']);
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'TOTAL_SALDO_PESOS', $result[$i]['TOTAL_SALDO_PESOS']);
+
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'COD_PLAN_PAGO_H', $result[$i]['COD_PLAN_PAGO']);
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'SALDO_CUOTA_H', $result[$i]['SALDO_CUOTA']);
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'SALDO_MULTA_H', $result[$i]['SALDO_MULTA']);
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'TOTAL_SALDO_MONEDA_H', $result[$i]['TOTAL_SALDO_MONEDA']);
+				$this->dws['dw_plan_pago_convenio']->set_item($i, 'TOTAL_SALDO_PESOS_H', $result[$i]['TOTAL_SALDO_PESOS']);
+			}			
+		}
+	}
+	function load_record() {
+		$COD_CONVENIO = $this->get_item_wo($this->current_record, 'COD_CONVENIO');
+		$this->dws['dw_convenio']->retrieve($COD_CONVENIO);
+		$this->dws['dw_plan_pago_convenio']->retrieve($COD_CONVENIO);
+		$this->dws['dw_suma_plan_pago']->retrieve($COD_CONVENIO);
+		$this->dws['dw_cuotas']->retrieve($COD_CONVENIO);
+		
+		$this->dws['dw_convenio']->set_item(0,'COD_USUARIO_H',$this->cod_usuario);
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		
+		$sql_convenio = sql_convenio::get_sql('CONVENIO_INGRESOS',$COD_CONVENIO);
+		$result_convenio = $db->build_results($sql_convenio);
+		$count_convenio = count($result_convenio);
+		$ingresos = '';
+		//for para concatenar los ingresos
+		if($count_convenio>0){
+			for($h=0;$h<$count_convenio;$h++){
+				if($ingresos==''){
+					$ingresos.= $result_convenio[$h]['COD_INGRESO'];
+				}
+				else{
+					$ingresos.= ' - '.$result_convenio[$h]['COD_INGRESO'];
+				}
+			}
+		}
+		
+		$this->dws['dw_convenio']->set_item(0, 'COD_INGRESO', $ingresos);
+		
+		$sql = sql_convenio::get_sql('DD_ESTADO_PAGO'); 
+		unset($this->dws['dw_convenio']->controls['COD_ESTADO_CONVENIO']);
+		$this->dws['dw_convenio']->add_control($control = new drop_down_dw('COD_ESTADO_CONVENIO', $sql,0,'',false));
+		$control->set_onChange("valida_saldo(this);");
+		
+		$cod_estado_convenio = $this->dws['dw_convenio']->get_item(0, 'COD_ESTADO_CONVENIO');
+		switch ($cod_estado_convenio) {
+			case self::K_ESTADO_CONVENIO_ANULADA: 
+	            $this->b_print_visible  = false;
+	            $this->b_modify_visible  = false;
+	            $this->b_save_visible  = false;
+	            $this->b_no_save_visible  = false;
+	            break;
+			case self::K_ESTADO_CONVENIO_CONFIRMADA: 
+	            $this->b_print_visible  = true;
+	            $this->b_modify_visible  = true;
+	            $this->b_save_visible  = true;
+	            $this->b_no_save_visible  = true;
+	            
+	            unset($this->dws['dw_convenio']->controls['COD_ESTADO_CONVENIO']);
+				$sql = sql_convenio::get_sql('DD_ESTADO_CONVENIO');
+				$this->dws['dw_convenio']->add_control($control = new drop_down_dw('COD_ESTADO_CONVENIO', $sql,0,'',false));
+				$control->set_onChange("valida_saldo(this);");
+				
+	            $this->dws['dw_convenio']->set_entrable('PAGO_INICIAL', false);
+	            $this->dws['dw_convenio']->set_entrable('FECHA_INICIO_COBRO', false);
+	            $this->dws['dw_convenio']->set_entrable('CANT_CUOTA', false);
+	            $this->dws['dw_convenio']->set_entrable('OBS', false);	
+	            break;
+	       case self::K_ESTADO_CONVENIO_EMITIDA: 
+	            $this->b_print_visible    = true;
+	            $this->b_modify_visible   = true;
+	            $this->b_save_visible  	  = true;
+	            $this->b_no_save_visible  = true;
+	            
+	            $this->dws['dw_convenio']->set_entrable('PAGO_INICIAL', true);
+	            $this->dws['dw_convenio']->set_entrable('FECHA_INICIO_COBRO', true);
+	            $this->dws['dw_convenio']->set_entrable('CANT_CUOTA', true);
+	            $this->dws['dw_convenio']->set_entrable('OBS', true);	
+	            break;
+	      default:
+	            $this->b_print_visible   = true;
+	            $this->b_modify_visible  = true;
+	            $this->b_save_visible    = true;
+	            $this->b_no_save_visible = true;
+		}
+		
+		
+		
+		$this->dws['dw_convenio']->set_entrable('COD_ESTADO_CONVENIO', true);
+		$this->dws['dw_convenio']->set_entrable('RUT', false);
+		$this->dws['dw_plan_pago_convenio']->set_entrable('SELECCION', false);
+		
+		// Borra el control de TIPO_DEUDA
+		$this->dws['dw_convenio']->remove_control('COD_TIPO_DEUDA');
+		
+		// si el usuario no tiene privilegios de adm. checkbox de autorizacion no modificable
+		$autorizado = $this->dws['dw_convenio']->get_item(0, 'AUTORIZADO');
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql = sql_convenio::get_sql('AJAX_VALIDA_APROVADA',$this->cod_usuario,self::K_OPCION_ESPECIAL);
+		$result = $db->build_results($sql);
+
+		if(($result[0]['AUTORIZA_MENU']!='E')||($autorizado == 'S')){
+			$this->dws['dw_convenio']->set_entrable('AUTORIZADO', false);
+		}
+		else
+			$this->dws['dw_convenio']->set_entrable('AUTORIZADO', true);
+		
+	}
+	function get_key() {
+		return $this->dws['dw_convenio']->get_item(0, 'COD_CONVENIO');
+	}
+	
+	function procesa_event() {
+		parent::procesa_event();
+		//muestra mensaje, solo si no esta autorizado, como recordatorio
+		if(isset($_POST['b_save_x'])) {
+			$pago_inicial_sugerido		= $this->dws['dw_convenio']->get_item(0, 'PAGO_INICIAL_SUGERIDO_H');
+			$pago_inicial				= $this->dws['dw_convenio']->get_item(0, 'PAGO_INICIAL');
+			$cod_estado_convenio		= $this->dws['dw_convenio']->get_item(0, 'COD_ESTADO_CONVENIO');
+				
+			$autorizado = $this->dws['dw_convenio']->get_item(0, 'AUTORIZADO');
+			if(($autorizado == 'N')&&($cod_estado_convenio==1)){
+				$this->message('¡El pago inicial es menor que el sugerido!. Recuerde que es necesario autorizar el convenio para hacer el pago inicial.');
+			}	
+		}
+	}
+	function save_record($db){
+		
+		$cod_convenio				= $this->dws['dw_convenio']->get_item(0, 'COD_CONVENIO');
+		$cod_estado_convenio		= $this->dws['dw_convenio']->get_item(0, 'COD_ESTADO_CONVENIO');
+		$obs						= $this->dws['dw_convenio']->get_item(0, 'OBS');
+		$cod_deuda					= $this->dws['dw_convenio']->get_item(0, 'COD_DEUDA_H');
+		$pago_inicial_sugerido		= $this->dws['dw_convenio']->get_item(0, 'PAGO_INICIAL_SUGERIDO_H');
+		$pago_inicial				= $this->dws['dw_convenio']->get_item(0, 'PAGO_INICIAL');
+		$monto_convenio				= $this->dws['dw_convenio']->get_item(0, 'MONTO_CONVENIO_H');
+		$monto_convenio_moneda		= $this->dws['dw_convenio']->get_item(0, 'MONTO_CONVENIO_MONEDA_H');
+		$fecha_inicio_cobro			= $this->dws['dw_convenio']->get_item(0, 'FECHA_INICIO_COBRO');
+		$monto_convenio_act			= $this->dws['dw_convenio']->get_item(0, 'MONTO_CONVENIO_ACT_H');
+		$cant_cuota					= $this->dws['dw_convenio']->get_item(0, 'CANT_CUOTA');
+		$cuota_mensual_moneda		= $this->dws['dw_convenio']->get_item(0, 'CUOTA_MENSUAL_MONEDA_H');
+	
+		$cod_convenio = ($cod_convenio =='') ? "null" : $cod_convenio;
+		$pago_inicial = ($pago_inicial =='') ? "0" : $pago_inicial;
+		$porc_interes_convenio = $this->get_parametro(self::K_PARAM_PORC_INTERES_CONVENIO);
+		$porc_pago_inicial = $this->get_parametro(self::K_PARAM_PORC_PAGO_CONV);
+		$obs = ($obs =='') ? "null" : "'$obs'";
+		$fecha_inicio_cobro = $this->str2date($fecha_inicio_cobro);
+
+		$sp = 'spu_convenio';
+		if ($this->is_new_record()){
+			$operacion = 'INSERT';
+			if($pago_inicial < $pago_inicial_sugerido)
+		 		$autorizado = 'N';
+		 	else
+		 		$autorizado = 'S';
+		}
+		else{
+			$operacion = 'UPDATE';
+			$autorizado	= $this->dws['dw_convenio']->get_item(0, 'AUTORIZADO');
+		}
+
+	
+		$param	= "'$operacion'
+					,$cod_convenio
+					,$this->cod_usuario
+					,$cod_estado_convenio
+					,$obs
+					,$cod_deuda
+					,$porc_interes_convenio
+					,$porc_pago_inicial
+					,$pago_inicial_sugerido
+					,$pago_inicial
+					,$monto_convenio
+					,$monto_convenio_moneda
+					,$monto_convenio_act
+					,$fecha_inicio_cobro
+					,$cant_cuota
+					,$cuota_mensual_moneda
+					,'$autorizado'";
+					
+		if ($db->EXECUTE_SP($sp, $param)){
+			if ($this->is_new_record()) {
+				$COD_CONVENIO = $db->GET_IDENTITY("convenio");
+				$this->dws['dw_convenio']->set_item(0, 'COD_CONVENIO', $COD_CONVENIO);
+				
+				if (!$this->dws['dw_plan_pago_convenio']->update($db, $COD_CONVENIO))
+					return false;
+			}
+			
+			return true;
+		}
+		return false;
+
+	}
+	function print_record() {
+		$cod_convenio = $this->get_key();
+		// reporte
+		$labels = array();
+		$file_name = $this->find_file('convenio', 'convenio.xml');
+		$rpt = new print_convenio($cod_convenio, $file_name, $labels, "convenio".$cod_convenio.'.pdf', 0);
+		$this->_load_record();
+	}	
+}
+?>

@@ -1,0 +1,208 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../../boleta/USACH/class_print_boleta.php");
+
+ini_set('memory_limit', '750M');
+ini_set('max_execution_time', 3600); //1200 seconds = 40 minutes 
+ini_set('mssql.connect_timeout','400');
+ini_set('mssql.timeout','400');
+
+class wp_cuponera extends wp_cuponera_base{
+	var $archivo_cargado = false;
+	const K_PROCESO_GENERA_CUPON 	= 11;
+	
+	function __construct(){
+   		$this->fecha_ejecucion = $this->str2date($this->current_date(), $this->current_time());
+		
+   		$sql = "select	 NULL COD_TIPO_DEUDA
+	   					,NULL COD_EJECUCION_PROCESO
+	   			FROM dual";
+	   	$this->dws['dw_cuponera'] = new datawindow($sql);
+    	
+	   	$sql = "SELECT	 COD_TIPO_DEUDA
+						,NOM_TIPO_DEUDA
+				FROM	TIPO_DEUDA
+				ORDER BY COD_TIPO_DEUDA ASC";
+		unset($this->dws['dw_cuponera']->controls['COD_TIPO_DEUDA']);
+    	$this->dws['dw_cuponera']->add_control(new drop_down_dw('COD_TIPO_DEUDA', $sql));
+		
+		$sql = "SELECT	 COD_EJECUCION_PROCESO
+						,NOM_USUARIO || ': ' || to_char(FECHA_EJECUCION_PROCESO, 'dd/mm/yyyy hh:ss') || ' --> TOTAL REG:' || to_char(TOT_REGISTRO) FECHA_EJECUCION_PROCESO
+				FROM	EJECUCION_PROCESO EP, USUARIO U				
+				WHERE	U.COD_USUARIO = EP.COD_USUARIO
+				  AND	COD_PROCESO = ".self::K_PROCESO_GENERA_CUPON." 
+				  AND	CANCELA_PROCESO = 'N'
+				  AND	FECHA_TERMINO IS NOT NULL
+				ORDER BY COD_EJECUCION_PROCESO DESC";
+		
+		$this->dws['dw_cuponera']->add_control(new drop_down_dw('COD_EJECUCION_PROCESO', $sql));
+		
+		parent::__construct('cuponera', $_REQUEST['cod_item_menu'], self::K_CUPONERA);
+   	}
+   	
+   	function redraw() {
+		$this->nom_template = "USACH/wp_cuponera.htm";
+		parent::redraw();
+	}
+	
+	function pdf(){
+		$db_2 = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+
+		if ($db_2->EXECUTE_SP('spu_ejecucion_proceso', "'NEW', null, $this->cod_proceso, $this->cod_usuario")) {
+			$cod_ejecucion_proceso = $db_2->GET_IDENTITY('ejecucion_proceso');
+			$this->dws['dw_cuponera']->get_values_from_POST();
+			 
+			$cod_tipo_deuda = $this->dws['dw_cuponera']->get_item(0, 'COD_TIPO_DEUDA');
+					
+			$this->dws['dw_ejecucion_actual']->retrieve($this->cod_proceso);
+			$this->save_SESSION();
+							
+			$db_3 = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+			$sql = "SELECT COD_BOLETA from BOLETA B, DEUDA D
+					where B.COD_DEUDA = D.COD_DEUDA
+				AND COD_EJECUCION_PROCESO = $cod_ejecucion_proceso
+				AND COD_TIPO_DEUDA = '$cod_tipo_deuda'";
+			
+			$res = $db_3->query($sql);
+			$cantidad = $db_3->count_rows();
+			
+			if($cantidad != 0){
+				$labels = array();
+				$file_name = $this->find_file('boleta', 'boleta.xml');
+				$reg_por_page = 100;
+				$cant_pdf = ceil($cantidad / $reg_por_page);
+				for ($i=0; $i < $cant_pdf; $i++) {
+					$ini = $reg_por_page * $i + 1;
+					$fin = $ini + $reg_por_page - 1;
+
+
+					$sql="SELECT * 
+					FROM (
+						SELECT r.*, row_number() over (ORDER BY COD_BOLETA)  ROWNUMBER
+						FROM (SELECT COD_BOLETA from BOLETA B, DEUDA D
+					where B.COD_DEUDA = D.COD_DEUDA
+				AND COD_EJECUCION_PROCESO = $cod_ejecucion_proceso
+				AND COD_TIPO_DEUDA = '$cod_tipo_deuda') R
+					) A
+					WHERE ROWNUMBER between $ini and 	$fin  ";
+					
+					$rpt = new print_boleta($sql, $file_name, $labels, "Cuponeras".$i, 0);										
+				}
+				$this->redraw();
+			}else{
+				$this->redraw();
+				$this->alert('La deuda Seleccionada no tiene emisión en el año.');
+			}
+		}
+	}
+	
+	function genera_txt($tipo_medio){
+		$this->dws['dw_cuponera']->get_values_from_POST();
+		$cod_tipo_deuda = $this->dws['dw_cuponera']->get_item(0, 'COD_TIPO_DEUDA');
+
+		$db_2 = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+
+		if($db_2->EXECUTE_SP('spu_ejecucion_proceso', "'NEW', null, $this->cod_proceso, $this->cod_usuario")){
+			$cod_ejecucion_proceso = $db_2->GET_IDENTITY('ejecucion_proceso');
+			$this->dws['dw_ejecucion_actual']->retrieve($this->cod_proceso);
+			$this->save_SESSION();
+			
+			$spu_proceso = $this->make_cmd_sp($cod_ejecucion_proceso);
+			
+			$db_3 = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+			$sql_cod_boleta = "BEGIN ".$spu_proceso."; END;";
+			
+			$r_sp = $db_3->query($sql_cod_boleta);
+			
+			$sql_temp_boleta = "SELECT	COD_BOLETA
+								FROM	TEMP_BOLETA_CUPONERA
+								ORDER BY COD_BOLETA DESC";
+			$res = $db_3->build_results($sql_temp_boleta);
+			$cantidad = count($res);
+			
+			if($cantidad == 0){
+				$this->redraw();
+				$this->alert('La deuda Seleccionada no tiene emisión en el año.');
+			}else{
+				$nom_tipo_deuda = $cod_tipo_deuda;
+				//NOMBRE DE ARCHIVO CARTA COBRANZA
+				$name_archivo = $tipo_medio.'_'.$nom_tipo_deuda.".txt";
+				$fname = tempnam("/tmp", $name_archivo);   
+				$handle = fopen($fname,"w");
+
+				if($tipo_medio == 'carta'){
+					$ENCABEZADO   = "APELLIDO_PATERNO"."\t";
+					$ENCABEZADO  .= "APELLIDO_MATERNO"."\t";
+					$ENCABEZADO  .= "NOMBRE"."\t";
+					$ENCABEZADO  .= "RUT"."\t";
+					$ENCABEZADO  .= "DIRECCION"."\t";
+					$ENCABEZADO  .= "NOM_COMUNA"."\t";
+					$ENCABEZADO  .= "NOM_CIUDAD";
+					$linea = '';
+				}else if($tipo_medio == 'mail'){
+					$ENCABEZADO   = "APELLIDO_PATERNO"."\t";
+					$ENCABEZADO  .= "APELLIDO_MATERNO"."\t";
+					$ENCABEZADO  .= "NOMBRE"."\t";
+					$ENCABEZADO  .= "RUT"."\t";
+					$ENCABEZADO  .= "MAIL"."\t";
+					$linea = '';
+				}
+
+				fwrite($handle, $ENCABEZADO."\r\n");
+				$y = 0;
+				$db_carta = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+				while($y < $cantidad){
+					$cod_boleta = $res[$y]['COD_BOLETA'];
+					//////////////// CLASS_SQL = SELECT_CARTAS ///////////////
+					
+					if ($tipo_medio == 'carta')
+					    $sql_txt= sql_cuponera::get_sql('SELECT_CARTAS', $cod_boleta, $cod_ejecucion_proceso, $cod_tipo_deuda);
+					else if ($tipo_medio == 'mail')
+					    $sql_txt= sql_cuponera::get_sql('SELECT_MAIL', $cod_boleta, $cod_ejecucion_proceso, $cod_tipo_deuda);
+
+						$result_carta = $db_carta->build_results($sql_txt);
+						$count = count($result_carta);
+						for($i=0; $i<$count; $i++){
+							if($tipo_medio == 'carta'){
+								$linea	 = $result_carta[$i]['APELLIDO_PATERNO']."\t";
+								$linea	.= $result_carta[$i]['APELLIDO_MATERNO']."\t";
+								$linea	.= $result_carta[$i]['NOMBRE']."\t";
+								$linea	.= $result_carta[$i]['DIRECCION']."\t";
+								$linea	.= $result_carta[$i]['NOM_COMUNA']."\t";
+								$linea	.= $result_carta[$i]['NOM_CIUDAD']."\t";
+							}else if($tipo_medio == 'mail'){
+								$linea	 = $result_carta[$i]['APELLIDO_PATERNO']."\t";
+								$linea	.= $result_carta[$i]['APELLIDO_MATERNO']."\t";
+								$linea	.= $result_carta[$i]['NOMBRE']."\t";
+								$linea	.= $result_carta[$i]['RUT']."\t";
+								$linea	.= $result_carta[$i]['EMAIL']."\t";
+							}
+						}
+						
+						$y++;
+						fwrite($handle, $linea."\r\n");
+					}
+
+					fclose($handle);
+
+					header("Content-type: application/force-download; name=\"$name_archivo\"");
+					header("Content-Disposition: inline; filename=\"$name_archivo\"");
+					$fh=fopen($fname, "rb");
+					$fh=fopen($fname, "rb");
+					fpassthru($fh);
+				}
+			}
+		}
+	
+		
+	function procesa_event(){
+		if(isset($_POST['b_pdf']))
+			$this->pdf();
+		else if(isset($_POST['b_mail']))
+			$this->genera_txt('mail');
+		else if(isset($_POST['b_carta']))
+			$this->genera_txt('carta');else
+			parent::procesa_event();
+      }
+}
+?>

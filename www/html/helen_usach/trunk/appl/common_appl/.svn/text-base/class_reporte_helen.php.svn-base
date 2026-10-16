@@ -1,0 +1,77 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/class_MySQLRD_helen.php");
+
+class reporte_helen extends reporte {	
+	var $sp = '';
+	var $param;
+	
+	const K_PARAM_NOM_UNIVERSIDAD	= 5;
+	const K_PARAM_DIRECCCION 		= 9;
+	const K_PARAM_COMUNA 			= 11;
+	const K_PARAM_CIUDAD 			= 12;
+	const K_PARAM_PAIS 				= 16;
+	const K_PARAM_TELEFONO			= 10;
+	const K_PARAM_FAX 				= 15;
+	const K_PARAM_E_MAIL 			= 13;
+	const K_PARAM_SITIO_WEB 		= 14;
+	
+	function __construct($sql, $xml, $labels=array(), $titulo, $con_logo, $vuelve_a_presentacion=false, $sp='', $param='',$orientation='P',$unit='pt',$format='letter') {
+		$this->sp = $sp;
+		$this->param = $param;
+		
+		if(K_TIPO_BD == "oci"){
+			$sql_param = "select to_char(sysdate, 'dd/mm/yyyy hh24:mm') FECHA_HORA
+							,f_get_parametro(".self::K_PARAM_NOM_UNIVERSIDAD.")NOM_UNIVERSIDAD
+							,f_get_parametro(".self::K_PARAM_DIRECCCION.")DIRECCION
+							,f_get_parametro(".self::K_PARAM_COMUNA.")COMUNA
+	                        ,f_get_parametro(".self::K_PARAM_CIUDAD.")CIUDAD
+	                        ,f_get_parametro(".self::K_PARAM_PAIS.")PAIS
+	                        ,f_get_parametro(".self::K_PARAM_TELEFONO.")TELEFONO
+	                        ,f_get_parametro(".self::K_PARAM_FAX.")FAX
+	                        ,f_get_parametro(".self::K_PARAM_E_MAIL.")EMAIL
+	                        ,f_get_parametro(".self::K_PARAM_SITIO_WEB.")SITIO_WEB
+	                 from DUAL";
+		}
+		else if(K_TIPO_BD == "mssql"){
+			$sql_param = "select convert(varchar(20),getdate(), 103) + ' ' + convert(varchar(20), datepart(hh,getdate()))+':'+ Convert(varchar(2), DatePart(mi, GetDate())) FECHA_HORA
+							,dbo.f_get_parametro(".self::K_PARAM_NOM_UNIVERSIDAD.")NOM_UNIVERSIDAD
+							,dbo.f_get_parametro(".self::K_PARAM_DIRECCCION.")DIRECCION
+							,dbo.f_get_parametro(".self::K_PARAM_COMUNA.")COMUNA
+	                        ,dbo.f_get_parametro(".self::K_PARAM_CIUDAD.")CIUDAD
+	                        ,dbo.f_get_parametro(".self::K_PARAM_PAIS.")PAIS
+	                        ,dbo.f_get_parametro(".self::K_PARAM_TELEFONO.")TELEFONO
+	                        ,dbo.f_get_parametro(".self::K_PARAM_FAX.")FAX
+	                        ,dbo.f_get_parametro(".self::K_PARAM_E_MAIL.")EMAIL
+	                        ,dbo.f_get_parametro(".self::K_PARAM_SITIO_WEB.")SITIO_WEB";
+		}
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$result = $db->build_results($sql_param);
+		
+		$labels['str_fecha_hora'] = $result[0]['FECHA_HORA'];
+		$labels['str_nom_universidad'] = $result[0]['NOM_UNIVERSIDAD'];
+		$labels['str_direccion'] = $result[0]['DIRECCION'];
+		$labels['str_comuna'] = $result[0]['COMUNA'];
+		$labels['str_ciudad'] = $result[0]['CIUDAD'];
+		$labels['str_pais'] = $result[0]['PAIS'];
+		$labels['str_telefono'] = $result[0]['TELEFONO'];
+		$labels['str_fax'] = $result[0]['FAX'];
+		$labels['str_email'] = $result[0]['EMAIL'];
+		$labels['str_sitio_web'] = $result[0]['SITIO_WEB'];
+		
+		
+		parent::__construct($sql, $xml, $labels, $titulo, $con_logo, $vuelve_a_presentacion,$orientation,$unit,$format);			
+	}
+	function make_reporte() {
+
+		$p = new ReportParser();
+		$p->parseRP($this->xml);
+		$rdata = new MySQLRD_helen($this->sql, $this->sp, $this->param);
+
+		$pdf = PDF::makePDF(array($p), array($this->labels), array($rdata), $this->con_logo,$this->orientation,$this->unit,$this->format);		
+		$pdf->SetTitle($this->titulo);
+		$this->modifica_pdf($pdf);
+		$pdf->Output($this->titulo, 'I');
+	}
+}
+?>

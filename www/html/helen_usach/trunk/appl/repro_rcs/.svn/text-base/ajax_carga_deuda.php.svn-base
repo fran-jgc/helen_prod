@@ -1,0 +1,56 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+$opcion 	= $_REQUEST['opcion'];
+$rut	 	= $_REQUEST['rut'];
+
+$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+	
+$sql_deudor = sql_repro_rcs::get_sql('AJAX_CARGA_DEUDOR',$rut);
+$result_deudor = $db->build_results($sql_deudor);
+
+if($opcion == 'deudas')
+{
+	if (K_TIPO_BD=="mssql")
+		$sql_deudas = sql_repro_rcs::get_sql('AJAX_CARGA_DEUDA',$result_deudor[0]['COD_DEUDOR']);
+	else if(K_TIPO_BD=="oci")
+		$sql_deudas = sql_repro_rcs::select_deuda($result_deudor[0]['COD_DEUDOR']);
+	$result = $db->build_results($sql_deudas);
+}
+else if($opcion == 'deudor')
+{
+	$result = $db->build_results($sql_deudor);
+	for($i=0; $i<count($result);$i++)
+		$result[$i]['NOMBRE'] = urlencode($result[$i]['NOMBRE']);
+	
+}
+else if (($opcion == 'es_candidato'))
+{
+	$resultado = $db->build_results($sql_deudor);
+	$cod_deudor = $resultado[0]['COD_DEUDOR'];
+	
+	if($cod_deudor != null)
+	{
+		$sql_existe = sql_repro_rcs::get_sql('AJAX_EXISTE_CANDIDATO',$cod_deudor);
+		$existe 	= $db->build_results($sql_existe);
+
+		if($existe[0]['CANTIDAD'] > 0)
+		{
+			$result = "El deudor ya tiene reprogramacion";
+		}
+		else
+		{
+			$candidato = sql_repro_rcs::get_sql('AJAX_CANDIDATO_A_REPRO_RCS',$cod_deudor);
+			$es_candidato = $db->build_results($candidato);
+			$result = $es_candidato[0][0];
+		}
+	}
+	else
+	{
+		$result = 'El deudor no existe';
+	}
+	
+}
+
+print urlencode(json_encode($result));
+?>

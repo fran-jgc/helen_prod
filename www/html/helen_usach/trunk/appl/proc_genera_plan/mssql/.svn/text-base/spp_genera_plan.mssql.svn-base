@@ -1,0 +1,233 @@
+alter PROCEDURE spp_genera_plan(@ve_cod_ejecucion_proceso numeric, @ve_fecha_inicio_cobro datetime)
+AS
+/******************************************************************************
+   NAME:       spp_genera_plan
+   Pasa una deuda de no exigible a exigible.
+   Las deudas procesadas son las no exigibles que inician cobranza este año (o en fechas anteriores)
+   cuya cartera sea la universad por defecto.
+   En la deuda se actualiza el estado deuda, y se deja la fecha_inicio_cobro en 01/01/año_actual
+   El capital SVP es el saldo al 31/12/año_anterior
+   para las deudas CS solo se crea la cuota 9999 con K igual a saldo_svp y el interes del año completo
+   las otras deudas se crea todas las cuotas de acuerdo a la regla de interes compuesto (equivalente a funcion PAGO excel)
+
+   En el comprobante solo se contabliza el traspaso de K desde SVP a CP y LP
+   El interes normal NO se contabiliza, este debe contabilizarse en el proceso de CAPITALIZACION
+******************************************************************************/
+BEGIN
+	DECLARE @K_DEUDA_NO_EXIGIBLE		numeric,
+			@K_PARAM_CARTERA_DEFECTO    numeric,
+			@K_COMP_PENDIENTE           numeric,
+			@K_COMP_TRASPASO            numeric,
+			@K_COMP_GENERA_PLAN         numeric,
+
+			@K_CTA_SVP                  numeric,
+			@K_CTA_CP                   numeric,
+			@K_CTA_LP                   numeric,
+			
+			@vl_cod_cuenta_svp          numeric,
+			@vl_cod_cuenta_cp           numeric,
+			@vl_cod_cuenta_lp           numeric,
+
+			@vl_cod_usuario             numeric,
+			@vl_cod_tipo_deuda          varchar(10),
+			@vl_fecha_31_12_ant         datetime,
+			@vl_valor_moneda_31_12_ant  T_MONTO_MONEDA,
+			@vl_cod_comprobante         numeric,
+			@vl_monto_svp               T_MONTO_PESOS,
+			@vl_monto_cp                T_MONTO_MONEDA,
+			@vl_monto_lp                T_MONTO_MONEDA,
+			@vl_cuota_vigente           numeric,
+			@vl_nro_cuota_vigente       numeric,
+			@vl_count                   numeric,
+			@i                          numeric,
+			@vl_nom_comprobante         varchar(100),
+			@vl_cod_deuda_err           numeric,
+			@glosa_error				varchar(100),
+			@vl_catigo_fecha_moneda		VARCHAR(100),
+			@vl_count_cant_cuota_pp		numeric,
+
+			-- declara variables del cursor
+			@vc_cod_deuda				numeric, 
+			@vc_cant_cuota				numeric, 
+			@vc_saldo_deuda				T_MONTO_MONEDA, 
+			@vc_cod_tipo_deuda			varchar(10), 
+			@vc_cod_familia_deuda		numeric, 
+			@vc_cod_moneda				numeric
+			
+	BEGIN TRY
+
+	set @K_DEUDA_NO_EXIGIBLE		= 1
+	set @K_PARAM_CARTERA_DEFECTO    = 2
+	set @K_COMP_PENDIENTE           = 1
+	set @K_COMP_TRASPASO            = 3
+	set @K_COMP_GENERA_PLAN         = 14
+
+	set @K_CTA_SVP                  = 1
+	set @K_CTA_CP                   = 2
+	set @K_CTA_LP                   = 3
+	set @vl_cod_deuda_err			= 0
+
+	
+	set @vl_fecha_31_12_ant = dateadd(s, 59, dateadd(mi, 59, dateadd(hh, 23, dbo.f_makedate(31, 12, year(@ve_fecha_inicio_cobro) - 1))))
+	
+	-- usuario que ejecuta el proceso
+    SELECT	@vl_cod_usuario = cod_usuario
+    FROM	ejecucion_proceso
+    WHERE	cod_ejecucion_proceso = @ve_cod_ejecucion_proceso
+
+    -- IMPORTANTE: El where de este select debe ser igual al del cursor !!
+    -- calcula el total de registros
+    SELECT	@vl_count = Count(*)
+    FROM	deuda d, tipo_deuda t
+    WHERE	d.cod_estado_deuda = @K_DEUDA_NO_EXIGIBLE
+    AND		d.fecha_inicio_cobro <= @ve_fecha_inicio_cobro
+    AND		d.cod_cartera = dbo.f_get_parametro (@K_PARAM_CARTERA_DEFECTO)
+    AND		t.cod_tipo_deuda = d.cod_tipo_deuda 
+
+    exec spu_ejecucion_proceso 'SET_TOTAL', @ve_cod_ejecucion_proceso, @vl_count
+
+    set @i = 1
+    set @vl_cod_tipo_deuda = '__NO_EXISTE__'
+
+	DECLARE c_deuda CURSOR FOR  
+    SELECT	d.cod_deuda
+			,d.cant_cuota
+			,dbo.f_deuda_saldo_total(d.cod_deuda, @vl_fecha_31_12_ant) AS saldo_deuda
+			,d.cod_tipo_deuda
+			,t.cod_familia_deuda
+			,t.cod_moneda
+    FROM	deuda d, tipo_deuda t
+    WHERE	d.cod_estado_deuda = @K_DEUDA_NO_EXIGIBLE
+    AND		d.fecha_inicio_cobro <= @ve_fecha_inicio_cobro
+    AND		d.cod_cartera = dbo.f_get_parametro (@K_PARAM_CARTERA_DEFECTO)
+    AND		t.cod_tipo_deuda = d.cod_tipo_deuda 
+    ORDER BY d.cod_tipo_deuda ASC
+
+	OPEN c_deuda
+	FETCH c_deuda INTO @vc_cod_deuda, @vc_cant_cuota, @vc_saldo_deuda, @vc_cod_tipo_deuda, @vc_cod_familia_deuda, @vc_cod_moneda
+	WHILE @@FETCH_STATUS = 0 BEGIN
+		set @vl_cod_deuda_err = @vc_cod_deuda
+
+		-- verifica si el proceso ha sido cancelado
+		IF (dbo.f_ep_cancela_proceso(@ve_cod_ejecucion_proceso) = 'S') BEGIN
+			exec sp_comp_simplifica @vl_cod_comprobante
+			RETURN
+		END 
+
+		------------------------------------------------------------------------------------------
+		-- MAIN
+		------------------------------------------------------------------------------------------
+		-- crea un nuevo comprobante si corresponde
+		IF (@vl_cod_tipo_deuda <> @vc_cod_tipo_deuda) BEGIN
+			exec sp_comp_simplifica @vl_cod_comprobante   -- Borra cuentas duplicadas en comprobante anterior
+
+			set @vl_nom_comprobante = 'Genera Plan Pago: ' + @vc_cod_tipo_deuda
+			exec spu_comprobante 'INSERT', NULL, @vl_fecha_31_12_ant, @vl_cod_usuario, @vl_nom_comprobante, @vc_cod_familia_deuda, @K_COMP_PENDIENTE, @K_COMP_TRASPASO, @K_COMP_GENERA_PLAN, @vl_cod_usuario, @ve_fecha_inicio_cobro
+			set @vl_cod_comprobante = @@identity
+			set @vl_cod_tipo_deuda	= @vc_cod_tipo_deuda
+
+			set @vl_valor_moneda_31_12_ant = dbo.f_mon_get_valor_moneda(@vc_cod_moneda, @vl_fecha_31_12_ant)
+			set @vl_cod_cuenta_svp			= dbo.f_comp_get_cuenta_tipo_deuda (@vc_cod_tipo_deuda, @K_CTA_SVP)
+			set @vl_cod_cuenta_cp			= dbo.f_comp_get_cuenta_tipo_deuda (@vc_cod_tipo_deuda, @K_CTA_CP)
+			set @vl_cod_cuenta_lp			= dbo.f_comp_get_cuenta_tipo_deuda (@vc_cod_tipo_deuda, @K_CTA_LP)
+		END
+
+		IF (@vc_saldo_deuda <= 0) BEGIN
+			set @glosa_error = 'Deuda: ' + convert(varchar(10), @vc_cod_deuda) + ' tiene saldo menor o igual a cero.'
+			exec spu_error_proceso 'INSERT', NULL, @ve_cod_ejecucion_proceso, 'E', NULL, NULL, @glosa_error
+       		GOTO end_loop
+		END  
+		
+		SELECT  @vl_count_cant_cuota_pp = Count(*)
+		FROM    plan_pago
+		WHERE   cod_deuda = @vc_cod_deuda
+
+		IF (@vl_count_cant_cuota_pp > 0) BEGIN
+			set @glosa_error = 'Deuda: ' + convert(varchar(10), @vc_cod_deuda) + ' posee estado No Exigible, no debe tener cuotas'
+			exec spu_error_proceso 'INSERT', NULL, @ve_cod_ejecucion_proceso, 'E', NULL, NULL, @glosa_error;
+			GOTO end_loop;
+		END
+		
+		set @vl_monto_svp = Round(@vc_saldo_deuda * @vl_valor_moneda_31_12_ant, 0)
+		exec spu_item_comprobante 'INSERT', NULL, @vl_cod_comprobante, @vl_cod_cuenta_svp, 0, @vl_monto_svp
+		exec spu_analitico 'INSERT', NULL, @vl_cod_comprobante, @vc_cod_deuda, @vl_cod_cuenta_svp, 0, @vl_monto_svp
+
+		-- Actualiza la fecha inicio cobro al inicio del año sysadte
+		UPDATE	deuda
+		SET		fecha_inicio_cobro = dbo.f_makedate(1, 1, year(@ve_fecha_inicio_cobro))
+		WHERE	cod_deuda = @vc_cod_deuda;
+
+		exec sp_deuda_genera_plan @vc_cod_deuda, @vl_cod_usuario
+
+		-- obtiene saldo CP y LP
+		set @vl_monto_cp = 0
+		set @vl_monto_lp = 0
+		set @vl_cuota_vigente = dbo.f_deuda_cuota_vigente(@vc_cod_deuda, getdate())
+		IF (@vl_cuota_vigente IS NULL) BEGIN
+			SELECT	@vl_monto_lp = Sum(monto_capital)
+			FROM	plan_pago
+			WHERE	cod_deuda = @vc_cod_deuda
+		END
+		ELSE BEGIN
+			SELECT	@vl_nro_cuota_vigente = nro_cuota
+					,@vl_monto_cp = monto_capital
+			FROM	plan_pago
+			WHERE	cod_plan_pago = @vl_cuota_vigente;
+
+			SELECT	@vl_monto_lp = isnull(Sum(monto_capital), 0)
+			FROM	plan_pago
+			WHERE	cod_deuda = @vc_cod_deuda
+			AND		nro_cuota > @vl_nro_cuota_vigente
+		END 
+
+		-- lleva los montos a $
+		set @vl_monto_cp = Round(@vl_monto_cp * @vl_valor_moneda_31_12_ant, 0)
+		set @vl_monto_lp = Round(@vl_monto_lp * @vl_valor_moneda_31_12_ant, 0)
+
+		if (@vl_monto_cp is null)
+			set @vl_monto_cp = 0
+		if (@vl_monto_lp is null)
+			set @vl_monto_lp = 0
+
+		-- Por los redondeos puede quedar descuadrado el comprobante
+		IF (@vl_monto_svp <> @vl_monto_cp + @vl_monto_lp) BEGIN
+			IF (@vl_monto_cp <> 0) 
+				set @vl_monto_cp = @vl_monto_cp + (@vl_monto_svp - (@vl_monto_cp + @vl_monto_lp))
+			ELSE
+				set @vl_monto_lp = @vl_monto_lp + (@vl_monto_svp - (@vl_monto_cp + @vl_monto_lp))
+		END 
+								
+		exec spu_item_comprobante 'INSERT', NULL, @vl_cod_comprobante, @vl_cod_cuenta_cp, @vl_monto_cp, 0
+		exec spu_analitico 'INSERT', NULL, @vl_cod_comprobante, @vc_cod_deuda, @vl_cod_cuenta_cp, @vl_monto_cp, 0
+
+		exec spu_item_comprobante 'INSERT', NULL, @vl_cod_comprobante, @vl_cod_cuenta_lp, @vl_monto_lp, 0
+		exec spu_analitico 'INSERT', NULL, @vl_cod_comprobante, @vc_cod_deuda, @vl_cod_cuenta_lp, @vl_monto_lp, 0
+      
+		end_loop: -- 7not allowed unless an executable statement follows
+		-- actualiza avance
+		exec spu_ejecucion_proceso 'SET_ACTUAL', @ve_cod_ejecucion_proceso, @i
+		set @i = @i + 1
+      -- end MAIN
+      ------------------------------------------------------------------------------------------
+		FETCH c_deuda INTO @vc_cod_deuda, @vc_cant_cuota, @vc_saldo_deuda, @vc_cod_tipo_deuda, @vc_cod_familia_deuda, @vc_cod_moneda
+	END
+	CLOSE c_deuda
+	DEALLOCATE c_deuda
+
+    exec sp_comp_simplifica @vl_cod_comprobante
+	set @i = @i - 1
+  	exec spu_ejecucion_proceso 'END', @ve_cod_ejecucion_proceso, @i
+
+	END TRY
+	BEGIN CATCH
+		declare @vl_glosa_error varchar(100)
+				,@vl_error_number	numeric
+				,@vl_error_message	varchar(100)
+		-- Si ocurre un error de la BD al grabar un registro lo registra en el LOG. del sistema
+		set @vl_glosa_error = 'Deuda : ' + convert(varchar(15), @vl_cod_deuda_err)
+		set @vl_error_number = ERROR_NUMBER()
+		set @vl_error_message = ERROR_MESSAGE()
+		EXEC spu_error_proceso 'INSERT', NULL, @ve_cod_ejecucion_proceso, 'E', @vl_error_number, @vl_error_message, @vl_glosa_error
+		EXEC spu_ejecucion_proceso 'END', @ve_cod_ejecucion_proceso, @i
+	END CATCH
+END 

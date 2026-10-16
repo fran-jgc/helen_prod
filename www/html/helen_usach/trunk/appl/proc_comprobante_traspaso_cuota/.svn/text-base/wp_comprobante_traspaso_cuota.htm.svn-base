@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title></title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="utf-8" src="../proc_common/barra_avance.js" type="text/javascript"></script>
+<script type="text/javascript">
+function proceso_ejecutado() {
+	var ajax = nuevoAjax();
+	ajax.open("GET", "ajax_proceso_ejecutado.php", false);
+	ajax.send(null);
+	var resp = URLDecode(ajax.responseText);
+	var lista = resp.split('|');
+	if (lista[0] != 0){
+		var fecha_proceso = lista[1];
+		alert('Ya se ha generado el Proceso. Fecha: ' + fecha_proceso);
+		return false ;
+	}else{
+		return true ;
+	}
+}
+</script>
+</head>
+<body><!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js" type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+
+<form action="" method="post" name="input" id="input">
+<input name="wi_hidden" id="wi_hidden" type="hidden" value="">
+<table width="1050" border="0" align="center">
+	<tr bgcolor="#FFFFFF">
+	<!-- menu superior-->
+		<td width="1000"  height="51" align="center" id="awmAnchor-menu" style="width:100px; height:50px;"></td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+			<table width="1000" border="0">
+				<tr>
+					<td>
+						<table width="520" border="0">
+							<tr>
+								<td height="100%"><div class="titulo_central_parametro">{WP_RUTA_MENU}</div></td>
+							</tr>
+							<tr>
+								<td height="0%"><div class="tit_superior"><font color="#999999">{WP_FECHA_ACTUAL}</font></div></td>
+							</tr>
+							<tr>
+								<td height="0%"><div class="tit_superior"><font color="#999999">{WP_NOM_USUARIO}</font></div></td>
+							</tr>
+						</table>
+					</td> 
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+	  	<td>
+			<table width="1000" border="0" align="center">
+				<tr>
+					<td height="95" valign="top">
+						<table width="1015" border="0" align="center" >
+							<tr valign="top">
+								<td>						
+									<div style="height:526px;" class="claro">																					
+										<table width="1000" rules="none" border="0" align="center" class="claro">							
+												<tr class="titulo_tabla">				
+													<td colspan="6" >COMPROBANTE TRASPASO A CUOTA VIGENTE</td>
+												</tr>
+										</table>
+										<table width="1000" rules="none" border="1" style="padding-top:5px;"align="center" class="claro">										
+											<tr class="titulo_tabla">				
+												<td colspan="6" ></td>
+											</tr>
+											<tr class="encabezado_right">
+												<td width="200"><div class="encabezado_right">Descripci&oacute;n del Proceso</div></td>
+												<td width="800" class="claro" align="left">
+												<div style="overflow-x:hidden; overflow-y:auto; height:100; widht:100%;">
+													<table width="100%" border="0"align="left" rules="none" class="claro" style="padding-top:5px;">
+														<tr>
+															<td>Comprobante traspaso a cuota vigente para todos los tipos de deuda.<br><br>- Las deudas distintas a CS traspasa la cuota del largo al corto plazo.<br>- Las deudas CS traspasa el CAT del largo al corto plazo. 
+															</td>																													
+														</tr>
+													</table>
+												</div>
+												</td>														
+											</tr>
+										</table>	
+										<br><br><br>										
+										<table width="1000" rules="none" border="1" align="center" class="claro" style="display:{LAST_DISPLAY_EJECUCION}">							
+												<tr class="titulo_tabla">				
+													<td colspan="6" >ULTIMA EJECUCION</td>
+												</tr>
+												<tr class="encabezado_right">
+													<td width="200">Fecha:</td>
+													<td width="300" class="claro" align="left">{LAST_FECHA_EJECUCION_PROCESO}</td>	
+													<td width="150">Duración:</td>
+													<td width="350" class="claro" align="left">{LAST_DURACION}<label style="color:#FF0000">{LAST_NOM_USUARIO_CANCELA}</label></td>	
+												</tr>
+												<tr class="encabezado_right">
+													<td>Usuario:</td>
+													<td class="oscuro" align="left" colspan="3">{LAST_NOM_USUARIO}</td>
+												</tr>
+												<tr class="encabezado_right">
+													<td>Registros procesados:</td>
+													<td class="claro" align="left">{LAST_ACTUAL_REGISTRO}</td>
+													<td>Errores:</td>
+													<td class="claro" align="left">{LAST_CANT_ERROR} errores, {LAST_CANT_WARNING} alertas</td>
+												</tr>
+										</table>
+										<br><br><br>
+										<table width="1000" rules="none" border="1" align="center" class="claro">							
+												<tr class="titulo_tabla">				
+													<td colspan="6" >EJECUTAR PROCESO</td>
+												</tr>
+												<tr class="encabezado_right">
+													<td width="180" class="claro" align="center"><input type="submit" name="b_procesar" id="b_procesar" value="Iniciar" class="boton"></td>
+													<td align="left" style="background-color:white;height:50;" width="280">
+														<div id="img_loader" style="display:none;" align="center">
+																<img src="../../images_appl/ajax-loader.gif" width="40" height="40"><br>
+																<span style="color:black">Procesando...</span>
+														</div>
+													</td>
+													<td width="450" class="claro" align="left" style="color:red;font-weight:bold;"><div id="fin_proceso" style="display:none;">Proceso Finalizado</div></td>
+												</tr>
+												<tr class="encabezado_right">
+													<td width="200">Iniciado:</td>
+													<td width="300" class="claro" align="left">{ACTUAL_FECHA_EJECUCION_PROCESO}</td>	
+													<td width="150">Tiempo transcurrido:</td>
+													<td width="350" class="claro" align="left">{ACTUAL_DURACION}</td>	
+												</tr>
+												<tr class="encabezado_right">
+													<td>Usuario:</td>
+													<td class="oscuro" align="left" colspan="3">{ACTUAL_NOM_USUARIO}</td>
+												</tr>
+												<tr class="encabezado_right">
+													<td>Registros procesados:</td>
+													<td class="claro" align="left">{ACTUAL_ACTUAL_REGISTRO}</td>
+													<td>Errores:</td>
+													<td class="claro" align="left">{ACTUAL_CANT_ERROR} errores, {ACTUAL_CANT_WARNING} alertas</td>
+												</tr>
+										</table>
+									</div>	
+								</td>
+							</tr>
+						</table>
+						<table width="1000" border="0" align="center">
+				<tr valign="middle">
+					  <td>{WP_BACK}</td>
+				</tr>
+			</table> 		
+					</td>	
+				</tr>  
+			</table>
+		</td>
+	</tr>
+</table>		
+</form>
+</body>
+</html>

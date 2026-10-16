@@ -1,0 +1,38 @@
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link href="css/body-gradient.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<ul type=disk>
+			<li>CARGA CUPONES DE BANCOS
+			<ul>						
+				<b>
+					<u>
+						<li><a href="descripcion.htm"> 	DESCRIPCIÓN</a>												
+						<li><a href="ultima_ejecucion.htm">		ULTIMA EJECUCIÓN</a>							
+						<li><a href="ejecutar_el_proceso.htm"> PASOS PARA “EJECUTAR PROCESO”</a>				
+					</u>
+				</b>
+			</ul>
+		</ul>	
+		<ul type=disk>
+			<li>2	FORMATO CUPÓN ENTIDADES FINANCIERAS			
+			<ul>
+				<b>
+					<u>
+						<li><a href="banco_santander.htm">		BANCO SANTANDER</a>								
+						<li><a href="otras_universidades.htm">	OTRAS UNIVERSIDADES</a>						
+						<li><a href="banco_desarrollo.htm">	BANCO DESARROLLO</a>							
+						<li><a href="tesoreria.htm">			TESORERÍA</a>									
+						<li><a href="funcionarios.htm">		FUNCIONARIOS</a>								
+						<li><a href="transbank.htm">		TRANSBANK</a>									
+						<li><a href="orsan.htm">		ORSAN</a>										
+						<li><a href="servipag.htm">		SERVIPAG</a>									
+						<li><a href="mineduc.htm">		MINEDUC</a>
+					</u>
+				</b>
+			</ul>
+		</ul>
+	<body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>HELEN</title>
+<script charset="iso-8859-1" src="{K_ROOT_URL}../../commonlib/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="iso-8859-1" src="{K_ROOT_URL}../../commonlib/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="iso-8859-1" src="actualiza_direccion.js" type="text/javascript"></script>
+<link href="style_web_pay_usach.css" rel="stylesheet" type="text/css" />
+{WI_JAVA_SCRIPT}
+</head>
+<body{WI_ONLOAD}>
+<!--DIV CONTENIDOS-->
+
+
+<div id="contenidos">
+<br>
+<div class="tit_superior">ACTUALICE SU DIRECCI&Oacute;N</div>
+<div align="right">
+<div class="sesion">
+	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+		<tr>
+			<td height="20" valign="top">
+				<br>
+				<div align="right">
+					<a href="cambio_clave.php">Cambio de clave</a>&nbsp;&nbsp;&nbsp;					
+					<a href="cerrar_sesion.php">Cerrar sesión</a>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<div class="TabbedPanelsContent" style="height: 460px;">
+<form action="" method="post" name="input" id="input" enctype="multipart/form-data">
+<div align="left">
+	<table width="800" border="0">
+		<tr>
+			<td  class="sub_tit_superior"width="50%" align="left">Direcci&oacute;n Particular</td>
+			<td  class="glosa_campos_obli" width="50%" align="right">(*) Campos Obligatorios</td>		
+		</tr>
+	</table>
+</div>
+
+<!--  <div class="sub_tit_superior" align="left">Direcci&oacute;n Particular &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*) Campos Obligatorios</div>-->
+<table width="800" border="0" align="left" cellpadding="3" cellspacing="1" class="tabla_deuda">
+	<tr valign="middle" align="left">
+		<td width="35%" bgcolor="#F3F3F3" >
+			<div>Direcci&oacute;n: (*)</div>
+		</td>
+		<td width="65%" bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{COD_DIRECCION_PARTICULAR}{DIRECCION_PARTICULAR}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Fecha Ingreso:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{FECHA_DIRECCION_PARTICULAR}</div>
+			<div class="deuda_resultado" style="display:none">{ES_VALIDA_PARTICULAR}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Pais: (*)</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{COD_PAIS_PARTICULAR}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Región: (*)</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{COD_REGION_PARTICULAR}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Ciudad: (*)</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{COD_CIUDAD_PARTICULAR}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Comuna:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{COD_COMUNA_PARTICULAR}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>e-mail:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{EMAIL_PARTICULAR}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Teléfono:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{TELEFONO_PARTICULAR}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Celular:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{CELULAR_PARTICULAR}</div>
+		</td>
+	</tr>
+</table>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<div class="sub_tit_superior" align="left">Direcci&oacute;n Comercial</div>
+
+<table width="800" border="0" align="left" cellpadding="4" cellspacing="1" class="tabla_deuda">
+
+	<tr valign="middle" align="left">
+		<td width="35%" bgcolor="#F3F3F3" >
+			<div>Direcci&oacute;n:</div>
+		</td>
+		<td width="65%" bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{COD_DIRECCION_COMERCIAL}{DIRECCION_COMERCIAL}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Fecha Ingreso:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{FECHA_DIRECCION_COMERCIAL}</div>
+			<div class="deuda_resultado" style="display:none">{ES_VALIDA_COMERCIAL}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Pais:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{COD_PAIS_COMERCIAL}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Región:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{COD_REGION_COMERCIAL}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Ciudad:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{COD_CIUDAD_COMERCIAL}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Comuna:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{COD_COMUNA_COMERCIAL}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>e-mail:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{EMAIL_COMERCIAL}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Teléfono:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{TELEFONO_COMERCIAL}</div>
+		</td>
+	</tr>
+	<tr valign="middle">
+		<td bgcolor="#F3F3F3" >
+			<div>Celular:</div>
+		</td>
+		<td bgcolor="#FFFFFF">
+			<div class="deuda_resultado">{CELULAR_COMERCIAL}</div>
+		</td>
+	</tr>
+</table>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<table width="600" border="0" align="left" cellpadding="4" cellspacing="1" class="tabla_deuda">
+	<tr>
+		<td colspan="8" align="left" valign="center"> 
+    		<div align="center"> 
+        		<label>
+            		<input type="submit" name="b_enviar" id="b_enviar" value="Enviar" class="button" onClick="if(!(validate())) return false; else returnValue=validate();"/>
+        		</label>
+        	</div>
+		</td>
+	</tr>
+</table>
+</form>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="DEUDORES SUSPENDIDOS" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{COD_SUSPENSION}" width="9%" align="C" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{FECHA_SUSPENSION}" width="9%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{RUT}" width="10%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{NOMBRE}" width="13%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{APELLIDO_PATERNO}" width="13%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{APELLIDO_MATERNO}" width="13%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_TIPO_SUSPENSION}" width="8%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{COD_DEUDA}" width="9%" align="C" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{COD_TIPO_DEUDA}" width="7%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{ANO_SUSPENSION}" width="9%" align="C" border="LRTB" font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="cant_reg" function="COUNT"  value="COD_SUSPENSION"/>
+		<GroupHeader>
+			<Cell text="Cantidad de Registros: " width="17%" align="L"  font="ArialBold"/>
+			<Cell text="{cant_reg}" width="10%" align="L" font="ArialBold" newline="1"/>
+			
+			<Cell text="Nº Suspensión" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Fecha Suspensión" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Rut" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Nombre" width="13%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Paterno" width="13%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Materno" width="13%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Tipo Suspensión" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Nº Deuda" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Tipo Deuda" width="7%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Año Suspención" width="9%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+		</GroupHeader>
+	</Group>
+</Report>
+

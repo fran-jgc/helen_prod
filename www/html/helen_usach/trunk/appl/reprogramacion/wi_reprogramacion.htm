@@ -1,0 +1,428 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Sistema Helen</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+<script src="../../../../commonlib_seven/trunk/script_js/SpryTabbedPanels.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="utf-8" src="deudor.js" type="text/javascript"></script>
+<link href="../../../../commonlib_seven/trunk/css/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+<script charset="utf-8" src="reprogramacion.js" type="text/javascript"></script>
+<style type="text/css">
+<!--
+.Estilo1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+.Estilo2 {
+	color: #993300;
+	font-weight: bold;
+	align: right;
+}
+.encabezado_left2{
+	background-color:#7896DC;
+	font-size: 11px;
+	font-weight:bold;	
+	color: #FFF;
+	text-align:left;
+}
+-->
+</style>
+{WI_JAVA_SCRIPT}
+</head>
+<body onload="change_recibido();">
+<!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js" type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+<form action="" method="post" name="input" id="input"
+	enctype="multipart/form-data"><input name="wi_hidden"
+	id="wi_hidden" type="hidden" value="">
+<table width="1050" border="0" align="center">
+	<tr bgcolor="#FFFFFF">
+	<!-- menu superior-->
+		<td width="1000"  height="51" align="center" id="awmAnchor-menu" style="width:100px; height:50px;"></td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+			<table width="1000" border="0">
+				<tr>
+					<td>
+						<table width="700" border="0">
+							<tr>
+								<td height="100%">
+									<div class="titulo_central">{WI_RUTA_MENU}</div>
+								</td>
+							</tr>
+							<tr>
+								<td height="0%">
+									<div class="tit_superior"><font color="#999999">{WI_FECHA_ACTUAL} </font></div>
+								</td>
+							</tr>
+							<tr>
+								<td height="0%">
+									<div class="tit_superior"><font color="#999999">{WI_FECHA_MODIF} </font></div>
+								</td>
+							</tr>
+						</table>
+					</td> 
+					<td width="68">{WI_PRINT}</td>
+					<td width="68">{WI_NO_SAVE}</td>
+					<td width="68">{WI_SAVE}</td>
+					<td width="68">{WI_MODIFY}</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+			<table width="1000" border="0" align="center">
+				<tr>
+					<td height="95">
+						<table width="1015" border="0" align="center" >
+							<tr valign="top">
+								<td height="530">						
+									<div id="TabbedPanels1" class="TabbedPanels">
+										<ul class="TabbedPanelsTabGroup">
+											<li class="TabbedPanelsTab" tabindex="0">Reprogramación</li>
+											<li class="TabbedPanelsTab" tabindex="1">Dirección del Deudor</li>
+											<li class="TabbedPanelsTab" tabindex="2">Pagares</li>
+										</ul>					   
+										<div class="TabbedPanelsContentGroup">
+											<!--INI PRORROGA-->
+											<div class="TabbedPanelsContent">																	
+												<table width="1000" border="1" rules="none" align="center" >
+													<tr class="titulo_tabla">
+														<td colspan="7">REPROGRAMACIÓN</td>
+													</tr>								
+													<tr class="encabezado_right">
+														<td width="216">Codigo:</td>
+														<td width="166" class="claro" align="left">{COD_REPROGRAMACION}</td>
+														<td width="166">Fecha Registro:</td>
+														<td width="166" class="claro" align="left">{FECHA_REPROGRAMACION}</td>
+														<td width="150">Usuario:</td>
+														<td width="166"  colspan="2"class="claro" align="left">{NOM_USUARIO}</td>									
+													</tr>
+													<tr class="encabezado_right">
+														<td width="164">Rut:</td>
+														<td width="168" class="oscuro" align="left">{RUT_H}{RUT}-{DIG_VERIF}</td>
+														<td width="163">Nombre:</td>
+														<td width="163" colspan="2" class="oscuro" align="left">{NOMBRE}</td>	
+														<td width="163">Estado:</td>
+														<td width="167" class="oscuro" align="left">{COD_ESTADO_REPROGRAMACION}</td>									
+													</tr>
+												</table>
+												<table width="1000" border="1" rules="none" align="center" id="DEUDA_RP">
+													<tr class="encabezado_right">
+														<th width="14%"align="left" height="40">Universidad</th>
+														<th width="8%" align="center">Saldo Capital(UTM)</th>
+														<th width="8%" align="center">Interés Penal(UTM)</th>
+														<th width="8%" align="center">Total Deuda(UTM)</th>			
+														<th width="8%" align="center">Saldo Capital($)</th>
+														<th width="8%" align="center">Interes Penal($)</th>
+														<th width="8%" align="center">Total Deuda($)</th>
+														<th width="4%" align="center">%</th>
+													</tr>
+													<!-- startBlock(DEUDA_RP) -->
+													<tr class="encabezado_right">
+														<th width="12%"align="left" height="25">{NOM_UNIVERSIDAD}</th>
+														<td width="5%" align="center" class="claro">{SALDO_CAPITAL}</td>
+														<td width="5%" align="center" class="claro">{SALDO_INTERES_PENAL}</td>
+														<td width="5%" align="center" class="claro">{TOTAL_SALDO_MONEDA}</td>
+														<td width="5%" align="center" class="claro">{SALDO_CAPITAL_PESOS}</td>
+														<td width="5%" align="center" class="claro">{SALDO_INTERES_PENAL_PESOS}</td>
+														<td width="5%" align="center" class="claro">{TOTAL_SALDO_PESOS}</td>
+														<td width="5%" align="center" class="claro">{PORC}</td>
+													</tr>
+													<!-- endBlock(DEUDA_RP) -->
+													<tr class="encabezado_right">
+														<th width="12%"align="left" height="25">TOTALES</th>
+														<th width="8%" align="center">{SUM_SALDO_CAPITAL}</th>
+														<th width="10%" align="center">{SUM_SALDO_INTERES_PENAL}</th>
+														<th width="8%" align="center">{SUM_TOTAL_SALDO_MONEDA}</th>			
+														<th width="8%" align="center">{SUM_SALDO_CAPITAL_PESOS}</th>
+														<th width="8%" align="center">{SUM_SALDO_INTERES_PENAL_PESOS}</th>
+														<th width="8%" align="center">{SUM_TOTAL_SALDO_PESOS}</th>
+														<th width="8%" align="center"></th>
+													</tr>
+												</table>
+												<br>
+												<table width="650" rules="none" border="1" align="left" class="claro" id="ITEM_ORDEN_COMPRA">
+													<tr class="titulo_tabla">
+														<td colspan="6">PAGO INICIAL</td>
+													</tr>	
+													<tr class="encabezado_center" align="center">		
+														<td width="166"></td>
+														<td width="166" align="center">UTM</td>
+														<td width="160" align="center">Pesos</td>
+														<td width="160" align="center">%</td>
+													</tr>	
+													<tr class="encabezado_center">
+														<td width="230" class="encabezado_right">Pago Inicial</td>
+														<td width="160" class="claro" align="center">{MONTO_PAGO_INICIAL}</td>
+														<td width="160" class="claro" align="center">{MONTO_PAGO_INICIAL_PESOS}</td>
+														<td width="100" class="claro" align="center">{PORC_INICIAL}</td>
+													</tr>
+													<tr class="encabezado_center">
+														<td width="230" class="encabezado_right">Cantidad Cuotas {NRO_CUOTAS_PAGO_INICIAL}</td>
+														<td width="160" class="oscuro" align="center">{CUOTA_PAGO_INICIAL}</td>
+														<td width="160" class="oscuro" align="center">{CUOTA_PAGO_INICIAL_PESOS}</td>
+														<td width="100" class="oscuro" align="center"></td>
+													</tr>
+													<tr class="encabezado_center">
+														<td width="175" class="encabezado_right">Monto condonado interés penal</td>
+														<td width="166" class="claro" align="center">{MONTO_CONDONADO}</td>
+														<td width="160" class="claro" align="center">{MONTO_CONDONADO_PESOS}</td>
+														<td width="100" class="claro" align="center">{PORC_CONDONACION_INTERES_PENAL}</td>
+													</tr>
+													<tr class="encabezado_center">
+														<td width="175" class="encabezado_right">Saldo a reprogramar en</td>
+														<td width="166" class="oscuro" align="center">{MONTO_REPROGRAMADO}</td>
+														<td width="160" class="oscuro" align="center">{MONTO_REPROGRAMADO_PESOS}</td>
+														<td width="160" class="oscuro" align="center"></td>
+													</tr>	
+												</table>								
+													<br>
+											    <table width="1000" rules="none" border="0" align="center" class="claro" id="ITEM_ORDEN_COMPRA">
+											  		<tr>
+											  		</tr>		
+												</table>
+												<table width="1000" rules="none" border="1" align="left" id="PAGARE_REPRO">				
+													<tr class="titulo_tabla">
+															<td colspan="1">REPROGRAMAR</td> 
+															<td class="claro" align="center">Cantidad de Cuotas</td>
+															<td class="claro" colspan="3" align="left"> {NRO_CUOTAS_REPROGRAMADO_I} Años</td>
+													</tr>		
+													<tr class="encabezado_center" >
+														<td width="5%">Cuota</td>
+														<td width="15%" align="center">Saldo Capital al Reprogramar(UTM)</td>
+														<td width="15%" align="center">Intereses Penal al Reprogramar(UTM)</td>
+														<td width="15%" align="center">Intereses Normales 2% Anual(UTM)</td>
+														<td width="15%" align="center">Valor Cuota Sin Descuento por Pago Oportuno(UTM)</td>
+														<td width="15%" align="center">Descuento por Pago Oportuno(UTM)</td>
+														<td width="15%" align="center">Valor Cuota Con Descuento por Pago Oportuno(UTM)</td>
+														<td width="40%" align="center">Valor Cuota Anual Con Descuento por Pago Oportuno(Pesos)</td>
+													</tr>		
+													<!-- startBlock(PAGARE_REPRO) -->
+													<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+														<td width="10%" align="center">{NRO}</td>
+														<td width="15%" align="center">{CAPITAL}</td>
+														<td width="15%" align="center">{INTERES_PENAL}</td>
+														<td width="15%" align="center">{INTERESES_NORMAL}</td>
+														<td width="15%" align="center">{VALOR_CUOTA_CUPONERA}</td>
+														<td width="15%" align="center">{DESCUENTO_OPORTUNO}</td>
+														<td width="15%" align="center">{MONTO}</td>
+														<td width="15%" align="center">{MONTO_PESOS}</td>
+													</tr>
+													<!-- endBlock(PAGARE_REPRO) -->
+													<tr class="encabezado_center" >
+														<td >TOTAL</td>
+														<td align="center">{SUM_CAPITAL}</td>
+														<td align="center">{SUM_INTERES_PENAL}</td>
+														<td align="center">{SUM_INTERESES_NORMAL}</td>
+														<td align="center">{SUM_VALOR_CUOTA_CUPONERA}</td>
+														<td align="center">{SUM_DESCUENTO_OPORTUNO}</td>
+														<td align="center">{SUM_MONTO}</td>
+														<td align="center">{SUM_MONTO_PESOS}</td>
+												    </tr>
+												</table>
+												<br>
+												<table width="100%" border="0" rules="none" align="center">
+													<tr>
+														<td>
+												<table width="31%" border="1" rules="none" align="left">
+													<tr class="titulo_tabla">
+														<td colspan="6">DOCUMENTOS RECIBIDOS</td>
+													<tr class="claro" align="left">
+														<td colspan="2">{DOC_PAGO_INICIAL}</td>
+													</tr>
+													<tr class="oscuro" align="left">
+														<td colspan="2">{DOC_PAGARES}{DOC_PAGARES_H}</td>
+													</tr>
+													<tr class="claro" align="left">
+														<td>{DOC_MANIFIESTO}</td>
+														<td class="encabezado_left2" id="F_RECEP_TD" style="display:{DISPLAY_F_RECEP}" width="180">F. Recepción {FECHA_RECEP_MANIFIESTO}{FECHA_RECEP_MANIFIESTO_H}</td>
+													</tr>
+												</table>
+												<table width="300" rules="none" border="1" align="right" class="claro" id="ITEM_ORDEN_COMPRA">
+													<tr class="titulo_tabla">
+														<td colspan="6">NUMERO DEUDAS NUEVAS</td>
+													</tr>								
+														<tr class="encabezado_center">
+														<td width="175" class="encabezado_right">CRPI:</td>
+														<td width="160" class="claro" align="center" style="Width:400px">{COD_DEUDA_CRPI}</td>
+													</tr>
+														<tr class="encabezado_center">
+														<td width="175" class="encabezado_right">CR12:</td>
+														<td width="166" class="oscuro" align="center">{COD_DEUDA_CR12}</td>
+													</tr>
+												</table>
+														</td>
+													</tr>
+												</table>				
+											</div>
+											<div class="TabbedPanelsContent">
+												<table width="1000" border="1" rules="none" align="center" >
+													<tr class="titulo_tabla">
+														<td colspan="6">REPROGRAMACIÓN</td>
+													</tr>								
+													<tr class="encabezado_right">
+														<td width="216">Codigo:</td>
+														<td width="166" class="claro" align="left"  style="Width:500px">{COD_REPROGRAMACION}</td>
+														<td width="166">Fecha Registro:</td>
+														<td width="166"  class="claro" align="left"  style="Width:500px">{FECHA_REPROGRAMACION}</td>
+														<td width="166" style="Width:100px">Usuario:</td>
+														<td width="166" class="claro" align="left">{NOM_USUARIO}</td>									
+													</tr>
+												</table>
+												<table width="1000" rules="none" border="1" align="center" class="claro">
+													<tr class="titulo_tabla">
+														<td colspan="6">DATOS GENERALES</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Rut:</td>
+														<td width="166" class="claro" align="left" style="Width:1600px" >{RUT_DEUDOR}-{DIG_VERIF_DEUDOR}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Nombres:</td>
+														<td width="166" class="oscuro" align="left">{NOMBRE}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Apellido Paterno:</td>
+														<td width="166" class="claro" align="left">{APELLIDO_PATERNO}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Apellido Materno:</td>
+														<td width="166" class="oscuro" align="left">{APELLIDO_MATERNO}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Telefono 1:</td>
+														<td width="166" class="claro" align="left">{TELEFONO1}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Telefono 2:</td>
+														<td width="166" class="oscuro" align="left">{TELEFONO2}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Email:</td>
+														<td width="166" class="claro" align="left">{EMAIL}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Dirección:</td>
+														<td width="166" class="oscuro" align="left">{DIRECCION}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Comuna:</td>
+														<td width="166" class="claro" align="left">{COMUNA}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Ciudad:</td>
+														<td width="166" class="oscuro" align="left">{CIUDAD}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="200">Región:</td>
+														<td width="166" class="oscuro" align="left">{REGION}</td>
+													</tr>
+												</table>	
+											</div>	<!--FIN DEUDA-->
+											        <!--INICIO PAGARES-->
+											<div class="TabbedPanelsContent">
+											<table width="1000" border="1" rules="none" align="center" >
+												<tr class="titulo_tabla">
+														<td colspan="6">REPROGRAMACIÓN</td>
+												</tr>								
+												<tr class="encabezado_right">
+														<td width="216">Codigo:</td>
+														<td width="166" class="claro" align="left"  style="Width:500px">{COD_REPROGRAMACION}</td>
+														<td width="166">Fecha Registro:</td>
+														<td width="166"  class="claro" align="left"  style="Width:500px">{FECHA_REPROGRAMACION}</td>
+														<td width="166" style="Width:100px">Usuario:</td>
+														<td width="166" class="claro" align="left">{NOM_USUARIO}</td>									
+												</tr>
+											</table>
+											<table width="1000" rules="none" border="1" align="center" id="R_PAGARE">				
+													<tr class="titulo_tabla">
+															<td>PAGARES</td> 
+													</tr>		
+													<tr class="encabezado_right">
+														<th width="15%"align="left" height="40">Universidad</th>
+														<th width="8%" align="center">Folio Pagare</th>
+														<th width="7%" align="center">Fecha Pagare</th>
+														<th width="8%" align="center">Monto Pagare(UTM)</th>			
+														<th width="8%" align="center">Monto Pagare Pesos</th>
+														<th width="8%" align="center">Monto Capital Consolidado</th>
+														<th width="8%" align="center">Monto Interes Penal Consolidado</th>
+														<th width="8%" align="center">Monto Pago Inicial</th>
+														<th width="6%" align="center">Monto Cuota Pago Inicial</th>
+														<th width="6%" align="center">% Condonacion Interes Penal</th>
+														<th width="4%" align="center">Monto Reprogramado</th>
+														<th width="6%" align="center">Cantidad Cuotas</th>
+														<th width="6%" align="center">Recibido</th>
+													</tr>
+													<!-- startBlock(R_PAGARE) -->
+													<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+														<td width="5%" align="left" class="claro">{NOM_UNIVERSIDAD_P}{COD_PAGARE_REPROGRAMACION}</td>
+														<td width="5%" align="center" class="claro">{ID_PAGARE}</td>
+														<td width="5%" align="center" class="claro">{FECHA_GENERACION_PAGARE}</td>
+														<td width="5%" align="center" class="claro">{MONTO_PAGARE}</td>
+														<td width="5%" align="center" class="claro">{MONTO_PAGARE_PESOS}</td>
+														<td width="5%" align="center" class="claro">{SALDO_CAPITAL_P}</td>
+														<td width="5%" align="center" class="claro">{INTERESES_P}</td>
+														<td width="5%" align="center" class="claro">{MONTO_PAGO_INICIAL_PAGARE}</td>
+														<td width="5%" align="center" class="claro">{CUOTA_PAGO_INICIAL_PAGARE}</td>
+														<td width="5%" align="center" class="claro">{PORC_CONDONACION_INTERES}</td>
+														<td width="5%" align="center" class="claro">{MONTO_REPROGRAMADO_P}</td>
+														<td width="5%" align="center" class="claro">{NRO_CUOTAS_REPROGRAMADO}</td>
+														<td align="center" class="claro">{RECIBIDO}</td>
+													</tr>
+													<!-- endBlock(R_PAGARE) -->
+													<tr class="encabezado_right">
+														<th width="12%"align="left" height="25"></th>
+														<th width="8%" align="center"></th>
+														<th width="10%" align="center"></th>
+														<th width="8%" align="center"></th>			
+														<th width="8%" align="center"></th>
+														<th width="8%" align="center"></th>
+														<th width="8%" align="center"></th>
+														<th width="8%" align="center"></th>
+														<th width="8%" align="center"></th>
+														<th width="8%" align="center"></th>
+														<th width="8%" align="center"></th>
+														<th width="8%" align="center"></th>
+														<th width="8%" align="center"></th>
+														<th width="8%" align="center"></th>
+														<th width="8%" align="center"></th>
+													</tr>
+											</table>
+										</div>	
+									</div>	<!--FIN TabbedPanelsContentGroup-->
+									<td>
+								</td>
+							</tr>
+						</table>
+						<table width="1000" border="0" align="center">
+							<tr valign="middle">
+								<td width="290">{WI_BACK}</td>
+								<td align="right">{WI_FIRST}{WI_PREV}</td>
+								<td align="left">{WI_NEXT}{WI_LAST}</td>
+								<td width="290"></td>
+							</tr>
+						</table>		
+					</td>	
+				</tr>  
+			</table>
+		</td>
+	</tr>
+</table>	
+</form>
+<script type="text/javascript">
+<!--
+var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels1");
+//-->
+</script>
+</body>
+</html>

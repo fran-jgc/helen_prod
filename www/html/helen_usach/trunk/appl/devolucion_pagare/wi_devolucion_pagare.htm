@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Sistema Helen</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+
+<script src="../../../../commonlib_seven/trunk/script_js/SpryTabbedPanels.js" type="text/javascript"></script>
+<script charset="iso-8859-1" src="../../../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="iso-8859-1" src="../../../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="UTF-8" src="devolucion_pagare.js?20121210" type="text/javascript"></script>
+<link href="../../../../commonlib_seven/trunk/css/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+
+{WI_JAVA_SCRIPT}
+</head>
+<body onload="load_estados()" {WI_ONLOAD}>
+<!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js" type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+<form action="" method="post" name="input" id="input" enctype="multipart/form-data"><input name="wi_hidden" id="wi_hidden" type="hidden"
+	value="">
+<table width="1050" border="0" align="center">
+	<tr bgcolor="#FFFFFF">
+		<!-- menu superior-->
+		<td width="1000" height="51" align="center" id="awmAnchor-menu" style="width: 100px; height: 50px;"></td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+		<table width="1000" border="0">
+			<tr>
+				<td>
+				<table width="520" border="0">
+					<tr>
+						<td height="100%">
+						<div class="titulo_central">{WI_RUTA_MENU}</div>
+						</td>
+					</tr>
+					<tr>
+						<td height="0%">
+						<div class="tit_superior"><font color="#999999">{WI_FECHA_ACTUAL} </font></div>
+						</td>
+					</tr>
+					<tr>
+						<td height="0%">
+						<div class="tit_superior"><font color="#999999">{WI_FECHA_MODIF} </font></div>
+						</td>
+					</tr>
+				</table>
+				</td>
+				<td width="68"></td>
+				<td width="68">{WI_PRINT}</td>
+				<td width="68">{WI_NO_SAVE}</td>
+				<td width="68">{WI_SAVE}</td>
+				<td width="68">{WI_MODIFY}</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+		<table width="1000" border="0" align="center">
+			<tr>
+				<td height="95">
+				<table width="1015" border="0" align="center">
+					<tr valign="top">
+						<td>
+						<div id="TabbedPanels1" class="TabbedPanels">
+							<ul class="TabbedPanelsTabGroup">
+								<li class="TabbedPanelsTab" tabindex="0" style="display: {TAB_152505}">Devolución Pagaré</li>
+							</ul>
+								<div class="TabbedPanelsContentGroup">
+									<div class="TabbedPanelsContent" style="height: 492px;"><!--INI DEUDOR-->
+										<table width="1000" rules="none" border="1" align="center" class="claro">
+											<tr class="titulo_tabla">
+												<td colspan="6">Devolución Pagaré</td>
+											</tr>
+											<tr class="encabezado_right">
+												<td width="80">Rut Deudor:</td>
+												<td width="100" class="claro" align="left">{RUT}-{DIG_VERIF}<div style="display:none">{COD_DEVOLUCION_PAGARE_H}</div></td>
+												<td width="80">Nomre Deudor:</td>
+												<td width="140" class="claro" align="left">{NOMBRE}</td>
+												<td  width="80">Tipo Deuda:</td>
+												<td  width="100"class="claro" align="left">{COD_TIPO_DEUDA}</td>
+											</tr>
+											<tr class="encabezado_right">
+												<td>Cod. Deuda:</td>
+												<td class="oscuro" align="left">{COD_DEUDA}{COD_DEUDA_H}{COD_DEUDOR_H}</td>
+												<td>Origen:</td>
+												<td class="oscuro" align="left">{ORIGEN}</td>
+												<td>Estado Deuda:</td>
+												<td class="oscuro" align="left">{NOM_ESTADO_DEUDA}</td>
+											</tr>
+											<tr class="encabezado_right">
+												<td>Tipo Devolución:</td>
+												<td class="claro" align="left">{COD_ESTADO_DEVOLUCION_PAGARE}<div style="display:none">{COD_ESTADO_DEV_PAGARE_H}</div></td>
+												<td>Fecha Estado:</td>
+												<td class="claro" align="left">{FECHA_ESTADO_DEV_PAGARE}</td>
+												<td>Folio:</td>
+												<td class="claro" align="left">{NRO_FOLIO}</td>
+											</tr>
+										</table>	
+										<p>									
+										<table width="1000" rules="none" border="1" align="center" class="claro">
+											<tr class="encabezado_center">
+												<td width="20%">Folio Pagaré</td>
+												<td width="20%">Fecha Pagaré</td>
+												<td width="30%">Estado Pagaré</td>
+												<td width="30%">Monto UTM</td>												
+												<!-- <br> -->
+											</tr>
+										</table>																			
+										<div style="overflow-x:hidden; overflow-y:auto; height:100; margin-top:-1em;">
+											<table width="1000" rules="none" border="1" align="center" class="claro" id="PAGARE">
+												<!-- startBlock(PAGARE) -->
+												<tr class="{DW_TR_CSS}" id="{DW_TR_ID}" style="display:{DISPLAY_TR}">
+																									
+													<td align="center" width="20%">{FOLIO_PAGARE}</td>
+													<td align="center" width="20%">{FECHA_PAGARE}</td>
+													<td align="center" width="30%">{NOM_ESTADO_PAGARE}</td>
+													<td align="center" width="30%">{MONTO}</td>
+													
+												</tr>
+												<!-- endBlock(PAGARE) -->
+											</table>
+										</div>										
+										<table width="1000" rules="none" border="1" align="center" class="claro">
+											<tr class="encabezado_right">
+												<td width="80%"></td>
+												<td width="12%" class="claro">{SUM_MONTO_SELECCIONADO}</td>
+												<td width="8%" class="claro"></td>
+											</tr>
+										</table>
+										<!--FIN DEPOSITO-->
+										<!--INI DEVOLUCION-->
+										<br>
+										<!--RETIRO PRESENCIAL-->
+										<table id="tab_retiro" width="1000" rules="none" border="1" align="center" class="claro" style="display:{DISPLAY_RETIRO} ;">
+											<tr class="titulo_tabla">
+												<td colspan="6">RETIRO PRESENCIAL</td>
+											</tr>
+											<tr class="encabezado_right">
+												<td width="10%">Retirado Por:</td>
+												<td width="20%" class="oscuro" align="left">
+												{RETIRADO_POR_D}
+												{RETIRADO_POR_PS}
+												</td>
+											</tr>
+											<tr class="encabezado_right">
+												<td>Rut Retira:</td>
+												<td class="oscuro" align="left">{RUT_RETIRA}<div style="display:none">{COD_ESTADO_RETIRO_PRESENCIAL}</div></td>
+												<td width="10%">Nombre Retira:</td>
+												<td width="50%" class="oscuro" align="left">{NOM_RETIRA}</td>
+											</tr>
+										</table>
+										<!--ENVIO A DOMICILIO-->
+										<table id="tab_envio_domicilio" width="1000" rules="none" border="1" align="center" class="claro" style="display:{DISPLAY_ENVIO_DOMICILIO} ;">
+											<tr class="titulo_tabla">
+												<td colspan="6">ENVÍO A DOMICILIO</td>
+											</tr>
+											<tr class="encabezado_right">
+												<td width="140">Dirección Deudor:</td>
+												<td width="140" colspan="5" class="claro" align="left">{DIRECCION_ENVIO_DOMICILIO}</td>
+											</tr>
+											<tr class="encabezado_right">
+												<td>Estado Envío:</td>
+												<td  width="140" class="oscuro" align="left">{COD_ESTADO_ENVIO_DOMICILIO}</td>
+												<td width="140">Fecha Emisión Ordinario:</td>
+												<td colspan="3" class="oscuro" align="left">{FECHA_EMISION_ORDINARIO}</td>
+												
+											</tr>
+											<tr class="encabezado_right" >
+												<td>N° Orden de Trabajo</td>
+												<td class="claro" align="left">{NRO_ORDEN_TRABAJO}</td>
+													<td id="tab_enviado_exitoso_1"  style="display:{DISPLAY_ENVIADO_EXITOSO} ;">Fecha Recepción:</td>
+													<td id="tab_enviado_exitoso_2"  style="display:{DISPLAY_ENVIADO_EXITOSO} ;" class="claro" align="left">{FECHA_RECEPCION}</td>
+
+													<td id="tab_enviado_fallido_1" style="display:{DISPLAY_ENVIADO_FALLIDO} ;">Motivo:</td>
+													<td  id="tab_enviado_fallido_2" style="display:{DISPLAY_ENVIADO_FALLIDO} ;" class="claro" align="left">{MOTIVO}</td>
+
+											</tr>
+										</table>	
+										<!--ENVIO POR EMAIL-->
+										<table id="tab_envio_email"  width="1000" rules="none" border="1" align="center" class="claro" style="display:{DISPLAY_ENVIO_EMAIL} ;">
+											<tr class="titulo_tabla">
+												<td colspan="6"> ENVÍO POR EMAIL</td>
+											</tr>
+											<tr class="encabezado_right">
+												<td width="80">Nomre Usuario:</td>
+												<td width="140" class="claro" align="left">{NOM_USUARIO}</td>
+												<td  width="80">Email Deudor:</td>
+												<td  width="50"class="claro" align="left">{EMAIL}</td>
+												<td  width="80">Fecha Envío Email:</td>
+												<td  width="100"class="claro" align="left">{FECHA_ENVIO_MAIL}</td>
+											</tr>
+
+
+										</table>																						
+									</div><!--FIN DEVOLUCION-->
+								</div><!--FIN TabbedPanelsContentGroup -->
+							</td><!--FIN TabbedPanels-->
+						</tr>
+					</table>
+					<table width="1000" border="0" align="center">
+						<tr valign="middle">
+							<td width="290">{WI_BACK}</td>
+							<td align="right">{WI_FIRST}{WI_PREV}</td>
+							<td align="left">{WI_NEXT}{WI_LAST}</td>
+							<td width="290"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

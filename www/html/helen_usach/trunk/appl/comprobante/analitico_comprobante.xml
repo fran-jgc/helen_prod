@@ -1,0 +1,92 @@
+<Report>
+	<Font name="Arial" size="16" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="B" id="ArialBold"/>
+	<Font name="Arial" size="9" style="B" id="ArialBoldBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="" id="Arial"/>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7.5" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8.5" style="" id="ArialItem"/>
+	<Font name="Arial" size="9" style="B" id="ArialBoldBlueItem" red="0" green="0" blue="128"/>
+	<PageHeader>	
+		<Cell text="" height="7" newline="1" />
+		<Cell text="" newline="1"/>		
+		<Cell text="PAG. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="ANALITICO COMPROBANTE" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="" border="B" newline="1" height="1" redl="199" greenl="199" bluel="199"/>
+		<Cell text="" height="4" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{RUT}" width="9%" border="L" align="R" format="N0,." font="ArialItem"/>
+		<Cell text="- {DIG_VERIF}" width="3%" border="R" font="ArialItem"/>
+		<Cell text="{COD_DEUDA}" width="10%" border="R" align="R" format="N0,."/>
+		<Cell text="{NOM_TIPO_DEUDA}" width="20%" border="R" font="ArialItem"/>
+		<Cell text="{COD_CUENTA_CONTABLE}" width="10%" align="C"/>
+		<Cell text="{NOM_CUENTA_CONTABLE}" width="26%" border="R" font="ArialItem"/>
+		<Cell text="{MONTO_DEBE}" width="11%" border="R" align="R" format="N0,." font="ArialItem"/>
+		<Cell text="{MONTO_HABER}" width="11%" border="R" align="R" format="N0,." font="ArialItem" newline="1"/>
+	</Content>
+	<Group local="COD_COMPROBANTE">
+		<GroupHeader>	
+			<Cell text="{FECHA_IMPRESO}  {HORA_IMPRESO}" align="R" font="ArialSmall" newline="1" />
+			<Cell text="" newline="1"/>		
+			<Cell text="" height="1" newline="1" />			
+			<Cell height="4" newline="1"/>	
+			<Cell text="Cod. Comprobante:" width="16%" font="ArialBoldBlue"/>
+			<Cell text="{COD_COMPROBANTE}" width="11%" border="B" align="L" font="ArialBold" redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="2%"/>
+			<Cell text="Nro. Comprobante:" width="16%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{NRO_COMPROBANTE}" width="19%" border="B" align="L" font="ArialBold" redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="2%"/>
+			<Cell text="Fecha:" width="6%" font="ArialBoldBlue"/>
+			<Cell text="{FECHA_COMPROBANTE}" width="16%" border="B" align="L" font="Arial" redl="192" greenl="192" bluel="192" newline="1" />
+			
+			<Cell text="Comprobante        :" width="16%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{NOM_ORIGEN_COMPROBANTE}" width="72%" border="B" font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			
+			<Cell text="Glosa                     :" width="16%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{NOM_COMPROBANTE}" width="72%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			
+			<Cell text="Familia Deuda       :" width="16%" font="ArialBoldBlue"/>
+			<Cell text="{NOM_FAMILIA_DEUDA}" width="22%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="2%"/>
+			<Cell text="Tipo Comprobante:" width="16%" align="R" font="ArialBoldBlue"/>
+			<Cell text="{NOM_TIPO_COMPROBANTE}" width="11%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="2%"/>
+			<Cell text="Estado:" width="7%" align="R" font="ArialBoldBlue" />
+			<Cell text="{NOM_ESTADO_COMPROBANTE}" width="15%" align="L" border="B" font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			<Cell text="" newline="1"/>
+			
+			<Cell text="Rut" width="12%" border="LRTB" align="C" font="ArialBoldBlueItem"/>
+			<Cell text="Nº Deuda" width="10%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Tipo Deuda" width="20%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="cuenta" width="36%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Debe" width="11%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Haber" width="11%" align="C" border="LRTB" font="ArialBoldBlueItem" newline="1"/>
+			 
+		</GroupHeader>
+	</Group>
+	<Variable name="SUMA_DEBE" function="SUM" value="MONTO_DEBE"/>
+	<Variable name="SUMA_HABER" function="SUM" value="MONTO_HABER"/>
+	<Group local="COD_COMPROBANTE">
+		<GroupHeader>				
+		</GroupHeader>
+		<GroupFooter>
+				<Cell text="TOTAL" border="T" align="R" width="78%" font="ArialBoldBlue"/>
+				<Cell text="{SUMA_DEBE}" width="11%" border="LRTB" align="R" font="Arial" format="N0,. "/>
+				<Cell text="{SUMA_HABER}" width="11%" border="LRTB" align="R" font="Arial" format="N0,. "/>
+				<Cell text="" newline="1"/>
+				<Cell text="" newline="1"/>
+				<Cell text="" newline="1"/>
+				<Cell text="" newline="1"/>
+				<Cell text="" newline="1"/>
+				<Cell text="" newline="1"/>
+				<Cell text="" newline="1"/>
+				<Cell text="" newline="1"/>
+				<Cell width="10%" text="" />
+				<Cell text="Firma del Contador" width="30%" border="T" align="C" font="Arial"/>
+				<Cell width="20%" text=""/>
+				<Cell text="Firma del Administrador" width="30%" border="T" align="C" font="Arial"/>
+				<Cell width="10%" text=""/>
+		</GroupFooter>
+	</Group>
+</Report>

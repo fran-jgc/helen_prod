@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Documento sin t&iacute;tulo</title>
+<style type="text/css">
+.body {
+	background: url(images/fondo_menu2.png) no-repeat;
+	margin-left: 6px;
+}
+</style>
+<link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="body">
+<table border="0" width="10px" align="left" style="margin-left: -10px;">
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+	</tr>            
+	<tr>
+		<td id="menu"><a href="ingresa_declaracion.php" target="mainFrame" id="decla_jurada"></a></td>
+	</tr>
+	<tr>
+		<td id="menu"><a href="inicio_sesion.php" target="mainFrame" id="inicio_sesion"></a></td>
+	</tr>
+	<tr>
+		<td id="menu"><a href="consulta_deuda.php" target="mainFrame" id="deuda"></a></td>
+	</tr>
+	<tr>
+		<td id="menu"><a href="actualiza_informacion.php" target="mainFrame" id="act_informacion"></a></td>
+	</tr>
+	<tr>
+		<td id="menu"><a href="cupon_pago.php" target="mainFrame" id="cupon_pago_uach"></a></td>
+	</tr>
+	<tr>
+		<td id='menu'><a href='web_pay.php' target='mainFrame' id='pago_internet_uach'></a></td>
+	</tr>
+	<!-- 
+	<script>
+		if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent))
+		{ //prueba para Firefox/x.x o Firefox x.x (ignorando los números restantes);
+			 var ffversion=new Number(RegExp.$1) //capturamos la x.x y la almacenamos como un número
+			 if (ffversion>=3)
+			 {
+				
+				document.write(">");
+			 }
+			 
+	 
+		}
+	</script> -->
+	<!-- <tr>
+		<td align="center"><a href="https://www.transbank.cl/" target="new"><img src="images/Banner_transbank.jpg" width="158" height="107" border=0></a></td>	
+	</tr>-->
+</table>
+</body>
+</html>

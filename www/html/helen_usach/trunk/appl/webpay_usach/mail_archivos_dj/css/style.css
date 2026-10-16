@@ -1,0 +1,142 @@
+
+
+body 										{ background: white; }
+
+/* *************************************
+* *************** Header ***************
+* ************************************ */
+header 										{ height: 100px; }
+header.xs 									{ height: 140px; }				
+header.xl									{ height: 200px; }
+
+/* *************************************
+* *********** Main Navigation **********
+* ************************************ */
+
+.navbar 									{ border: none!important; margin-bottom: 0!important; } /* nav */
+.navbar-default 							{ background: #394049!important; } /* nav */
+.navbar-nav 								{ margin: 7.5px 0px!important; } /* ul */
+
+.nav li										{ background: #394049; margin: 3px 0!important; } 	
+.nav>li>a 									{ height: 40px; padding: 0!important; }
+.nav>li>a span.text 						{ display: block; min-width: 100px; padding-top: 10px; padding-left: 10px; } 
+.nav a										{ color: white!important; 
+												-webkit-transition: all .5s ease; -moz-transition: all .5s ease; transition: all .5s ease; }
+.nav a:hover								{ color: white; }
+
+.nav>li>a:hover,
+.nav>li.active>a,
+.navbar-default .nav>.open>a,
+.dropdown-menu>.active>a  					{ background: #00A499!important; }
+
+.nav>li.active>a span.ico,
+.nav>li>a:hover span.ico 					{ background: url(../images/sprite-ico-navbar-over.png) no-repeat 0px 0!important; }
+
+.dropdown-menu								{ width: 100%; background: #333e48!important; }
+.dropdown-menu li a							{ padding: 3px 0; }
+.dropdown-menu li a:hover					{ background: #00A499!important; }
+
+ /*collapse*/ 
+.navbar-collapse 							{ padding-right: 0!important; padding-left: 0!important; }
+.navbar-collapse.collapse 					{ overflow: visible !important; }
+.navbar-collapse.in 						{ overflow-x: visible!important; }
+
+.navbar-nav,
+.navbar-nav > li,
+.navbar-left,
+.navbar-right,
+.navbar-header 								{ float: none!important; }
+
+
+/* Mobile button */
+button:hover.navbar-toggle,
+button:active.navbar-toggle,
+button:focus.navbar-toggle,
+button:visited.navbar-toggle				{ background: rgba(0,0,0,0.3)!important; } 
+
+
+/* *************************************
+* ************* Formulario *************
+* ************************************ */
+
+.default label 								{ font-size: 13px; font-size: 1.3rem; font-weight: normal; color: #333e48; margin-top: 0px; }
+.default input 		 	{ color: #333!important;  border: #ccc solid 1px; padding: 5px!important; 										
+												-webkit-transition: all .25s ease; -moz-transition: all .25s ease; transition: all .25s ease; }
+												
+.default textarea 		 	{ color: #333!important; background: white; border: #ccc solid 1px; padding: 5px!important; 										
+												-webkit-transition: all .25s ease; -moz-transition: all .25s ease; transition: all .25s ease; }												
+
+.default input, .default textarea,
+.default input[type='submit'] 				{ -webkit-border-radius: 3px!important; -moz-border-radius: 3px!important; border-radius: 3px!important; }
+
+.default input:focus,
+.default textarea:focus, 
+.default select:focus 						{ background: #F3F3F3; border: #fec10d solid 1px!important; color: #999; outline: none!important; }
+
+.default button[type='submit']				{ font-size: 12px; font-size: 1.2rem; background: #333e48; border: none; color: white; padding: 8px 12px; 
+												-webkit-border-radius: 4px!important; -moz-border-radius: 4px!important; border-radius: 4px!important;
+												-webkit-transition: all .3s ease; -moz-transition: all .3s ease; transition: all .3s ease; }
+.default button:hover[type='submit']		{ background: #fec10d; border: none; color: white; }
+
+/* input for login */
+input.rut 									{ padding-left: 30px!important; background: white url(../images/ico-rut.png) 5px center no-repeat; }
+input.pass 									{ padding-left: 30px!important; background: white url(../images/ico-pass.png) 5px center no-repeat; }
+
+
+/* *************************************
+* ********* My Fix Bootstrap ***********
+* ************************************ */
+
+/* Define 0px both sides to padding container (15px default) */
+.clear 										{ clear: both!important; }
+.clear-padding 								{ padding-left: 0!important; padding-right: 0!important; }
+
+/* Position */
+.relative 									{ position: relative!important; }
+.absolute 									{ position: absolute!important; }
+
+/* Buttons*/
+a.btn-sidebar 								{ font-size: 12px; font-size: 1.2rem; color: #333e48!important; border: #fff solid 1px; margin-bottom: 20px; padding: 8px 12px!important;
+												-webkit-transition: all .3s ease; -moz-transition: all .3s ease; transition: all .3s ease;  }
+a:hover.btn-sidebar 						{ background: #333e48!important; color: white!important; border: #fff solid 1px; }
+
+/* Define WHITE color to icon button for mobile device */
+.icon-bar 									{ background: white!important; }
+
+/* Border */
+.border-dotted 								{ border: 1px dotted white; margin: 10px; padding: 10px; }
+
+/* Table */
+td, th 										{ border: #a6c7e5 1px solid!important; }
+th 											{ border-bottom: #a6c7e5 2px solid!important; }
+
+table.border-out, table.border-out td 		{ border: transparent!important; } 
+
+/* List */
+.color-list ul								{ list-style: none; padding:0; margin:0; }
+.color-list li 								{ padding-left: 25px; padding-left: 2.5rem; text-indent: -.7em; margin-bottom: 10px; }
+.color-list li:before 						{ content: "• "; color: #007dbd; }
+
+/* Footer */
+footer 										{ text-align: center; }
+footer a    								{ float: none!important; }
+
+/* Change yellow color chrome ;) */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+    -webkit-text-fill-color: #333e48!important;
+}
+.userena{
+
+/*background: url(../images/userena.jpg) no-repeat !important;*/
+background-size: 100% 100% !important;
+
+}
+.footer-center 										{ text-align: center !important; padding-top: 30px; color: grey; padding-right: 200px  }
+
+.bot-dj{
+margin-left: 20px;
+margin-right: 20px;
+margin-bottom: 20px !important;
+
+}

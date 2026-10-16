@@ -1,0 +1,59 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+include("funciones.php");
+ini_set('memory_limit', '480M');
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes
+
+class w_detalle_deuda extends w_base {
+	function __construct() {
+		valida_inicio();
+	
+		$t = new Template_appl("consulta_deuda.html");
+		
+
+		
+		$sql_plan_pago = "SELECT t.cod_wp_transaccion, d.rut, d.nombre, d.apellido_paterno, d.apellido_materno, t.tipo, t.fecha, t.exito, t.tipo_pago_web, 
+			p.CODIGO_RESPUESTA, p.CODIGO_AUTORIZACION, t.cod_deudor, bo.cod_boleta, bo.fecha_boleta, bo.cod_deuda, bo.cod_plan_pago, bo.monto_pesos, sb.nro_sub_boleta, sb.fecha_vencto, 
+			ab.COD_ABONO, ab.FECHA_ABONO as FECH_ABONO, ab.MONTO_PESOS as MONTO, ab.COD_DEUDA as CODIGO_DEUDA, ab.COD_PLAN_PAGO as CODIGO_PLAN_PAGO  ,sysdate AS FECHA_DIA
+
+			FROM wp_transaccion t, WP_PAGO_TRANSACCION_WS p, deudor d, wp_sub_boleta wpsb, sub_boleta sb, boleta bo, abono ab 
+			WHERE P.COD_WP_TRANSACCION = t.cod_wp_transaccion 
+			AND P.CODIGO_AUTORIZACION <> '000000' 
+			AND P.CODIGO_RESPUESTA = '0' 
+			AND t.exito is not NULL 
+			AND TO_CHAR (t.fecha, 'dd/mm/yyyy') between  to_date('01/'||to_char(sysdate,'mm/yyyy'),'dd/mm/yyyy')  AND SYSDATE+1 
+			AND TO_CHAR (t.fecha, 'dd/mm/yyyy') <=  sysdate
+			AND wpsb.cod_wp_transaccion = t.cod_wp_transaccion 
+			AND sb.cod_sub_boleta = wpsb.cod_sub_boleta 
+			AND bo.cod_boleta = sb.cod_boleta 
+			AND d.cod_deudor = t.cod_deudor 
+			--AND D.rut = :rut
+			AND ab.cod_sub_boleta(+) = wpsb.cod_sub_boleta 
+			AND ab.COD_ESTADO_PAGO = 1 
+
+			ORDER BY fecha DESC ";
+
+		$dw_plan_pago = new datawindow($sql_plan_pago, 'detalle_cuotas');
+		
+		$dw_plan_pago->retrieve();
+
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		for($i = 0; $i < $dw_plan_pago->row_count(); $i++){
+
+		
+
+			/////nuevas validaciones
+			
+			$num_cuota = $dw_plan_pago->get_item($i, 'COD_WP_TRANSACCION');
+			
+			}
+
+			
+		
+		$dw_plan_pago->habilitar($t, false);
+
+		print $t->toString();
+	}
+}
+$w = new w_detalle_deuda();
+?>

@@ -1,0 +1,423 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+class dw_repro_deuda_base extends datawindow
+{
+	function __construct()
+	{
+		$sql = sql_repro_rcs::get_sql('INPUT_DEUDA_REPRO');
+
+		parent::__construct($sql, 'DEUDA_REPRO');
+		$this->add_control(new static_text('RD_COD_DEUDA'));
+		$this->add_control(new edit_text_upper('RD_COD_REPRO_RCS_DEUDA', 10, 10, 'hidden'));
+		$this->add_control(new static_text('RD_TIPO_DEUDA'));
+		$this->add_control(new static_text('RD_NOM_UNIVERSIDAD'));
+		$this->add_control(new computed('RD_SALDO_CAPITAL',4));
+		$this->add_control(new computed('RD_SALDO_CAPITAL_P'));
+		$this->add_control(new computed('RD_SALDO_MULTA',4));
+		$this->add_control(new computed('RD_SALDO_MULTA_P'));
+		$this->add_control(new computed('RD_SALDO_TOTAL',4));
+		$this->add_control(new computed('RD_SALDO_TOTAL_P'));
+		
+		$this->add_control(new edit_text_upper('D_COD_DEUDA_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text_upper('D_SALDO_CAPITAL_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text_upper('D_SALDO_MULTA_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text_upper('D_COD_UNIVERSIDAD_H', 10, 10, 'hidden'));
+		
+		$this->accumulate('RD_SALDO_CAPITAL', '', false);
+		$this->accumulate('RD_SALDO_CAPITAL_P', '', false);
+		$this->accumulate('RD_SALDO_MULTA', '', false);
+		$this->accumulate('RD_SALDO_MULTA_P', '', false);
+		$this->accumulate('RD_SALDO_TOTAL', '', false);
+		$this->accumulate('RD_SALDO_TOTAL_P', '', false);
+		
+	} 	
+}
+
+class wi_repro_rcs_base extends w_input
+{
+	const K_ESTADO_REPRO_RCS_EMITIDA 		= 1;
+	const K_ESTADO_REPRO_RCS_CONFIRMADA 	= 2;
+	const K_ESTADO_REPRO_RCS_ANULADA  		= 3;
+
+	function __construct($cod_item_menu){
+	    parent::__construct('repro_rcs', $cod_item_menu);
+		
+		$this->b_delete_visible  = false;
+		
+		$sql = sql_repro_rcs::get_sql('INPUT');
+		
+		$this->dws['dw_repro_rcs'] = new datawindow($sql);
+		$this->dws['dw_repro_deuda'] = new dw_repro_deuda_base($sql);
+		
+		$this->dws['dw_repro_rcs']->add_control(new static_text('COD_REPRO_RCS'));
+		$this->dws['dw_repro_rcs']->add_control(new static_text('FECHA_REPRO_RCS'));
+		$this->dws['dw_repro_rcs']->add_control(new static_text('NOM_USUARIO'));
+		$this->dws['dw_repro_rcs']->add_control($control = new edit_rut('RUT'));
+		$this->dws['dw_repro_rcs']->add_control(new static_text('DIG_VERIF'));
+		$control->set_onChange("borra_matricula();carga_deuda(this);repro_rcs(this);valida_monto();");
+		$this->dws['dw_repro_rcs']->add_control(new static_text('NOM_DEUDOR'));
+		$this->dws['dw_repro_rcs']->add_control(new edit_text_upper('COD_DEUDOR', 10, 10, 'hidden'));
+		$sql_estado = sql_repro_rcs::get_sql('DD_COD_ESTADO_REPRO_RCS');
+		$this->dws['dw_repro_rcs']->add_control(new drop_down_dw('COD_ESTADO_REPRO_RCS', $sql_estado, 140));
+		$this->dws['dw_repro_rcs']->add_control(new static_text('FECHA_ESTADO'));
+		$this->dws['dw_repro_rcs']->add_control(new static_text('NOM_USUARIO_ESTADO'));
+		
+		$this->dws['dw_repro_rcs']->add_control(new static_link('COD_DEUDA_RCS', '../../../../commonlib_seven/trunk/php/link_wi.php?modulo_origen=repro_rcs&modulo_destino=deuda&cod_modulo_destino=[COD_DEUDA_RCS]&cod_item_menu=1010'));
+		$this->dws['dw_repro_rcs']->add_control(new static_text('ORIGEN'));
+		$this->dws['dw_repro_rcs']->add_control(new edit_check_box('RECIBIDO_DOCTO', 'S', 'N'));
+		$this->dws['dw_repro_rcs']->add_control(new static_text('FECHA_RECIBIDO_DOCTO'));
+		$this->dws['dw_repro_rcs']->add_control(new static_text('USUARIO_RECIBIDO_DOCTO'));
+		
+		$this->dws['dw_repro_rcs']->add_control($control = new edit_num('PORC_PAGO_INICIAL',15,6,2));
+		$control->set_onChange("repro_rcs(this);valida_monto();");
+		$this->dws['dw_repro_rcs']->add_control($control = new edit_num('MONTO_PAGO_INICIAL',15,10,4));
+		$control->set_onChange("repro_rcs(this);valida_monto();");
+		$this->dws['dw_repro_rcs']->add_control($control = new edit_num('MONTO_PAGO_INICIAL_P',15,10,0));
+		$control->set_onChange("repro_rcs(this);valida_monto();");
+		$this->dws['dw_repro_rcs']->add_control(new static_link('COD_DEUDA_RCS', '../../../../commonlib_seven/trunk/php/link_wi.php?modulo_origen=repro_rcs&modulo_destino=deuda&cod_modulo_destino=[COD_DEUDA_RCS]&cod_item_menu=1010'));
+		$this->dws['dw_repro_rcs']->add_control(new static_link('COD_INGRESO','../../../../commonlib_seven/trunk/php/link_wi.php?modulo_origen=repro_rcs&modulo_destino=abono&cod_modulo_destino=[COD_INGRESO]&cod_item_menu=1025')); // COD ABONO
+		$this->dws['dw_repro_rcs']->add_control(new static_text('FECHA_INGRESO'));
+		$this->dws['dw_repro_rcs']->add_control(new static_num('MONTO_INGRESO_P'));
+		$this->dws['dw_repro_rcs']->add_control(new static_num('PORC_DSCTO_MULTA',2));
+		$this->dws['dw_repro_rcs']->add_control(new static_num('MONTO_DSCTO_MULTA',4));
+		$this->dws['dw_repro_rcs']->add_control(new static_num('MONTO_DSCTO_MULTA_P',0));
+		$this->dws['dw_repro_rcs']->add_control(new static_num('MONTO_A_REPROGRAMAR',4));
+		$this->dws['dw_repro_rcs']->add_control(new static_num('MONTO_A_REPROGRAMAR_P',0));
+		$sql_cuota = array(0); $sql[0] =0;
+		$this->dws['dw_repro_rcs']->add_control($control = new drop_down_list('CANT_CUOTA',$sql_cuota, $sql_cuota,100));
+		$control->set_onChange("repro_rcs(this);");
+		$this->dws['dw_repro_rcs']->add_control(new static_num('MONTO_CUOTA',4));
+		$this->dws['dw_repro_rcs']->add_control(new static_num('MONTO_CUOTA_P',0));
+		$this->dws['dw_repro_rcs']->add_control(new edit_text_multiline('OBS', 100, 1));
+		
+		// SE CREAN INPUT HIDDEN PARA RESCATARLOS EN SAVE_RECORD 
+		$this->dws['dw_repro_rcs']->add_control(new edit_text_upper('PORC_DSCTO_MULTA_H', 10, 10, 'hidden'));
+		$this->dws['dw_repro_rcs']->add_control(new edit_text_upper('MONTO_DSCTO_MULTA_H', 10, 10, 'hidden'));
+		$this->dws['dw_repro_rcs']->add_control(new edit_text_upper('MONTO_A_REPROGRAMAR_H', 10, 10, 'hidden'));
+		$this->dws['dw_repro_rcs']->add_control(new edit_text_upper('MONTO_CUOTA_H', 10, 10, 'hidden'));
+		$this->dws['dw_repro_rcs']->add_control(new edit_text_upper('RUT_H', 10, 10, 'hidden'));
+		$this->dws['dw_repro_rcs']->add_control(new edit_text_upper('MONTO_PAGO_INICIAL_P_H', 10, 10, 'hidden'));
+		$this->dws['dw_repro_rcs']->add_control(new edit_text_upper('COD_ESTADO_PP_H', 10, 10, 'hidden'));
+		
+		//CONTROLES
+		$this->set_first_focus('RUT');
+		
+		//mandatorys
+		$this->dws['dw_repro_rcs']->set_mandatory('RUT', 'RUT');
+		$this->dws['dw_repro_rcs']->set_mandatory('COD_ESTADO_REPRO_RCS', 'Estado Reprogramación');
+		$this->dws['dw_repro_rcs']->set_mandatory('PORC_PAGO_INICIAL', 'Porc Pago Inicial');
+		$this->dws['dw_repro_rcs']->set_mandatory('MONTO_PAGO_INICIAL', 'Monto Pago Inicial');
+		$this->dws['dw_repro_rcs']->set_mandatory('MONTO_PAGO_INICIAL_P', 'Monto Pago Inicial Pesos');
+		$this->dws['dw_repro_rcs']->set_mandatory('CANT_CUOTA', 'Cantidad de cuotas');
+
+		// AUDITORIAS
+		$this->add_auditoria('COD_ESTADO_REPRO_RCS');
+	}
+	function get_key() {
+		return $this->dws['dw_repro_rcs']->get_item(0, 'COD_REPRO_RCS');
+	}
+	function load_record() {
+		$cod_repro = $this->get_item_wo($this->current_record, 'COD_REPRO_RCS');
+		$this->dws['dw_repro_rcs']->retrieve($cod_repro);
+		$this->dws['dw_repro_deuda']->retrieve($cod_repro);
+		$this->dws['dw_repro_rcs']->set_entrable('COD_ESTADO_REPRO_RCS', true);
+		$COD_ESTADO_REPRO_RCS	= $this->dws['dw_repro_rcs']->get_item(0, 'COD_ESTADO_REPRO_RCS');
+		
+		if($COD_ESTADO_REPRO_RCS == self::K_ESTADO_REPRO_RCS_EMITIDA)
+		{
+			$this->dws['dw_repro_rcs']->set_entrable('RUT', false);
+			
+			$this->dws['dw_repro_rcs']->set_entrable('PORC_PAGO_INICIAL', false);
+			$this->dws['dw_repro_rcs']->set_entrable('MONTO_PAGO_INICIAL', false);
+			$this->dws['dw_repro_rcs']->set_entrable('MONTO_PAGO_INICIAL_P', false);
+			$this->dws['dw_repro_rcs']->set_entrable('CANT_CUOTA', false);
+			
+			$this->b_no_save_visible = true;
+	        $this->b_save_visible = true;
+	        $this->b_modify_visible= true;
+	        $this->b_print_visible= true;
+		}
+		else if($COD_ESTADO_REPRO_RCS == self::K_ESTADO_REPRO_RCS_ANULADA )
+		{
+			$this->b_no_save_visible = false;
+	        $this->b_save_visible = false;
+	        $this->b_modify_visible= false;
+	        $this->b_print_visible= false;
+	        $this->dws['dw_repro_rcs']->set_item(0, 'COD_DEUDA_RCS', NULL);
+		}
+		else if($COD_ESTADO_REPRO_RCS == self::K_ESTADO_REPRO_RCS_CONFIRMADA){
+			$this->b_no_save_visible = false;
+	        $this->b_save_visible = false;
+	        $this->b_modify_visible= false;
+	        $this->b_print_visible= true;
+		}		
+		if(isset($_POST['b_modify_x']))
+		{
+			$this->b_print_visible= false;
+		}
+		
+		$recibido_docto = $this->dws['dw_repro_rcs']->get_item(0, 'RECIBIDO_DOCTO');
+		
+		if($recibido_docto == 'S')
+			$this->dws['dw_repro_rcs']->set_entrable('RECIBIDO_DOCTO', false);
+		else
+			$this->dws['dw_repro_rcs']->set_entrable('RECIBIDO_DOCTO', true);
+
+		unset($this->dws['dw_repro_rcs']->controls['CANT_CUOTA']);
+		$sql_cuota = sql_repro_rcs::get_sql('AJAX_CUOTA');
+		$this->dws['dw_repro_rcs']->add_control($control = new drop_down_list('CANT_CUOTA',$sql_cuota, $sql_cuota,100));
+		$control->set_onChange("repro_rcs(this);");
+	}
+	/*
+	 * 
+	 * SE COMENTO ESTE CODIGO YA QUE EN HELEN NO SE CREARAN REPROGRAMACIONES
+	 * NO BORRAR POR AHORA
+	 * JV: 25/09/2014 13:04
+	 * 
+	function new_record() {
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		
+		$this->dws['dw_repro_rcs']->set_entrable('COD_ESTADO_REPRO_RCS', false);
+		$this->dws['dw_repro_rcs']->set_entrable('RECIBIDO_DOCTO', false);
+        $this->dws['dw_repro_rcs']->insert_row();
+        $this->dws['dw_repro_deuda']->insert_row();
+        
+        /////////// SE SETEA FECHA Y USUARIO CUANDO ES UN NEW_RECORD //////////////////////
+        $this->dws['dw_repro_rcs']->set_item(0, 'FECHA_REPRO_RCS', $this->current_date());
+		$this->dws['dw_repro_rcs']->set_item(0, 'COD_USUARIO', $this->cod_usuario);
+		
+		$sql = "SELECT NOM_USUARIO FROM USUARIO WHERE COD_USUARIO = $this->cod_usuario";
+		$result = $db->build_results($sql);
+		$this->dws['dw_repro_rcs']->set_item(0, 'NOM_USUARIO',$result[0]['NOM_USUARIO']);
+		///////////////////////////////////////////////////////////////////////////////////
+		$this->dws['dw_repro_rcs']->set_item(0, 'COD_ESTADO_REPRO_RCS',1);
+		
+		$this->b_print_visible= false;
+        
+    }
+	*/
+    function save_record($db) 
+    {
+    	$cod_repro				= $this->get_key();
+		$fecha_repro_rcs		= $this->dws['dw_repro_rcs']->get_item(0, 'FECHA_REPRO_RCS');
+		$cod_usuario			= $this->dws['dw_repro_rcs']->get_item(0, 'COD_USUARIO');
+		$COD_ESTADO_REPRO_RCS	= $this->dws['dw_repro_rcs']->get_item(0, 'COD_ESTADO_REPRO_RCS');
+		$cod_deudor				= $this->dws['dw_repro_rcs']->get_item(0, 'COD_DEUDOR');
+		$porc_pago_inicial		= $this->dws['dw_repro_rcs']->get_item(0, 'PORC_PAGO_INICIAL');
+		$monto_pago_inicial		= $this->dws['dw_repro_rcs']->get_item(0, 'MONTO_PAGO_INICIAL');
+		$cant_cuota				= $this->dws['dw_repro_rcs']->get_item(0, 'CANT_CUOTA');
+		$porc_dscto_multa		= $this->dws['dw_repro_rcs']->get_item(0, 'PORC_DSCTO_MULTA_H');
+		$monto_dscto_multa		= $this->dws['dw_repro_rcs']->get_item(0, 'MONTO_DSCTO_MULTA_H');
+		$monto_a_reprogramar	= $this->dws['dw_repro_rcs']->get_item(0, 'MONTO_A_REPROGRAMAR_H');
+		$monto_cuota			= $this->dws['dw_repro_rcs']->get_item(0, 'MONTO_CUOTA_H');
+		$obs					= $this->dws['dw_repro_rcs']->get_item(0, 'OBS');
+		$recibido_docto			= $this->dws['dw_repro_rcs']->get_item(0, 'RECIBIDO_DOCTO');
+		
+		$cod_repro 			= ($cod_repro =='') ? "null" : $cod_repro;
+		$obs 				= ($obs =='') ? "null" : "'".$obs."'";
+		$fecha_repro_rcs = $this->str2date($fecha_repro_rcs);
+		
+    	$sp = 'spu_repro_rcs';
+    	/*
+    	 *  
+		 * SE COMENTO ESTE CODIGO YA QUE EN HELEN NO SE CREARAN REPROGRAMACIONES
+		 * NO BORRAR POR AHORA
+		 * JV: 25/09/2014 13:04
+		 * 
+    	if ($this->is_new_record()){
+			$operacion = 'INSERT';
+		}
+		else{
+			$operacion = 'UPDATE';
+		}
+		*/
+    	$operacion = 'UPDATE';
+		$param = "'$operacion'
+					,$cod_repro
+					,$fecha_repro_rcs
+					,$cod_usuario
+					,$COD_ESTADO_REPRO_RCS
+					,$cod_deudor			
+					,$porc_pago_inicial
+					,$monto_pago_inicial
+					,$cant_cuota
+					,$porc_dscto_multa
+					,$monto_dscto_multa
+					,$monto_a_reprogramar
+					,$monto_cuota
+					,$obs
+					,'$recibido_docto'
+					";
+		// echo $sp.' '.$param; return;
+		if ($db->EXECUTE_SP($sp,$param)){
+			/*
+			 * 
+			 * SE COMENTO ESTE CODIGO YA QUE EN HELEN NO SE CREARAN REPROGRAMACIONES
+			 * NO BORRAR POR AHORA
+			 * JV: 25/09/2014 13:04
+			 * 
+			if ($this->is_new_record()) {
+				$sql_cod_repro  = "select MAX(COD_REPRO_RCS) COD_REPRO_RCS 
+									from REPRO_RCS 
+									where COD_DEUDOR = $cod_deudor 
+									and COD_ESTADO_REPRO_RCS = 1";
+				$res_cod_repro  = $db->build_results($sql_cod_repro);
+				$cod_repro		= $res_cod_repro [0]['COD_REPRO_RCS'];
+				
+				$this->dws['dw_repro_rcs']->set_item(0, 'COD_REPRO_RCS', $cod_repro);
+				
+				if ($db->EXECUTE_SP('sp_deuda_genera_plan_repro17bis',$cod_repro)){
+					//ejecucion dw_repro_deuda_base
+			    	for ($i = 0; $i < $this->dws['dw_repro_deuda']->row_count(); $i++) {
+						
+			        	$cod_deuda				= $this->dws['dw_repro_deuda']->get_item($i, 'D_COD_DEUDA_H');
+			    		$saldo_capital			= $this->dws['dw_repro_deuda']->get_item($i, 'D_SALDO_CAPITAL_H');
+			    		$saldo_multa			= $this->dws['dw_repro_deuda']->get_item($i, 'D_SALDO_MULTA_H');
+			    		$cod_universidad		= $this->dws['dw_repro_deuda']->get_item($i, 'D_COD_UNIVERSIDAD_H');
+			        	
+			        	$param = "$cod_repro
+			        			,$cod_deuda
+			        			,$cod_universidad
+			        			,$saldo_capital
+			        			,$saldo_multa
+			        			";
+						//ejecucion procedimiento
+			        	if (!$db->EXECUTE_SP('spu_repro_rcs_deuda',$param))
+								return false;
+			        }
+				}
+				//CUANDO SE CREA UNA REPROGRAMACION SE IMPRIME LA BOLETA DE LA CUOTA 0 
+				if($COD_ESTADO_REPRO_RCS == 1)
+				{
+					/////****************************** print *****************************************
+					
+					$sql_nueva_boleta = sql_repro_rcs::get_sql('NUEVA_BOLETA',$cod_repro);
+					$result = $db->build_results($sql_nueva_boleta);
+					$cod_boleta = $result[0]['COD_BOLETA'];
+					$sql_print_boleta = sql_repro_rcs::get_sql('PRINT_BOLETA',$cod_boleta);
+					$labels = array();
+					$xml = dirname(__FILE__)."/../boleta/boleta.xml";
+					$file_name = $this->find_file('boleta', '/../boleta/boleta.xml');
+					$rpt = new print_boleta_uach($sql_print_boleta, $xml, $labels, 'boleta', 0);
+					
+					///****************************** fin print **************************************
+				}
+			}
+			else{
+				//AL CONFIRMAR LA REPROGRAMACION QUE FUE CREADA POR WS SE TIENE QUE CONFIRMAR EN BD SIMULACION_RCS
+				if($COD_ESTADO_REPRO_RCS == 2){
+					///****************************** CONFIRMACION WS ********************************
+					$sql_nro_repro_rcs = sql_repro_rcs::get_sql('NRO_REPRO_RCS',$cod_repro);
+					$result_nro_repro_rcs = $db->build_results($sql_nro_repro_rcs);
+					$nro_repro_rcs = $result_nro_repro_rcs[0]['NRO_REPRO_RCS'];
+	
+					if($nro_repro_rcs != ""){
+						$this->confirma_ws($nro_repro_rcs);
+					}
+	
+					///**************************** FINCONFIRMACION WS********************************
+				}
+			}
+			*/
+			//AL CONFIRMAR LA REPROGRAMACION QUE FUE CREADA POR WS SE TIENE QUE CONFIRMAR EN BD SIMULACION_RCS
+			if($COD_ESTADO_REPRO_RCS == 2){
+				///****************************** CONFIRMACION WS ********************************
+				$sql_nro_repro_rcs = sql_repro_rcs::get_sql('NRO_REPRO_RCS',$cod_repro);
+				$result_nro_repro_rcs = $db->build_results($sql_nro_repro_rcs);
+				$nro_repro_rcs = $result_nro_repro_rcs[0]['NRO_REPRO_RCS'];
+
+				if($nro_repro_rcs != ""){
+					$this->confirma_ws($nro_repro_rcs);
+				}
+			}
+				///**************************** FINCONFIRMACION WS********************************
+			return true;
+    	}
+    	
+        return false;
+        
+    }
+    function confirma_ws($ve_cod_repro_rcs){
+    	 require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/nusoap-0.7.3/lib/nusoap.php");
+			$cliente = new nusoap_client('http://simulacion.helen.cl/wan/simulacion/simulacion_produccion/simulacion_RCS/trunk/appl/web_service/server/ws_server.wsdl',true);
+
+			$cliente->setCredentials(K_CLIENTE, "123", "basic");
+			if ($cliente->getError()) {
+				print_r($cliente->getError());
+		        return false;
+		    }
+
+		    $result = $cliente->call("WS_confirma", array("ve_cod_repro_rcs" => $ve_cod_repro_rcs));
+		    if ($cliente->fault) {
+		    	print_r($result);
+		        return false;
+		    }
+		    else {
+		    	if ($cliente->getError()) {
+		    		print_r($cliente->getError());
+		            return false;
+		        }
+		    }
+    }
+	function print_record() {
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql = "SELECT NRO_REPRO_RCS FROM REPRO_RCS WHERE COD_REPRO_RCS = ".$this->get_key();
+		$result = $db->build_results($sql);
+		$NRO_REPRO_RCS = $result[0]['NRO_REPRO_RCS'];
+		
+		$tipo = $_POST['wi_hidden'];
+		
+		if($tipo == "PAGARE"){
+			$url = "http://simulacion.helen.cl/wan/simulacion/simulacion_produccion/simulacion_RCS/trunk/appl/40_finaliza/class_print_pagare.php?cod_repro=$NRO_REPRO_RCS";
+
+			print '<script type="text/javascript">
+          				window.open("'.$url.'","_blank");
+				   </script>';
+		}
+		else if($tipo == "SOLICITUD"){
+			$url = "http://simulacion.helen.cl/wan/simulacion/simulacion_produccion/simulacion_RCS/trunk/appl/40_finaliza/class_print_solicitud.php?cod_repro=".$NRO_REPRO_RCS."&K_CLIENTE=".K_CLIENTE;
+
+			print '<script type="text/javascript">
+						window.open("'.$url.'","_blank");
+				   </script>';
+		}
+		$this->_load_record();
+	}
+}
+class print_repro_rcs_base extends reporte {
+	var $cod_repro;
+	
+	function __construct($cod_repro, $xml, $labels=array(), $titulo, $con_logo, $vuelve_a_presentacion=false){
+		$this->cod_repro = $cod_repro;
+		parent::__construct("select 1", $xml, $labels, $titulo, $con_logo, $vuelve_a_presentacion);
+	}
+	function modifica_pdf(&$pdf) {
+		$pdf->SetFont('Helvetica','I',16);
+		$pdf->Text( 230, 100,$this->tipo);
+	}
+}
+/////////////////////////////////////////////////////////////
+// Se separa por UNIVERSIDAD
+$file_name = dirname(__FILE__)."/".K_CLIENTE."/class_wi_repro_rcs.php";
+if (file_exists($file_name)) 
+	require_once($file_name);
+else {
+	class wi_repro_rcs extends wi_repro_rcs_base {
+	    function __construct($cod_item_menu) {
+	        parent::__construct($cod_item_menu); 
+		}
+	}
+	class dw_repro_deuda extends dw_repro_deuda_base {
+	    function __construct() {
+	        parent::__construct();
+        }
+    }
+	class print_repro_rcs extends print_repro_rcs_base {
+	    function __construct() {
+            parent::__construct();
+        }
+    }
+}
+?>

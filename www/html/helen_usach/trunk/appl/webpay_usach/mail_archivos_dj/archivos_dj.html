@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<!-- meta: para que se vean las � y los acentos -->
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <!-- meta_fin -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<title>Universidad de Santiago de Chile</title>
+
+	<!-- Bootstrap -->
+	
+	<link href="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/css/style.css" rel="stylesheet">
+	<link href="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/css/bootstrap.min.css" rel="stylesheet">
+	<link href="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/css/text.css" rel="stylesheet">
+	<link href="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/css/normalize.css" rel="stylesheet">
+	<link href="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/css/my-layout.css" rel="stylesheet">
+	<link href="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/css/media-queries.css" rel="stylesheet">
+	
+	<link rel="stylesheet" href="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/css/dropzone.css">
+	<link rel="stylesheet" href="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/css/archivo-dj.css">
+	<link rel="stylesheet" href="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/css/fontawesome/css/all.min.css">
+	<link rel="stylesheet" href="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/css/loaders.css">
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+      
+      <!-- JS -->
+      <script src="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/js/jquery.min.js"></script>
+      <script src="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/js/bootstrap.min.js"></script>
+	  
+	  <script src="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/js/dropzone.js"></script>
+	  <script src="{K_ROOT_URL}appl/webpay_usach/mail_archivos_dj/archivos-dj.js"></script>
+</head>
+<!-- header -->
+  	<header class="container-fluid blue xs">
+  		<div class="container">	
+  			<div class="col-md-2 col-xs-3 image-navbar visible-lg visible-md visible-sm" style="padding-left:0px;z-index:2">
+              <a href="http://www.usach.cl/">
+               <img class="responsive" style="max-width:7em;" src="images/logo-usach.png">
+              </a>
+        </div>
+         <div class="col-md-8" >
+        	<br> 
+              <h1 style="color:#ffffff;"> Universidad de Santiago de Chile </h1>
+              <h4 style="color:#ffffff;"> Administraci&oacute;n General del Fondo Solidario</h4>
+        </div>
+        
+  		</div>
+  	</header>
+  	<!-- container -->
+  	<section class="container-fluid2">
+  		<div class="row">
+  			<div class="col-md-1"></div>
+
+  			<!-- content -->
+  			<article class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header" style="margin-bottom: 7px;">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="modal-titulo"></h4>
+	      </div>
+	      <div class="modal-body">
+	        ...
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<div class="row">
+		<div class="row m-30" id="DIV_UPLOADS">
+				<div class="col-md-12">
+					<h3 class=" txt-blue ">{NOM_DEUDOR} sube aqu&iacute; tu documentaci&oacute;n</h3>
+					<h6 class="title txt-blue upper mb-30">(Solo archivos de imagen y PDF, tama&ntilde;o m&aacute;ximo {max_peso} mb)</h6>
+            		<div class="panel with-nav-tabs panel-primary">
+                		<div class="panel-heading bg-griz">
+	                        <ul class="nav nav-tabs" id="nav_archivos" style="margin-bottom: -7px;">
+	                            <li style="display: {DISPLAY_DJ};" class="{class_li_dj}" id="liDj"><a class="a-adj" href="#tabDj" data-toggle="tab">D. Jurada</a></li>
+	                            <li style="display: {DISPLAY_F22};" class="{class_li_f22}" id="liF22"><a class="a-adj" href="#tabF22" data-toggle="tab">F. 22</a></li>
+	                            <li style="display: {DISPLAY_RETENEDORES};" class="{class_li_retenedores}" id="liAr"><a class="a-adj" href="#tabAr" data-toggle="tab">A. Retenedores</a></li>
+	                            <li style="display: {DISPLAY_COTIZACIONES};" class="{class_li_cotizaciones}" id="liCcp"><a class="a-adj" href="#tabCcp" data-toggle="tab">C. Cotizaciones</a></li>
+	                            <li style="display: {DISPLAY_REMUNERACIONES};" class="{class_li_remuneraciones}" id="liCr"><a class="a-adj" href="#tabCr" data-toggle="tab">C. Remuneraciones</a></li>
+	                            <li style="display: {DISPLAY_NACIMIENTO};" class="{class_li_nacimiento}" id="liCn"><a class="a-adj" href="#tabCn" data-toggle="tab">C. Nacimiento</a></li>
+	                            <li style="display: {DISPLAY_MATRIMONIO};" class="{class_li_matrimonio}" id="liCm"><a class="a-adj" href="#tabCm" data-toggle="tab">C. Matrimonio</a></li>
+	                            <li style="display: {DISPLAY_LIQUIDACIONES};" class="{class_li_liquidaciones}" id="liLq"><a class="a-adj" href="#tabLq" data-toggle="tab">Finiquitos o Licencias Medicas</a></li>
+	                            <li style="display: {DISPLAY_OTROS};" class="{class_li_otros}" id="liOt"><a class="a-adj" href="#tabOt" data-toggle="tab">Otros</a></li>
+	                        </ul>
+	                	</div>
+	                	<div style="display: none">
+	                		<input type="hidden" name="VALIDA_DJ" id="VALIDA_DJ" value="{DISPLAY_DJ}">
+	                		<input type="hidden" name="VALIDA_F22" id="VALIDA_F22" value="{DISPLAY_F22}">
+	                		<input type="hidden" name="VALIDA_RETENEDORES" id="VALIDA_RETENEDORES" value="{DISPLAY_RETENEDORES}">
+	                		<input type="hidden" name="VALIDA_COTIZACIONES" id="VALIDA_COTIZACIONES" value="{DISPLAY_COTIZACIONES}">
+	                		<input type="hidden" name="VALIDA_REMUNERACIONES" id="VALIDA_REMUNERACIONES" value="{DISPLAY_REMUNERACIONES}">
+	                		<input type="hidden" name="VALIDA_NACIMIENTO" id="VALIDA_NACIMIENTO" value="{DISPLAY_NACIMIENTO}">
+	                		<input type="hidden" name="VALIDA_MATRIMONIO" id="VALIDA_MATRIMONIO" value="{DISPLAY_MATRIMONIO}">
+	                		<input type="hidden" name="VALIDA_LIQUIDACIONES" id="VALIDA_LIQUIDACIONES" value="{DISPLAY_LIQUIDACIONES}">
+	                		<input type="hidden" name="VALIDA_OTROS" id="VALIDA_OTROS" value="{DISPLAY_OTROS}">
+	                	</div>
+		                <div class="panel-body">
+		                    <div class="tab-content">
+		                        <div class="tab-pane fade {class_tab_dj}" id="tabDj">
+		                        	<div class="col-md-12 mt-10 center-text" style="display: {DISPLAY_DJ};">
+										<h4>Declaraci&oacute;n Jurada
+											<a role="button" id="dj_info"><i class="fas fa-question-circle"></i></a>
+										</h4>
+										<div id="dj" class="dropzone">
+											<DIV class="dz-message needsclick">    
+					        					Coloca archivos aqu&iacute; para subirlos o haz un click.
+					        				</DIV>
+										</div>
+									</div>
+		                        </div>
+		                        <div class="tab-pane fade {class_tab_f22}" id="tabF22">
+		                        	<div class="col-md-12 mt-10 center-text" style="display: {DISPLAY_F22};">
+										<h4>Formulario 22
+											<a role="button" id="f22_info"><i class="fas fa-question-circle"></i></a>
+										</h4>
+										<div id="f22" class="dropzone">
+											<DIV class="dz-message needsclick">    
+					        					Coloca archivos aqu&iacute; para subirlos o haz un click.
+					        				</DIV>
+										</div>
+									</div>
+		                        </div>
+		                        <div class="tab-pane fade {class_tab_retenedores}" id="tabAr">
+		                        	<div class="col-md-12 mt-10 center-text" style="display: {DISPLAY_RETENEDORES};">
+										<h4>Agentes retenedores
+											<a role="button" id="ar_info"><i class="fas fa-question-circle"></i></a>
+										</h4>
+										<div id="ar" class="dropzone">
+											<DIV class="dz-message needsclick">    
+					        					Coloca archivos aqu&iacute; para subirlos o haz un click.
+					        				</DIV>
+										</div>
+									</div>
+		                        </div>
+		                        <div class="tab-pane fade {class_tab_cotizaciones}" id="tabCcp">
+		                        	<div class="col-md-12 mt-10 center-text" style="display: {DISPLAY_COTIZACIONES};">
+										<h4>Certificado de cotizaciones previsionales
+											<a role="button" id="cc_info"><i class="fas fa-question-circle"></i></a>
+										</h4>
+										<div id="ccp" class="dropzone">
+											<DIV class="dz-message needsclick">    
+					        					Coloca archivos aqu&iacute; para subirlos o haz un click.
+					        				</DIV>
+										</div>
+									</div>
+		                        </div>
+		                        <div class="tab-pane fade {class_tab_remuneraciones}" id="tabCr">
+		                        	<div class="col-md-12 mt-10 center-text" style="display: {DISPLAY_REMUNERACIONES};">
+										<h4>Certificado de remuneraciones
+											<a role="button" id="cr_info"><i class="fas fa-question-circle"></i></a>
+										</h4>
+										<div id="cr" class="dropzone">
+											<DIV class="dz-message needsclick">    
+					        					Coloca archivos aqu&iacute; para subirlos o haz un click.
+					        				</DIV>
+										</div>
+									</div>
+		                        </div>
+		                        <div class="tab-pane fade {class_tab_nacimiento}" id="tabCn">
+		                        	<div class="col-md-12 mt-10 center-text" style="display: {DISPLAY_NACIMIENTO};">
+										<h4>Certificado de nacimiento de hijo
+											<a role="button" id="cn_info"><i class="fas fa-question-circle"></i></a>
+										</h4>
+										<div id="cn" class="dropzone">
+											<DIV class="dz-message needsclick">    
+					        					Coloca archivos aqu&iacute; para subirlos o haz un click.
+					        				</DIV>
+										</div>
+									</div>
+		                        </div>
+		                        <div class="tab-pane fade {class_tab_matrimonio}" id="tabCm">
+		                        	<div class="col-md-12 mt-10 center-text" style="display: {DISPLAY_MATRIMONIO};">
+										<h4>Certificado de matrimonio
+											<a role="button" id="cm_info"><i class="fas fa-question-circle"></i></a>
+										</h4>
+										<div id="cm" class="dropzone">
+											<DIV class="dz-message needsclick">    
+					        					Coloca archivos aqu&iacute; para subirlos o haz un click.
+					        				</DIV>
+										</div>
+									</div>
+		                        </div>
+		                        <div class="tab-pane fade {class_tab_liquidaciones}" id="tabLq">
+									<div class="col-md-12 mt-10 center-text" style="display: {DISPLAY_LIQUIDACIONES};">
+										<h4>Finiquitos o Licencia Medicas
+											<a role="button" id="lq_info"><i class="fas fa-question-circle"></i></a>
+										</h4>
+										<div id="lq" class="dropzone">
+											<DIV class="dz-message needsclick">    
+					        					Coloca archivos aqu&iacute; para subirlos o haz un click.
+					        				</DIV>
+										</div>
+									</div>
+								</div>
+		                        <div class="tab-pane fade {class_tab_otros}" id="tabOt">
+									<div class="col-md-12 mt-10 center-text" style="display: {DISPLAY_OTROS};">
+										<h4>Otros
+											<a role="button" id="ot_info"><i class="fas fa-question-circle"></i></a>
+										</h4>
+										<div id="otros" class="dropzone">
+											<DIV class="dz-message needsclick">    
+					        					Coloca archivos aqu&iacute; para subirlos o haz un click.
+					        				</DIV>
+										</div>
+									</div>
+								</div>
+		                    </div>
+		                </div>
+            		</div>
+            		<div class="row " style="margin-bottom: 7px; margin-left: 7px;">
+				    	<div class="col-12">
+				    		<span class="">
+		        				<input id="acepta_condiciones" type="checkbox" aria-label="">
+		        			</span>
+		        			<a role="button" id="acepta_condiciones_info">
+								Aceptar las condiciones <i class="far fa-file-alt"></i>
+							</a>
+		      			</div>
+				    </div>
+				    <div class="row" style="margin-left: 7px;">
+				    	<div class="col-12">
+				    		<input type="button" class="btn btn-default" onclick="" style="background: #00A499 none repeat;border: medium none;color: white;" name="env" id="env" value="Subir archivos"/>
+				    		{LINK_EXITO}
+				    	</div>
+				    </div>
+        		</div>
+				
+				<input type="hidden" id="cardinalidad_dj" value="{cardinalidad_dj}" />
+				<input type="hidden" id="cardinalidad_f22" value="{cardinalidad_f22}" />
+				<input type="hidden" id="cardinalidad_ar" value="{cardinalidad_ar}" />
+				<input type="hidden" id="cardinalidad_ccp" value="{cardinalidad_ccp}" />
+				<input type="hidden" id="cardinalidad_cr" value="{cardinalidad_cr}" />
+				<input type="hidden" id="cardinalidad_cn" value="{cardinalidad_cn}" />
+				<input type="hidden" id="cardinalidad_cm" value="{cardinalidad_cm}" />
+				<input type="hidden" id="cardinalidad_otros" value="{cardinalidad_otros}" />
+				<input type="hidden" id="cardinalidad_lq" value="{cardinalidad_lq}" />
+				
+				<input type="hidden" id="tp_cod_dj" value="{tp_cod_dj}" />
+				<input type="hidden" id="tp_f22" value="{tp_f22}" />
+				<input type="hidden" id="tp_ar" value="{tp_ar}" />
+				<input type="hidden" id="tp_ccp" value="{tp_ccp}" />
+				<input type="hidden" id="tp_cr" value="{tp_cr}" />
+				<input type="hidden" id="tp_cn" value="{tp_cn}" />
+				<input type="hidden" id="tp_cm" value="{tp_cm}" />
+				<input type="hidden" id="tp_otros" value="{tp_otros}" />
+				<input type="hidden" id="tp_lq" value="{tp_lq}" />
+				
+				<input type="hidden" id="ayuda_dj" value="{ayuda_dj}" />
+				<input type="hidden" id="ayuda_f22" value="{ayuda_f22}" />
+				<input type="hidden" id="ayuda_ar" value="{ayuda_ar}" />
+				<input type="hidden" id="ayuda_ccp" value="{ayuda_ccp}" />
+				<input type="hidden" id="ayuda_cr" value="{ayuda_cr}" />
+				<input type="hidden" id="ayuda_cn" value="{ayuda_cn}" />
+				<input type="hidden" id="ayuda_cm" value="{ayuda_cm}" />
+				<input type="hidden" id="ayuda_ot" value="{ayuda_ot}" />
+				<input type="hidden" id="ayuda_lq" value="{ayuda_lq}" />
+				
+				<input type="hidden" id="cod_dj" value="{cod_dj}" />
+				<input type="hidden" id="cod_pers" value="{cod_pers}" />
+				
+				<input type="hidden" id="display_matrimonio" value="{DISPLAY_MATRIMONIO}" />
+				<input type="hidden" id="display_nacimiento" value="{DISPLAY_NACIMIENTO}" />
+				
+				<input type="hidden" id="max_peso" value="{max_peso}" />
+				
+			</div> <!-- row content -->
+			<div class="row m-30 hidden" id="DIV_LOADER">
+				<div class="col-md-4 bg"></div>
+		    	<div class="col-md-3 bg">
+			          <h3 style="margin-bottom: 20px;">Subiendo Archivos</h3>
+			        <div class="loader" id="loader-1"></div>
+			      </div>
+		    </div>
+		    <div class="row m-30 hidden" id="DIV_EXITO">
+		    	<h2 class="title txt-blue">Sus documentos han sido subidos satisfactoriamente</h2>
+		    	<p class="title">A continuaci&oacute;n revisaremos y procesaremos su declaraci&oacute;n de ingresos y documentos de respaldo. 
+		    	</p>
+		    	{LINK_EXITO}
+		    </div>
+		
+	</div>
+</article>
+  			<div class="clear"></div>
+  		</div>
+  	</section>
+
+	<!-- footer -->
+	
+  </body>
+  </html>

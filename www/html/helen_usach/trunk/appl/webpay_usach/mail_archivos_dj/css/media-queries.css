@@ -1,0 +1,220 @@
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
+
+@media (min-width: 315px) { 
+/* titulo*/		
+.pr-70										{  padding-left: 0px;}
+h3.title                                    {height: 50px; display: block; background: url(../images/sprite-ico-titulos.png) no-repeat 0px 0px; padding:15px 0 0 55px; margin-bottom: 100px;}
+.header.xl 									{ height: 100px !important;}
+.titulo                                     {padding-top: 0px; padding-left: 0px;}
+.container-fluid							{padding-right: 50px; padding-left: 50px;}
+.container-fluid2							{padding-right: 15px!important; margin-left: 15px !important;}
+.padd-rig									{padding-right: 80px; padding-bottom: 10px;}
+.footer-center								{text-align: center !important;}
+.datos										{padding-left: 35px;}	
+
+/* text */
+h1 											{ font-size: 20px; font-size: 2.0rem; }
+h2.slide 									{ font-size: 25px; font-size: 2.5rem; line-height: 1.1em; }
+
+/* slide */
+.info-slide 								{ width: 30%; position: absolute; top: 20px; right: 60px; }
+
+/* navbar */
+.nav li										{ margin: 7px 0!important; } 
+.nav>li>a 									{ height: 40px; }
+.nav>li>a span.text 						{ padding-top: 10px; padding-left: 10px; } 
+.nav a										{ font-size: 13px!important; font-size: 1.3rem!important; }
+
+/* button */
+a.btn-sidebar 								{ padding: 8px 8px!important; }
+
+/* Footer */
+footer 										{ text-align: left; }
+footer a    								{ float: right!important; }
+
+
+/* null */
+
+.min-h-800									{ min-height:100px; }
+.min-h-769 									{ min-height: 769 px; }
+.min-h-10 									{ min-height: 10px; }	
+.m-30 										{ margin: 0px; }
+.col-xs-6									{ width: 100%!important;}
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 769px) { 
+
+/* titulo*/	
+h3.title                                    {height: 50px; display: block; background: url(../images/sprite-ico-titulos.png) no-repeat 0px 0px; padding:15px 0 0 55px; margin-bottom: 30px;}
+.header.xl 									{ height: 400px;}
+.titulo                                     {padding-top: 0px; padding-left: 390px;}
+.container-fluid							{padding-right: 100px; padding-left: 0px;}
+.container-fluid2							{padding-right: 15px!important; margin-left: 15px !important;}
+.padd-rig									{padding-right: 80px; padding-bottom: 10px;}
+.footer-center								{text-align: center !important;}
+.datos										{padding-left: 400px;}	
+
+/* text */
+h1 											{ font-size: 20px; font-size: 2.0rem; }
+h2.slide 									{ font-size: 25px; font-size: 2.5rem; line-height: 1.1em; }
+
+/* slide */
+.info-slide 								{ width: 30%; position: absolute; top: 20px; right: 60px; }
+
+/* navbar */
+.nav li										{ margin: 7px 0!important; } 
+.nav>li>a 									{ height: 40px; }
+.nav>li>a span.text 						{ padding-top: 10px; padding-left: 10px; } 
+.nav a										{ font-size: 13px!important; font-size: 1.3rem!important; }
+
+/* button */
+a.btn-sidebar 								{ padding: 8px 8px!important; }
+
+/* Footer */
+footer 										{ text-align: left; }
+footer a    								{ float: right!important; }
+
+/* null */
+
+.min-h-800									{ min-height:100px; }
+.min-h-769 									{ min-height: 769 px; }
+.min-h-10 									{ min-height: 10px; }	
+.m-30 										{ margin: 30px; }
+
+
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+.container-fluid2							{padding-right: 0px; margin-left: 0px!important;}
+.pr-70										{   padding-left: 100px;}
+/* text */
+h1 											{ font-size: 25px; font-size: 2.5rem; }
+h2.slide 									{ font-size: 30px; font-size: 3rem; line-height: 1.1em; }
+
+/* slide */
+.info-slide 								{ width: 40%; position: absolute; top: 31px; right: 60px; }
+
+/* navbar */
+.nav li										{ margin: 7px 0!important; } 
+.nav>li>a 									{ height: 40px; }
+.nav>li>a span.text 						{ padding-top: 10px; } 
+.nav a										{ font-size: 14px!important; font-size: 1.4rem!important; }
+.nav>li>a span.ico 							{ width: 40px; height: 40px; float: left; background: url(../images/sprite-ico-navbar.png) no-repeat 0px 0!important; background-size: 40px!important; }
+
+.nav>li>a>span.one 							{ background-position: 0px 0px; }
+.nav>li>a>span.two 							{ background-position: 0px -40px!important; }
+.nav>li>a>span.three 						{ background-position: 0px -80px!important; }
+.nav>li>a>span.four 						{ background-position: 0px -120px!important; }
+.nav>li>a>span.five 						{ background-position: 0px -160px!important; }
+.nav>li>a>span.six 							{ background-position: 0px -200px!important; }
+.nav>li>a>span.seven 						{ background-position: 0px -240px!important; }
+.nav>li>a>span.eight 						{ background-position: 0px -280px!important; }
+
+.nav>li.active>a span.ico,
+.nav>li>a:hover span.ico 					{ background-size: 40px!important; }
+
+.nav>li>a:hover>span.one,
+.nav>li.active>a span.one 					{ background-position: 0px 0px; }
+.nav>li>a:hover>span.two,
+.nav>li.active>a span.two  					{ background-position: 0px -40px!important; }
+.nav>li>a:hover>span.three,
+.nav>li.active>a span.three 				{ background-position: 0px -80px!important; }
+.nav>li>a:hover>span.four,
+.nav>li.active>a span.four  				{ background-position: 0px -120px!important; }
+.nav>li>a:hover>span.five,
+.nav>li.active>a span.five 					{ background-position: 0px -160px!important; }
+.nav>li>a:hover>span.six,
+.nav>li.active>a span.six 					{ background-position: 0px -200px!important; }
+.nav>li>a:hover>span.seven,
+.nav>li.active>a span.seven 				{ background-position: 0px -240px!important; }
+.nav>li>a:hover>span.eight,
+.nav>li.active>a span.eight 				{ background-position: 0px -280px!important; }
+
+/* button */
+a.btn-sidebar 								{ padding: 8px 8px!important; }
+
+/* Footer */
+footer 										{ text-align: left; }
+footer a    								{ float: right!important; }
+.footer-col									{width: 110%; padding-left: 60%;}
+
+/* null */
+.min-h-769 									{ min-height: 769 px; }
+.min-h-800									{ min-height: 200px; }
+.m-30 										{ margin: 30px; }
+	
+.
+
+}
+
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+/* titulo*/	
+.container-fluid 							{padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;}
+.titulo                                     {padding-top: 0px; padding-left: 690px;}	
+.padd-rig									{padding-right: 0px;}
+.container-fluid2							{padding-right: 0px; margin-left: 0px!important;}
+.pr-70										{  padding-left: 100px;}
+.datos                                      {padding-left: 0px;}
+/* text */
+h1 											{ font-size: 25px; font-size: 2.5rem; }
+h2.slide 									{ font-size: 30px; font-size: 3rem; line-height: 1.1em; }
+
+/* slide */
+.info-slide 								{ width: 40%; position: absolute; top: 2px; right: 60px; }
+
+/* navbar */
+.nav	li									{ margin: 7px 0!important; } 
+.nav>li>a 									{ height: 60px; }
+.nav>li>a span.text 						{ padding-top: 20px; } 
+.nav a										{ font-size: 15px!important; font-size: 1.5rem!important; }
+.nav>li>a span.ico 							{ width: 60px; height: 60px; float: left; background: url(../images/sprite-ico-navbar.png) no-repeat 0px 0!important; background-size: 60px!important; }
+
+.nav>li>a>span.one 							{ background-position: 0px 0px; }
+.nav>li>a>span.two 							{ background-position: 0px -60px!important; }
+.nav>li>a>span.three 						{ background-position: 0px -120px!important; }
+.nav>li>a>span.four 						{ background-position: 0px -180px!important; }
+.nav>li>a>span.five 						{ background-position: 0px -240px!important; }
+.nav>li>a>span.six 							{ background-position: 0px -300px!important; }
+.nav>li>a>span.seven 						{ background-position: 0px -360px!important; }
+.nav>li>a>span.eight 						{ background-position: 0px -420px!important; }
+
+.nav>li.active>a span.ico,
+.nav>li>a:hover span.ico 					{ background-size: 60px!important; }
+
+.nav>li>a:hover>span.one,
+.nav>li.active>a span.one 					{ background-position: 0px 0px; }
+.nav>li>a:hover>span.two,
+.nav>li.active>a span.two  					{ background-position: 0px -60px!important; }
+.nav>li>a:hover>span.three,
+.nav>li.active>a span.three 				{ background-position: 0px -120px!important; }
+.nav>li>a:hover>span.four,
+.nav>li.active>a span.four  				{ background-position: 0px -180px!important; }
+.nav>li>a:hover>span.five,
+.nav>li.active>a span.five 					{ background-position: 0px -240px!important; }
+.nav>li>a:hover>span.six,
+.nav>li.active>a span.six 					{ background-position: 0px -300px!important; }
+.nav>li>a:hover>span.seven,
+.nav>li.active>a span.seven 				{ background-position: 0px -360px!important; }
+.nav>li>a:hover>span.eight,
+.nav>li.active>a span.eight 				{ background-position: 0px -420px!important; }
+
+/* button */
+a.btn-sidebar 								{ padding: 8px 12px!important; }
+
+/* Footer */
+footer 										{  padding-right: 50% !important; }
+footer a    								{ float: right!important; }
+.footer-col									{width: 110%; padding-left: 60%;}
+
+/* null */
+.min-h-1150 								{  	min-height:1300px;}
+.min-h-800									{ min-height: 800px; }
+.min-h-769 									{ min-height: 769px; }
+.m-30 										{ margin: 30px; }
+
+}

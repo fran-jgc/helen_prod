@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Reprogramacion - Detalle del Crédito</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+<style type="text/css">
+.hh2 {
+	FONT-WEIGHT: bolder; FONT-SIZE: 14px; COLOR: #CC6600; LINE-HEIGHT: normal; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+</style>
+</head>
+<body>
+<table width="1050" border="0" align="center">
+
+	<tr bgcolor="#FFFFFF">
+		<td><img src="{K_ROOT_URL}images_appl/{K_CLIENTE}/banner.jpg" width="1045" height="93" /></td>    
+	</tr>
+  	<tr bgcolor="#F3F3F3">
+    	<td height="40">
+			<table width="303" border="0" align="right">
+      			<tr>
+        			<td class="tit_superior" align="right">Fecha Actual: {W_FECHA_ACTUAL}</td>
+	      		</tr>
+			</table>
+		</td>
+	</tr>
+	<tr height="400" bgcolor="#F3F3F3" valign="top">
+		<td colspan="2">
+			<p>&nbsp;</p>
+			{W_TABLE_DEUDOR}
+		</td>
+	</tr>
+</table>
+</body>	
+</html>

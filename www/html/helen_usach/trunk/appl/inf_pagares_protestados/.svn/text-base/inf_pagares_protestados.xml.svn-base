@@ -1,0 +1,52 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="6.5" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="PAGARES PROTESTADOS" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{RUT}" width="8%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{APELLIDO_PATERNO}" width="7%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{APELLIDO_MATERNO}" width="7%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{NOMBRE}" width="12%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{DIRECCION}" width="15%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_COMUNA}" width="8%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_CIUDAD}" width="8%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{NRO_DEUDA}" width="7%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{FOLIO_PAGARE}" width="8%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{MONEDA}" width="5%" align="R" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO}" width="8%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_PESOS}" width="8%" align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="sum_monto_pagare_protestado" function="SUM" value="MONTO"/>
+		<Variable name="sum_monto_pagare_protestado_pesos" function="SUM" value="MONTO_PESOS"/>
+		<GroupHeader>
+			<Cell text="Rut" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="A. Paterno" width="7%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="A. Materno" width="7%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Nombre" width="12%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Direccion" width="15%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Comuna" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Ciudad" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Nro. Deuda" width="7%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Folio Pagare" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Simbolo" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto $" width="8%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="Total:" width="85%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_monto_pagare_protestado}" width="8%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_monto_pagare_protestado_pesos}" width="8%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>
+		</GroupFooter>
+	</Group>
+</Report>

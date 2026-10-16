@@ -1,0 +1,405 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+
+class dw_documento_pago extends datawindow{
+    
+    const K_POR_DEPOSITADO = 1;
+    const K_DEPOSITADO = 2;
+    
+    function __construct() {
+        
+        $sql= sql_deposito::get_sql('DW_DOCUMENTO_PAGO');
+        
+        parent::__construct($sql, 'DOCUMENTO_PAGO', true, true);
+        
+        $this->add_control($control = new edit_check_box('SELECCION', 'S', 'N'));
+        $control->set_onChange("seleccion_deposito(this);");
+        
+        $this->add_control(new edit_text('COD_DOCUMENTO_PAGO', 10, 10, 'hidden'));
+        $this->add_control(new edit_text('COD_DEPOSITO_DOCUMENTO', 10, 10, 'hidden'));
+        $this->add_control(new static_text('RUT'));
+        $this->add_control(new static_text('DIG_VERIF'));
+        $this->add_control(new static_text('NRO_INGRESO'));
+        $this->add_control(new static_text('NRO_DOCUMENTO'));
+        $this->add_control(new static_text('NOM_TIPO_DOCUMENTO_PAGO'));
+        $this->add_control(new static_text('COD_BANCO_DP',10,10));
+        $this->add_control(new static_text('NOM_BANCO_DP',15,20));
+        $this->add_control(new static_text('NOM_PLAZA',15,20));
+        $this->add_control(new static_num('NRO_DOCUMENTO_PAGO'));
+        $this->add_control(new static_text('FECHA_DOCUMENTO_PAGO',10,10));
+        $this->add_control(new computed('MONTO', 0));
+        $this->add_control(new edit_text('SELECCION_V', 10, 10, 'hidden'));
+        $this->set_computed('MONTO_SELECCIONADO', '[SELECCION_V] * [MONTO]');
+        $this->controls['MONTO_SELECCIONADO']->type = 'hidden';
+        
+        $this->accumulate('MONTO_SELECCIONADO');
+        
+        /******************* FILTRO EN EL INPUT     ******/
+        $RUT = new header_input_text('RUT', 'Rut Deudor');
+        $NOM_TIPO_DOCUMENTO_PAGO = new header_input_text('NOM_TIPO_DOCUMENTO_PAGO', 'Tipo Doc.');
+        $NRO_INGRESO = new header_input_text('NRO_INGRESO', 'N° Ingreso');
+        
+        $this->add_header($RUT);
+        $this->add_header($NOM_TIPO_DOCUMENTO_PAGO);
+        $this->add_header($NRO_INGRESO);
+        $NRO_INGRESO->field_bd = "f_doc_nro_ingreso(DP.COD_DOCUMENTO_PAGO)";
+        
+        
+        $sql = "select COD_BANCO
+						,NOM_BANCO
+				from BANCO
+				order by NOM_BANCO";
+        $NOM_BANCO_DP = new header_input_drop_down('NOM_BANCO_DP', 'Banco', $sql);
+        
+        $this->add_header($NOM_BANCO_DP);
+        $NOM_PLAZA = new header_input_text('NOM_PLAZA', 'Plaza');
+        $this->add_header($NOM_PLAZA);
+        $NRO_DOCUMENTO_PAGO = new header_input_num('NRO_DOCUMENTO_PAGO', 'N° Cheque');
+        $this->add_header($NRO_DOCUMENTO_PAGO);
+        $FECHA_DOCUMENTO_PAGO = new header_input_date('FECHA_DOCUMENTO_PAGO', 'Fecha');
+        $this->add_header($FECHA_DOCUMENTO_PAGO);
+        $MONTO = new header_input_num('MONTO', 'Monto');
+        $this->add_header($MONTO);
+        /*******************FIN FILTRO EN EL INPUT     ******/
+    }
+    
+    /******************* FILTRO EN EL INPUT     ******/
+    var $headers = array();
+    
+    function add_header(&$header_columna) {
+        $this->headers[$header_columna->field] = $header_columna;
+    }
+    function remove_header($field) {
+        unset($this->headers[$field]);
+    }
+    function fill_template(&$temp) {
+        parent::fill_template($temp);
+        
+        // headers
+        $indices = array_keys($this->headers);
+        for ($i=0; $i < count($this->headers); $i++) {
+            $field = $indices[$i];
+            $this->headers[$field]->draw_header_input($temp);
+        }
+    }
+    /*******************FIN FILTRO EN EL INPUT     ******/
+    
+    function update($db, $cod_deposito) {
+        for ($i = 0; $i < $this->row_count(); $i++){
+            $statuts = $this->get_status_row($i);
+            if ($statuts == K_ROW_NOT_MODIFIED){
+                continue;
+            }
+            $SELECCION = $this->get_item($i, 'SELECCION');
+            $COD_DOCUMENTO_PAGO = $this->get_item($i, 'COD_DOCUMENTO_PAGO');
+            $COD_DEPOSITO_DOCUMENTO = $this->get_item($i, 'COD_DEPOSITO_DOCUMENTO');
+            
+            $COD_DEPOSITO_DOCUMENTO = ($COD_DEPOSITO_DOCUMENTO == '') ? "null" : $COD_DEPOSITO_DOCUMENTO;
+            
+            if ($SELECCION == 'S'){
+                if (!$db->EXECUTE_SP('spu_deposito_documento', "'INSERT',$COD_DOCUMENTO_PAGO, $cod_deposito, $COD_DEPOSITO_DOCUMENTO"))
+                    return false;
+            }
+            else{
+                if (!$db->EXECUTE_SP('spu_deposito_documento', "'DESELECCIONAR',$COD_DOCUMENTO_PAGO, $cod_deposito, $COD_DEPOSITO_DOCUMENTO"))
+                    return false;
+            }
+        }
+        return true;
+    }
+}
+
+/******************* FILTRO EN EL INPUT     ******/
+class header_input_date extends  header_date {
+    function __construct($field, $nom_header) {
+        parent::__construct($field, $field, $nom_header);
+    }
+    function make_java_script() {
+        return '"return dlg_filtro_date(\''.$this->field.'\',\''.$this->nom_header.'\', \''.$this->valor_filtro.'\', \''.$this->valor_filtro2.'\');"';
+    }
+    function make_filtro() {
+        if (strlen($this->valor_filtro)==0)
+            return '';
+            
+            if ($this->valor_filtro2=='')
+                return $this->valor_filtro;
+                else
+                    return $this->valor_filtro."|".$this->valor_filtro2;
+    }
+}
+class header_input_text extends header_text {
+    function __construct($field, $nom_header) {
+        parent::__construct($field, $field, $nom_header);
+    }
+    function make_java_script() {
+        return '"return dlg_filtro_text(\''.$this->field.'\',\''.$this->nom_header.'\', \''.$this->valor_filtro.'\');"';
+    }
+    function make_filtro() {
+        if (strlen($this->valor_filtro)==0)
+            return '';
+            
+            return $this->valor_filtro;
+    }
+}
+class header_input_num extends header_input_date {
+    
+    function __construct($field, $nom_header) {
+        parent::__construct($field, $nom_header);
+    }
+    function make_java_script() {
+        return '"return dlg_filtro_num(\''.$this->field.'\',\''.$this->nom_header.'\', \''.$this->valor_filtro.'\', \''.$this->valor_filtro2.'\');"';
+    }
+}
+class header_input_drop_down extends header_drop_down {
+    function __construct($field, $nom_header, $sql) {
+        parent::__construct($field, $field, $nom_header, $sql);
+    }
+    function make_java_script() {
+        return '"return dlg_filtro_drop_down(\''.$this->field.'\',\''.$this->nom_header.'\', \''.$this->valor_filtro.'\', \''.$this->sql.'\');"';
+    }
+    function make_filtro() {
+        if (strlen($this->valor_filtro)==0)
+            return '';
+            
+            return $this->valor_filtro;
+    }
+}
+/*******************FIN FILTRO EN EL INPUT     ******/
+
+
+class wi_deposito_base extends w_input{
+    const K_ESTADO_DEPOSITO_INGRESADO 		= 1;
+    const K_ESTADO_DEPOSITO_CONFIRMADO 		= 2;
+    const K_ESTADO_DEPOSITO_ANULADA 		= 3;
+    const K_FONDO_SOLIDARIO       			= 1;
+    const K_CREDITO_INSTITUCIONAL 			= 2;
+    
+    function __construct($cod_item_menu){
+        
+        parent::__construct('deposito', $cod_item_menu);
+        
+        $sql = sql_deposito::get_sql('INPUT');
+        
+        $this->dws['dw_deposito'] = new datawindow($sql);
+        $this->dws['dw_deposito']->add_control(new edit_text('COD_DEPOSITO', 10,10, 'hidden'));
+        $this->dws['dw_deposito']->add_control(new edit_num('NRO_DEPOSITO',0));
+        $this->dws['dw_deposito']->add_control(new static_text('NOM_BANCO'));
+        $this->dws['dw_deposito']->add_control(new static_text('NRO_CUENTA_CORRIENTE'));
+        $this->dws['dw_deposito']->add_control(new edit_text('COD_ESTADO_DEPOSITO',10,10, 'hidden'));
+        $this->dws['dw_deposito']->add_control(new edit_text('COD_ESTADO_DEPOSITO_OLD',10,10, 'hidden'));
+        $this->dws['dw_deposito']->add_control(new static_text('NOM_ESTADO_DEPOSITO'));
+        
+        $this->dws['dw_deposito']->add_control(new static_text('NOM_FAMILIA_DEUDA'));
+        $this->dws['dw_deposito']->add_control(new edit_text_upper('COD_FAMILIA_DEUDA', 10, 10, 'hidden'));
+        
+        $sql_cuenta_corriente =sql_deposito::get_sql('DD_COD_CUENTA_CORRIENTE');
+        $this->dws['dw_deposito']->add_control($control = new drop_down_dw('COD_CUENTA_CORRIENTE', $sql_cuenta_corriente, 140));
+        $control->set_onChange("get_banco_nro_cta(); load_doc_x_depositar()");
+        
+        //mandatory
+        $this->dws['dw_deposito']->set_mandatory('NRO_DEPOSITO', 'N° Boleta Depósito');
+        $this->dws['dw_deposito']->set_mandatory('COD_CUENTA_CORRIENTE', 'Cuenta Corriente');
+        
+        $this->dws['dw_deposito']->add_control(new edit_text('NOM_USUARIO_CONFIRMA', 10,10, 'hidden'));
+        $this->dws['dw_deposito']->set_entrable('NOM_USUARIO_CONFIRMA', false);
+        
+        $this->dws['dw_deposito']->add_control(new edit_text('FECHA_CONFIRMA',10,10));
+        $this->dws['dw_deposito']->set_entrable('FECHA_CONFIRMA', false);
+        
+        $this->dws['dw_deposito']->add_control(new edit_text('NOM_USUARIO_ANULA', 10,10, 'hidden'));
+        $this->dws['dw_deposito']->set_entrable('NOM_USUARIO_ANULA', false);
+        
+        $this->dws['dw_deposito']->add_control(new edit_text('FECHA_ANULA',10,10));
+        $this->dws['dw_deposito']->set_entrable('FECHA_ANULA', false);
+        
+        $this->dws['dw_deposito']->add_control($control = new edit_date('FECHA_DEPOSITO'));
+        $control->set_onChange("change_fecha_deposito(this);");
+        
+        $this->dws['dw_deposito']->set_mandatory('FECHA_DEPOSITO', 'Fecha Depósito');
+        
+        $this->dws['dw_documento_pago'] = new dw_documento_pago();
+    }
+    function new_record(){
+        $this->dws['dw_deposito']->insert_row();
+        $this->dws['dw_deposito']->set_item(0, 'TR_DISPLAY', 'none');
+        $this->dws['dw_deposito']->set_item(0, 'COD_USUARIO', $this->cod_usuario);
+        $this->dws['dw_deposito']->set_item(0, 'NOM_USUARIO', $this->nom_usuario);
+        $this->dws['dw_deposito']->set_item(0, 'FECHA_DEPOSITO', $this->current_date());
+        $this->dws['dw_deposito']->set_item(0, 'COD_ESTADO_DEPOSITO', self::K_ESTADO_DEPOSITO_INGRESADO);
+        $this->dws['dw_deposito']->set_item(0, 'COD_ESTADO_DEPOSITO_OLD', self::K_ESTADO_DEPOSITO_INGRESADO);
+        $this->dws['dw_deposito']->set_item(0, 'NOM_ESTADO_DEPOSITO', 'INGRESADO');
+    }
+    function load_record(){
+        $cod_deposito = $this->get_item_wo($this->current_record, 'COD_DEPOSITO');
+        $this->dws['dw_deposito']->retrieve($cod_deposito);
+        
+        $this->b_no_save_visible	= true;
+        $this->b_save_visible 	 	= true;
+        $this->b_modify_visible	 	= true;
+        $this->b_print_visible 		= true;
+        
+        $COD_ESTADO_DEPOSITO = $this->dws['dw_deposito']->get_item(0, 'COD_ESTADO_DEPOSITO');
+        //estado aprobada solo permite modificar el estado_suspension
+        if ($COD_ESTADO_DEPOSITO == self::K_ESTADO_DEPOSITO_INGRESADO){
+            
+            $sql = sql_deposito::get_sql('DD_COD_ESTADO_DEPOSITO');
+            
+            unset($this->dws['dw_deposito']->controls['COD_ESTADO_DEPOSITO']);
+            $this->dws['dw_deposito']->add_control($control = new drop_down_dw('COD_ESTADO_DEPOSITO',$sql,125));
+            $control->set_onChange("mostrarOcultar_Anula(this);");
+            $this->dws['dw_deposito']->add_control(new edit_text_upper('MOTIVO_ANULA',120, 100));
+            $this->dws['dw_deposito']->add_control(new edit_text('NOM_ESTADO_DEPOSITO',10,10, 'hidden'));
+            $this->dws['dw_deposito']->set_entrable('NRO_DEPOSITO'			, true);
+            $this->dws['dw_deposito']->set_entrable('COD_CUENTA_CORRIENTE'	, true);
+        }
+        
+        //K_ESTADO_DEPOSITO_CONFIRMADO O ANULADO--> NO SEPUEDE MODIFICAR NADA
+        if ($COD_ESTADO_DEPOSITO == self::K_ESTADO_DEPOSITO_CONFIRMADO || $COD_ESTADO_DEPOSITO == self::K_ESTADO_DEPOSITO_ANULADA){
+            $this->b_no_save_visible = false;
+            $this->b_save_visible 	 = false;
+            $this->b_modify_visible	 = false;
+        }
+        $this->dws['dw_documento_pago']->retrieve($cod_deposito);
+    }
+    function get_key(){
+        return $this->dws['dw_deposito']->get_item(0, 'COD_DEPOSITO');
+    }
+    
+    function save_record($db){
+        $COD_DEPOSITO			= $this->dws['dw_deposito']->get_item(0, 'COD_DEPOSITO');
+        $NRO_DEPOSITO			= $this->dws['dw_deposito']->get_item(0, 'NRO_DEPOSITO');
+        $FECHA_DEPOSITO			= $this->dws['dw_deposito']->get_item(0, 'FECHA_DEPOSITO');
+        $COD_USUARIO			= $this->dws['dw_deposito']->get_item(0, 'COD_USUARIO');
+        $COD_CUENTA_CORRIENTE	= $this->dws['dw_deposito']->get_item(0, 'COD_CUENTA_CORRIENTE');
+        $COD_ESTADO_DEPOSITO	= $this->dws['dw_deposito']->get_item(0, 'COD_ESTADO_DEPOSITO');
+        $COD_ESTADO_DEPOSITO_OLD = $this->dws['dw_deposito']->get_item(0, 'COD_ESTADO_DEPOSITO_OLD');
+        $COD_COMPROBANTE		= $this->dws['dw_deposito']->get_item(0, 'COD_COMPROBANTE');
+        $COD_COMPROBANTE_ANULA	= $this->dws['dw_deposito']->get_item(0, 'COD_COMPROBANTE_ANULA');
+        $COD_FAMILIA_DEUDA		= $this->dws['dw_deposito']->get_item(0, 'COD_FAMILIA_DEUDA');
+        $COD_USUARIO_CONFIRMA	= $this->dws['dw_deposito']->get_item(0, 'COD_USUARIO_CONFIRMA');
+        $FECHA_CONFIRMA			= $this->dws['dw_deposito']->get_item(0, 'FECHA_CONFIRMA');
+        $COD_USUARIO_ANULA		= $this->dws['dw_deposito']->get_item(0, 'COD_USUARIO_ANULA');
+        $FECHA_ANULA			= $this->dws['dw_deposito']->get_item(0, 'FECHA_ANULA');
+        $MOTIVO_ANULA			= $this->dws['dw_deposito']->get_item(0, 'MOTIVO_ANULA');
+        
+        $FECHA_ANULA		= ($FECHA_ANULA =='') ? "NULL" : "$FECHA_ANULA";
+        $MOTIVO_ANULA		= $this->dws['dw_deposito']->get_item(0, 'MOTIVO_ANULA');
+        $MOTIVO_ANULA		= ($MOTIVO_ANULA =='') ? "NULL" : "'$MOTIVO_ANULA'";
+        $COD_USUARIO_ANULA	= $this->dws['dw_deposito']->get_item(0, 'COD_USUARIO_ANULA');
+        
+        if ($COD_ESTADO_DEPOSITO == self::K_ESTADO_DEPOSITO_CONFIRMADO){
+            $COD_USUARIO_CONFIRMA = $this->cod_usuario;
+        }
+        else{
+            $COD_USUARIO_CONFIRMA = "null";
+        }
+        
+        if (($MOTIVO_ANULA != '') && ($COD_USUARIO_ANULA == '')){ // se anula
+            $COD_USUARIO_ANULA			= $this->cod_usuario;
+        }
+        else{
+            $COD_USUARIO_ANULA			= "null";
+        }
+        
+        $COD_USUARIO_CONFIRMA	= ($COD_USUARIO_CONFIRMA =='') ? "NULL" : "$COD_USUARIO_CONFIRMA";
+        $FECHA_CONFIRMA			= ($FECHA_CONFIRMA =='') ? "NULL" : "$FECHA_CONFIRMA";
+        $COD_COMPROBANTE		= ($COD_COMPROBANTE=='') ? "null" : $COD_COMPROBANTE;
+        $COD_COMPROBANTE_ANULA	= ($COD_COMPROBANTE_ANULA=='') ? "null" : $COD_COMPROBANTE_ANULA;
+        
+        if ($FECHA_CONFIRMA != "NULL"){
+            $FECHA_CONFIRMA = $this->str2date($FECHA_CONFIRMA);
+        }
+        if ($FECHA_ANULA != "NULL"){
+            $FECHA_ANULA = $this->str2date($FECHA_ANULA);
+        }
+        
+        $FECHA_DEPOSITO = $this->str2date($FECHA_DEPOSITO);
+        $COD_DEPOSITO = ($COD_DEPOSITO == '') ? "null" : $COD_DEPOSITO;
+        
+        $sp = 'spu_deposito';
+        if ($this->is_new_record()){
+            $operacion = 'INSERT';
+        }
+        else{
+            $operacion = 'UPDATE';
+        }
+        $param	= "'$operacion'
+					,$COD_DEPOSITO
+					,$NRO_DEPOSITO
+					,$FECHA_DEPOSITO
+					,$COD_USUARIO
+					,$COD_CUENTA_CORRIENTE
+					,$COD_ESTADO_DEPOSITO
+					,$COD_COMPROBANTE
+					,$COD_COMPROBANTE_ANULA
+					,$COD_FAMILIA_DEUDA
+					,$COD_USUARIO_CONFIRMA
+					,$FECHA_CONFIRMA
+					,$COD_USUARIO_ANULA
+					,$FECHA_ANULA
+					,$MOTIVO_ANULA";
+        //echo $sp.' '.$param.' <br>';
+        if ($db->EXECUTE_SP($sp, $param)){
+            if ($this->is_new_record()) {
+                $COD_DEPOSITO = $db->GET_IDENTITY("deposito");
+                $this->dws['dw_deposito']->set_item(0, 'COD_DEPOSITO', $COD_DEPOSITO);
+            }
+            if ($COD_ESTADO_DEPOSITO != 3) {
+                for ($i=0; $i<$this->dws['dw_documento_pago']->row_count(); $i++)
+                    $this->dws['dw_documento_pago']->set_item($i, 'COD_DEPOSITO', $COD_DEPOSITO);
+                    
+                    if (!$this->dws['dw_documento_pago']->update($db, $COD_DEPOSITO)) return false;
+                    
+                    if ($COD_ESTADO_DEPOSITO_OLD == self::K_ESTADO_DEPOSITO_INGRESADO && $COD_ESTADO_DEPOSITO == self::K_ESTADO_DEPOSITO_CONFIRMADO){
+                        
+                        //echo "$sp, 'CONFIRMA', $COD_DEPOSITO, $COD_USUARIO_CONFIRMA <br>";
+                        if (!$db->EXECUTE_SP($sp, "'CONFIRMA', $COD_DEPOSITO, $COD_USUARIO_CONFIRMA"))
+                            return false;
+                    }
+            }
+            return true;
+        }
+        return false;
+    }
+    function print_record() {
+        
+        $cod_familia_deuda	= $this->dws['dw_deposito']->get_item(0, 'COD_FAMILIA_DEUDA');
+        $familia_deuda = '';
+        $universidad = '';
+        if(session::get('K_CLIENTE') == 'UACH'){
+            if($cod_familia_deuda == self::K_FONDO_SOLIDARIO){
+                $familia_deuda ='FONDO SOLIDARIO DE CRÉDITO UNIVERSITARIO';
+            }else if($cod_familia_deuda == self::K_CREDITO_INSTITUCIONAL){
+                $familia_deuda = 'CRÉDITO INSTITUCIONAL';
+            }
+            $universidad = 'UNIVERSIDAD AUSTRAL DE CHILE';
+            
+        }
+        
+        $cod_deposito = $this->get_key();
+        $sql= sql_deposito::get_sql('PRINT_RECORD', $cod_deposito);
+        
+        // reporte
+        $labels = array();
+        $labels['strCOD_DEPOSITO'] = $cod_deposito;
+        $labels['str_familia'] = $familia_deuda;
+        $labels['str_universidad'] = $universidad;
+        
+        $rpt = new reporte_helen($sql, $this->root_dir.'appl/deposito/deposito.xml', $labels, "Deposito".$cod_deposito, 1);
+        $this->redraw();
+    }
+}
+
+// Se separa por UNIVERSIDAD
+$file_name = dirname(__FILE__)."/".K_CLIENTE."/class_wi_deposito.php";
+if (file_exists($file_name))
+    require_once($file_name);
+    else {
+        class wi_deposito extends wi_deposito_base {
+            function __construct($cod_item_menu) {
+                parent::__construct($cod_item_menu);
+            }
+        }
+    }
+    ?>

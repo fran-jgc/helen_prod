@@ -1,0 +1,63 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="DEUDORES EN COBRANZA" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{RUT}" width="12%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{ANO}" width="5%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{COD_DEUDA}" width="10%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_ESTADO_PLAN_PAGO}" width="10%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO_CAPITAL}" width="9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ABONO_CAPITAL}" width="9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_INTERES}" width="9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ABONO_INTERES}" width="9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_MULTA}" width="9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{SALDO_PLAN_PAGO}" width="9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{SALDO_DEUDA}" width="9%" align="R" border="LRTB" format="N4,." font="Arial" newline="1"/>
+		
+	</Content>
+	<Group>
+		<Variable name="sum_capital" function="SUM" value="MONTO_CAPITAL"/>
+		<Variable name="sum_abono_capital" function="SUM" value="MONTO_ABONO_CAPITAL"/>
+		<Variable name="sum_interes" function="SUM" value="MONTO_INTERES"/>
+		<Variable name="sum_abono_interes" function="SUM" value="MONTO_ABONO_INTERES"/>
+		<Variable name="sum_multa" function="SUM" value="MONTO_MULTA"/>
+		<Variable name="sum_saldo_plan_pago" function="SUM" value="SALDO_PLAN_PAGO"/>
+		<Variable name="sum_saldo_deuda" function="SUM" value="SALDO_DEUDA"/>
+		<GroupHeader>
+			<Cell text="Cantidad Deudores: " width="15%" align="L"  font="ArialBold"/>
+			<Cell text="{CANT_DEUDOR}" width="10%" align="L" font="ArialBold" newline="1"/>
+			<Cell text="Rut" width="12%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Año" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Deuda" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Estado Cuota" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Capital" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Abono Capital" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Interés" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Abono Interes" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Interes Penal" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Saldo Cuota" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Saldo Deuda" width="9%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+</GroupHeader>
+		<GroupFooter>
+			<Cell text="Totales:" width="37%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_capital}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_abono_capital}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_interes}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_abono_interes}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_multa}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_saldo_plan_pago}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_saldo_deuda}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold" newline="1"/>
+		</GroupFooter> 
+	</Group>
+</Report>

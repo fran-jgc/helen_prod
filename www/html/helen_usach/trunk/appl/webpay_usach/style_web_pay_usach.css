@@ -1,0 +1,273 @@
+.titulotablas {
+	FONT-WEIGHT: bold; background-color:#394049; FONT-SIZE: 12px; COLOR: #ffffff; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+
+.encabezado_center{
+	background-color:#394049;
+	font-size: 11px;
+	font-weight:bold;	
+	color: #FFF;
+	text-align:center;
+	height:23px;
+}
+
+.encabezado_left{
+	background-color:#394049;
+	font-size: 11px;
+	font-weight:bold;	
+	color: #FFF;
+	text-align:left;
+	height:23px;
+}
+.hh2 {
+	FONT-WEIGHT: bolder; FONT-SIZE: 14px; COLOR: #394049; LINE-HEIGHT: normal; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.parrafos {
+	FONT-WEIGHT: normal; FONT-SIZE: 12px; COLOR: #394049; LINE-HEIGHT: normal; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.parrafosbold {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #394049; LINE-HEIGHT: normal; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+
+.encabezado_right{
+	background-color:#394049;
+	font-size: 11px;
+	font-weight:bold;	
+	color: #FFF;
+	text-align:right;
+	height:23px;
+}
+.claro{
+	background-color:#FFFFFF;
+	font-size: 11px;
+	font-weight:100;
+	color:#000000;
+	height:23px;
+}
+.oscuro{
+	background-color:#FFFFFF;
+	font-size: 11px;
+	font-weight:100;
+	color: #000;
+	height:23px;
+}
+.encabezadostablas {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: bold;
+	text-transform: none;
+	color: #394049;
+	text-decoration: none;
+	background-color: #394049;
+    vertical-align: top;
+    text-align: left;
+}
+
+body {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	border-width: 2px;
+	border-color: #00A499;
+ 	border-color: #00A499;
+	
+}
+
+.sesion {
+	color: #394049;
+	position: absolute;
+	top: 10px;
+	left: 600px;
+}
+
+.sesion a {
+	text-decoration: none;
+	color: #394049;
+}
+
+.camp_sesion{
+	color: #394049;
+	background: none;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 16px;
+	font-weight:bold; 
+}
+
+.tabla_deuda {
+	background: #FFFFFF;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 14px;
+	color: #000000;
+	font-weight: bold;
+	margin-left: 3px;
+
+}
+
+.tabla_deuda2 {
+	background: #FFFFFF;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 14px;
+	color: #000000;
+	font-weight: bold;
+	bordercolor: #FFFFFF;
+}
+
+.tabla_informacion {
+	background: #FFFFFF;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 14px;
+	color: #000066;
+	font-weight: bold;
+	margin-left: 3em;
+}
+
+.mes_declaracion {
+	background: #FFFFFF;
+	font-family: "arial narrow";
+	font-size: 14px;
+	font-weight: normal;
+	color: #233aaa;
+	line-height: 100%;
+}
+
+.tabla_declaracion {
+	background: #FFFFFF;
+	border-color: #394049 1px solid;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 12px;
+	color: #000000;
+	font-weight: bold;
+	margin-left: 3em;
+}
+
+.informacion_detalle {
+	color: #000000;
+	font-weight: normal;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: 200;
+}
+
+a img {
+	border: 0px;
+}
+
+.deuda_resultado {
+	color: #000000;
+	font-weight: normal;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: 200;
+}
+
+.tit_superior {
+	color: #00A499;
+	padding-left: 2em;
+	font-size: 20px;
+	font-style: normal;
+	font-weight: bold;
+}
+
+.tit_superior_estado {
+	color: #00A499;
+	font-size: 15px;
+	font-style: normal;
+	font-weight: bold;
+}
+
+.sub_tit_superior {
+	color: #394049;
+	padding-left: 2.5em;
+	padding-top: 1em;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: bold;
+}
+
+.sub_tit_superior2 {
+	color: #394049;
+	padding-top: 1em;
+	font-size: 16px;
+	font-style: normal;
+}
+
+.glosa_campos_obli {
+	color: #394049;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+ .fecha{
+
+	color: #00A499;
+	background: none;
+	font-family: "Times New Roman", Times, serif;
+
+	font-size: 16px;
+	font-weight:bold;
+ }
+
+ .glosa_ayuda {
+	color: #00A499;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+}
+
+#deuda {
+	background: url(images/menu/consulta_deuda.bmp) no-repeat;
+}
+
+#act_informacion {
+	background: url(images/menu/act_informacion.bmp) no-repeat;
+}
+
+#decla_jurada {
+	background: url(images/menu/declaracion_jurada.bmp) no-repeat;
+}
+
+#cupon {
+	background: url(images/menu/impresion_cupon.bmp) no-repeat;
+}
+
+#cupon_pago_uach {
+	background: url(images/menu/cupon_pago_uach.bmp) no-repeat;
+	margin-top: -5px;
+}
+
+#webpay {
+	background: url(images/menu/webpay.bmp) no-repeat;
+	margin-top: -5px;
+}
+
+td#menu {
+	padding-left: 10px;
+}
+
+td#menu a {
+	display: block;
+	width: 200px;
+	height: 40px;
+	text-decoration: none;
+}
+
+td#menu a:hover {
+	background-position: center;
+	
+}
+
+.titulo_2_tabla_left{
+	color: #00A499;
+	background: none;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 16px;
+	font-weight:bold; 
+}
+
+.titulo_2_tabla_left{
+	color: #00A499;
+	background: none;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 16px;
+	font-weight:bold; 
+}

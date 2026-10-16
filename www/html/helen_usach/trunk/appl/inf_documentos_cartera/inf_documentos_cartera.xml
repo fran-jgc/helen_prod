@@ -1,0 +1,36 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="DOCUMENTOS EN CARTERA" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{RUT}" width="20%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{FECHA_DOC_PAGO}" width="20%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_BANCO}" width="20%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_PLAZA}" width="20%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO}" width="20%" align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="sum_monto" function="SUM" value="MONTO"/>
+		<GroupHeader>
+			<Cell text="Rut" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Fecha Documento" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Banco" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Plaza" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto" width="20%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+</GroupHeader>
+		<GroupFooter>
+			<Cell text="Totales:" width="80%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_monto}" width="20%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>
+		</GroupFooter>
+	</Group>
+</Report>

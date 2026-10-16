@@ -1,0 +1,146 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+ini_set('memory_limit', '720M');
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes
+
+class dw_detalle_error_proceso extends datawindow{
+	function __construct() {
+		$sql = sql_auditoria_proceso::get_sql('DW_DETALLE_ERROR_PROCESO');
+		parent::__construct($sql, 'DETALLE_ERROR_PROCESO');
+	}
+	function retrieve($cod_ejecucion_proceso) {
+	   
+	   $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql = "SELECT COUNT(*) AS CANT FROM ERROR_PROCESO WHERE COD_EJECUCION_PROCESO = $cod_ejecucion_proceso";		 	
+		$result = $db->build_results($sql);
+		$cant = $result[0]['CANT'];		
+				
+		if ($cant < 100)
+		    datawindow::retrieve($cod_ejecucion_proceso);
+	}
+}
+
+class wi_auditoria_proceso extends w_input {
+    function __construct($cod_item_menu) {
+        parent::__construct('auditoria_proceso', $cod_item_menu);
+		$this->b_delete_visible  = false;
+
+		$sql = sql_auditoria_proceso::get_sql("INPUT");
+		
+		$this->dws['dw_auditoria_proceso'] 					= new datawindow($sql);
+		$this->dws['dw_detalle_error_proceso'] 				= new dw_detalle_error_proceso($sql);
+		
+		// asigna los formatos			
+		$this->dws['dw_auditoria_proceso']->add_control(new static_num('COD_EJECUCION_PROCESO'));
+		$this->dws['dw_auditoria_proceso']->add_control(new static_text('NOM_PROCESO', 80, 100));
+		$this->dws['dw_auditoria_proceso']->add_control(new static_text('FECHA_EJECUCION_PROCESO', 80, 100));
+		$this->dws['dw_auditoria_proceso']->add_control(new static_text('FECHA_TERMINO', 80, 100));
+		$this->dws['dw_auditoria_proceso']->add_control(new static_text('DURACION', 80, 100));
+		$this->dws['dw_auditoria_proceso']->add_control(new static_num('ACTUAL_REGISTRO'));
+		$this->dws['dw_auditoria_proceso']->add_control(new static_num('CANT_ERROR'));
+		$this->dws['dw_auditoria_proceso']->add_control(new static_num('CANT_WARNING'));
+	}
+
+	function load_record(){
+		$COD_EJECUCION_PROCESO = $this->get_item_wo($this->current_record, 'COD_EJECUCION_PROCESO');
+		$this->dws['dw_auditoria_proceso']->retrieve($COD_EJECUCION_PROCESO);
+		$this->dws['dw_detalle_error_proceso']->retrieve($COD_EJECUCION_PROCESO);
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql = sql_auditoria_proceso::get_sql('CANT_DETALLE_ERROR', $COD_EJECUCION_PROCESO);		 	
+		$result = $db->build_results($sql);
+		$cant_detalle_error = $result[0]['CANT_DETALLE_ERROR'];
+				 
+		if ($cant_detalle_error < 100){			
+			$this->dws['dw_auditoria_proceso']->set_item(0, 'DISPLAY_DETALLE_ERROR', '');
+			$this->dws['dw_auditoria_proceso']->set_item(0, 'DISPLAY_MENSAJE_DETALLE_ERROR', 'none');
+		}
+		else {
+			$this->dws['dw_auditoria_proceso']->set_item(0, 'DISPLAY_DETALLE_ERROR', 'none');
+			$this->dws['dw_auditoria_proceso']->set_item(0, 'DISPLAY_MENSAJE_DETALLE_ERROR', '');			
+		}
+		
+		$this->b_no_save_visible = false;
+		$this->b_save_visible 	 = false;
+		$this->b_modify_visible	 = false;
+	}
+	function get_key() {
+		return $this->dws['dw_auditoria_proceso']->get_item(0, 'COD_EJECUCION_PROCESO');
+	}
+	function export_excel() {		
+		ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+		 
+		require_once dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/php_writeexcel-0.3.0/class.writeexcel_workbook.inc.php";
+		require_once dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/php_writeexcel-0.3.0/class.writeexcel_worksheet.inc.php";
+
+		$COD_EJECUCION_PROCESO = $this->get_key();
+		
+		$fname = tempnam("/tmp", "export.xls");
+		$workbook = new writeexcel_workbook($fname);		
+		$worksheet = $workbook->addworksheet('DETALLE_ERROR_PROCESO'.$COD_EJECUCION_PROCESO);
+		
+		// escribe encabezados		
+		$header =& $workbook->addformat();
+		$header->set_bold();
+		$header->set_color('blue');	
+		
+		
+		$text =& $workbook->addformat();
+		$text->set_font("Verdana");
+		$text->set_valign('vcenter');
+		$text->set_bold();
+		$text->set_color('blue');
+				
+		$worksheet->write(0, 0, 'COD ERROR PROCESO', $text);
+		$worksheet->write(0, 1, 'COD EJECUCION PROCESO', $text);
+		$worksheet->write(0, 2, 'TIPO ERROR', $text);
+		$worksheet->write(0, 3, 'COD ERROR BD', $text);
+		$worksheet->write(0, 4, 'MENSAJE ERROR BD', $text);
+		$worksheet->write(0, 5, 'MENSAJE ERROR', $text);		
+
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		
+		$sql = $this->dws['dw_detalle_error_proceso']->get_sql();
+		$sql = $this->replace_KEYS($sql, array($COD_EJECUCION_PROCESO));
+		$res = $db->query($sql);
+		$i = 1;
+		while($my_row = $db->get_row()){
+			$worksheet->write($i, 0, $my_row['COD_ERROR_PROCESO']);
+			$worksheet->write($i, 1, $my_row['COD_EJECUCION_PROCESO_DW']);
+			$worksheet->write($i, 2, $my_row['TIPO_ERROR']);
+			$worksheet->write($i, 3, $my_row['ERROR_CODE_BD']);
+			$worksheet->write($i, 4, $my_row['ERROR_MESSAGE_BD']);
+			$worksheet->write($i, 5, $my_row['ERROR_MESSAGE']);						
+			$i++;
+		}
+		
+		if ($worksheet->_datasize > 7000000) {
+			$worksheet->write($i, 0, 'No se completo la exportación de datos porque excede el máximo del tamaño de archivo 7 MB', $header);
+		}
+		
+		if($db->database_type=="oci") {
+			oci_free_statement($db->query_id);
+			$db->query_id = false;
+		}
+		
+		$workbook->close();
+		
+		header("Content-Type: application/x-msexcel; name=\"DETALLE_ERROR_PROCESO".$COD_EJECUCION_PROCESO."\"");
+		header("Content-Disposition: inline; filename=\"DETALLE_ERROR_PROCESO_".$COD_EJECUCION_PROCESO.".xls\"");
+		$fh=fopen($fname, "rb");
+		fpassthru($fh);
+		unlink($fname);
+	}
+	function procesa_event() {		
+		if(isset($_POST['b_export_x'])) {
+			$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+			$COD_EJECUCION_PROCESO = $this->get_key();			
+			$this->export_excel();
+		}		
+		else
+			parent::procesa_event();
+
+	}
+}
+?>

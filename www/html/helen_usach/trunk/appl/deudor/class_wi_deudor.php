@@ -1,0 +1,486 @@
+<?php
+//miller svn publico
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once (dirname(__FILE__)."/class_direccion_deudor.php");
+
+class dw_simulacion extends datawindow {
+	function __construct() {
+		$sql = sql_deudor::get_sql('DW_SIMULACION');
+		parent::__construct($sql, 'SIMULACION');
+		
+		$this->add_control(new static_link('COD_SIMULACION', '../../../../commonlib_seven/trunk/php/link_wi.php?modulo_origen=deudor&modulo_destino=simulacion&cod_modulo_destino=[COD_SIMULACION]&cod_item_menu=1502&current_tab_page=4'));
+		$this->add_control(new static_text('FECHA_SIMULACION'));
+		$this->add_control(new static_text('DEUDAS'));
+		$this->add_control(new static_num('TOT_DOC_AL_DIA'));
+		$this->add_control(new static_num('TOT_DOC_AFECHA'));
+		$this->add_control(new static_num('TOT_DOC'));
+	}
+}
+class dw_detalle_deuda extends datawindow{
+    function __construct() {
+		
+		$sql = sql_deudor::get_sql('DW_DETALLE_DEUDA');
+		
+		parent::__construct($sql, 'DETALLE_DEUDA', true, true);
+
+		$this->add_control(new static_link('COD_DEUDA', '../../../../commonlib_seven/trunk/php/link_wi.php?modulo_origen=deudor&modulo_destino=deuda&cod_modulo_destino=[COD_DEUDA]&cod_item_menu=1010'));
+		$this->add_control(new static_num('NO_EXIGIBLE',4));
+		$this->add_control(new static_num('VENCIDA',4));
+		$this->add_control(new static_num('VIGENTE',4));
+		$this->add_control(new static_num('FUTURA',4));
+		$this->add_control(new static_num('SALDO',4));
+	}
+}
+class dw_bitacora_deudor_base extends datawindow{
+	const K_TIPO_OTRO = 1;
+	
+	function __construct() {
+		
+		$sql = sql_deudor::get_sql('DW_BITACORA_DEUDOR');
+		
+		parent::__construct($sql, 'BITACORA_DEUDOR', true, true);
+
+		$sql = sql_deudor::get_sql('DD_TIPO_BITACORA');
+		$sql = "SELECT		COD_TIPO_BITACORA
+		,NOM_TIPO_BITACORA
+		,PERMITE_MANUAL
+		FROM     	TIPO_BITACORA  
+		ORDER BY	NOM_TIPO_BITACORA";
+		$this->add_control($control = new drop_down_dw('COD_TIPO_BITACORA', $sql,100));
+		$control->set_onChange("valida_tipo_bitacora(this);");
+		
+		$this->add_control(new static_text('NOM_USUARIO'));
+		$this->add_control(new edit_text_upper('NOM_BITACORA_DEUDOR', 20, 100));
+
+		$this->set_protect('NOM_BITACORA_DEUDOR', "[IS_NEW]=='N'");
+		$this->set_protect('COD_TIPO_BITACORA', "[IS_NEW]=='N'");
+		$this->set_mandatory('COD_TIPO_BITACORA', 'Tipo de la Bitácora');
+		$this->set_mandatory('NOM_BITACORA_DEUDOR', 'Observación de la Bitácora');
+	}
+	function insert_row($row=-1) {
+		$row = parent::insert_row($row);
+		$this->set_item($row, 'IS_NEW', 'S');
+		$this->set_item($row, 'COD_TIPO_BITACORA', self::K_TIPO_OTRO);
+		$this->set_item($row, 'COD_USUARIO', session::get("COD_USUARIO"));
+		$this->set_item($row, 'NOM_USUARIO', session::get("NOM_USUARIO"));
+
+		$sql = sql_deudor::get_sql('FECHA');
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$result = $db->build_results($sql);
+		$this->set_item($row, 'FECHA_BITACORA_DEUDOR', $result[0][0]);
+		return $row;
+	}
+	function fill_record(&$temp, $record) {
+		parent::fill_record($temp, $record);
+		$is_new = $this->get_item($record, 'IS_NEW');
+		if ($is_new=='N') {
+			$eliminar = '';
+			$temp->setVar($this->label_record.".ELIMINAR_".strtoupper($this->label_record), $eliminar);
+		}
+	}
+	function update($db,$COD_DEUDOR)	{
+		$sp = 'spu_bitacora_deudor ';
+		for ($i = 0; $i < $this->row_count(); $i++) {
+			$statuts = $this->get_status_row($i);
+			if ($statuts != K_ROW_NEW_MODIFIED)		// Solo permite filas nuevas
+			continue;
+
+			$NOM_BITACORA_EMPRESA	= $this->get_item($i, 'NOM_BITACORA_DEUDOR');
+			$COD_TIPO_BITACORA 		= $this->get_item($i, 'COD_TIPO_BITACORA');
+			$COD_USUARIO 			= $this->get_item($i, 'COD_USUARIO');
+
+			$param = "'$NOM_BITACORA_EMPRESA', $COD_TIPO_BITACORA,$COD_DEUDOR,$COD_USUARIO";
+
+			if (!$db->EXECUTE_SP($sp, $param))
+			return false;
+		}
+		return true;
+	}
+}
+class dw_direccion_particular_historica extends datawindow{
+    function __construct() {
+		
+		$sql = sql_deudor::get_sql('DW_DIRECCION_PARTICULAR_HISTORICA');
+
+		parent::__construct($sql, 'DIRECCION_PARTICULAR_HISTORICA', true, true);
+
+		$this->add_control($control = new edit_check_box('ES_VALIDA_DIR_PAR_HIST','S','N'));
+		$this->set_entrable('ES_VALIDA_DIR_PAR_HIST', false);
+	}
+}
+class dw_direccion_comercial_historica extends datawindow{
+    function __construct() {
+		
+		$sql = sql_deudor::get_sql('DW_DIRECCION_COMERCIAL_HISTORICA');
+
+		parent::__construct($sql, 'DIRECCION_COMERCIAL_HISTORICA', true, true);
+
+		$this->add_control($control = new edit_check_box('ES_VALIDA_DIR_COM_HIST','S','N'));
+		$this->set_entrable('ES_VALIDA_DIR_COM_HIST', false);
+	}
+}
+class dw_carrera_historica extends datawindow{
+    function __construct() {
+		
+		$sql = sql_deudor::get_sql('DW_CARRERA_HISTORICA');
+
+		parent::__construct($sql, 'CARRERA_HISTORICA', true, true);
+		
+		$this->add_control(new edit_text('COD_MATRICULA',10, 10, 'hidden'));
+		$this->add_control(new edit_ano('ANO_MATRICULA'));
+		
+		$this->add_control($control = new edit_num('SEMESTRE', 5, 1));
+		$control->set_onChange("change_semestre(this);");
+		//$this->add_control(new edit_text('SEMESTRE', 5, 1));
+		
+		$sql = "select COD_CARRERA, NOM_CARRERA from  CARRERA ORDER BY COD_CARRERA";
+		$this->add_control(new drop_down_dw('COD_CARRERA', $sql,100));
+		$sql = "select COD_UNIVERSIDAD, NOM_UNIVERSIDAD from  UNIVERSIDAD ORDER BY COD_UNIVERSIDAD";
+		$this->add_control(new drop_down_dw('COD_UNIVERSIDAD', $sql,100));
+		
+		$this->set_mandatory('COD_UNIVERSIDAD', 'Nombre Universidad de Historico');
+		$this->set_mandatory('ANO_MATRICULA', 'Año Académico de Historico');
+		$this->set_mandatory('SEMESTRE', 'Semestre de Historico');
+		$this->set_mandatory('COD_CARRERA', 'Carrera de Historico');
+	}
+	
+	function update($db,$COD_DEUDOR)	{
+		$sp = 'spu_carrera_historica';
+		
+		for ($i = 0; $i < $this->row_count(); $i++) {
+			$statuts = $this->get_status_row($i);
+			if ($statuts == K_ROW_NOT_MODIFIED || $statuts == K_ROW_NEW)
+				continue;
+
+			$cod_matricula	= $this->get_item($i, 'COD_MATRICULA');
+			$cod_universidad = $this->get_item($i, 'COD_UNIVERSIDAD');
+			$ano_matricula	= $this->get_item($i, 'ANO_MATRICULA');
+			$semestre		= $this->get_item($i, 'SEMESTRE');
+			$cod_carrera	= $this->get_item($i, 'COD_CARRERA');
+			
+			$cod_matricula 	= ($cod_matricula == '') ? "null" : $cod_matricula;
+
+			if($statuts == K_ROW_NEW_MODIFIED){
+				$operacion = 'INSERT';
+				
+			}elseif($statuts == K_ROW_MODIFIED){
+				$operacion = 'UPDATE';
+			}
+			
+			$param = "'$operacion'
+						,$cod_matricula
+						,$COD_DEUDOR
+						,$cod_universidad
+						,$ano_matricula
+						,$semestre
+						,$cod_carrera";
+
+			if (!$db->EXECUTE_SP($sp, $param))
+				return false;
+		}
+		
+		for ($i = 0; $i < $this->row_count('delete'); $i++){
+			$statuts_d = $this->get_status_row($i, 'delete');
+			if ($statuts_d == K_ROW_NEW || $statuts_d == K_ROW_NEW_MODIFIED){
+				continue;
+			}
+			$cod_matricula   = $this->get_item($i, 'COD_MATRICULA', 'delete');
+
+			if (!$db->EXECUTE_SP($sp, "'DELETE', $cod_matricula")){
+				return false;
+			}
+		}
+		return true;
+	}
+}
+
+class dw_declaracion_deudor extends datawindow{
+    function __construct(){
+
+		$sql = sql_deudor::get_sql('DW_DECLARACION');
+		
+		parent::__construct($sql,'DECLARACION',true,true);
+		
+		//$this->add_control(new edit_text('COD_DECLARACION', 20, 20));
+		$this->add_control(new static_link('COD_DECLARACION', '../../../../commonlib_seven/trunk/php/link_wi.php?modulo_origen=deudor&modulo_destino=declaracion&cod_modulo_destino=[COD_DECLARACION]&cod_item_menu=1035'));
+		$this->add_control($control = new static_text('ANO'));
+		$this->add_control(new static_num('TOT_DECL_DEUDOR_UTM',4));
+		$this->add_control(new static_num('TOT_DECL_CONYUGE_UTM',4));
+
+		$control->set_onClick("load_detalle_declaracion(this);");
+	}
+}
+class dw_detalle_declaracion extends datawindow{
+    function __construct(){
+		
+		$sql = sql_deudor::get_sql('DW_DETALLE_DECLARACION');
+		
+		parent::__construct($sql,'DETALLE_DECLARACION',true,true);
+
+		$this->add_control(new static_num('MONTO_DEUDOR_MONEDA',4));
+		$this->add_control(new static_num('MONTO_DEUDOR_PESOS'));
+		$this->add_control(new static_num('MONTO_CONYUGE_MONEDA',4));
+		$this->add_control(new static_num('MONTO_CONYUGE_PESOS'));
+
+		// sumas
+		$this->accumulate('MONTO_DEUDOR_MONEDA', '', false);
+		$this->accumulate('MONTO_DEUDOR_PESOS', '', false);
+		$this->accumulate('MONTO_CONYUGE_MONEDA', '', false);
+		$this->accumulate('MONTO_CONYUGE_PESOS', '', false);
+	}
+}
+class dw_deudor extends datawindow {
+    function __construct() {
+		$sql = sql_deudor::get_sql('INPUT');
+		parent::__construct($sql);
+
+		// ultimo TRUE es para forzar que exista el control año en modo lectura
+		$this->add_control(new edit_text('COD_DEUDOR', 100, 100,'hidden', false, true));
+		$this->add_control(new static_text('ANO_DECLARACION_SELECCIONADA'));
+		$this->add_control(new edit_rut('RUT'));
+		$this->add_control(new edit_text('K_CHILE_H',10,10,'hidden'));
+		$this->set_entrable('RUT', false);
+		$sql = "select COD_ESTADO_CIVIL, NOM_ESTADO_CIVIL from  ESTADO_CIVIL ORDER BY COD_ESTADO_CIVIL";
+		$this->add_control(new drop_down_dw('COD_ESTADO_CIVIL', $sql, 0, '', false));	// add_vacio=false
+		$this->set_entrable('COD_ESTADO_CIVIL', false);
+	}
+	function fill_record(&$temp, $record) {
+		parent::fill_record($temp, $record);
+		if (!$this->entrable)
+			$temp->setVar('DISABLE_BUTTON_ENVIO', '');
+		else
+			$temp->setVar('DISABLE_BUTTON_ENVIO', 'disabled="disabled"');
+	}
+}
+
+class wi_deudor_base extends w_input {
+	const K_PARAM_CARTERA			= 2;
+	
+	function __construct($cod_item_menu) {
+	    parent::__construct('deudor', $cod_item_menu);
+		$this->b_delete_visible  = false;
+
+		$this->dws['dw_deudor'] 						= new dw_deudor();
+		$this->dws['dw_detalle_deuda'] 					= new dw_detalle_deuda();
+		$this->dws['dw_bitacora_deudor'] 				= new dw_bitacora_deudor();
+		$this->dws['dw_direccion_deudor_comercial']		= new dw_direccion_deudor('C','deudor');
+		$this->dws['dw_direccion_deudor_particular']	= new dw_direccion_deudor('P','deudor');
+		$this->dws['dw_direccion_particular_historica']	= new dw_direccion_particular_historica();
+		$this->dws['dw_direccion_comercial_historica'] 	= new dw_direccion_comercial_historica();
+		$this->dws['dw_carrera_historica'] 				= new dw_carrera_historica();
+		$this->dws['dw_declaracion'] 					= new dw_declaracion_deudor();
+		$this->dws['dw_detalle_declaracion'] 			= new dw_detalle_declaracion();
+		$this->dws['dw_simulacion'] = new dw_simulacion();
+		
+		//dw_carrera_historica
+		$this->add_auditoria_relacionada('MATRICULA', 'ANO_MATRICULA');
+		$this->add_auditoria_relacionada('MATRICULA', 'SEMESTRE');
+		$this->add_auditoria_relacionada('MATRICULA', 'COD_CARRERA');
+		$this->add_auditoria_relacionada('MATRICULA', 'COD_UNIVERSIDAD');
+	}
+	function load_record() {
+		$cod_deudor	= $this->get_item_wo($this->current_record, 'COD_DEUDOR');
+		$this->dws['dw_deudor']->retrieve($cod_deudor);
+		$this->dws['dw_detalle_deuda']->retrieve($cod_deudor);
+		$this->dws['dw_bitacora_deudor']->retrieve($cod_deudor);
+
+		$this->dws['dw_direccion_deudor_particular']->retrieve($cod_deudor);
+		if ($this->dws['dw_direccion_deudor_particular']->row_count() == 0){
+			$this->dws['dw_direccion_deudor_particular']->insert_row();
+		}
+		$this->dws['dw_direccion_deudor_comercial']->retrieve($cod_deudor);
+		if ($this->dws['dw_direccion_deudor_comercial']->row_count() == 0){
+			$this->dws['dw_direccion_deudor_comercial']->insert_row();
+		}
+		$this->dws['dw_direccion_particular_historica']->retrieve($cod_deudor);
+		$this->dws['dw_direccion_comercial_historica']->retrieve($cod_deudor);
+		$this->dws['dw_carrera_historica']->retrieve($cod_deudor);
+		$this->dws['dw_declaracion']->retrieve($cod_deudor);
+		$this->dws['dw_simulacion']->retrieve($cod_deudor);
+		
+		if ($this->dws['dw_declaracion']->row_count() > 0){
+			$cod_declaracion = $this->dws['dw_declaracion']->get_item(0, 'COD_DECLARACION');
+			$this->dws['dw_detalle_declaracion']->retrieve($cod_declaracion);
+			$ano_declaracion = $this->dws['dw_declaracion']->get_item(0, 'ANO');
+			$this->dws['dw_deudor']->set_item(0, 'ANO_DECLARACION_SELECCIONADA', $ano_declaracion);
+		}
+		else
+			$this->dws['dw_detalle_declaracion']->reset();
+		
+		/*Lo que se busca, es que si el deudor tiene un plan de pago en 
+		alguna empresa de cobranza(ej. EXTERNA o DICOM), se mostrara un mensaje en el input alertando sobre eso*/
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql = sql_deudor::get_sql('GET_DEUDOR_MOROSO', $cod_deudor);		  
+		$result = $db->build_results($sql);
+		$row_count = $db->count_rows();	
+		
+		if($row_count > 0)
+			$this->dws['dw_deudor']->set_item(0, 'VISIBLE_CAMPO', '');
+		else 
+			$this->dws['dw_deudor']->set_item(0, 'VISIBLE_CAMPO', 'none');
+			
+		//despliege de cruzado con otra universidad
+		$db_c = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$cod_cartera_defecto = base::get_parametro(self::K_PARAM_CARTERA);
+		//////////////////////****/
+		$sql_c	= "SELECT  COUNT(*) CANT
+				   FROM	   DEUDOR DR, DEUDA DA
+				   WHERE   DR.COD_DEUDOR = $cod_deudor
+				   AND	   DR.COD_DEUDOR = DA.COD_DEUDOR
+				   AND	   DA.COD_CARTERA = $cod_cartera_defecto"; //DEUDA COBRA UACH.
+		$result_c = $db_c->build_results($sql_c);
+		$deuda_uach = $result_c[0]['CANT'];
+		$display_cruzado = 'none';
+		
+		if ($deuda_uach > 0){
+			$txt = "";
+			$display_cruzado = 'none';
+		}else {
+			$sql_c	= "SELECT  COUNT(*) CANT
+					   FROM	   DEUDOR DR, DEUDA DA
+					   WHERE   DR.COD_DEUDOR = $cod_deudor
+					   AND	   DR.COD_DEUDOR = DA.COD_DEUDOR
+					   AND	   DA.COD_DEUDA IN (SELECT COD_DEUDA FROM CRUZADO)"; 
+					   //DEUDA ESTA CRUZADA Y COBRA OTRA UNIVERSIDAD
+			$result_c = $db_c->build_results($sql_c);
+			$cruzado = $result_c[0]['CANT'];
+			if ($cruzado > 0){
+				$display_cruzado = '';
+				$txt = "DEUDOR CRUZADO COBRA OTRA UNIVERSIDAD";
+			}else {
+				$display_cruzado = '';
+				$txt = "DEUDOR COBRA OTRA UNIVERSIDAD";	
+			}
+		}
+		$this->dws['dw_deudor']->set_item(0, 'TITULO_DEUDOR_CRUZADO', $txt);
+		$this->dws['dw_deudor']->set_item(0, 'VISIBLE_DEUDOR_CRUZADO', $display_cruzado);			
+		/********/
+
+		//muestra mensaje, si el deudor tiene documentos protestados
+		$sql_doc_protes = sql_deudor::get_sql('DOCTO_PROTESTADO', $cod_deudor);
+		$result	= $db->build_results($sql_doc_protes);
+		$count 	= $result[0]['CANT'];
+		if ($count == 0)
+			$this->dws['dw_deudor']->set_item(0, 'VISIBLE_CAMPO_PROTES', 'none');
+		else if	($count > 0)
+			$this->dws['dw_deudor']->set_item(0, 'VISIBLE_CAMPO_PROTES', '');		
+			
+	}
+	function get_key() {
+		return $this->dws['dw_deudor']->get_item(0, 'COD_DEUDOR');
+	}
+
+	function save_record($db) {
+		$cod_deudor		= $this->dws['dw_deudor']->get_item(0, 'COD_DEUDOR');
+		if (!$this->dws['dw_direccion_deudor_particular']->update($db,$cod_deudor)){
+			return false;
+		}
+		if (!$this->dws['dw_direccion_deudor_comercial']->update($db,$cod_deudor)){
+			return false;
+		}
+		if (!$this->dws['dw_bitacora_deudor']->update($db,$cod_deudor)){
+			return false;
+		}
+		
+		if (!$this->dws['dw_carrera_historica']->update($db,$cod_deudor)){
+			return false;
+		}
+		
+		return true;
+	}
+	function genRandomString() {
+		$length = 10;
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+		$string = '';
+	
+		for ($p = 0; $p < $length; $p++) {
+			$string .= $characters[mt_rand(0, strlen($characters))];
+		}
+	
+		return $string;
+	}
+	function procesa_event() {
+		if(isset($_POST['b_envio_clave'])) {
+			$this->redraw();
+			$cod_deudor		= $this->dws['dw_deudor']->get_item(0, 'COD_DEUDOR');	
+			$mail_deudor	= $this->dws['dw_direccion_deudor_particular']->get_item(0, 'EMAIL_PARTICULAR');
+		
+			$new_pass 		= $this->genRandomString(); 
+			$db 			= new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+			
+			$K_PARAM_DIRECCION_PORTAL  = 26;
+			$direccion_portal = base::get_parametro($K_PARAM_DIRECCION_PORTAL);
+			
+			$K_PARAM_DIRECCION_PORTAL  = 5;
+			$nom_universidad = base::get_parametro($K_PARAM_DIRECCION_PORTAL);
+			
+			$cuerpo = "Estimado(a)  ,\n\n";
+    		$cuerpo .= "Ha solicitado un recordatorio de clave para ingresar al portal deudores.\n\n";
+    		$cuerpo .= "Por favor inicie su sesión utilizando la siguiente información:\n\n";
+    		$cuerpo .= "Direccion del sitio: " . $direccion_portal . "\n";///HACER PARAM
+    		$cuerpo	.= "Clave: " . $new_pass . "\n\n";
+    		$cuerpo .= "Saludos cordiales,\n\n";
+    		$cuerpo .= "Adminstración FSCU";
+
+    		$K_PARAM_EMAIL  = 13;
+			$mail_remitente = base::get_parametro($K_PARAM_EMAIL);
+	        $cabeceras = "From: ".$mail_remitente. "\n";
+
+	        mail($mail_deudor, 'Recuperación de clave, '.$nom_universidad, $cuerpo, $cabeceras);
+			
+			$sp = 'spu_actualiza_pass_webpay ';
+			$param = "$cod_deudor,'$new_pass'";
+			if (!$db->EXECUTE_SP($sp, $param)){
+				return false; 
+			}else{
+				$cod_usuario = session::get("COD_USUARIO");
+				$vl_glosa = 'Se Realiza envio de clave a Deudor E-mail:'.$mail_deudor;
+				
+				//se obtiene tipo bitacora para todas las universidades
+				$db_b = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+				$sql_b = "SELECT COD_TIPO_BITACORA 
+						  FROM TIPO_BITACORA 
+						  WHERE NOM_TIPO_BITACORA = 'ENVIO DE CLAVE INTERNET DEUDOR'";				
+				$result_b = $db_b->build_results($sql_b);
+				$row_count = $db_b->count_rows();	
+				
+				if($row_count > 0){
+					$cod_tipo_bitacora = $result_b[0]['COD_TIPO_BITACORA'];
+					$kl_envio_clave_internet = $cod_tipo_bitacora; //ENVIO DE CLAVE INTERNET DEUDOR
+				}else{ 
+					return false; 
+				}
+				
+				$db->BEGIN_TRANSACTION();
+				$sp_bitacora = 'spu_bitacora_deudor';
+				$param_bitacora = "'$vl_glosa', $kl_envio_clave_internet, $cod_deudor, $cod_usuario";
+				if (!$db->EXECUTE_SP($sp_bitacora, $param_bitacora)){
+					return false; 
+				}
+				$db->COMMIT_TRANSACTION();
+			}
+			return true;
+		}
+		else
+			parent::procesa_event();
+	}
+}
+
+// Se separa por UNIVERSIDAD
+
+$file_name = dirname(__FILE__)."/".K_CLIENTE."/class_wi_deudor.php";
+if (file_exists($file_name)) 
+	require_once($file_name);
+else {	
+	class dw_bitacora_deudor extends dw_bitacora_deudor_base {
+	    function __construct() {
+	        parent::__construct(); 
+		}
+	}
+	class wi_deudor extends wi_deudor_base {
+	    function __construct($cod_item_menu) {
+	        parent::__construct($cod_item_menu); 
+		}
+	}
+}
+?>

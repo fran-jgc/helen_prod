@@ -1,0 +1,92 @@
+<html>
+	<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link href="css/estilo.css" rel="stylesheet" type="text/css"> 
+	<link href="css/body-gradient.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<center>
+			<font color= "green">
+				<b>
+					<u>
+						FUNCIONARIOS
+					</u>
+				</b>
+			</font>
+			</br></br>
+			<table class="rwd_auto fontsize">
+				<tr>
+					<th>Nombre Campos</th>
+					<th>Tipo Campo</th>
+					<th>Cantidad de caracteres</th>
+					<th>Descripción Campos</th>
+				</tr>
+				<tr>
+					<td>Codigo deuda</td>
+					<td>Numerico</td>
+					<td><center>10</center></td>
+					<td>Código de deuda</td>
+				</tr>
+				<tr>
+					<td>Folio</td>
+					<td>Numerico</td>
+					<td><center>20</center></td>
+					<td>Numero de folio</td>
+				</tr>
+				<tr>
+					<td>Monto UTM</td>
+					<td>Numerico</td>
+					<td><center>14</center></td>
+					<td>Monto deuda en UTM</td>
+				</tr>
+				<tr>
+					<td>Monto $</td>
+					<td>Numerico</td>
+					<td><center>14</center></td>
+					<td>Monto a pagar en pesos</td>
+				</tr>
+				<tr>
+					<td>Fecha</td>
+					<td>Fecha</td>
+					<td><center>14</center></td>
+					<td>Fecha de Pago </td>
+				</tr>
+			</table>
+			</br>
+			<b>
+				Formato: TXT  (Delimitado por tabulación) / eliminar la primera línea (cabecera)
+			</b>
+			</br></br>
+			<font color= "green">
+				<b>
+					<u>
+						Observaciones
+					</u>
+				</b>
+			</font>
+			</br></br>
+			<table>
+			<tr>
+				<td>
+					El separador de cada campo debe ser con tabulación.
+					</br></br>
+					El campo “Código deuda” debe contener un dato Real del sistema Helen.
+					</br></br>
+					El campo “Monto UTM” debe de contener un máximo de 4 decimales.
+					</br></br>
+					El campo “Montos en Pesos”  no debe contener decimales.
+					</br></br>
+					Las  fechas deben tener un formato de “día/mes/año”.
+					</br></br>
+				</td>
+			</tr>
+			</table>
+			<center>
+				<b>
+					<u>
+						<a href="indice.htm">Volver</a>
+					</u>
+				</b>
+			</center>
+		</center>
+	</body>
+</html>

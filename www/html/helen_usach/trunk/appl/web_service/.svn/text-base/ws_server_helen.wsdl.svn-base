@@ -1,0 +1,797 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<definitions xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="urn:Deuda" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:Deuda">
+<types>
+<xsd:schema targetNamespace="urn:Deuda"
+>
+ <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+ <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+</xsd:schema>
+</types>
+<message name="ws_valida_deudaRequest">
+  <part name="ve_rut" type="xsd:string" /></message>
+<message name="ws_valida_deudaResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_inicio_reproRequest">
+  <part name="ve_cod_deudor" type="xsd:string" /></message>
+<message name="ws_inicio_reproResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_inicio_repro_2Request">
+  <part name="ve_cod_deudor" type="xsd:string" /></message>
+<message name="ws_inicio_repro_2Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_inicio_repro_3Request">
+  <part name="ve_cod_deudor" type="xsd:string" /></message>
+<message name="ws_inicio_repro_3Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_inicio_repro_4Request">
+  <part name="ve_cod_deudor" type="xsd:string" /></message>
+<message name="ws_inicio_repro_4Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_obtiene_deudaRequest">
+  <part name="ve_rut" type="xsd:string" /></message>
+<message name="ws_obtiene_deudaResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_obtiene_boletaRequest">
+  <part name="ve_cod_plan_pago" type="xsd:string" /></message>
+<message name="ws_obtiene_boletaResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_obtiene_ult_boletaRequest">
+  <part name="ve_cod_plan_pago" type="xsd:string" /></message>
+<message name="ws_obtiene_ult_boletaResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_cant_cruzadoRequest">
+  <part name="ve_cod_deuda" type="xsd:string" /></message>
+<message name="ws_cant_cruzadoResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_ajax_plan_pago_1Request">
+  <part name="ve_cod_deuda" type="xsd:string" /></message>
+<message name="ws_ajax_plan_pago_1Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_ajax_plan_pago_2Request">
+  <part name="ve_cod_deuda" type="xsd:string" /></message>
+<message name="ws_ajax_plan_pago_2Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_ajax_plan_pago_3Request">
+  <part name="ve_cod_deuda" type="xsd:string" /></message>
+<message name="ws_ajax_plan_pago_3Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_ajax_plan_pago_4Request">
+  <part name="ve_cod_deuda" type="xsd:string" />
+  <part name="ve_cod_plan_pago" type="xsd:string" /></message>
+<message name="ws_ajax_plan_pago_4Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_pago_online_1Request">
+  <part name="ve_cod_plan_pago" type="xsd:string" /></message>
+<message name="ws_pago_online_1Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_pago_online_2Request">
+  <part name="ve_cod_deuda" type="xsd:string" />
+  <part name="ve_cod_plan_pago" type="xsd:string" />
+  <part name="ve_cod_tipo_descuento" type="xsd:string" />
+  <part name="ve_monto_abono_pesos" type="xsd:string" /></message>
+<message name="ws_pago_online_2Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_validationResultRequest">
+  <part name="ve_cod_wp_transaction" type="xsd:string" /></message>
+<message name="ws_validationResultResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_bitacora_transaccionRequest">
+  <part name="ve_cod_wp_transaction" type="xsd:string" />
+  <part name="ve_fase" type="xsd:string" />
+  <part name="ve_msg" type="xsd:string" />
+  <part name="ve_cod_wp_transaccion" type="xsd:string" />
+  <part name="ve_mensaje" type="xsd:string" /></message>
+<message name="ws_bitacora_transaccionResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_init_transaccionRequest">
+  <part name="ve_cod_wp_transaction" type="xsd:string" />
+  <part name="ve_token" type="xsd:string" /></message>
+<message name="ws_init_transaccionResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_crea_sub_boletaRequest">
+  <part name="ve_tipo_pago" type="xsd:string" />
+  <part name="ve_cod_deudor" type="xsd:string" />
+  <part name="ve_cod_sub_boletas" type="xsd:string" />
+  <part name="ve_cod_plan_pago" type="xsd:string" />
+  <part name="ve_monto_capital" type="xsd:string" />
+  <part name="ve_monto_interes" type="xsd:string" />
+  <part name="ve_monto_multa" type="xsd:string" />
+  <part name="ve_monto_moneda" type="xsd:string" />
+  <part name="ve_monto_pesos" type="xsd:string" />
+  <part name="ve_cod_tipo_descuento" type="xsd:string" />
+  <part name="ve_dscto_utm" type="xsd:string" />
+  <part name="ve_dscto_pesos" type="xsd:string" />
+  <part name="ve_tipo_pago_web" type="xsd:string" /></message>
+<message name="ws_crea_sub_boletaResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_pago_confirmacionRequest">
+  <part name="ve_token" type="xsd:string" /></message>
+<message name="ws_pago_confirmacionResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_exitoRequest">
+  <part name="ve_cod_transaccion" type="xsd:string" /></message>
+<message name="ws_datos_exitoResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_deudor_exitoRequest">
+  <part name="ve_rut" type="xsd:string" /></message>
+<message name="ws_datos_deudor_exitoResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_inicioRequest">
+  <part name="ve_cod" type="xsd:string" /></message>
+<message name="ws_datos_inicioResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_actualiza_direccionRequest">
+  <part name="ve_cod_direccion" type="xsd:string" />
+  <part name="ve_cod_deudor" type="xsd:string" />
+  <part name="ve_tipo_direccion" type="xsd:string" />
+  <part name="ve_direccion" type="xsd:string" />
+  <part name="ve_cod_comuna" type="xsd:string" />
+  <part name="ve_cod_ciudad" type="xsd:string" />
+  <part name="ve_cod_pais" type="xsd:string" />
+  <part name="ve_email" type="xsd:string" />
+  <part name="ve_telefono" type="xsd:string" />
+  <part name="ve_celular" type="xsd:string" /></message>
+<message name="ws_actualiza_direccionResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_direccion_pRequest">
+  <part name="ve_cod_deudor" type="xsd:string" /></message>
+<message name="ws_datos_direccion_pResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_direccion_cRequest">
+  <part name="ve_cod_deudor" type="xsd:string" /></message>
+<message name="ws_datos_direccion_cResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_ciudadRequest">
+  <part name="ve_cod_region" type="xsd:string" /></message>
+<message name="ws_datos_ciudadResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_cupon_pago_1Request">
+  <part name="ve_cod_deudor" type="xsd:string" /></message>
+<message name="ws_cupon_pago_1Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_cupon_pago_cuotasRequest">
+  <part name="ve_cod_deudor" type="xsd:string" /></message>
+<message name="ws_cupon_pago_cuotasResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_cambio_claveRequest">
+  <part name="ve_cod_deudor" type="xsd:string" />
+  <part name="ve_clave_nueva" type="xsd:string" /></message>
+<message name="ws_cambio_claveResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_cupon_pago_boletaRequest">
+  <part name="ve_cod_plan_pago" type="xsd:string" /></message>
+<message name="ws_cupon_pago_boletaResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_comunaRequest">
+  <part name="ve_cod_ciudad" type="xsd:string" /></message>
+<message name="ws_datos_comunaResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_regionRequest">
+  <part name="ve_cod_pais" type="xsd:string" /></message>
+<message name="ws_datos_regionResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_pago_transaccionRequest">
+  <part name="ve_operacion" type="xsd:string" />
+  <part name="ve_orden_compra" type="xsd:string" />
+  <part name="ve_sessionId" type="xsd:string" />
+  <part name="ve_numeroTarjeta" type="xsd:string" />
+  <part name="ve_expiracion_tarjeta" type="xsd:string" />
+  <part name="ve_fecha_autorizacion" type="xsd:string" />
+  <part name="ve_fecha_hora_autorizacion" type="xsd:string" />
+  <part name="ve_resultado_autenticacion" type="xsd:string" />
+  <part name="ve_urlRedirection" type="xsd:string" />
+  <part name="ve_codigo_autorizacion" type="xsd:string" />
+  <part name="ve_tipo_transaccion" type="xsd:string" />
+  <part name="ve_respuesta_pago" type="xsd:string" />
+  <part name="ve_monto_pago" type="xsd:string" />
+  <part name="ve_null" type="xsd:string" />
+  <part name="ve_cantidad_cuota" type="xsd:string" />
+  <part name="ve_codigo_comercio" type="xsd:string" />
+  <part name="ve_orden_compra_tienda" type="xsd:string" />
+  <part name="ve_token" type="xsd:string" /></message>
+<message name="ws_pago_transaccionResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_pago_online_3Request">
+  <part name="ve_cod_deuda" type="xsd:string" /></message>
+<message name="ws_pago_online_3Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_pago_online_4Request">
+  <part name="ve_cod_deudor" type="xsd:string" /></message>
+<message name="ws_pago_online_4Response">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_obtiene_plan_pagoRequest">
+  <part name="ve_cod_deuda" type="xsd:string" /></message>
+<message name="ws_obtiene_plan_pagoResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_webpay_cuponRequest">
+  <part name="ve_rut" type="xsd:string" /></message>
+<message name="ws_datos_webpay_cuponResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_deudorRequest">
+  <part name="ve_rut" type="xsd:string" /></message>
+<message name="ws_datos_deudorResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_deudaRequest">
+  <part name="ve_rut" type="xsd:string" /></message>
+<message name="ws_datos_deudaResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_datos_web_payRequest">
+  <part name="ve_cod_deudor" type="xsd:string" /></message>
+<message name="ws_datos_web_payResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_detalle_deudaRequest">
+  <part name="ve_cod_deuda" type="xsd:string" /></message>
+<message name="ws_detalle_deudaResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_valida_plan_pagoRequest">
+  <part name="ve_rut" type="xsd:string" />
+  <part name="ve_cod_deuda" type="xsd:string" /></message>
+<message name="ws_valida_plan_pagoResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_valida_deudorRequest">
+  <part name="ve_rut" type="xsd:string" />
+  <part name="ve_dig_verif" type="xsd:string" /></message>
+<message name="ws_valida_deudorResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_pago_abonoRequest">
+  <part name="orden_compra" type="xsd:string" /></message>
+<message name="ws_pago_abonoResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_crea_transaccionRequest">
+  <part name="ve_operacion" type="xsd:string" />
+  <part name="ve_monto_abono" type="xsd:string" />
+  <part name="ve_ip" type="xsd:string" />
+  <part name="ve_browser" type="xsd:string" />
+  <part name="ve_so" type="xsd:string" /></message>
+<message name="ws_crea_transaccionResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_sub_boletaRequest">
+  <part name="ve_cod_plan_pago" type="xsd:string" />
+  <part name="ve_monto_abono_pesos" type="xsd:string" /></message>
+<message name="ws_sub_boletaResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_deuda_transaccionRequest">
+  <part name="ve_operacion" type="xsd:string" />
+  <part name="ve_cod_wp_transaccion" type="xsd:string" />
+  <part name="ve_nro_deuda" type="xsd:string" />
+  <part name="ve_monto_asignado" type="xsd:string" />
+  <part name="ve_tipo_abono" type="xsd:string" /></message>
+<message name="ws_deuda_transaccionResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_wp_init_transaccionRequest">
+  <part name="ve_cod_wp_transaccion" type="xsd:string" />
+  <part name="ve_token" type="xsd:string" /></message>
+<message name="ws_wp_init_transaccionResponse">
+  <part name="return" type="xsd:string" /></message>
+<message name="ws_wp_pago_transaccion_wsRequest">
+  <part name="ve_operacion" type="xsd:string" />
+  <part name="ve_orden_compra" type="xsd:string" />
+  <part name="ve_sessionId" type="xsd:string" />
+  <part name="ve_numeroTarjeta" type="xsd:string" />
+  <part name="ve_expiracion_tarjeta" type="xsd:string" />
+  <part name="ve_fecha_autorizacion" type="xsd:string" />
+  <part name="ve_fecha_hora_autorizacion" type="xsd:string" />
+  <part name="ve_resultado_autenticacion" type="xsd:string" />
+  <part name="ve_urlRedirection" type="xsd:string" />
+  <part name="ve_codigo_autorizacion" type="xsd:string" />
+  <part name="ve_tipo_transaccion" type="xsd:string" />
+  <part name="ve_respuesta_pago" type="xsd:string" />
+  <part name="ve_monto_pago" type="xsd:string" />
+  <part name="ve_valor_cuota" type="xsd:string" />
+  <part name="ve_cantidad_cuota" type="xsd:string" />
+  <part name="ve_codigo_comercio" type="xsd:string" />
+  <part name="ve_orden_compra_tienda" type="xsd:string" />
+  <part name="ve_token" type="xsd:string" /></message>
+<message name="ws_wp_pago_transaccion_wsResponse">
+  <part name="return" type="xsd:string" /></message>
+<portType name="ws_DatosPortType">
+  <operation name="ws_valida_deuda">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_valida_deudaRequest"/>
+    <output message="tns:ws_valida_deudaResponse"/>
+  </operation>
+  <operation name="ws_inicio_repro">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_inicio_reproRequest"/>
+    <output message="tns:ws_inicio_reproResponse"/>
+  </operation>
+  <operation name="ws_inicio_repro_2">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_inicio_repro_2Request"/>
+    <output message="tns:ws_inicio_repro_2Response"/>
+  </operation>
+  <operation name="ws_inicio_repro_3">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_inicio_repro_3Request"/>
+    <output message="tns:ws_inicio_repro_3Response"/>
+  </operation>
+  <operation name="ws_inicio_repro_4">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_inicio_repro_4Request"/>
+    <output message="tns:ws_inicio_repro_4Response"/>
+  </operation>
+  <operation name="ws_obtiene_deuda">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_obtiene_deudaRequest"/>
+    <output message="tns:ws_obtiene_deudaResponse"/>
+  </operation>
+  <operation name="ws_obtiene_boleta">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_obtiene_boletaRequest"/>
+    <output message="tns:ws_obtiene_boletaResponse"/>
+  </operation>
+  <operation name="ws_obtiene_ult_boleta">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_obtiene_ult_boletaRequest"/>
+    <output message="tns:ws_obtiene_ult_boletaResponse"/>
+  </operation>
+  <operation name="ws_cant_cruzado">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_cant_cruzadoRequest"/>
+    <output message="tns:ws_cant_cruzadoResponse"/>
+  </operation>
+  <operation name="ws_ajax_plan_pago_1">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_ajax_plan_pago_1Request"/>
+    <output message="tns:ws_ajax_plan_pago_1Response"/>
+  </operation>
+  <operation name="ws_ajax_plan_pago_2">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_ajax_plan_pago_2Request"/>
+    <output message="tns:ws_ajax_plan_pago_2Response"/>
+  </operation>
+  <operation name="ws_ajax_plan_pago_3">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_ajax_plan_pago_3Request"/>
+    <output message="tns:ws_ajax_plan_pago_3Response"/>
+  </operation>
+  <operation name="ws_ajax_plan_pago_4">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_ajax_plan_pago_4Request"/>
+    <output message="tns:ws_ajax_plan_pago_4Response"/>
+  </operation>
+  <operation name="ws_pago_online_1">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_pago_online_1Request"/>
+    <output message="tns:ws_pago_online_1Response"/>
+  </operation>
+  <operation name="ws_pago_online_2">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_pago_online_2Request"/>
+    <output message="tns:ws_pago_online_2Response"/>
+  </operation>
+  <operation name="ws_validationResult">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_validationResultRequest"/>
+    <output message="tns:ws_validationResultResponse"/>
+  </operation>
+  <operation name="ws_bitacora_transaccion">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_bitacora_transaccionRequest"/>
+    <output message="tns:ws_bitacora_transaccionResponse"/>
+  </operation>
+  <operation name="ws_init_transaccion">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_init_transaccionRequest"/>
+    <output message="tns:ws_init_transaccionResponse"/>
+  </operation>
+  <operation name="ws_crea_sub_boleta">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_crea_sub_boletaRequest"/>
+    <output message="tns:ws_crea_sub_boletaResponse"/>
+  </operation>
+  <operation name="ws_pago_confirmacion">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_pago_confirmacionRequest"/>
+    <output message="tns:ws_pago_confirmacionResponse"/>
+  </operation>
+  <operation name="ws_datos_exito">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_exitoRequest"/>
+    <output message="tns:ws_datos_exitoResponse"/>
+  </operation>
+  <operation name="ws_datos_deudor_exito">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_deudor_exitoRequest"/>
+    <output message="tns:ws_datos_deudor_exitoResponse"/>
+  </operation>
+  <operation name="ws_datos_inicio">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_inicioRequest"/>
+    <output message="tns:ws_datos_inicioResponse"/>
+  </operation>
+  <operation name="ws_actualiza_direccion">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_actualiza_direccionRequest"/>
+    <output message="tns:ws_actualiza_direccionResponse"/>
+  </operation>
+  <operation name="ws_datos_direccion_p">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_direccion_pRequest"/>
+    <output message="tns:ws_datos_direccion_pResponse"/>
+  </operation>
+  <operation name="ws_datos_direccion_c">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_direccion_cRequest"/>
+    <output message="tns:ws_datos_direccion_cResponse"/>
+  </operation>
+  <operation name="ws_datos_ciudad">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_ciudadRequest"/>
+    <output message="tns:ws_datos_ciudadResponse"/>
+  </operation>
+  <operation name="ws_cupon_pago_1">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_cupon_pago_1Request"/>
+    <output message="tns:ws_cupon_pago_1Response"/>
+  </operation>
+  <operation name="ws_cupon_pago_cuotas">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_cupon_pago_cuotasRequest"/>
+    <output message="tns:ws_cupon_pago_cuotasResponse"/>
+  </operation>
+  <operation name="ws_cambio_clave">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_cambio_claveRequest"/>
+    <output message="tns:ws_cambio_claveResponse"/>
+  </operation>
+  <operation name="ws_cupon_pago_boleta">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_cupon_pago_boletaRequest"/>
+    <output message="tns:ws_cupon_pago_boletaResponse"/>
+  </operation>
+  <operation name="ws_datos_comuna">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_comunaRequest"/>
+    <output message="tns:ws_datos_comunaResponse"/>
+  </operation>
+  <operation name="ws_datos_region">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_regionRequest"/>
+    <output message="tns:ws_datos_regionResponse"/>
+  </operation>
+  <operation name="ws_pago_transaccion">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_pago_transaccionRequest"/>
+    <output message="tns:ws_pago_transaccionResponse"/>
+  </operation>
+  <operation name="ws_pago_online_3">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_pago_online_3Request"/>
+    <output message="tns:ws_pago_online_3Response"/>
+  </operation>
+  <operation name="ws_pago_online_4">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_pago_online_4Request"/>
+    <output message="tns:ws_pago_online_4Response"/>
+  </operation>
+  <operation name="ws_obtiene_plan_pago">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_obtiene_plan_pagoRequest"/>
+    <output message="tns:ws_obtiene_plan_pagoResponse"/>
+  </operation>
+  <operation name="ws_datos_webpay_cupon">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_webpay_cuponRequest"/>
+    <output message="tns:ws_datos_webpay_cuponResponse"/>
+  </operation>
+  <operation name="ws_datos_deudor">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_deudorRequest"/>
+    <output message="tns:ws_datos_deudorResponse"/>
+  </operation>
+  <operation name="ws_datos_deuda">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_deudaRequest"/>
+    <output message="tns:ws_datos_deudaResponse"/>
+  </operation>
+  <operation name="ws_datos_web_pay">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_datos_web_payRequest"/>
+    <output message="tns:ws_datos_web_payResponse"/>
+  </operation>
+  <operation name="ws_detalle_deuda">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_detalle_deudaRequest"/>
+    <output message="tns:ws_detalle_deudaResponse"/>
+  </operation>
+  <operation name="ws_valida_plan_pago">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_valida_plan_pagoRequest"/>
+    <output message="tns:ws_valida_plan_pagoResponse"/>
+  </operation>
+  <operation name="ws_valida_deudor">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_valida_deudorRequest"/>
+    <output message="tns:ws_valida_deudorResponse"/>
+  </operation>
+  <operation name="ws_pago_abono">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_pago_abonoRequest"/>
+    <output message="tns:ws_pago_abonoResponse"/>
+  </operation>
+  <operation name="ws_crea_transaccion">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_crea_transaccionRequest"/>
+    <output message="tns:ws_crea_transaccionResponse"/>
+  </operation>
+  <operation name="ws_sub_boleta">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_sub_boletaRequest"/>
+    <output message="tns:ws_sub_boletaResponse"/>
+  </operation>
+  <operation name="ws_deuda_transaccion">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_deuda_transaccionRequest"/>
+    <output message="tns:ws_deuda_transaccionResponse"/>
+  </operation>
+  <operation name="ws_wp_init_transaccion">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_wp_init_transaccionRequest"/>
+    <output message="tns:ws_wp_init_transaccionResponse"/>
+  </operation>
+  <operation name="ws_wp_pago_transaccion_ws">
+    <documentation>Retorna todos los datos solicitados</documentation>
+    <input message="tns:ws_wp_pago_transaccion_wsRequest"/>
+    <output message="tns:ws_wp_pago_transaccion_wsResponse"/>
+  </operation>
+</portType>
+<binding name="ws_DatosBinding" type="tns:ws_DatosPortType">
+  <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="ws_valida_deuda">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_valida_deuda" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_inicio_repro">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_inicio_repro" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_inicio_repro_2">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_inicio_repro_2" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_inicio_repro_3">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_inicio_repro_3" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_inicio_repro_4">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_inicio_repro_4" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_obtiene_deuda">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_obtiene_deuda" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_obtiene_boleta">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_obtiene_boleta" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_obtiene_ult_boleta">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_obtiene_ult_boleta" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_cant_cruzado">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_cant_cruzado" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_ajax_plan_pago_1">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_ajax_plan_pago_1" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_ajax_plan_pago_2">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_ajax_plan_pago_2" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_ajax_plan_pago_3">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_ajax_plan_pago_3" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_ajax_plan_pago_4">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_ajax_plan_pago_4" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_pago_online_1">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_pago_online_1" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_pago_online_2">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_pago_online_2" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_validationResult">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_validationResult" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_bitacora_transaccion">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_bitacora_transaccion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_init_transaccion">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_init_transaccion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_crea_sub_boleta">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_pago_online_2" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_pago_confirmacion">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_pago_confirmacion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_exito">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_exito" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_deudor_exito">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_deudor_exito" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_inicio">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_direccion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_actualiza_direccion">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_direccion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_direccion_p">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_direccion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_direccion_c">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_direccion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_ciudad">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_ciudad" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_cupon_pago_1">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_cupon_pago_1" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_cupon_pago_cuotas">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_cupon_pago_cuotas" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_cambio_clave">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_cambio_clave" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_cupon_pago_boleta">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_cupon_pago_cuotas" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_comuna">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_comuna" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_region">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_region" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_pago_transaccion">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_pago_transaccion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_pago_online_3">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_pago_online_3" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_pago_online_4">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_pago_online_4" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_obtiene_plan_pago">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_obtiene_plan_pago" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_webpay_cupon">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_webpay_cupon" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_deudor">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_deudor" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_deuda">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_deuda" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_datos_web_pay">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_datos_web_pay" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_detalle_deuda">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_detalle_deuda" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_valida_plan_pago">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_valida_plan_pago" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_valida_deudor">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_valida_deudor" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_pago_abono">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_pago_abono" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_crea_transaccion">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_crea_transaccion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_sub_boleta">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_sub_boleta" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_deuda_transaccion">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_deuda_transaccion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_wp_init_transaccion">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_wp_init_transaccion" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="ws_wp_pago_transaccion_ws">
+    <soap:operation soapAction="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl#ws_wp_pago_transaccion_ws" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+</binding>
+<service name="ws_Datos">
+  <port name="ws_DatosPort" binding="tns:ws_DatosBinding">
+    <soap:address location="http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.php"/>
+  </port>
+</service>
+</definitions>

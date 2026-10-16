@@ -1,0 +1,11 @@
+los Procedimientos ( sp_deuda_cuota_cs ) son distintos.
+
+en la carpeta de UV no se esta considerando: 
+-- si han pasado mas de 3 meses del vencto => se debe usar la cta de castigo
+
+en la carpeta mssql general:
+--- si la cuota esta vencida el comprobante es contra CASTIGO
+
+en la carpeta de oracle general y en la carpeta de la UCM se ocupa la misma logica:
+-- si han pasado mas de 3 meses del vencto => se debe usar la cta de castigo
+

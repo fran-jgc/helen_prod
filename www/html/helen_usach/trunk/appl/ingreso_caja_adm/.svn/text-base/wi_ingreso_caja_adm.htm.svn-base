@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Sistema Helen</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+
+<script src="../../../../commonlib_seven/trunk/script_js/SpryTabbedPanels.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<link href="../../../../commonlib_seven/trunk/css/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+<script charset="UTF-8" src="ingreso_caja_adm.js" type="text/javascript"></script>
+<style type="text/css">
+<!--
+.Estilo1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+
+.Estilo2 {
+	color: #993300;
+	font-weight: bold;
+	align: right;
+}
+-->
+</style>
+{WI_JAVA_SCRIPT}
+</head>
+<body {WI_ONLOAD}>
+<!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js" type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+<form action="" method="post" name="input" id="input" enctype="multipart/form-data"><input name="wi_hidden" id="wi_hidden" type="hidden"
+	value="">
+<table width="1050" border="0" align="center">
+	<tr bgcolor="#FFFFFF">
+		<!-- menu superior-->
+		<td width="1000" height="51" align="center" id="awmAnchor-menu" style="width: 100px; height: 50px;"></td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+		<table width="1000" border="0">
+			<tr>
+				<td>
+				<table width="520" border="0">
+					<tr>
+						<td height="100%">
+						<div class="titulo_central">{WI_RUTA_MENU}</div>
+						</td>
+					</tr>
+					<tr>
+						<td height="0%">
+						<div class="tit_superior"><font color="#999999">{WI_FECHA_ACTUAL} </font></div>
+						</td>
+					</tr>
+					<tr>
+						<td height="0%">
+						<div class="tit_superior"><font color="#999999">{WI_FECHA_MODIF} </font></div>
+						</td>
+					</tr>
+				</table>
+				</td>
+				<td width="68"></td>
+				<td width="68">{WI_NO_SAVE}</td>
+				<td width="68">{WI_SAVE}</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+		<table width="1000" border="0" align="center">
+			<tr>
+				<td height="95">
+				<table width="1015" border="0" align="center">
+					<tr valign="top">
+						<td>
+						<div id="TabbedPanels1" class="TabbedPanels">
+						<ul class="TabbedPanelsTabGroup">
+							<li class="TabbedPanelsTab" tabindex="0">Ingreso Caja Administrativa</li>
+						</ul>
+						<div style="height: 500px;" class="TabbedPanelsContentGroup"><!--INI BOLETA-->
+						<div class="TabbedPanelsContent">
+						<table width="1000" border="1" rules="none" align="center">
+							<tr class="encabezado_right">
+								<td width="166">Nro. Ingreso:</td>
+								<td width="166" class="claro" align="left">{COD_INGRESO_CAJA_ADM}</td>
+								<td width="166">Fecha:</td>
+								<td width="166" class="claro" align="left">{FECHA_INGRESO_CAJA_ADM}</td>
+								<td width="166">Usuario:</td>
+								<td width="166" class="claro" align="left">{NOM_USUARIO}{COD_USUARIO}</td>
+							</tr>
+						</table>
+						<table width="1000" border="1" rules="none" align="center">
+							<tr class="titulo_tabla">
+								<td colspan="6">BOLETA</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="166">Nro. Boleta:</td>
+								<td width="166" class="claro" align="left">{COD_BOLETA}</td>
+								<td width="166">Sub Boleta:</td>
+								<td width="166" class="claro" align="left">{COD_SUB_BOLETA}</td>
+								<td width="166" class="claro"></td>
+								<td width="166" class="claro"></td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>Rut:</td>
+								<td class="oscuro" align="left">{RUT}-{DIG_VERIF}</td>
+								<td>Nombre:</td>
+								<td colspan="3" class="oscuro" align="left">{NOMBRE}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>Nro. Deuda:</td>
+								<td class="claro" align="left">{COD_DEUDA}{COD_DEUDA_H}</td>
+								<td>Tipo Deuda:</td>
+								<td class="claro" align="left">{COD_TIPO_DEUDA}</td>
+								<td>Año:</td>
+								<td class="claro" align="left">{ANO_COBRO}</td>
+							</tr>
+						</table>
+						<p />
+						<table width="1000" border="1" rules="none" align="center">
+							<tr class="encabezado_center">
+								<td width="166"></td>
+								<td width="166">Capital</td>
+								<td width="166">Interés Normal</td>
+								<td width="166">Multa</td>
+								<td width="166">Otros</td>
+								<td width="166">Total UTM</td>
+								<td width="166">Total Pesos</td>
+							</tr>
+							<!-- startBlock(SUB_BOLETA) -->
+							<tr class="claro" align="right">
+								<td class="encabezado_right">Descuento:</td>
+								<td>{DSCTO_CAPITAL}</td>
+								<td>{DSCTO_INTERES}</td>
+								<td>{DSCTO_MULTA}</td>
+								<td>{TOTAL_DSCTO}</td>
+								<td>{TOTAL_DSCTO_PESO}</td>
+							</tr>
+							<tr class="oscuro" align="right">
+								<td class="encabezado_right">Monto a Pagar:</td>
+								<td>{MONTO_CAPITAL}</td>
+								<td>{MONTO_INTERES}</td>
+								<td>{MONTO_MULTA}</td>
+								<td>{TOTAL_MONTO}</td>
+								<td>{TOTAL_MONTO_PESO}{TOTAL_MONTO_PESO_H}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td colspan="5">Total Abonos</td>
+								<td class="titulo_tabla_right_oscuro">{TOTAL}</td>
+								<td class="titulo_tabla_right_oscuro">{TOTAL_PESO}{TOTAL_PESO_H}</td>
+							</tr>
+							<!-- endBlock(SUB_BOLETA) -->
+						</table>
+						<table width="1000" border="1" rules="none" align="center">
+							<tr align="right">
+								<td>
+								<table width="1000" rules="none" border="1" align="center">
+									<tr height="23">
+										<td colspan="7" class="titulo_tabla">PAGO</td>
+									</tr>
+									<tr class="encabezado_center">
+										<td width="166">Transbank :</td>
+										<td width="834" class="claro" align="left">{MONTO}</td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+						</table>
+						</div>
+						<!--FIN BOLETA--> 
+						<!--FIN TabbedPanelsContentGroup--></td>
+						<!--FIN TabbedPanels-->
+					</tr>
+				</table>
+				<table width="1000" border="0" align="center">
+					<tr valign="middle">
+						<td width="290">{WI_BACK}</td>
+						<td align="right">{WI_FIRST}{WI_PREV}</td>
+						<td align="left">{WI_NEXT}{WI_LAST}</td>
+						<td width="290"></td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
+<!--
+var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels1");
+//-->
+</script>
+</body>
+</html>

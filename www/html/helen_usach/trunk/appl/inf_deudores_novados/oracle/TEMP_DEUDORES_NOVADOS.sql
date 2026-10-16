@@ -1,0 +1,12 @@
+create global temporary table TEMP_DEUDORES_NOVADOS
+  (COD_NOVACION           NUMBER
+  ,FECHA_NOVACION         DATE
+  ,RUT							      VARCHAR2(20)
+  ,NOMBRE                 VARCHAR2(100)
+  ,APELLIDO_PATERNO       VARCHAR2(100)
+  ,APELLIDO_MATERNO       VARCHAR2(100)
+  ,COD_DEUDA_ANTIGUA      NUMBER
+  ,COD_DEUDA_NUEVA        NUMBER
+  ,FOLIO_PAGARE           VARCHAR2(20)
+)
+on commit delete ROWS;

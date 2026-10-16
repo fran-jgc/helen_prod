@@ -1,0 +1,472 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+//***********dibujo**************/////////
+class print_declaracion extends reporte {
+	const K_ESTADO_DECLARACION_CONFIRMADA = 2;
+	const K_TIPO_DIRECCION  = 'P';
+	const K_PARAM_UNIVERSIDAD = 5;
+	var	$glosa_mandato1;
+	var	$glosa_mandato2;
+	
+	function __construct($sql, $xml, $labels=array(), $titulo, $con_logo, $vuelve_a_presentacion=false) {
+	    parent::__construct($sql, $xml, $labels, $titulo, $con_logo, $vuelve_a_presentacion);
+	}
+	
+	function booter_declaracion(&$pdf, $result, $iniX = 0, $iniY = 10) {
+		$this->glosa_mandato1 = '"Declaro bajo juramento que los datos aquí proporcionados son fidedignos"'; 
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 50, $iniY + 600, $this->glosa_mandato1);
+		
+		$this->glosa_mandato2  = "Por el presente instrumento otorgo Mandato con carácter de Irrevocable a la ".$result[0]['NOM_UNIVERSIDAD'];
+		$this->glosa_mandato2 .= ", para verificar los datos aquí consignados con todos los antecedentes que disponga el Servicio de Impuestos Internos,";
+		$this->glosa_mandato2 .= "Instituciones Previsionales, empleadores y demás organismos públicos y privados.";
+		
+		$pdf->SetXY($iniX + 50, $iniY + 603);
+		$pdf->MultiCell(500, 10, $this->glosa_mandato2);
+	}
+	
+	function dibuja_uno(&$pdf, $result, $iniX, $iniY, $copia) {
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$cod_declaracion = $result[0]['COD_DECLARACION'];
+		$count = count($result);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		//para el caso de la UV el encabezado es distinto
+		if(session::get('K_CLIENTE') == 'UV'){
+			$factor = 0.45;
+			$pdf->Image(dirname(__FILE__)."/../../images_appl/".session::get('K_CLIENTE')."/logo_universidad.jpg", $iniX + 50, $iniY - 5, $factor * 286, $factor * 147);
+		}else{
+			$factor = 0.2;
+			$pdf->Image(dirname(__FILE__)."/../../images_appl/".session::get('K_CLIENTE')."/logo_universidad.jpg",$iniX + 40,$iniY + 0, $factor * 300, $factor * 357);
+			
+			$pdf->Text($iniX + 105, $iniY + 25,'FONDO SOLIDARIO DE CREDITO UNIVERSITARIO');
+			$pdf->Text($iniX + 105, $iniY + 38,$result[0]['NOM_UNIVERSIDAD']);
+		}
+		$pdf->Text($iniX + 500, $iniY + 25,$result[0]['COD_DECLARACION']);
+		
+		$pdf->SetFont('Helvetica','B',11);
+		$pdf->Text($iniX + 160, $iniY + 80,'FORMULARIO DECLARACION JURADA DE INGRESOS');
+		
+		//ANO DE DECLARACION
+		$pdf->SetFont('Helvetica','',7);
+		$pdf->Text($iniX + 290, $iniY + 90,'AÑO '.$result [0]['ANO_DECLARACION']);
+		
+		
+		/**************************************************************************/
+		/**************************** DATOS PERSONALES ****************************/
+		/**************************************************************************/
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 50, $iniY + 110,'N° de Rut del Deudor:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 150, $iniY + 110,number_format($result [0]['RUT'], 0, ',', '.').' - '.$result[0]['DIG_VERIF']);
+		$pdf->Line($iniX + 150, $iniY + 112, $iniX + 250, $iniY + 112);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 50, $iniY + 125,'Apellidos:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 150, $iniY + 125,utf8_decode($result	[0]['APELLIDO_PATERNO'].'  '.$result[0]['APELLIDO_MATERNO']));
+		$pdf->Line($iniX + 150, $iniY + 127, $iniX + 330, $iniY + 127);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 340, $iniY + 125,'Nombres:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 390, $iniY + 125,utf8_decode($result[0]['NOMBRE']));
+		$pdf->Line($iniX + 390, $iniY + 127, $iniX + 560, $iniY + 127);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 50, $iniY + 140,'Institución Previsional (A.F.P): ');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 185, $iniY + 140,utf8_decode($result	[0]['NOM_AFP']));
+		$pdf->Line($iniX + 185, $iniY + 142, $iniX + 330, $iniY + 142);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 340, $iniY + 140,'Estado Civil:');
+		if($result[0]['COD_ESTADO_CIVIL']== 1){
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text( 410,  150,'Soltero');
+			$pdf->Rect( 400,  143, 6, 7, 'D');
+			$pdf->Text( 401,  149,'x');
+			$pdf->Text( 410,  165,'Casado');
+			$pdf->Rect( 400,  158, 6, 7, 'D');			
+		}else if($result[0]['COD_ESTADO_CIVIL']== 2){
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text( 410,  150,'Soltero');
+			$pdf->Rect( 400,  143, 6, 7, 'D');
+			$pdf->Text( 410,  165,'Casado');
+			$pdf->Rect( 400,  158, 6, 7, 'D');	
+			$pdf->Text( 401,  164,'x');
+		}
+		
+		if($result[0]['COD_ESTADO_CIVIL']== 1){
+			$pdf->SetFont('Helvetica','B',9);
+			$pdf->Text($iniX + 470, $iniY + 140,'Hijo(s):');
+			if($result[0]['CON_HIJO']== 'S'){
+				$pdf->SetFont('Helvetica','',9);
+				$pdf->Text( 515,  150,'con hijos');
+				$pdf->Rect( 505,  143, 6, 7, 'D');
+				$pdf->Text( 506,  149,'x');
+				$pdf->Text( 515,  165,'sin hijos');
+				$pdf->Rect( 505,  158, 6, 7, 'D');			
+			}else if($result[0]['CON_HIJO']== 'N'){
+				$pdf->SetFont('Helvetica','',9);
+				$pdf->Text( 515,  150,'con hijos');
+				$pdf->Rect( 505,  143, 6, 7, 'D');
+				$pdf->Text( 515,  165,'sin hijos');
+				$pdf->Rect( 505,  158, 6, 7, 'D');	
+				$pdf->Text( 506,  164,'x');
+			}
+		}
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 50, $iniY + 155,'Presenta Información Tributaria:');
+		if($result[0]['ENTREGA_F22']=='S'){
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text( 195,  165,'Si');
+			$pdf->Rect( 205,  158, 6, 7, 'D');
+			$pdf->Text( 206,  164,'x');
+			$pdf->Text( 225,  165,'No');
+			$pdf->Rect( 238,  158, 6, 7, 'D');			
+		}else if($result[0]['ENTREGA_F22']=='N'){
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text( 195,  165,'Si');
+			$pdf->Rect( 205,  158, 6, 7, 'D');
+			$pdf->Text( 225,  165,'No');
+			$pdf->Rect( 238,  158, 6, 7, 'D');
+			$pdf->Text( 239,  164,'x');	
+		}
+		
+		/**************************************************************************/
+		/************************** ANTECEDENTES CONYUGE **************************/
+		/**************************************************************************/
+		
+		$pdf->SetFont('Helvetica','B',10);
+		$pdf->Text($iniX + 50, $iniY + 315, 'ANTECEDENTES CONYUGE');
+		
+		$rut_conyuge = $result[0]['RUT_CONYUGE'];
+		
+		if($rut_conyuge == '')
+			$rut_conyuge = '';
+		else 	
+			$rut_conyuge = number_format($rut_conyuge, 0, ',', '.');
+			
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 50, $iniY + 335,'N° de Rut del Conyuge:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 153, $iniY + 335, $rut_conyuge.' - '.$result[0]['DIG_VERIF_CONYUGE']);
+		$pdf->Line($iniX + 153, $iniY + 337, $iniX + 250, $iniY + 337);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 260, $iniY + 335,'Nombre:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 301, $iniY + 335,utf8_decode($result[0]['NOM_CONYUGE']));
+		$pdf->Line($iniX + 301, $iniY + 337, $iniX + 560, $iniY + 337);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 50, $iniY + 350,'Conyuge deudor de Crédito Universitario:');
+		if($result[0]['CONYUGE_ES_DEUDOR']=='S'){
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text( 235,  360,'Si');
+			$pdf->Rect( 245,  353, 6, 7, 'D');
+			$pdf->Text( 246,  359,'x');
+			$pdf->Text( 265,  360,'No');
+			$pdf->Rect( 278,  353, 6, 7, 'D');			
+		}else if($result[0]['CONYUGE_ES_DEUDOR']=='N'){
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text( 235,  360,'Si');
+			$pdf->Rect( 245,  353, 6, 7, 'D');
+			$pdf->Text( 265,  360,'No');
+			$pdf->Rect( 278,  353, 6, 7, 'D');	
+			$pdf->Text( 279,  359,'x');
+		}	
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 320, $iniY + 350,'Conyuge declara ingresos:');
+		if($result[0]['CONYUGE_DECLARA']=='S'){
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text( 440,  360,'Si');
+			$pdf->Rect( 450,  353, 6, 7, 'D');
+			$pdf->Text( 451,  359,'x');
+			$pdf->Text( 470,  360,'No');
+			$pdf->Rect( 483,  353, 6, 7, 'D');			
+		}else if($result[0]['CONYUGE_DECLARA']=='N'){
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text( 440,  360,'Si');
+			$pdf->Rect( 450,  353, 6, 7, 'D');
+			$pdf->Text( 470,  360,'No');
+			$pdf->Rect( 483,  353, 6, 7, 'D');
+			$pdf->Text( 484,  359,'x');	
+		}
+		// declara si , no
+		$declara_conyuge = $result[0]['CONYUGE_DECLARA'];
+		
+		/**************************************************************************/
+		/************************** DECLARACION MES ***************************/
+		/**************************************************************************/
+		
+		$pdf->SetFont('Helvetica','B',10);
+		$pdf->Rect( 50,  380, 255, 12, 'D');		
+		$pdf->Text($iniX + 115, $iniY + 380,'INGRESOS '.$result	[0]['ANO'].' DEUDOR');
+		$pdf->Rect( 305,  380, 254, 12, 'D');
+		$pdf->Text($iniX + 366, $iniY + 380,'INGRESOS '.$result	[0]['ANO'].' CONYUGE');
+		
+		/**************************************************************************/
+		/*********************** GLOSA DECLARACION JURADA ***************************/
+		/**************************************************************************/
+		$pdf->Text($iniX + 70, $iniY + 665,'Fecha: ');
+		$pdf->Text($iniX + 110, $iniY + 665, $result[0]['FECHA_DECLARACION']);
+		$pdf->Line($iniX + 100, $iniY + 667, $iniX + 210, $iniY + 667);
+		
+		$pdf->Line($iniX + 400, $iniY + 667, $iniX + 530, $iniY + 667);
+		$pdf->Text($iniX + 430, $iniY + 677, 'Firma del Deudor');
+		
+		$pdf->Text($iniX + 120, $iniY + 727, 'Firma y timbre del Notario');
+		$pdf->Line($iniX + 227, $iniY + 727, $iniX + 400, $iniY + 727);
+		/**************************************************************************/
+		/************************** DOMICILIO PARTICULAR **************************/
+		/**************************************************************************/
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql= sql_declaracion::get_sql('PRINT_DIRECCION_PARTICULAR',$cod_declaracion);
+		$result = $db->build_results($sql);	 
+		
+		$pdf->SetFont('Helvetica','B',10);
+		$pdf->Text($iniX + 50, $iniY + 185, 'DOMICILIO PARTICULAR');
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 50, $iniY + 205, 'Dirección:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 100, $iniY + 205,utf8_decode($result[0]['DIRECCION_P']));
+		$pdf->Line($iniX + 100, $iniY + 207, $iniX + 390, $iniY + 207);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 400, $iniY + 205, 'Comuna:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 443, $iniY + 205,utf8_decode($result[0]['NOM_COMUNA_P']));
+		$pdf->Line($iniX + 443, $iniY + 207, $iniX + 560, $iniY + 207);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 50, $iniY + 220, 'Ciudad:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 100, $iniY + 220,utf8_decode($result[0]['NOM_CIUDAD_P']));
+		$pdf->Line($iniX + 100, $iniY + 222, $iniX + 217, $iniY + 222);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 225, $iniY + 220, 'Teléfono:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 270, $iniY + 220,utf8_decode($result[0]['TELEFONO_P']));
+		$pdf->Line($iniX + 270, $iniY + 222, $iniX + 390, $iniY + 222);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 400, $iniY + 220, 'Celular:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 443, $iniY + 220,$result	[0]['CELULAR_P']);
+		$pdf->Line($iniX + 443, $iniY + 222, $iniX + 560, $iniY + 222);
+		
+		$pdf->SetFont('Helvetica','B',9);
+		$pdf->Text($iniX + 50, $iniY + 235, 'E-mail:');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->Text($iniX + 100, $iniY + 235,$result	[0]['EMAIL_P']);
+		$pdf->Line($iniX + 100, $iniY + 237, $iniX + 217, $iniY + 237);
+		
+		$iniY = $iniY+15;
+		
+		/**************************************************************************/
+		/************************** DOMICILIO COMERCIAL ***************************/
+		/**************************************************************************/
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql= sql_declaracion::get_sql('PRINT_DIRECCION_COMERCIAL',$cod_declaracion);
+		$result = $db->build_results($sql);	
+		$row_count = $db->count_rows();
+		
+		$pdf->SetFont('Helvetica','B',10);
+		$pdf->Text($iniX + 50, $iniY + 250, 'DOMICILIO COMERCIAL');
+		
+		if ($row_count > 0){
+			$pdf->SetFont('Helvetica','B',9);
+			$pdf->Text($iniX + 50, $iniY + 270, 'Dirección:');
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text($iniX + 100, $iniY + 270,utf8_decode($result[0]['DIRECCION_C']));
+			$pdf->Line($iniX + 100, $iniY + 272, $iniX + 390, $iniY + 272);
+			
+			$pdf->SetFont('Helvetica','B',9);
+			$pdf->Text($iniX + 400, $iniY + 270, 'Comuna:');
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text($iniX + 443, $iniY + 270,utf8_decode($result[0]['NOM_COMUNA_C']));
+			$pdf->Line($iniX + 443, $iniY + 272, $iniX + 560, $iniY + 272);
+			
+			$pdf->SetFont('Helvetica','B',9);
+			$pdf->Text($iniX + 50, $iniY + 285, 'Ciudad:');
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text($iniX + 100, $iniY + 285,utf8_decode($result[0]['NOM_CIUDAD_C']));
+			$pdf->Line($iniX + 100, $iniY + 287, $iniX + 217, $iniY + 287);
+			
+			$pdf->SetFont('Helvetica','B',9);
+			$pdf->Text($iniX + 225, $iniY + 285, 'Teléfono:');
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text($iniX + 270, $iniY + 285,$result	[0]['TELEFONO_C']);
+			$pdf->Line($iniX + 270, $iniY + 287, $iniX + 390, $iniY + 287);
+			
+			$pdf->SetFont('Helvetica','B',9);
+			$pdf->Text($iniX + 400, $iniY + 285, 'E-mail:');
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->Text($iniX + 443, $iniY + 285,$result	[0]['EMAIL_C']);
+			$pdf->Line($iniX + 443, $iniY + 287, $iniX + 560, $iniY + 287);
+			
+		}
+		else{
+			$pdf->SetFont('Helvetica','B',9);
+			$pdf->Text($iniX + 50, $iniY + 270, 'Dirección:');
+			$pdf->Line($iniX + 100, $iniY + 272, $iniX + 390, $iniY + 272);
+			$pdf->Text($iniX + 400, $iniY + 270, 'Comuna:');
+			$pdf->Line($iniX + 443, $iniY + 272, $iniX + 560, $iniY + 272);
+			$pdf->Text($iniX + 50, $iniY + 285, 'Ciudad:');
+			$pdf->Line($iniX + 100, $iniY + 287, $iniX + 217, $iniY + 287);
+			$pdf->Text($iniX + 225, $iniY + 285, 'Teléfono:');
+			$pdf->Line($iniX + 270, $iniY + 287, $iniX + 390, $iniY + 287);
+			$pdf->Text($iniX + 400, $iniY + 285, 'E-mail:');
+			$pdf->Line($iniX + 443, $iniY + 287, $iniX + 560, $iniY + 287);
+		}
+		
+		/**************************************************************************/
+		/************************ DETALLE DECLARACION MES DEUDOR ******************/
+		/**************************************************************************/
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql= sql_declaracion::get_sql('PRINT_DECLARACION_DEUDOR',$cod_declaracion);
+		$result = $db->build_results($sql);		
+		$row_count = $db->count_rows();
+		
+		$iniY=$iniY-15;
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->SetXY($iniX + 50, $iniY+ 382);
+		$pdf->Cell(62, 10, 'MES', 'LBRT', '','C');
+		$pdf->SetXY($iniX + 112, $iniY+ 382);
+		$pdf->Cell(64, 10, 'MONTO EN $', 'LBRT', '','C');
+		$pdf->SetXY($iniX + 176, $iniY+ 382);
+		$pdf->Cell(64, 10, 'VALOR UTM', 'LBRT', '','C');
+		$pdf->SetXY($iniX + 240, $iniY+ 382);
+		$pdf->Cell(65, 10, 'MONTO EN UTM', 'LBRT', '','C');
+		
+		$y = 392;
+		$total_deudor_pesos = 0;
+		$total_deudor_moneda = 0;
+		for($i=0;$i<$row_count; $i++){
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->SetXY($iniX + 50, $iniY+ $y);
+			$pdf->Cell(62, 15, $result[$i]['MES'], 'LBRT', '','C');
+			$pdf->SetXY($iniX + 112, $iniY+ $y);
+			$pdf->Cell(64, 15, number_format($result[$i]['MONTO_DEUDOR_PESOS'], 0, ',', '.'), 'LBRT', '','R');
+			$pdf->SetXY($iniX + 176, $iniY+ $y);
+			$pdf->Cell(64, 15, number_format($result[$i]['VALOR_UTM_DEUDOR'], 0, ',', '.'), 'LBRT', '','R');
+			$pdf->SetXY($iniX + 240, $iniY+ $y);
+			$pdf->Cell(65, 15, number_format($result[$i]['MONTO_DEUDOR_MONEDA'], 4, ',', '.'), 'LBRT', '','R');
+			
+			$y = $y + 15;
+			$total_deudor_pesos = $total_deudor_pesos + $result[$i]['MONTO_DEUDOR_PESOS'];
+			$total_deudor_moneda = $total_deudor_moneda + $result[$i]['MONTO_DEUDOR_MONEDA'];
+		}
+		//suma de PESOS.
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->SetXY($iniX + 50, $iniY+ 572);
+		$pdf->Cell(62, 13, 'Total en PESOS', 'LBRT', '','C');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->SetXY($iniX + 112, $iniY+ 572);
+		$pdf->Cell(64, 13, number_format($total_deudor_pesos, 0, ',', '.'), 'LBRT', '','R');
+		
+		///suma de UTM
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->SetXY($iniX + 176, $iniY+ 572);
+		$pdf->Cell(64, 13, 'Total en UTM', 'LBRT', '','C');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->SetXY($iniX + 240, $iniY+ 572);
+		$pdf->Cell(65, 13, number_format($total_deudor_moneda, 4, ',', '.'), 'LBRT', '','R');
+		
+		
+		/**************************************************************************/
+		/*********************** DETALLE DECLARACION MES CONYUGE ******************/
+		/**************************************************************************/
+		
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql= sql_declaracion::get_sql('PRINT_DECLARACION_CONYUGE',$cod_declaracion);
+		$result = $db->build_results($sql);		
+		$row_count = $db->count_rows();
+		
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->SetXY($iniX + 305, $iniY+ 382);
+		$pdf->Cell(61, 10, 'MES', 'LBRT', '','C');
+		$pdf->SetXY($iniX + 366, $iniY+ 382);
+		$pdf->Cell(64, 10, 'MONTO EN $', 'LBRT', '','C');
+		$pdf->SetXY($iniX + 430, $iniY+ 382);
+		$pdf->Cell(64, 10, 'VALOR UTM', 'LBRT', '','C');
+		$pdf->SetXY($iniX + 494, $iniY+ 382);
+		$pdf->Cell(65, 10, 'MONTO EN UTM', 'LBRT', '','C');
+
+		$y = 392;
+		$total_conyuge_pesos = 0;
+		$total_conyuge_moneda = 0;
+		for($i=0;$i<$row_count; $i++){
+			$pdf->SetFont('Helvetica','',9);
+			$pdf->SetXY($iniX + 305, $iniY+ $y);
+			$pdf->Cell(61, 15, $result[$i]['MES'], 'LBRT', '','C');
+			
+			if($declara_conyuge == 'S'){
+				$MONTO_CONYUGE_PESOS = number_format($result[$i]['MONTO_CONYUGE_PESOS'], 0, ',', '.');
+				$VALOR_UTM_CONYUGE = number_format($result[$i]['VALOR_UTM_CONYUGE'], 0, ',', '.');
+				$MONTO_CONYUGE_MONEDA = number_format($result[$i]['MONTO_CONYUGE_MONEDA'], 4, ',', '.');				
+			}else{
+				$MONTO_CONYUGE_PESOS = '';
+				$VALOR_UTM_CONYUGE = '';
+				$MONTO_CONYUGE_MONEDA = '';				
+			}
+			
+			$pdf->SetXY($iniX + 366, $iniY+ $y);
+			$pdf->Cell(64, 15, $MONTO_CONYUGE_PESOS, 'LBRT', '','R');
+			
+			$pdf->SetXY($iniX + 430, $iniY+ $y);
+			$pdf->Cell(64, 15, $VALOR_UTM_CONYUGE, 'LBRT', '','R');
+			
+			$pdf->SetXY($iniX + 494, $iniY+ $y);
+			$pdf->Cell(65, 15, $MONTO_CONYUGE_MONEDA, 'LBRT', '','R');
+			$y = $y + 15;
+			
+			$total_conyuge_pesos = $total_conyuge_pesos + $result[$i]['MONTO_CONYUGE_PESOS'];
+			$total_conyuge_moneda = $total_conyuge_moneda + $result[$i]['MONTO_CONYUGE_MONEDA'];
+		}
+		//suma de PESOS.
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->SetXY($iniX + 305, $iniY+ 572);
+		$pdf->Cell(61, 13, 'Total en PESOS', 'LBRT', '','C');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->SetXY($iniX + 366, $iniY+ 572);
+		if($declara_conyuge == 'S'){
+			$total_conyuge_pesos = number_format($total_conyuge_pesos, 0, ',', '.');
+		}else{
+			$total_conyuge_pesos = '';
+		}		
+		$pdf->Cell(64, 13, $total_conyuge_pesos, 'LBRT', '','R');
+		
+		//suma de UTM
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->SetXY($iniX + 430, $iniY+ 572);
+		$pdf->Cell(64, 13, 'Total en UTM', 'LBRT', '','C');
+		$pdf->SetFont('Helvetica','',9);
+		$pdf->SetXY($iniX + 494, $iniY+ 572);
+		if($declara_conyuge == 'S'){
+			$total_conyuge_moneda = number_format($total_conyuge_moneda, 0, ',', '.');
+		}else{
+			$total_conyuge_moneda = '';
+		}
+		$pdf->Cell(65, 13, $total_conyuge_moneda, 'LBRT', '','R');
+				
+	}
+	
+	function modifica_pdf(&$pdf) {
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$result = $db->build_results($this->sql);
+		$count = count($result);
+		$declaracion = 'DECLARACION';
+		$this->dibuja_uno($pdf, $result,0, 10, $declaracion);
+		$this->booter_declaracion($pdf, $result, 0, 10);
+	}	
+}
+?>

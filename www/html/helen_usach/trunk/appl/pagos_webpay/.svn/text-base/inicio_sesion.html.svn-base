@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png" href="imagen/logo-usach.png" />
+
+	<title>Universidad de Santiago de Chile</title>
+	
+	<meta name="viewport" content="width= device-width, user-scalable = no">
+	<!--<link rel="stylesheet" href="css/bootstrap.min.css" >-->
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+
+	
+
+
+</head>
+	<header> 
+	<div class="container">
+		
+		<p><br><img src="imagen/logo-usach.png" class="img-responsive" align="left" width="110" ><h1> Universidad de Santiago de Chile </h1>
+		<h4> Administración General del Fondo Solidario</h4><br><br><br></p>
+		
+			
+
+	</div>
+	</header>
+
+
+
+
+<body onload="abrir()">
+
+
+<nav class="navbar navbar-default">
+		<div class="container">
+			    <div class="navbar-header">
+
+						       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"  data-target="#myNavbar"  aria-expanded="false">
+								       
+								        <span class="icon-bar"></span>
+								        <span class="icon-bar"></span>
+								        <span class="icon-bar"></span>                       
+						       </button>
+				</div>
+				
+			<div class="collapse navbar-collapse" id ="myNavbar">
+
+				  <ul class="nav navbar-nav">
+				  	  
+					  <li><a href="inicio_sesion.php" ><span class="glyphicon glyphicon-user"></span> Inicio Sesión</a></li>
+			
+
+				  </ul>
+			</div>
+			
+		</div>
+	</nav>
+
+<br>
+
+ 
+	<div class="row content">
+		    <div class="container">
+			
+			  <h2>Iniciar Sesion</h2>
+			   <h4>Ingrese Su usuario de helen.</h4>
+					  
+					  <form class="form-horizontal" action="" method="post">
+							
+							<div class="form-group">
+							<label class="control-label col-sm-2" for="Rut" >Usuario:</label>
+									      <div class="col-sm-2">
+									      <td width="170"><input name="login"  placeholder="Usuario" autocomplete="off" required type="text" id="login" value="{W_LOGIN}" onfocus="this.style.border='1px solid red'" onblur= "this.style.border=''"></td>
+						     			  </div>
+							</div>
+
+						    <div class="form-group">
+						      	<label class="control-label col-sm-2" for="pwd">Contraseña:</label>
+								      <div class="col-sm-2">          
+								          <td><input name="password"  placeholder="Contraseña" autocomplete="off" required type="password" id="password" value="{W_PASSOWRD}" onfocus="this.style.border='1px solid red'" onblur= "this.style.border=''"></td>
+								      </div>
+						    </div>
+					    
+						  
+						    
+
+						    <div class="form-group">        
+							      <div class="col-sm-offset-2 col-sm-10">
+							        <input type="submit" name="b_ingresar" id="b_ingresar" value="Ingresar" class="button" />
+							      </div>
+						    </div>
+
+							<br>
+						     
+
+
+					  </form>
+			</div>
+		</div>
+	</div>
+
+	
+
+
+<br>
+<footer>
+		<div class="container">
+			<h3>Universidad de Santiago de Chile.</h3>
+			<h4>Avenida El Belloto nº 3530, Estacion Central, Santiago, Chile</h4>
+			<h5>Mesa Central (+56) 2 718 15 02 (Francisco Rojas)</h>
+		</div>
+</footer>
+
+	<!--<script scr = "js/bootstrap.min.js" ></script>-->
+	<!-- Latest compiled and minified JavaScript -->
+	<style type="text/css"></style>
+	<script scr = "js/jquery.js" ></script>
+	<script language="javascript" type="text/javascript"></script>
+	
+
+
+</body>
+</html>

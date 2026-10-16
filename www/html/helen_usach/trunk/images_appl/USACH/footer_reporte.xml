@@ -1,0 +1,5 @@
+<PageFooter>		
+	<Cell text="" border="T" absY="-50" redl="199" greenl="199" bluel="199" newline="1" />
+	<Cell text="{str_nom_universidad} - {str_direccion} - {str_comuna} - {str_ciudad} - {str_pais}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+	<Cell text="Fono: {str_telefono} - {str_email} - {str_sitio_web}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+</PageFooter>

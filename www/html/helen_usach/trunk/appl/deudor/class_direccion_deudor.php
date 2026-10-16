@@ -1,0 +1,184 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+/*
+ Clase : DW_DIRECCION_DEUDOR
+ */
+class dw_direccion_deudor extends datawindow{
+	var $tipo_direccion;
+	var $nom_tipo_direccion;
+	var $sql;
+	var $tabla;
+	function __construct($tipo_direccion, $tabla) {
+		$this->tipo_direccion = $tipo_direccion;
+		$this->tabla = $tabla;
+		if ($this->tipo_direccion == 'P'){
+			$this->nom_tipo_direccion = 'PARTICULAR';
+		}
+		elseif ($this->tipo_direccion == 'C'){
+			$this->nom_tipo_direccion = 'COMERCIAL';
+		}
+
+		$this->sql = sql_deudor::get_sql('DW_DIRECCION_DEUDOR', $this->nom_tipo_direccion, $this->tipo_direccion);
+
+		parent::__construct($this->sql, '', true, true);
+		$this->add_control(new edit_text_upper('COD_DIRECCION_'.$this->nom_tipo_direccion, 100, 100,'hidden'));
+		$this->add_control(new edit_text_upper('DIRECCION_'.$this->nom_tipo_direccion, 60, 100));
+		$this->add_control(new edit_mail('EMAIL_'.$this->nom_tipo_direccion, 40, 100));
+		$this->add_control(new edit_text('EMAIL_'.$this->nom_tipo_direccion.'_H', 100, 100,'hidden', false, true));
+		$this->add_control(new edit_text_upper('TELEFONO_'.$this->nom_tipo_direccion, 30, 100));
+		$this->add_control(new edit_text_upper('CELULAR_'.$this->nom_tipo_direccion, 40, 100));
+		$this->add_control(new edit_check_box('ES_VALIDA_'.$this->nom_tipo_direccion,'S','N'));
+		$this->add_control(new static_text('FECHA_DIRECCION_'.$this->nom_tipo_direccion));
+		$this->add_control(new edit_text_upper('EXT_REGION_'.$this->nom_tipo_direccion, 30, 100));
+		$this->add_control(new edit_text_upper('EXT_CIUDAD_'.$this->nom_tipo_direccion, 30, 100));
+		$this->add_control(new edit_text_upper('EXT_COMUNA_'.$this->nom_tipo_direccion, 30, 100));
+		$this->add_control(new edit_text('TELEFONO_'.$this->nom_tipo_direccion.'_H', 100, 100,'hidden'));
+		$this->add_control(new edit_text('CELULAR_'.$this->nom_tipo_direccion.'_H', 100, 100,'hidden'));
+		//$this->add_control(new edit_text('COD_PAIS_'.$this->nom_tipo_direccion.'_H', 100, 100,'hidden'));
+		$this->add_control(new edit_text_hidden('COD_REGION_'.$this->nom_tipo_direccion.'_H'));
+		$this->add_control(new edit_text_hidden('COD_CIUDAD_'.$this->nom_tipo_direccion.'_H'));
+		$this->add_control(new edit_text_hidden('COD_COMUNA_'.$this->nom_tipo_direccion.'_H'));
+				
+		$sql = sql_deudor::get_sql('DD_PAIS');
+		$this->add_control($control = new drop_down_dw('COD_PAIS_'.$this->nom_tipo_direccion, $sql, 90));
+		//$control->set_drop_down_dependiente($this->tabla, 'COD_REGION_'.$this->nom_tipo_direccion);
+		$control->set_onChange("aux_load_drop_down('".$this->tabla."', this, '".$this->nom_tipo_direccion."'); ");
+		
+		$sql = sql_deudor::get_sql('DD_REGION');
+		$this->add_control($control = new drop_down_dw('COD_REGION_'.$this->nom_tipo_direccion, $sql, 90));
+		$control->set_drop_down_dependiente($this->tabla, 'COD_CIUDAD_'.$this->nom_tipo_direccion);
+		
+		$sql = sql_deudor::get_sql('DD_CIUDAD');
+		$this->add_control($control = new drop_down_dw('COD_CIUDAD_'.$this->nom_tipo_direccion, $sql, 90));
+		$control->set_drop_down_dependiente($this->tabla, 'COD_COMUNA_'.$this->nom_tipo_direccion);
+			
+		$sql = sql_deudor::get_sql('DD_COMUNA');
+		$this->add_control(new drop_down_dw('COD_COMUNA_'.$this->nom_tipo_direccion, $sql, 90));
+
+		//MANDATORY
+		$this->set_mandatory('COD_PAIS_PARTICULAR', 'Pais Particular');
+		$this->set_mandatory('DIRECCION_PARTICULAR', 'Dirección Particular');
+	}
+
+	function insert_row($row=-1) {
+		$row = parent::insert_row($row);
+		$cod_pais_chile = 56; //$this->get_constante('K_CHILE');
+		$this->set_item($row, 'COD_PAIS_'.$this->nom_tipo_direccion, $cod_pais_chile, 'primary', false);	// por defecto CHILE pero no cambia el status
+		$this->set_item($row, 'ES_VALIDA_'.$this->nom_tipo_direccion, 'S', 'primary', false);	// por defecto es valida
+		$this->set_item($row, 'DISPLAY_PAIS_CHILE_'.$this->nom_tipo_direccion, '', 'primary', false);	// por defecto es valida
+		$this->set_item($row, 'DISPLAY_EXTRANJERO_'.$this->nom_tipo_direccion, 'none', 'primary', false);	// por defecto es valida
+		return $row;
+	}
+	function fill_record(&$temp, $record) {
+		$cod_pais = $this->get_item($record, 'COD_PAIS_'.$this->nom_tipo_direccion);
+		if ($cod_pais=='') $cod_pais = 0;
+		
+		$this->controls['COD_REGION_'.$this->nom_tipo_direccion]->retrieve($cod_pais);
+		$cod_region = $this->get_item($record, 'COD_REGION_'.$this->nom_tipo_direccion);
+		if ($cod_region=='') $cod_region = 0;
+		
+		$this->controls['COD_CIUDAD_'.$this->nom_tipo_direccion]->retrieve($cod_region);
+		$cod_ciudad = $this->get_item($record, 'COD_CIUDAD_'.$this->nom_tipo_direccion);
+		if ($cod_ciudad=='') $cod_ciudad = 0;
+		
+		$this->controls['COD_COMUNA_'.$this->nom_tipo_direccion]->retrieve($cod_ciudad);
+		parent::fill_record($temp, $record);
+	}
+	function update($db,$cod_deudor) {
+		$cod_direccion	= $this->get_item(0, 'COD_DIRECCION_'.$this->nom_tipo_direccion);
+		$direccion 		= $this->get_item(0, 'DIRECCION_'.$this->nom_tipo_direccion);
+		$cod_comuna		= $this->get_item(0, 'COD_COMUNA_'.$this->nom_tipo_direccion);
+		$cod_ciudad		= $this->get_item(0, 'COD_CIUDAD_'.$this->nom_tipo_direccion);
+		$cod_pais		= $this->get_item(0, 'COD_PAIS_'.$this->nom_tipo_direccion);
+		$email			= $this->get_item(0, 'EMAIL_'.$this->nom_tipo_direccion);
+		$telefono		= $this->get_item(0, 'TELEFONO_'.$this->nom_tipo_direccion);
+		$celular		= $this->get_item(0, 'CELULAR_'.$this->nom_tipo_direccion);
+		$es_valida		= $this->get_item(0, 'ES_VALIDA_'.$this->nom_tipo_direccion);
+		$ext_region		= $this->get_item(0, 'EXT_REGION_'.$this->nom_tipo_direccion);
+		$ext_ciudad		= $this->get_item(0, 'EXT_CIUDAD_'.$this->nom_tipo_direccion);
+		$ext_comuna		= $this->get_item(0, 'EXT_COMUNA_'.$this->nom_tipo_direccion);
+		
+		$direccion_h 	= $this->get_item(0, 'DIRECCION_'.$this->nom_tipo_direccion.'_H');
+		$cod_comuna_h	= $this->get_item(0, 'COD_COMUNA_'.$this->nom_tipo_direccion.'_H');
+		$cod_ciudad_h	= $this->get_item(0, 'COD_CIUDAD_'.$this->nom_tipo_direccion.'_H');
+		$cod_pais_h		= $this->get_item(0, 'COD_PAIS_'.$this->nom_tipo_direccion.'_H');
+		$email_h		= $this->get_item(0, 'EMAIL_'.$this->nom_tipo_direccion.'_H');
+		$telefono_h		= $this->get_item(0, 'TELEFONO_'.$this->nom_tipo_direccion.'_H');
+		$celular_h		= $this->get_item(0, 'CELULAR_'.$this->nom_tipo_direccion.'_H');
+
+		if ($this->nom_tipo_direccion=='PARTICULAR'){
+			$tipo_direccion = 'P';
+		}
+		else if($this->nom_tipo_direccion=='COMERCIAL'){
+			$tipo_direccion = 'C';
+		}
+		
+		
+		
+		$cod_direccion	= ($cod_direccion=='') ? "null" : $cod_direccion;
+		$direccion	= ($direccion=='') ? "null" : "'$direccion'";
+		$cod_comuna		= ($cod_comuna=='') ? "null" : $cod_comuna;
+		$cod_pais		= ($cod_pais=='') ? "null" : $cod_pais;
+		$cod_ciudad		= ($cod_ciudad=='') ? "null" : $cod_ciudad;
+		$email 			= ($email=='') ? "null" : "'$email'";
+		$telefono 		= ($telefono=='') ? "null" : "'$telefono'";
+		$celular 		= ($celular=='') ? "null" : "'$celular'";
+		$ext_region		= ($ext_region=='') ? "null" : "'$ext_region'";
+		$ext_ciudad		= ($ext_ciudad=='') ? "null" : "'$ext_ciudad'";
+		$ext_comuna		= ($ext_comuna=='') ? "null" : "'$ext_comuna'";
+		
+		$direccion_h		= ($direccion_h=='') ? "null" : "'$direccion_h'";
+		$cod_comuna_h		= ($cod_comuna_h=='') ? "null" : $cod_comuna_h;
+		$cod_pais_h			= ($cod_pais_h=='') ? "null" : $cod_pais_h;
+		$cod_ciudad_h		= ($cod_ciudad_h=='') ? "null" : $cod_ciudad_h;
+		$email_h 			= ($email_h=='') ? "null" : "'$email_h'";
+		$telefono_h 		= ($telefono_h=='') ? "null" : "'$telefono_h'";
+		$celular_h 			= ($celular_h=='') ? "null" : "'$celular_h'";
+
+		$cod_usuario = session::get("COD_USUARIO");	// viene del login
+
+		$sp = 'spu_direccion';
+		
+		// HV. DEBE GUARDAR SIEMPRE SIENDO VALIDA O NO	
+		if($direccion != $direccion_h or 
+			$cod_comuna != $cod_comuna_h or
+			$cod_ciudad != $cod_ciudad_h or
+			$cod_pais != $cod_pais_h or
+			$email != $email_h or
+			$telefono != $telefono_h or
+			$celular != $celular_h){
+				
+			$operacion = 'INSERT';
+			$param	= "'$operacion'
+			,$cod_direccion
+			,$cod_deudor
+			,'$tipo_direccion'
+			,$direccion
+			,$cod_comuna
+			,$cod_ciudad
+			,$cod_pais
+			,$email
+			,$telefono
+			,$celular
+			,'$es_valida'
+			,$cod_usuario
+			,$ext_region
+			,$ext_ciudad
+			,$ext_comuna";
+			
+			$statuts = $this->get_status_row(0);
+			if (($statuts == K_ROW_MODIFIED)||($statuts == K_ROW_NEW_MODIFIED )){
+				if($tipo_direccion == 'P'){
+					return $db->EXECUTE_SP($sp, $param);
+				}
+				if($tipo_direccion == 'C'){
+					if($direccion != "null" && $cod_pais != "null")
+						return $db->EXECUTE_SP($sp, $param);
+				}
+			}
+		}
+		
+		return true;
+	}
+}
+?>

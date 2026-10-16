@@ -1,0 +1,352 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+
+class wi_carga_tgr extends w_input{
+	
+	function __construct($cod_item_menu){
+	    parent::__construct('carga_tgr', $cod_item_menu);
+		$this->b_delete_visible  = false;
+		$this->hide_menu_when_from = false;		// Cuando se crear desde no se debe esconder menu
+		
+		///////////////// CLASS_SQL = INPUT ///////////////
+		$sql = sql_carga_tgr::get_sql('INPUT');
+		$this->dws['dw_carga_tgr'] = new datawindow($sql);
+		$this->dws['dw_item_carga_tgr'] = new dw_item_carga_tgr();
+		//CONTROLES
+		$this->dws['dw_carga_tgr']->add_control(new	static_text('FECHA_REGISTRO'));
+		$this->dws['dw_carga_tgr']->add_control(new	edit_date('FECHA_CARGA_tgr'));
+		$this->dws['dw_carga_tgr']->add_control(new	static_text('COD_CARGA_TGR'));
+		$this->dws['dw_carga_tgr']->add_control(new	static_num('TOTAL_REG_CARGA'));
+		$this->dws['dw_carga_tgr']->add_control(new	static_num('TOTAL_REG_EXITOSO'));
+		$this->dws['dw_carga_tgr']->add_control(new	static_num('TOTAL_REG_PDTE'));
+		$this->dws['dw_carga_tgr']->add_control(new	static_num('MONTO_REG_CARGA'));
+		$this->dws['dw_carga_tgr']->add_control(new	static_num('MONTO_REG_EXITOSO'));
+		$this->dws['dw_carga_tgr']->add_control(new	static_num('MONTO_REG_PDTE'));
+		
+	}
+	
+	
+	function new_record(){
+		$this->dws['dw_carga_tgr']->insert_row();
+		$this->dws['dw_item_carga_tgr']->insert_row();
+
+		$this->b_print_visible =false;	
+
+	}
+	function load_record()
+	{
+ 		$COD_CARGA_TGR	=$this->get_item_wo($this->current_record, 'COD_CARGA_TGR');
+		$this->dws['dw_carga_tgr']->retrieve($COD_CARGA_TGR);
+		$this->dws['dw_item_carga_tgr']->retrieve($COD_CARGA_TGR);
+		$this->b_no_save_visible	= true;
+		$this->b_save_visible		= true;
+		$this->b_modify_visible		= true;	
+		$this->b_print_visible		= false;
+		//$this->dws['dw_carga_banco']->set_item(0, 'OCULTA_PROCESAR', '');
+		if(isset($_POST['b_modify_x'])){
+			$this->dws['dw_carga_tgr']->set_item(0, 'OCULTA_PROCESAR', 'none');
+		}
+		
+		$count_pendiente= 0;
+		for($i = 0; $i < $this->dws['dw_item_carga_tgr']->row_count(); $i++){
+			
+			if($this->dws['dw_item_carga_tgr']->get_item($i,'COD_ESTADO_CARGA') != 2){
+				$count_pendiente++;
+			}
+		}
+		if($count_pendiente == 0){
+			$this->b_modify_visible		= false;
+			$this->dws['dw_carga_tgr']->set_item(0, 'OCULTA_PROCESAR', 'none');
+		}
+		
+	}
+
+	function get_key()	{
+		return $this->dws['dw_carga_tgr']->get_item(0, 'COD_CARGA_TGR');
+		
+	}
+	function save_record($db)	{	
+		
+		$COD_CARGA_TGR			= $this->get_key();
+		$FECHA_CARGA				= $this->dws['dw_carga_tgr']->get_item(0,'FECHA_CARGA_tgr');
+		$TOTAL_REG_CARGA			= $this->dws['dw_carga_tgr']->get_item(0,'TOTAL_REG_CARGA');
+		$TOTAL_REG_EXITOSO			= $this->dws['dw_carga_tgr']->get_item(0,'TOTAL_REG_EXITOSO');
+		$TOTAL_REG_PDTE				= $this->dws['dw_carga_tgr']->get_item(0,'TOTAL_REG_PDTE');
+		$ORIGEN_PAGO				= $this->dws['dw_carga_tgr']->get_item(0,'COD_ORIGEN_PAGO');
+		
+		
+		$COD_CARGA_TGR			= ($COD_CARGA_TGR=='') ? "null" : $COD_CARGA_TGR;
+		$TOTAL_REG_CARGA			= ($TOTAL_REG_CARGA=='') ? "null" : $TOTAL_REG_CARGA;
+		$TOTAL_REG_EXITOSO			= ($TOTAL_REG_EXITOSO=='') ? "null" : $TOTAL_REG_EXITOSO;
+		$TOTAL_REG_PDTE				= ($TOTAL_REG_PDTE=='') ? "null" : $TOTAL_REG_PDTE;
+		$ORIGEN_PAGO				= ($ORIGEN_PAGO=='') ? "null" : $ORIGEN_PAGO;			
+		$FECHA_CARGA 				= "to_date('$FECHA_CARGA', 'dd/mm/yyyy')";
+		
+         
+		
+		$sp = 'spu_carga_tgr';
+		if ($this->is_new_record()){
+			$operacion = 'INSERT';
+	
+		}
+		else{
+			$operacion = 'UPDATE';		
+		}			
+		$param = " '$operacion'
+					,$COD_CARGA_TGR			
+					,$this->cod_usuario				
+					,$FECHA_CARGA
+					,$TOTAL_REG_CARGA
+					,$TOTAL_REG_EXITOSO
+					,$TOTAL_REG_PDTE
+					,$ORIGEN_PAGO";	
+		
+		if ($db->EXECUTE_SP($sp, $param)){
+			if ($this->is_new_record()) {
+				$COD_CARGA_TGR = $db->GET_IDENTITY('CARGA_TGR');
+				$this->dws['dw_carga_tgr']->set_item(0, 'COD_CARGA_TGR', $COD_CARGA_TGR);
+			}
+			    
+			if (!$this->dws['dw_item_carga_tgr']->update($db,$COD_CARGA_TGR)){
+				return false;
+			}
+					
+			return true;
+		}
+		return false;
+		
+	}
+	function procesa_carga(){
+		$COD_CARGA_TGR	=$this->get_item_wo($this->current_record, 'COD_CARGA_TGR');
+		$cod_usuario= $this->cod_usuario;
+		$cod_proceso = 19; 
+		
+		$param = "'NEW'
+				,null	
+				,$cod_proceso
+				,$cod_usuario
+				,null
+				,null";			
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);			
+	    $sp="spu_ejecucion_proceso";
+		if ($db->EXECUTE_SP($sp, $param)){
+			$COD_EJECUCION_PROCESO =$db->GET_IDENTITY('ejecucion_proceso');			
+	 	}
+	 	else{
+	 		$COD_EJECUCION_PROCESO = "null";
+	 	}
+	 	
+	 	$this->redraw();
+	 	ob_start();
+		for ($i=1; $i<=3; $i++) {
+			print str_pad('',4096); //para que funcione en todos los navegadores
+		  	ob_end_flush(); 
+			ob_flush(); 
+			flush(); 
+			ob_start(); 
+			Sleep(1); 
+			print "<script>document.getElementById('img_loader').style.display = '';</script>"; 
+		}
+		ob_end_flush();
+	 	
+		$error = false;
+		$conn = oci_connect(K_USER, K_PASS, K_SERVER);
+		$stid = oci_parse($conn, "begin spp_usach_cb_tgr ($COD_EJECUCION_PROCESO, $COD_CARGA_TGR, $cod_usuario); end;");
+		if (oci_execute($stid)){
+			print "<script>document.getElementById('img_loader').style.display = 'none';</script>"; 
+			oci_free_statement($stid);
+			oci_close($conn);
+			$this->dws['dw_carga_tgr']->retrieve($COD_CARGA_TGR);
+			$this->dws['dw_item_carga_tgr']->retrieve($COD_CARGA_TGR);
+			
+			$modulo = 'carga_tgr';
+			session::set('DESDE_wo_'.$modulo, 'desde output');	// para indicar que viene del output
+			$rec_no = $_REQUEST['rec_no'];
+			$cod_item_menu= $_REQUEST['cod_item_menu'];
+			$url= K_ROOT_URL.'appl/carga_tgr/wi_carga_tgr.php?rec_no='.$rec_no.'&cod_item_menu='.$cod_item_menu;
+			print "<script>location.assign('$url');</script>"; 
+		}
+	 	else{
+	 		print "<script>document.getElementById('img_loader').style.display = 'none';</script>"; 
+	 		$error = true;
+	 		ob_end_flush();
+	 		$e = oci_error($stid);
+	 		$error_code= $e['code'];
+	 		$error_sqltext= $e['sqltext'];
+	 		//$error_message= $e['message'];
+	 		//$error_message = str_replace('"', '', $error_message);
+	 		//$error_message = str_replace("'", "", $error_message);
+	 		
+	 		$this->alert('Error Oracle codigo error: '.$error_code);
+	 		$this->alert('Error Oracle texto sql ejecutado: '.$error_sqltext);
+	 		//$this->alert($error_message); no funciona
+			
+	 		oci_free_statement($stid);
+			oci_close($conn);
+			$this->dws['dw_carga_tgr']->retrieve($COD_CARGA_TGR);
+			$this->dws['dw_item_carga_tgr']->retrieve($COD_CARGA_TGR);
+		}
+	}
+	
+	function genera_xls() {
+		$COD_CARGA_TGR	=$this->get_item_wo($this->current_record, 'COD_CARGA_TGR');
+		ini_set('memory_limit', '128M');
+		ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
+		require_once dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/php_writeexcel-0.3.0/class.writeexcel_workbook.inc.php";
+		require_once dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/php_writeexcel-0.3.0/class.writeexcel_worksheet.inc.php";
+		
+		$fname = tempnam("/tmp", "export.xls");
+		$workbook = new writeexcel_workbook($fname);
+		$worksheet = $workbook->addworksheet('Registros Carga Otras Ues');
+		
+		// escribe encabezados
+		# Create a format for the column headings
+		$header =& $workbook->addformat();
+		$header->set_bold();
+		$header->set_color('blue');
+
+		$worksheet->write(0, $col++,  'RUT', $header);
+		$worksheet->write(0, $col++,  'DIG_VERIF', $header);
+		$worksheet->write(0, $col++,  'FOLIO', $header);
+		$worksheet->write(0, $col++,  'MONTO_DEUDA_UTM', $header);
+		$worksheet->write(0, $col++,  'MONTO_RETENIDO_UTM', $header);
+		$worksheet->write(0, $col++,  'MONTO_PESOS', $header);
+		$worksheet->write(0, $col++,  'FECHA_PAGO', $header);
+		$worksheet->write(0, $col++,  'ESTADO', $header);
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql = "SELECT   RUT
+		 				,DIG_VERIF
+						,FOLIO
+						,MONTO_DEUDA_UTM
+						,MONTO_RETENIDO_UTM
+						,MONTO_PESOS
+						,TO_CHAR(FECHA_PAGO, 'dd/mm/yyyy') FECHA_PAGO
+						,EC.NOM_ESTADO_CARGA
+				FROM	ITEM_CARGA_TGR IT, ESTADO_CARGA EC
+				WHERE IT.COD_ESTADO_CARGA= EC.COD_ESTADO_CARGA
+				AND IT.COD_CARGA_TGR= $COD_CARGA_TGR
+				ORDER BY fecha_pago, cod_item_carga_tgr";
+		$res = $db->query($sql);
+			
+		$i = 0;
+		while($my_row = $db->get_row()){
+			if ($worksheet->_datasize > 7000000)
+				break;
+				
+			$columna = 0;
+			for ($j=0; $j <  $col; $j++) {		
+				$worksheet->write($i + 1, $columna, $my_row[$j]);
+				$columna++;
+			}
+			$i++;
+		}
+		if ($worksheet->_datasize > 7000000) {
+			$worksheet->write($i + 1, 0, 'No se completo la exportación de datos porque excede el máximo del tamaño de archivo 7 MB', $header);
+		}
+		
+		if($db->database_type=="oci") {
+			oci_free_statement($db->query_id);
+			$db->query_id = false;
+		}
+		
+		$workbook->close();
+		
+		header("Content-Type: application/x-msexcel; name=\"$this->nom_tabla\"");
+		header("Content-Disposition: inline; filename=\"$this->nom_tabla.xls\"");
+		$fh=fopen($fname, "rb");
+		fpassthru($fh);
+		unlink($fname);
+	}
+	
+	function procesa_event() {
+		if(isset($_POST['b_procesar_x'])){	
+			$this->procesa_carga();
+		}
+		else if(isset($_POST['b_export_x'])){	
+			$this->genera_xls();
+		}else
+			parent::procesa_event();
+	}
+}
+class dw_item_carga_tgr extends datawindow{
+    function __construct() {
+		
+	$sql = sql_carga_tgr::get_sql('ITEM_CARGA_TGR');
+	$this->b_delete_visible  = false;		
+	parent::__construct($sql, 'ITEM_CARGA_TGR', true, true);
+	$this->add_control($control=new edit_num('RUT',10,10));
+	$control->set_onKeypress("return onlyNumbers(this, event,0, 1);");
+	$this->add_control($control= new static_link('COD_ITEM_CARGA_TGR', '#'));
+	$control->set_onClick("abrirVentanaBitacora(this)");
+	$this->add_control(new edit_date('FECHA_PAGO'));
+	$this->add_control(new edit_text_hidden('COD_ITEM_CARGA_TGR_H'));
+	$this->add_control(new static_text('NOM_ESTADO_CARGA'));
+	$this->add_control(new edit_text('COD_ESTADO_CARGA',10,10,'hidden'));
+	$this->add_control(new static_num('MONTO_PESOS'));	
+	
+	$this->set_protect('RUT', "[COD_ESTADO_CARGA]==2");
+	$this->set_protect('FECHA_PAGO', "[COD_ESTADO_CARGA]==2");
+	
+    $this->set_mandatory('RUT','Rut');
+    $this->set_mandatory('FECHA_PAGO','Fecha Pago');
+           
+	}
+	function update($db, $COD_CARGA_TGR) {
+		$cod_usuario= $this->cod_usuario;
+		$sp = 'spu_item_carga_tgr';		
+			for ($i = 0; $i < $this->row_count(); $i++)		{
+				$statuts = $this->get_status_row($i);
+				if ($statuts == K_ROW_NOT_MODIFIED || $statuts == K_ROW_NEW)
+					continue;
+				
+				$COD_ITEM_CARGA			= $this->get_item($i, 'COD_ITEM_CARGA_TGR_H');
+				$RUT					= $this->get_item($i, 'RUT');
+				$FECHA_PAGO				= $this->get_item($i, 'FECHA_PAGO');
+				
+				$RUT		= ($RUT=='') ? "null" : $RUT;
+				$FECHA_PAGO	= ($FECHA_PAGO=='') ? "null" : $FECHA_PAGO;
+				
+				if($FECHA_PAGO != "null"){
+					$FECHA_PAGO = "to_date('$FECHA_PAGO', 'dd/mm/yyyy')";
+				}
+				
+				$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+				$sql= 	"SELECT COD_CARGA_TGR
+						FROM ITEM_CARGA_TGR
+						WHERE COD_ITEM_CARGA_TGR=$COD_ITEM_CARGA";
+				$result = $db->build_results($sql); 
+				
+				$COD_CARGA_TGR = $result[0]['COD_CARGA_TGR'];
+					
+				if ($statuts == K_ROW_NEW_MODIFIED)
+					$operacion = 'INSERT';
+				elseif ($statuts == K_ROW_MODIFIED)
+					$operacion = 'UPDATE';
+					
+				//operacion siempre es UPDATE
+				$param = "'$operacion'
+							,$COD_ITEM_CARGA
+							,$COD_CARGA_TGR
+							,null	
+							,$RUT
+							,null
+							,null
+							,null
+							,null
+							,null
+							,$FECHA_PAGO
+							,null
+							,$cod_usuario";
+							
+				if (!$db->EXECUTE_SP($sp, $param))
+					return false;
+				}
+		return true;
+		
+	}
+
+}
+?>

@@ -1,0 +1,85 @@
+@font-face {
+	font-family: 'myFont';
+	src: url('../fonts/Trebuchet_MS.ttf');
+	font-family: 'myFontBold';
+	src: url('../fonts/Trebuchet_MS_Bold.ttf');
+	font-family: 'mySlide';
+	src: url('../fonts/DINNextRoundedLTPro_Regular.ttf');
+	font-family: 'mySlideBold';
+	src: url('../fonts/DINNextRoundedLTPro_Bold.ttf');
+}
+
+
+body 							{ font-family: 'myFont', Helvetica, Arial; color: #333E48; }
+
+h1 								{ font-size: 14px; font-size: 1.4rem; }
+h2 								{ font-size: 23px; font-size: 2.3rem; }
+h3 								{ font-size: 21px; font-size: 2.1rem; }
+h4 								{ font-size: 19px; font-size: 1.9rem; }
+h5 								{ font-size: 17px; font-size: 1.7rem; }
+h6 								{ font-size: 15px; font-size: 1.5rem; }
+p 								{ font-size: 14px; font-size: 1.4rem; }
+ul li, ol li        			{ font-size: 14px; font-size: 1.4rem; }
+
+strong 							{ font-family: 'myFontBold', Helvetica, Arial!important; }
+
+blockquote 						{ font-size: 16px; font-size: 1.6rem; border-left: 5px solid #66CAA0; }
+
+a              					{ color: #007dbd; }
+a:hover,
+a:visited,
+a:active 						{ color: #007dbd; text-decoration: underline; }
+
+a.blanco              			{ color: white; text-decoration: underline; }
+a.blanco:hover 					{ color: #fec10d; }
+a.blanco:visited,
+a.blanco:active 				{ color: white; }
+
+h1 a:link, h2 a:link,
+h3 a:link, h4 a:link,
+h5 a:link, h6 a:link,
+h1 a:visited, h2 a:visited,
+h3 a:visited, h4 a:visited,
+h5 a:visited, h6 a:visited, 
+h1 a:active, h2 a:active,
+h3 a:active, h4 a:active,
+h5 a:active, h6 a:active    	{ color: white; text-decoration: none; }
+
+.center-text 					{ text-align: center!important; }
+.justify-right 					{ text-align: right!important; }
+.justify-left 					{ text-align: left!important; }
+.justify 						{ text-align: justify!important; }
+
+.v-center-text 					{ display: table!important; }
+.v-center-text > *				{ display: table-cell!important; vertical-align: middle!important; }
+
+.upper 							{ text-transform: uppercase!important; }
+.lower 							{ text-transform: lowercase!important; }
+.capit 							{ text-transform: capitalize!important; }
+
+/* *************************************
+* ********* My Fix Bootstrap ***********
+* ************************************ */
+td, th 							{ font-size: 12px; font-size: 1.2rem; }
+
+
+h3.title 						{ height: 50px; display: block; background: url(../images/sprite-ico-titulos.png) no-repeat 0px 0px; padding: 15px 0 0 55px; margin-bottom: 30px; }
+h3.one 							{ background-position: 0 0px!important; }
+h3.two 							{ background-position: 0 -50px!important; }
+h3.three 						{ background-position: 0 -100px!important; }
+h3.four 						{ background-position: 0 -150px!important; }
+h3.five 						{ background-position: 0 -200px!important; }
+h3.six 							{ background-position: 0 -250px!important; }
+h3.seven 						{ background-position: 0 -300px!important; }
+h3.eight 						{ background-position: 0 -350px!important; }
+
+a.basic 						{ height: 30px; float: right; background: url(../images/sprite-ico-basic.png) no-repeat 0 0; color: white; text-decoration: underline; padding: 5px 0 0 35px; margin-right: 20px; }
+a.mail 							{ background-position: 0 0; }
+a.phone 						{ background-position: 0 -30px; }
+
+a:hover.basic 					{ color: #fec10d; }
+
+h2.slide 						{ font-family: 'mySlide', Helvetica, Arial!important; color: #333E48; font-size: 12px; font-size: 1.2rem; line-height: 0.9em; }
+h2.slide strong 				{ font-family: 'mySlideBold', Helvetica, Arial!important; color: #333E48; }
+
+

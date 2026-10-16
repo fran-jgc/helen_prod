@@ -1,0 +1,299 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");	
+
+class wp_carga_pagare extends w_proceso{
+	const K_CARGA_PAGARE = 3;
+	var $archivo_cargado = false;
+	var $fecha_carga = '';
+	
+	function __construct(){
+	    parent::__construct('carga_pagare', $_REQUEST['cod_item_menu'], self::K_CARGA_PAGARE);
+   	}
+   	/*
+	function make_cmd_sp($cod_ejecucion_proceso){
+		if (K_TIPO_BD=="oci")
+			return "spp_cp_carga_pagare ($cod_ejecucion_proceso, $this->fecha_carga)";
+		else if (K_TIPO_BD=="mssql")	
+			return "spp_cp_carga_pagare $cod_ejecucion_proceso, $this->fecha_carga";
+	}*/
+		
+	function redraw_dws(&$temp) {
+		parent::redraw_dws($temp);
+		if ($this->archivo_cargado)
+			$temp->setVar("ARCHIVO_CARGADO", "                    Archivo cargado");
+		else
+			$temp->setVar("ARCHIVO_CARGADO", "");		
+	}
+	function cargar() {
+		$columnas = array(	'RUT' 				=> array('TIPO' => 'NUMBER',	'FORMATO' => '10',			'NULL' => 'N')
+						 	,'DIG_VERIF' 	   	=> array('TIPO' => 'TEXT', 		'FORMATO' => '',			'NULL' => 'N')
+						 	,'NOMBRE' 			=> array('TIPO' => 'TEXT',   	'FORMATO' => '',			'NULL' => 'N')
+						 	,'APELLIDO_PATERNO'	=> array('TIPO' => 'TEXT', 		'FORMATO' => '',			'NULL' => 'N')
+						 	,'APELLIDO_MATERNO'	=> array('TIPO' => 'TEXT', 		'FORMATO' => '',			'NULL' => 'N')
+						 	,'SEXO'				=> array('TIPO' => 'TEXT', 		'FORMATO' => '',			'NULL' => 'N')
+						 	,'COD_ESTADO_CIVIL' => array('TIPO' => 'NUMBER',   	'FORMATO' => '10',			'NULL' => 'S')
+						 	,'FECHA_NACIM' 		=> array('TIPO' => 'DATE',   	'FORMATO' => 'dd/mm/yyyy',			'NULL' => 'S')
+						 	,'DIRECCION' 		=> array('TIPO' => 'TEXT',   	'FORMATO' => '',			'NULL' => 'N')
+						 	,'COD_COMUNA' 		=> array('TIPO' => 'NUMBER',   	'FORMATO' => '10',			'NULL' => 'S')
+						 	,'COD_CIUDAD' 		=> array('TIPO' => 'NUMBER',   	'FORMATO' => '10',			'NULL' => 'S')
+						 	,'COD_PAIS' 		=> array('TIPO' => 'NUMBER',   	'FORMATO' => '10',			'NULL' => 'N')
+						 	,'COD_TIPO_DEUDA'	=> array('TIPO' => 'TEXT', 		'FORMATO' => '',			'NULL' => 'N')
+						 	,'EMAIL'			=> array('TIPO' => 'TEXT', 		'FORMATO' => '',			'NULL' => 'S')
+						 	,'TELEFONO'			=> array('TIPO' => 'TEXT', 		'FORMATO' => '',			'NULL' => 'S')
+						 	,'CELULAR'			=> array('TIPO' => 'TEXT', 		'FORMATO' => '',			'NULL' => 'S')
+						 	,'FOLIO_PAGARE'		=> array('TIPO' => 'TEXT', 		'FORMATO' => '',			'NULL' => 'N')
+						 	,'FECHA_PAGARE' 	=> array('TIPO' => 'DATE',   	'FORMATO' => 'dd/mm/yyyy',	'NULL' => 'N')
+						 	,'MONTO_MONEDA' 	=> array('TIPO' => 'NUMBER',   	'FORMATO' => '10.4',		'NULL' => 'N')
+						 	,'MONTO_PESOS' 		=> array('TIPO' => 'NUMBER',   	'FORMATO' => '14',			'NULL' => 'N')
+						 );
+
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sp = 'spu_carga_pagare';
+		$param = "'BORRA_CARGA_PAGARE'";
+		
+		if (!$db->EXECUTE_SP($sp, $param)){
+		    //break;
+		    $this->alert('No se pudo grabar el registro.');
+		    $this->redraw();
+		    return;
+		}
+			
+	    			
+	    $archivo = new archivo_datos('FILE_NAME', "archivos/", $columnas);
+	 	$u = $archivo->upLoadFile();
+	 	$sp = 'spu_carga_pagare';
+		
+		$this->fecha_carga = $this->str2date($db->current_date(), $db->current_time());
+		$db->BEGIN_TRANSACTION();
+		
+		$error = false;
+		// procesa el archivo
+		$archivo->open();
+		$i = 1;
+		while (!$archivo->feof()){
+			if (count($archivo->error) == $archivo->K_MAX_ERROR) {
+				$this->alert('Demasiados errores, no se seguira cargando el archivo.');
+				break;
+			}
+			$record = $archivo->read_record($i);
+			if (is_array($record)) {	// Si es array no existe error
+                $rut                = $record['RUT'];
+                $dig_verif          = $record['DIG_VERIF'];
+                $nombre             = $record['NOMBRE'];
+                $apellido_paterno	= $record['APELLIDO_PATERNO'];
+                $apellido_materno   = $record['APELLIDO_MATERNO'];
+                $sexo               = $record['SEXO'];
+                $cod_estado_civil   = $record['COD_ESTADO_CIVIL'];
+                $fecha_nacim        = $record['FECHA_NACIM'];
+                $direccion          = $record['DIRECCION'];
+                $cod_comuna         = $record['COD_COMUNA'];
+                $cod_ciudad         = $record['COD_CIUDAD'];
+                $cod_pais           = $record['COD_PAIS'];
+                $cod_tipo_deuda     = $record['COD_TIPO_DEUDA'];
+                $email              = $record['EMAIL'];
+                $telefono           = $record['TELEFONO'];
+                $celular            = $record['CELULAR'];
+                $folio_pagare       = $record['FOLIO_PAGARE'];
+                $fecha_pagare       = $record['FECHA_PAGARE'];
+                $monto_moneda       = $record['MONTO_MONEDA'];
+                $monto_pesos        = $record['MONTO_PESOS'];
+                
+                $nombre = str_replace("'", "''", $nombre);
+                $apellido_paterno = str_replace("'", "''", $apellido_paterno);
+                $apellido_materno = str_replace("'", "''", $apellido_materno);
+                $direccion = str_replace("'", "''", $direccion); 
+                $telefono = str_replace("'", "''", $telefono); 
+                $celular = str_replace("'", "''", $celular); 
+                $folio_pagare = str_replace("'", "''", $folio_pagare);
+                
+                $fecha_nacim = $this->str2date($fecha_nacim);		
+                
+               	$fecha_pagare = $this->str2date($fecha_pagare);
+				
+				if($cod_estado_civil != 1 && $cod_estado_civil !=2)
+                	$cod_estado_civil = 1;
+                  
+               	$cod_comuna = ($cod_comuna == '') ? "null" : $cod_comuna;
+               	$cod_ciudad = ($cod_ciudad == '') ? "null" : $cod_ciudad;
+               	$email = ($email == '') ? "null" : "'$email'";
+               	$telefono = ($telefono == '') ? "null" : "'$telefono'";
+               	$celular = ($celular == '') ? "null" : "'$celular'";
+               	
+				$param = "'INSERT'
+						,$rut
+						,'$dig_verif'
+                		,'$nombre'
+                		,'$apellido_paterno'
+                		,'$apellido_materno'
+		                ,'$sexo'
+		                ,$cod_estado_civil
+		                ,$fecha_nacim
+		                ,'$direccion'
+		                ,$cod_comuna
+		                ,$cod_ciudad
+		                ,$cod_pais
+		                ,'$cod_tipo_deuda'
+		                ,$email
+		                ,$telefono
+		                ,$celular
+		                ,'$folio_pagare'
+		                ,$fecha_pagare
+		                ,$monto_moneda
+		                ,$monto_pesos
+		                ,'N'
+		                ,$this->fecha_carga";
+      			
+	    		if (!$db->EXECUTE_SP($sp, $param)){
+	    			$error = true;
+					$db->ROLLBACK_TRANSACTION();
+					$error_sp = $db->GET_ERROR();
+					$this->alert('No se pudo grabar el registro.\n\n'.$db->make_msg_error_bd());
+					break;
+	    		}
+	    	}
+    		$i++;
+		}
+		$archivo->close();
+		/*BITACORA CARGA ARCHIVO*/
+		$nom_archivo_cargado 	= $_FILES['FILE_NAME']['name'];
+		$sp_carga_archivo 		= 'spu_carga_archivo';
+		$param_carga_archivo	= self::K_CARGA_PAGARE."
+				,'$nom_archivo_cargado'";
+
+		if (!$db->EXECUTE_SP($sp_carga_archivo, $param_carga_archivo)){
+	    	$error = true;
+			$db->ROLLBACK_TRANSACTION();
+			$error_sp = $db->GET_ERROR();
+			$this->alert('No se pudo grabar En la Bitacora de Archivo Carga.\n\n'.$db->make_msg_error_bd());
+			//break;
+	    }
+		$archivo->renFile();
+		
+		if (!$error) {
+			$db->COMMIT_TRANSACTION();
+		}
+		$archivo->display_error();	// Muestra los errores si existen
+		
+		$this->archivo_cargado = true;
+		$this->redraw();
+	}
+	
+	function ejecutar_proceso() {
+		if (!$this->archivo_cargado) {
+			$this->redraw();
+			$this->alert("Debe cargar el archivo antes de dar inicio al proceso.");			
+		}
+		else 
+			parent::ejecutar_proceso();
+	}
+	
+	function inicia_proceso(){
+	    $cod_usuario= $this->cod_usuario;
+	    $cod_proceso = 3;
+	    
+	    $param = "'NEW'
+				,null
+				,$cod_proceso
+				,$cod_usuario
+				,null
+				,null";
+	    $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+	    $sp = "spu_ejecucion_proceso";
+	    
+	    if ($db->EXECUTE_SP($sp, $param))
+	        $COD_EJECUCION_PROCESO =$db->GET_IDENTITY('ejecucion_proceso');
+	        else
+	            $COD_EJECUCION_PROCESO = "null";
+	            
+	            $this->archivo_cargado = false;
+	            $this->redraw();
+	            ob_start();
+	            for ($i=1; $i<=3; $i++) {
+	                print str_pad('',4096); //para que funcione en todos los navegadores
+	                ob_end_flush();
+	                ob_flush();
+	                flush();
+	                ob_start();
+	                Sleep(1);
+	                print "<script>document.getElementById('img_loader').style.display = '';</script>";
+	            }
+	            ob_end_flush();
+	            
+	            $error = false;
+	            $fecha_vencto = $this->fecha_carga;
+	            $conn = oci_connect(K_USER, K_PASS, K_SERVER);
+	            $stid = oci_parse($conn, "begin spp_cp_carga_pagare ($COD_EJECUCION_PROCESO, $fecha_vencto); end;");
+	            
+	            if (oci_execute($stid)){
+	                print "<script>document.getElementById('img_loader').style.display = 'none';</script>";
+	                print "<script>document.getElementById('fin_proceso').style.display = '';</script>";
+	                oci_free_statement($stid);
+	                oci_close($conn);
+	            }
+	            else{
+	                print "<script>document.getElementById('img_loader').style.display = 'none';</script>";
+	                print "<script>document.getElementById('fin_proceso').style.display = 'none';</script>";
+	                $error = true;
+	                ob_end_flush();
+	                $e = oci_error($stid);
+	                $error_code= $e['code'];
+	                $error_sqltext= $e['sqltext'];
+	                
+	                $this->redraw();
+	                $this->alert('Error Oracle texto sql ejecutado: '.$error_sqltext);
+	                
+	                oci_free_statement($stid);
+	                oci_close($conn);
+	            }
+	            
+	            $sql = "select to_char(FECHA_EJECUCION_PROCESO, 'dd/mm/yyyy hh24:mi:ss') LAST_FECHA_EJECUCION_PROCESO
+							,to_char(FECHA_TERMINO, 'dd/mm/yyyy hh24:mm:ss') LAST_FECHA_TERMINO
+							,Trim(To_Char(trunc(mod((FECHA_TERMINO - FECHA_EJECUCION_PROCESO)*24, 24)), '9900')) || ':' ||
+	 						 Trim(To_Char(trunc( mod( (FECHA_TERMINO - FECHA_EJECUCION_PROCESO)*24*60, 60)), '00')) || ':'  ||
+	 						 Trim(To_Char(trunc( mod( (FECHA_TERMINO - FECHA_EJECUCION_PROCESO)*24*60*60, 60)), '00')) LAST_DURACION
+							,CANCELA_PROCESO LAST_CANCELA_PROCESO
+							,U.NOM_USUARIO LAST_NOM_USUARIO
+							,decode(CANCELA_PROCESO, 'N', '', '    (Proceso cancelado por : ' || U2.NOM_USUARIO || ')') LAST_NOM_USUARIO_CANCELA
+							,TOT_REGISTRO LAST_TOT_REGISTRO
+							,ACTUAL_REGISTRO LAST_ACTUAL_REGISTRO
+							,Decode(NVL(To_Char(FECHA_TERMINO, 'yyyy'), 'none'), 'none', 'none', '')  LAST_DISPLAY_EJECUCION
+							,f_ep_cant_error(E.COD_EJECUCION_PROCESO, 'E') LAST_CANT_ERROR
+							,f_ep_cant_error(E.COD_EJECUCION_PROCESO, 'W') LAST_CANT_WARNING
+							,CASE WHEN (TOT_REGISTRO  = 0) THEN 100
+					             WHEN (ACTUAL_REGISTRO >= TOT_REGISTRO) THEN 100
+					             ELSE (ACTUAL_REGISTRO / TOT_REGISTRO) * 100
+					         END ANTERIOR_AVANCE
+					        ,E.ARCHIVO_RESULTADO
+					from EJECUCION_PROCESO E, USUARIO U, USUARIO U2
+					where E.COD_EJECUCION_PROCESO =$COD_EJECUCION_PROCESO
+					  and U.COD_USUARIO = E.COD_USUARIO
+					  and U2.COD_USUARIO (+)= E.COD_USUARIO_CANCELA";
+	            
+	            $result = $db->build_results($sql);
+	            
+	            $last_fecha_ejecucion_proceso = $result[0]['LAST_FECHA_EJECUCION_PROCESO'];
+	            $last_duracion = $result[0]['LAST_DURACION'];
+	            $last_nom_usuario = $result[0]['LAST_NOM_USUARIO'];
+	            $last_actual_registro = $result[0]['LAST_ACTUAL_REGISTRO'];
+	            $last_cant_error = $result[0]['LAST_CANT_ERROR'];
+	            $last_cant_warning = $result[0]['LAST_CANT_WARNING'];
+	            
+	            print "<script>document.getElementById('LAST_FECHA_EJECUCION_PROCESO_0').innerHTML ='$last_fecha_ejecucion_proceso';</script>";
+	            print "<script>document.getElementById('LAST_DURACION_0').innerHTML ='$last_duracion';</script>";
+	            print "<script>document.getElementById('LAST_NOM_USUARIO_0').innerHTML ='$last_nom_usuario';</script>";
+	            print "<script>document.getElementById('LAST_ACTUAL_REGISTRO_0').innerHTML ='$last_actual_registro';</script>";
+	            print "<script>document.getElementById('LAST_CANT_ERROR_0').innerHTML ='$last_cant_error';</script>";
+	            print "<script>document.getElementById('LAST_CANT_WARNING_0').innerHTML ='$last_cant_warning';</script>";
+	}
+	
+	function procesa_event(){
+	    if(isset($_POST['b_cargar']))
+	        $this->cargar();
+	        else if(isset($_POST['b_procesar'])){
+	            $this->inicia_proceso();
+	        }else
+	            parent::procesa_event();
+	}
+}
+?>

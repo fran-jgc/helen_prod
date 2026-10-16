@@ -1,0 +1,56 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="7" style="B" id="ArialSmallB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Planilla Diaria de Caja" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{COD_CUENTA_CONTABLE}" width="15%" align="C" border="LRTB" font="Arial"/>	
+		<Cell text="{NOM_CUENTA_CONTABLE}" width="30%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{RUT} - {DIG_VERIF}" width="15%" align="R" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO_DEBE}" width="20%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_HABER}" width="20%" align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>
+	</Content>
+	<Group LOCAL="COD_OPERACION">
+		<Variable name="sum_monto_debe" function="SUM" value="MONTO_DEBE"/>
+		<Variable name="sum_monto_haber" function="SUM" value="MONTO_HABER"/>
+		<GroupHeader>
+			<Cell text="Tipo Operacion: " width="15%" align="L" font="ArialSmallB"/>				
+			<Cell text="{TIPO_OPERACION}" width="20%" align="L" font="ArialBold"/>
+			<Cell text="Folio: " width="8%" align="L" font="ArialSmallB"/>
+			<Cell text="{COD_OPERACION}" width="25%" align="L" font="ArialBold"/>
+			<Cell text="Fecha: " width="8%" align="L" font="ArialSmallB"/>
+			<Cell text="{FECHA_OPERACION}" width="25%" align="L" font="ArialBold" newline="1"/>
+			<Cell text="Nro Comprobante: " width="15%" align="L" font="ArialSmallB"/>				
+			<Cell text="{NRO_COMPROBANTE}" width="20%" align="L" font="ArialBold"/>
+			<Cell text="Fecha Comprobante: " width="16%" align="L" font="ArialSmallB"/>
+			<Cell text="{FECHA_COMPROBANTE}" width="17%" align="L" font="ArialBold"/>
+			<Cell text="Estado: " width="8%" align="L" font="ArialSmallB"/>
+			<Cell text="{NOM_ESTADO_COMPROBANTE}" width="25%" align="L" font="ArialBold" newline="1"/>
+			<Cell text="" height="5" newline="1"/>
+			
+			<Cell text="Numero Cuenta" width="15%"  align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="Nombre Cuenta" width="30%"  align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="Rut" width="15%"  align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Debe" width="20%"  align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Haber" width="20%"  align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="" width="45%" font="ArialBold"/>	
+			<Cell text="Total Ingreso:" width="15%" align="L" font="ArialBold"/>	
+			<Cell text="{sum_monto_debe}" width="20%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>	
+			<Cell text="{sum_monto_haber}" width="20%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>
+			<Cell text="" height="25" newline="1"/>	
+		</GroupFooter>
+	</Group>
+</Report>

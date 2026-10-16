@@ -1,0 +1,207 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_w_param_informe_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+
+class wi_inf_abonos extends w_param_informe_helen {
+    function __construct($cod_item_menu) {
+        $session_id = session_id();
+       // echo $session_id.'$session_id<br>';
+		$xml = session::get('K_ROOT_DIR').'appl/inf_abonos/inf_abonos.xml';
+		
+		$sql_informe = sql_inf_abonos::get_sql('INPUT',$session_id);		
+		//echo $sql_informe;
+		$fecha = getdate();
+		$ano   = $fecha["year"];
+		
+		parent::__construct('inf_abonos', $cod_item_menu, 'Informe Abonos.pdf', $xml, $sql_informe, 'spi_abono');
+		
+		$sql = sql_inf_abonos::get_sql('INPUT_FECHA', $ano);
+		
+		$this->dws['dw_param'] = new datawindow($sql);
+		
+		
+		$sql1 = "select COD_FAMILIA_DEUDA 
+                		, NOM_FAMILIA_DEUDA
+                from 	 FAMILIA_DEUDA
+                order by COD_FAMILIA_DEUDA";
+		
+		$this->dws['dw_param']->add_control($control = new drop_down_dw('COD_FAMILIA_DEUDA', $sql1));
+		$control->set_drop_down_dependiente('inf_abonos', 'COD_TIPO_DEUDA');
+	
+		
+		$sql2 = "select 'TODAS'	COD_TIPO_DEUDA
+						,'TODAS' NOM_TIPO_DEUDA				
+				FROM DUAL UNION
+                select COD_TIPO_DEUDA 
+                		, NOM_TIPO_DEUDA
+                from 	 TIPO_DEUDA
+                WHERE COD_FAMILIA_DEUDA={KEY1}
+                order by COD_TIPO_DEUDA";
+		
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_TIPO_DEUDA', $sql2));
+		$this->dws['dw_param']->add_control(new edit_date('FECHA_INICIAL', 10, 10));
+		$this->dws['dw_param']->add_control(new edit_date('FECHA_FINAL', 10, 10));
+
+		// mandatorys		
+		$this->dws['dw_param']->set_mandatory('COD_TIPO_DEUDA', 'Tipo Deuda');	
+		$this->dws['dw_param']->set_mandatory('FECHA_INICIAL', 'Fecha Inicial');
+		$this->dws['dw_param']->set_mandatory('FECHA_FINAL', 'Fecha Final');	
+	}
+	function make_filtro() {
+	    $cod_familia_deuda = $this->dws['dw_param']->get_item(0, 'COD_FAMILIA_DEUDA');
+		$cod_tipo_deuda = $this->dws['dw_param']->get_item(0, 'COD_TIPO_DEUDA');
+		$fecha_inicial    = $this->dws['dw_param']->get_item(0, 'FECHA_INICIAL');
+		$fecha_final      = $this->dws['dw_param']->get_item(0, 'FECHA_FINAL');
+		$session_id = session_id();
+		// Filtro
+		$nom_familia_deuda = $this->dws['dw_param']->controls['COD_FAMILIA_DEUDA']->get_label_from_value($cod_familia_deuda);
+		$nom_tipo_deuda = $this->dws['dw_param']->controls['COD_TIPO_DEUDA']->get_label_from_value($cod_tipo_deuda);
+		$this->filtro = "Familia Deuda = $nom_familia_deuda\n";
+		$this->filtro = "Tipo Deuda = $nom_tipo_deuda\n";
+		$this->filtro .= "Fecha Inicial = $fecha_inicial; Fecha final = $fecha_final\n";
+		
+		// Arma los parametros para el SP
+		$fecha_inicial = $this->str2date($fecha_inicial);
+		$fecha_final = $this->str2date($fecha_final, '23:59:59');
+		$this->param = "'$session_id','$cod_tipo_deuda',$fecha_inicial, $fecha_final,$cod_familia_deuda";
+		//$this->sp = 'spi_abono';
+
+	}	
+	function genera_xls() {
+	    ini_set('memory_limit', '128M');
+	    ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+	    
+	    require_once dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/php_writeexcel-0.3.0/class.writeexcel_workbook.inc.php";
+	    require_once dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/php_writeexcel-0.3.0/class.writeexcel_worksheet.inc.php";
+	    
+	    $fname = tempnam("/tmp", "export.xls");
+	    $workbook = new writeexcel_workbook($fname);
+	    $worksheet = $workbook->addworksheet('Informe Abonos');
+	    
+	    // escribe encabezados
+	    # Create a format for the column headings
+	    $header =& $workbook->addformat();
+	    $header->set_bold();
+	    $header->set_color('blue');
+	    $col=0;
+	   // $worksheet->write(0, $col++,  '', $header);
+	   // $worksheet->write(0, $col++,  '', $header);
+	    $worksheet->write(0, $col++,  'FECHA REGISTRO', $header);
+	    $worksheet->write(0, $col++,  'RUT', $header);
+	    $worksheet->write(0, $col++,  'TIPO DEUDA', $header);
+	    $worksheet->write(0, $col++,  'COD DEUDA', $header);
+	    $worksheet->write(0, $col++,  'ESTADO DEUDA', $header);
+	    $worksheet->write(0, $col++,  'FOLIO', $header);
+	    $worksheet->write(0, $col++,  'FOLIO ORSAN', $header);
+	    $worksheet->write(0, $col++,  'AÑO PAGA', $header);
+	    $worksheet->write(0, $col++,  'COMPONENTE DEUDA', $header);
+	    $worksheet->write(0, $col++,  'FECHA PAGO', $header);
+	    $worksheet->write(0, $col++,  'COMPROBANTE', $header);
+	    $worksheet->write(0, $col++,  'ENTIDAD', $header);
+	    $worksheet->write(0, $col++,  'TIPO DOC. PAGO', $header);
+	    $worksheet->write(0, $col++,  'TIPO ABONO', $header);
+	    $worksheet->write(0, $col++,  'ESTADO EXCEDENTE', $header);
+	    $worksheet->write(0, $col++,  'FECHA DEPOSITO', $header);
+	    $worksheet->write(0, $col++,  'PORCENTAJE', $header);
+	    $worksheet->write(0, $col++,  'MONTO CUOTA', $header);
+	    $worksheet->write(0, $col++,  'CAP. UTM', $header);
+	    $worksheet->write(0, $col++,  'INT. MULTA UTM', $header);
+	    $worksheet->write(0, $col++,  'TOTAL UTM', $header);
+	    $worksheet->write(0, $col++,  'CAP. PESOS', $header);
+	    $worksheet->write(0, $col++,  'INT. MULTA PESOS', $header);
+	    $worksheet->write(0, $col++,  'TOTAL PESOS', $header);
+	    $worksheet->write(0, $col++,  'FECHA INGRESO', $header);
+	    $worksheet->write(0, $col++,  'DESCUENTO UTM', $header);
+	    $worksheet->write(0, $col++,  'DESCUENTO PESOS', $header);
+	    $worksheet->write(0, $col++,  'INICIO COBRO', $header);
+	    $worksheet->write(0, $col++,  'PORC. USACH', $header);
+	    $worksheet->write(0, $col++,  'PORC. FONDO', $header);
+	    $worksheet->write(0, $col++,  'PORC. CF', $header);
+	    $worksheet->write(0, $col++,  'PORC. CU', $header);
+	    $worksheet->write(0, $col++,  'VENCIMIENTO', $header);
+	    $worksheet->write(0, $col++,  'ESTADO PAGO', $header);
+
+	    //echo $this->sp .''.$this->param;
+	    $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+	    $session_id = session_id();
+	    $this->sp = "spi_abono";
+	    if (K_TIPO_BD=="mssql") {
+	        $sql = "exec ".$this->sp." ".$this->param;
+	    }
+	    elseif (K_TIPO_BD=="oci") {
+	        $db->EXECUTE_SP($this->sp, $this->param);
+	        
+	     
+	      
+	        $sql = "SELECT      to_char(FECHA_REGISTRO, 'dd/mm/yyyy') FECHA_REGISTRO
+                                , RUT || '-'||DV                               
+                                , TIPO_DEUDA
+                                , COD_DEUDA
+                                , ESTADO_DEUDA
+                                , FOLIO
+                                , FOLIO_ORSAN
+                                , ANO_PAGA
+                                , COMPONENTE_DEUDA
+                                , to_char(FECHA_PAGO, 'dd/mm/yyyy') FECHA_PAGO
+                                , COMPROBANTE
+                                , ENTIDAD
+                                , TIPO_DOCUMENTO_PAGO
+                                , TIPO_ABONO
+                                , ESTADO_EXCEDENTE
+                                , to_char(FECHA_DEPOSITO, 'dd/mm/yyyy') FECHA_DEPOSITO
+                                , PORCENTAJE
+                                , P_MONTO_CUOTA
+                                , CAP_UTM
+                                , INT_MULTA_UTM
+                                , TOTAL_UTM
+                                , CAP_PESOS
+                                , INT_MULTA_PESOS
+                                , TOTAL_PESOS
+                                , to_char(FECHA_INGRESO, 'dd/mm/yyyy') FECHA_INGRESO
+                                , DESCUENTO_UTM
+                                , DESCUENTO_PESOS
+                                , to_char(INICIO_COBRO, 'dd/mm/yyyy') INICIO_COBRO
+                                , PORC_USACH
+                                , PORC_FONDO
+                                , PORC_CF
+                                , PORC_CU
+                                , to_char(VENCIMIENTO, 'dd/mm/yyyy') VENCIMIENTO
+                                , EP.NOM_ESTADO_PAGO
+                            FROM INF_ABONO IA , ESTADO_PAGO EP
+                            WHERE IA.COD_ESTADO_PAGO=EP.COD_ESTADO_PAGO
+                            and SESSION_ID = '$session_id'";
+	    }
+	    $res = $db->query($sql);
+	   
+	    $i = 0;
+	    while($my_row = $db->get_row()){
+	        if ($worksheet->_datasize > 7000000)
+	            break;
+	            
+	            $columna = 0;
+	            for ($j=0; $j <  $col; $j++) {
+	                $worksheet->write($i + 1, $columna, utf8_decode($my_row[$j]));
+	                $columna++;
+	            }
+	            $i++;
+	    }
+	    if ($worksheet->_datasize > 7000000) {
+	        $worksheet->write($i + 1, 0, 'No se completo la exportación de datos porque excede el máximo del tamaÃ±o de archivo 7 MB', $header);
+	    }
+	    
+	    if($db->database_type=="oci") {
+	        oci_free_statement($db->query_id);
+	        $db->query_id = false;
+	    }
+	    
+	    $workbook->close();
+	    
+	    header("Content-Type: application/x-msexcel; name=\"$this->nom_tabla\"");
+	    header("Content-Disposition: inline; filename=\"$this->nom_tabla.xls\"");
+	    $fh=fopen($fname, "rb");
+	    fpassthru($fh);
+	    unlink($fname);
+	}
+}
+?>

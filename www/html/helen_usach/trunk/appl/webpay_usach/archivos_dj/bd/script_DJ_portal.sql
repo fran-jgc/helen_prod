@@ -1,0 +1,2 @@
+INSERT INTO PARAMETRO (COD_PARAMETRO ,NOM_PARAMETRO ,VALOR )VALUES('43','Modo debug subida archivos dj','S')
+

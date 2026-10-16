@@ -1,0 +1,95 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="BALANCE OCHO COLUMNAS" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{COD_CUENTA_CONTABLE}" width="5%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_CUENTA_CONTABLE}" width="23%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO_DEBE}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_HABER}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{SALDO_DEBITO}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{SALDO_CREDITO}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{ACTIVO}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{PASIVO}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{PERDIDA}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{UTILIDAD}" width="9%" align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		
+		<Variable name="sum_debe" function="SUM" value="MONTO_DEBE"/>
+		<Variable name="sum_haber" function="SUM" value="MONTO_HABER"/>
+		<Variable name="sum_debito" function="SUM" value="SALDO_DEBITO"/>
+		<Variable name="sum_credito" function="SUM" value="SALDO_CREDITO"/>
+		<Variable name="sum_activo" function="SUM" value="ACTIVO"/>
+		<Variable name="sum_pasivo" function="SUM" value="PASIVO"/>
+		<Variable name="sum_perdida" function="SUM" value="PERDIDA"/>
+		<Variable name="sum_utilidad" function="SUM" value="UTILIDAD"/>
+		<GroupHeader>		
+			<Cell text="" width="28%" align="C" border="" font="ArialSmallBlue"/>		
+			<Cell text="Sumas" width="18%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Saldos" width="18%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Inventario" width="18%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Resultado" width="18%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+			
+			<Cell text="Código" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Cuenta" width="23%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Debe" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Haber" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Débito" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Crédito" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Activo" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Pasivo" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Perdida" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="Utilidad" width="9%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+				
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="Subtotales:" width="28%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_debe}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_haber}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>	
+			<Cell text="{sum_debito}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_credito}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_activo}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_pasivo}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_perdida}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_utilidad}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>
+			
+			<Cell text="Resultado:" width="28%" align="R" font="ArialBold"/>	
+			<Cell text="" width="36%" align="R" font="ArialBold"/>	
+			<Cell text2="{sum_activo} > {sum_pasivo} ? 0 : {sum_pasivo} - {sum_activo}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text2="{sum_pasivo} > {sum_activo} ? 0 : {sum_activo} - {sum_pasivo}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text2="{sum_perdida} > {sum_utilidad} ? 0 : {sum_utilidad} - {sum_perdida}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text2="{sum_utilidad} > {sum_perdida} ? 0 : {sum_perdida} - {sum_utilidad}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>
+			
+			<Cell text="Totales iguales:" width="28%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_debe}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_haber}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>	
+			<Cell text="{sum_debito}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_credito}" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text2="{sum_activo} + ({sum_activo} > {sum_pasivo} ? 0 : {sum_pasivo} - {sum_activo})" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text2="{sum_pasivo} + ({sum_pasivo} > {sum_activo} ? 0 : {sum_activo} - {sum_pasivo})" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text2="{sum_perdida} + ({sum_perdida} > {sum_utilidad} ? 0 : {sum_utilidad} - {sum_perdida})" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text2="{sum_utilidad} + ({sum_utilidad} > {sum_perdida} ? 0 : {sum_perdida} - {sum_utilidad})" width="9%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>
+		
+		
+	<!--	<Cell text="" height="50" newline="1"/>	 -->
+	<!--		<Cell text="___________________________________" width="50%" align="C" font="ArialBold" /> -->
+	<!--		<Cell text="___________________________________" width="50%" align="C" font="ArialBold" newline="1"/> -->
+	<!--		<Cell text="ORLANDO VENEGAS OYARZUN" height="10" width="50%"  align="C" border=""  font="ArialBold"/> -->
+	<!--		<Cell text="CAROLINA ARRIAGADA" width="50%" height="10" align="C" border=""  font="ArialBold" newline="1"/> -->
+	<!--		<Cell text="ADMINISTRADOR GENERAL" height="10" width="50%"  align="C" border=""  font="ArialBold"/> -->
+	<!--		<Cell text="CONTADOR" width="50%" height="10" align="C" border=""  font="ArialBold"/>  -->
+		</GroupFooter>
+	</Group>
+</Report>

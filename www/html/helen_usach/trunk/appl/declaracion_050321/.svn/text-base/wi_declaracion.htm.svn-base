@@ -1,0 +1,373 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Sistema Helen</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+
+<script src="../../../../commonlib_seven/trunk/script_js/SpryTabbedPanels.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="utf-8" src="declaracion.js" type="text/javascript"></script>
+<link href="../../../../commonlib_seven/trunk/css/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+.Estilo1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+
+.Estilo2 {
+	color: #993300;
+	font-weight: bold;
+	align: right;
+}
+-->
+</style>
+{WI_JAVA_SCRIPT}
+</head>
+<body onload="load_declaracion()" {WI_ONLOAD}>
+<!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js" type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+<form action="" method="post" name="input" id="input" enctype="multipart/form-data"><input name="wi_hidden" id="wi_hidden" type="hidden" value="">
+<table width="1050" border="0" align="center">
+	<tr bgcolor="#FFFFFF">
+		<!-- menu superior-->
+		<td width="1000" height="51" align="center" id="awmAnchor-menu" style="width: 100px; height: 50px;"></td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+		<table width="1000" border="0">
+			<tr>
+				<td>
+				<table width="520" border="0">
+					<tr>
+						<td height="100%">
+						<div class="titulo_central">{WI_RUTA_MENU}</div>
+						</td>
+					</tr>
+					<tr>
+						<td height="0%">
+						<div class="tit_superior"><font color="#999999">{WI_FECHA_ACTUAL} </font></div>
+						</td>
+					</tr>
+					<tr>
+						<td height="0%">
+						<div class="tit_superior"><font color="#999999">{WI_FECHA_MODIF} </font></div>
+						</td>
+					</tr>
+				</table>
+				</td>
+				<td width="68"></td>
+				<td width="68">{WI_PRINT}</td>
+				<td width="68">{WI_NO_SAVE}</td>
+				<td width="68">{WI_SAVE}</td>
+				<td width="68">{WI_MODIFY}</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+		<table width="1000" border="0" align="center">
+			<tr>
+				<td height="95">
+				<table width="1015" border="0" align="center">
+					<tr valign="top">
+						<td>
+						<div id="TabbedPanels1" class="TabbedPanels"><!--INI TabbedPanels-->
+						<ul class="TabbedPanelsTabGroup">
+							<li class="TabbedPanelsTab" tabindex="0" style="display: {TAB_103505}">Direcciones</li>
+							<li class="TabbedPanelsTab" tabindex="0" style="display: {TAB_103510}">Declaración</li>
+						</ul>
+						<div class="TabbedPanelsContentGroup"><!--INI DECLARACIONES-->
+						<div class="TabbedPanelsContent" style="height: 492px;"><!--INI DIRECCIONES-->
+						<table width="1000" rules="none" border="1" align="center" class="claro">
+							<tr class="titulo_tabla">
+								<td colspan="8">ANTECEDENTES PERSONALES</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="14%">Rut:</td>
+								<td width="17%" class="claro" align="left">{RUT}-{DIG_VERIF}{COD_DEUDOR}</td>
+								<td width="14%">Nombre:</td>
+								<td width="55%" colspan="5" class="claro" align="left">{NOMBRE} {APELLIDO_PATERNO} {APELLIDO_MATERNO}</td>
+							</tr>
+							<tr>
+								<td width="14%" class="encabezado_right">Vía Ingreso:</td>
+								<td width="17%" class="oscuro" align="left">{COD_VIA_DECLARACION}</td>
+								<td width="14%" class="encabezado_right">Año de ingreso:</td>
+								
+								<td width="17%" class="oscuro" align="left">{ANO_DECLARACION}&nbsp;&nbsp;(Año de los ingresos)</td>
+								<td width="9%" class="encabezado_right">Año Cuota:</td>
+								<td width="9%" class="oscuro_decl" align="left">{ANO_COBRO}{ANO_COBRO_H}</td>
+								<td width="9%" class="encabezado_right">Valor Cuota:</td>
+								<td width="9%" style="display:{TD_LABEL_CUOTA}" class="oscuro" align="left">{LABEL_CUOTA}</td>
+								<td width="9%" style="display:{TD_VALOR_CUOTA}" class="oscuro" align="left">{VALOR_CUOTA}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="14%">Estado Declaración:</td>
+								<td width="17%" class="claro" align="left">{COD_ESTADO_DECLARACION}{NOM_ESTADO_DECLARACION}</td>
+								<td width="14%">Fecha Confirmación:</td>
+								<td width="17%" colspan="" class="claro" align="left">{FECHA_CONFIRMA_NO_ING}</td>
+								<td width="18%" colspan="2">Usuario Confirmación:</td>
+								<td width="18%" style="display:{VISIBLE_TD}" colspan="2" class="claro" align="left">{NOM_USUARIO_CONFIRMA}{COD_USUARIO_CONFIRMA}</td>
+								<td width="9%" style="display:{VISIBLE_BOTON}" class="claro" align="left">{NOM_USUARIO_CONFIRMA}{COD_USUARIO_CONFIRMA}</td>
+								<td width="9%" style="display:{VISIBLE_BOTON}" class="claro" align="left"><input align="left" type="submit" id="b_crea_cuota" name="b_crea_cuota" value="Calcula Cuota" {DISABLE_BUTTON_CREA_CUOTA}></td>
+								
+							</tr>
+						</table>
+						<p>
+						<table width="1000" rules="none" border="1" align="center" class="claro">
+							<tr class="titulo_tabla">
+								<td colspan="6">DIRECCION PARTICULAR</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>Direcci&#243;n:</td>
+								<td colspan="3" class="claro" align="left">{COD_DIRECCION_PARTICULAR}{DIRECCION_PARTICULAR}</td>
+								<td>Fecha Ingreso:</td>
+								<td class="claro" align="left">{FECHA_DIRECCION_PARTICULAR}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="10%">Pa&#237;s:</td>
+								<td width="15%" class="oscuro" align="left">{COD_PAIS_PARTICULAR}{K_CHILE_H}</td>
+								<td width="10%">Región:</td>
+								<td width="15%" id="td_cod_region_p" style="display:{DISPLAY_PAIS_CHILE_PARTICULAR}" class="oscuro" align="left">{COD_REGION_PARTICULAR}</td>
+								<td width="15%" id="td_ext_region_p" style="display:{DISPLAY_EXTRANJERO_PARTICULAR}" class="oscuro" align="left">{EXT_REGION_PARTICULAR}</td>
+								<td width="10%">Ciudad:</td>
+								<td width="15%" id="td_cod_ciudad_p" style="display:{DISPLAY_PAIS_CHILE_PARTICULAR}" class="oscuro" align="left">{COD_CIUDAD_PARTICULAR}</td>
+								<td width="15%" id="td_ext_ciudad_p" style="display:{DISPLAY_EXTRANJERO_PARTICULAR}" class="oscuro" align="left">{EXT_CIUDAD_PARTICULAR}</td>
+								<td width="10%">Comuna:</td>
+								<td width="15%" id="td_cod_comuna_p" style="display:{DISPLAY_PAIS_CHILE_PARTICULAR}" class="oscuro" align="left" >{COD_COMUNA_PARTICULAR}</td>
+								<td width="15%" id="td_ext_comuna_p" style="display:{DISPLAY_EXTRANJERO_PARTICULAR}" class="oscuro" align="left" >{EXT_COMUNA_PARTICULAR}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>e-mail:</td>
+								<td class="claro" align="left">{EMAIL_PARTICULAR}</td>
+								<td style="display:none" class="claro" align="left">{EMAIL_PARTICULAR_H}</td>
+								<td>Tel&#233;fono:</td>
+								<td class="claro" align="left">{TELEFONO_PARTICULAR}</td>
+								<td>Celular:</td>
+								<td class="claro" align="left">{CELULAR_PARTICULAR}</td>
+							</tr>
+						</table>
+						<p>
+						<table width="1000" rules="none" border="1" align="center" class="claro">
+							<tr class="titulo_tabla">
+								<td colspan="6">DIRECCION COMERCIAL</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>Direcci&#243;n:</td>
+								<td colspan="3" class="claro" align="left">{COD_DIRECCION_COMERCIAL}{DIRECCION_COMERCIAL}</td>
+								<td>Fecha Ingreso:</td>
+								<td class="claro" align="left">{FECHA_DIRECCION_COMERCIAL}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="10%">Pa&#237;s:</td>
+								<td width="15%" class="oscuro" align="left">{COD_PAIS_COMERCIAL}</td>
+								<td width="10%">Región:</td>
+								<td width="15%" id="td_cod_region_c" style="display:{DISPLAY_PAIS_CHILE_COMERCIAL}" class="oscuro" align="left">{COD_REGION_COMERCIAL}</td>
+								<td width="15%" id="td_ext_region_c" style="display:{DISPLAY_EXTRANJERO_COMERCIAL}" class="oscuro" align="left">{EXT_REGION_COMERCIAL}</td>
+								<td width="10%">Ciudad:</td>
+								<td width="15%" id="td_cod_ciudad_c" style="display:{DISPLAY_PAIS_CHILE_COMERCIAL}" class="oscuro" align="left">{COD_CIUDAD_COMERCIAL}</td>
+								<td width="15%" id="td_ext_ciudad_c" style="display:{DISPLAY_EXTRANJERO_COMERCIAL}" class="oscuro" align="left">{EXT_CIUDAD_COMERCIAL}</td>
+								<td width="10%">Comuna:</td>
+								<td width="15%" id="td_cod_comuna_c" style="display:{DISPLAY_PAIS_CHILE_COMERCIAL}" class="oscuro" align="left">{COD_COMUNA_COMERCIAL}</td>
+								<td width="15%" id="td_ext_comuna_c" style="display:{DISPLAY_EXTRANJERO_COMERCIAL}" class="oscuro" align="left">{EXT_COMUNA_COMERCIAL}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>e-mail:</td>
+								<td class="claro" align="left">{EMAIL_COMERCIAL}</td>
+								<td style="display:none" class="claro" align="left">{EMAIL_COMERCIAL_H}</td>
+								<td>Tel&#233;fono:</td>
+								<td class="claro" align="left">{TELEFONO_COMERCIAL}</td>
+								<td>Celular:</td>
+								<td class="claro" align="left">{CELULAR_COMERCIAL}</td>
+							</tr>
+						</table>
+						<p>
+						<table width="1000" rules="none" border="1" align="center" class="claro">
+							<tr class="titulo_tabla">
+								<td colspan="6">¿DOCUMENTOS PENDIENTES?</td>
+							</tr>
+							<tr class="encabezado_left">
+								<td width="400" >Certificado de Sueldo:</td>
+								<td width="400"class="oscuro" align="left">{CERT_SUELDO}</td>
+								<td width="400">Certificado de Honorarios:</td>
+								<td width="400"class="oscuro" align="left">{CERT_HONORARIO}</td>
+								<td width="400">Certificado de AFP:</td>
+								<td width="400" class="oscuro" align="left">{CERT_AFP}</td>
+							</tr>
+							<tr class="encabezado_left">
+								<td width="400">Declaración de Rentas:</td>
+								<td width="400" class="claro" align="left">{DECLARA_RENTA}</td>
+								<td width="400">Certificado Notarial que Declara 0 Ingresos:</td>
+								<td  width="400" class="claro" align="left">{CERT_NOTARIAL_ING}</td>
+								<td width="400">Antecedentes Cónyuge:</td>
+								<td width="400" class="claro" align="left">{ANTEC_CONYUGE}</td>
+							</tr>
+							<tr class="encabezado_left">
+								<td width="400">Postergación - Certificado Alumno Regular:</td>
+								<td width="400" colspan="5" class="oscuro" align="left">{CERT_ALUM_REGULAR}</td>
+							</tr>
+						</table>
+						<p>
+						<table width="1000" rules="none" border="0" align="center" class="claro" id="val" name="val" style="display:{VISIBLE_TABLE}">
+							<tr>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+							</tr>
+							<tr class="titulo_deuda_cruzada" >
+								<td >Atención: El deudor ingresado posee deuda cruzada con otra(s) universidad(es)</td>
+							</tr>
+						</table>
+						<table width="1000" rules="none" border="0" align="center" class="claro" id="val" name="val" style="display:{VISIBLE_TABLE_CARTERA}">
+							<tr class="titulo_deuda_cruzada" >
+								<td >Atención: El deudor ingresado posee una cartera distinta a UACH</td>
+							</tr>
+						</table>
+						</div>
+						<!--FIN DIRECCIONES-->
+						<div class="TabbedPanelsContent" style="height: 492px;"><!--INI DECLARACION-->
+						<table width="1000" rules="none" border="1" align="center" class="claro">
+							<tr class="titulo_tabla">
+								<td colspan="6">ANTECEDENTES PERSONALES</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="150">Rut:</td>
+								<td width="150" class="claro" align="left">{RUT_NO_ING}-{DIG_VERIF_NO_ING}</td>
+								<td width="150">Nombre:</td>
+								<td width="550" colspan=3 class="claro" align="left">{NOMBRE_NO_ING}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>Vía Ingreso:</td>
+								<td class="oscuro" align="left">{COD_VIA_DECLARACION}</td>
+								<td>Año:</td>
+								<td class="oscuro" colspan=3 align="left">{ANO_DECLARACION_NO_ING}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>Estado Declaración:</td>
+								<td width="100" class="claro" align="left">{COD_ESTADO_DECLARACION_NO_ING}</td>
+								<td>Fecha Confirmación:</td>
+								<td width="100" class="claro" align="left">{FECHA_CONFIRMA_NO_ING}</td>
+								<td width="90">Usuario Confirmación:</td>
+								<td width="100" class="claro" align="left">{NOM_USUARIO_CONFIRMA_NO_ING}</td>
+							</tr>
+						</table>
+						<p>
+						<table width="1000" rules="none" border="1" align="center" class="claro">
+							<tr class="titulo_tabla">
+								<td colspan="6">ANTECEDENTES</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="90">Fecha Declaración:</td>
+								<td width="100" class="claro" align="left">{FECHA_DECLARACION}</td>
+								<td width="100">Presenta F.22:</td>
+								<td class="claro" align="left">{ENTREGA_F22}</td>
+								<td class="claro" align="left"></td>
+								<td class="claro" align="left"></td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>Hijos:</td>
+								<td class="oscuro" align="left">{CON_HIJO}</td>
+								<td>AFP:</td>
+								<td width="100" class="oscuro" align="left">{COD_AFP}</td>
+								<td width="90">Estado Civil:</td>
+								<td width="100" class="oscuro" align="left">{COD_ESTADO_CIVIL}</td>
+							</tr>
+						</table>
+						<table width="1000" rules="none" border="1" align="center" class="claro">
+							<tr class="titulo_tabla">
+								<td colspan="4">CÓNYUGE</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="150">Rut:</td>
+								<td width="170" class="claro" align="left">{RUT_CONYUGE} - {DIG_VERIF_CONYUGE}</td>
+								<td width="160">Nombre:</td>
+								<td class="claro" align="left">{NOM_CONYUGE}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>Es Deudor:</td>
+								<td class="oscuro" align="left">{CONYUGE_ES_DEUDOR}</td>
+								<td>Declara:</td>
+								<td class="oscuro" align="left">{CONYUGE_DECLARA}</td>
+								
+							</tr>
+						</table>
+
+						<table width="1000" rules="none" border="1" align="center" class="claro" id="DECLARACION_MES">
+							<tr class="encabezado_center">
+								<td width="480" colspan="6">Deudor</td>
+								<td width="480" colspan="6">Cónyuge</td>
+							</tr>
+							<tr class="encabezado_center">
+								<td align="center"><b>Mes</b></td>
+								<td align="center"><b>$</b></td>
+								<td align="center"><b>UTM</b></td>
+								<td align="center"><b>Mes</b></td>
+								<td align="center"><b>$</b></td>
+								<td align="center"><b>UTM</b></td>
+								<td align="center"><b>Mes</b></td>
+								<td align="center"><b>$</b></td>
+								<td align="center"><b>UTM</b></td>
+								<td align="center"><b>Mes</b></td>
+								<td align="center"><b>$</b></td>
+								<td align="center"><b>UTM</b></td>
+							</tr>
+							<!-- startBlock(DECLARACION_MES) -->
+							<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+								<td width="80">{COD_DECLARACION_MES1}{MES1}<b>{NOM_MES1}</b></td>
+								<td width="80" align="right">{MONTO_DEUDOR_PESOS1}</td>
+								<td width="80" align="right">{MONTO_DEUDOR_MONEDA1}{VALOR_UTM1}</td>
+								<td width="80">{COD_DECLARACION_MES2}{MES2}<b>{NOM_MES2}</b></td>
+								<td width="80" align="right">{MONTO_DEUDOR_PESOS2}{MONTO_DEUDOR_PESOS}</td>
+								<td width="80" align="right">{MONTO_DEUDOR_MONEDA2}{MONTO_DEUDOR_MONEDA}{VALOR_UTM2}</td>
+								<td width="80"><b>{NOM_MES1}</b></td>
+								<td width="80" align="right">{MONTO_CONYUGE_PESOS1}</td>
+								<td width="80" align="right">{MONTO_CONYUGE_MONEDA1}</td>
+								<td width="80"><b>{NOM_MES2}</b></td>
+								<td width="80" align="right">{MONTO_CONYUGE_PESOS2}{MONTO_CONYUGE_PESOS}</td>
+								<td width="80" align="right">{MONTO_CONYUGE_MONEDA2}{MONTO_CONYUGE_MONEDA}</td>
+							</tr>
+							<!-- endBlock(DECLARACION_MES) -->							
+							<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+								<td colspan='3'></td>
+								<td><b>TOTALES</b></td>
+								<td align="right"><b>{SUM_MONTO_DEUDOR_PESOS}</b></td>
+								<td align="right"><b>{SUM_MONTO_DEUDOR_MONEDA}</b></td>
+								<td colspan="3"></td>
+								<td><b>TOTALES</b></td>
+								<td align="right"><b>{SUM_MONTO_CONYUGE_PESOS}</b></td>
+								<td align="right"><b>{SUM_MONTO_CONYUGE_MONEDA}</b></td>
+							</tr>
+						</table>
+						</div>
+						</div>
+						</div>
+						<table width="1000" border="0" align="center">
+							<tr valign="middle">
+								<td width="290">{WI_BACK}</td>
+								<td align="right">{WI_FIRST}{WI_PREV}</td>
+								<td align="left">{WI_NEXT}{WI_LAST}</td>
+								<td width="290"></td>
+							</tr>
+						</table>
+						</td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+		</table>
+
+		<script type="text/javascript">
+<!--
+var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels1");
+//-->
+</script>
+</body>
+</html>

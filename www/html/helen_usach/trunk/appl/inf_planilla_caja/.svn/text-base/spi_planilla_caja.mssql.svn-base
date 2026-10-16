@@ -1,0 +1,53 @@
+alter PROCEDURE spi_planilla_caja(@ve_cod_usuario		numeric
+									, @ve_fecha_inicio	datetime
+									, @ve_fecha_termino	datetime)
+AS
+BEGIN
+	DECLARE  @TEMPO TABLE  
+		(COD_USUARIO			numeric
+		,NOM_USUARIO			varchar(100)
+		,TIPO_OPERACION			varchar(100)
+		,COD_OPERACION			numeric
+		,FECHA_OPERACION		varchar(100)
+		,NRO_COMPROBANTE		numeric
+		,FECHA_COMPROBANTE		varchar(100)
+		,NOM_ESTADO_COMPROBANTE	varchar(100)
+		,COD_CUENTA_CONTABLE	numeric
+		,NOM_CUENTA_CONTABLE	varchar(100)
+		,RUT					numeric
+		,DIG_VERIF				varchar(1)
+		,MONTO_DEBE				numeric
+		,MONTO_HABER			numeric)		
+
+	-- ingreso caja
+	insert into @TEMPO
+	select i.cod_usuario		--COD_USUARIO
+			,u.nom_usuario		--NOM_USUARIO
+			,'INGRESO'			--TIPO_OPERACION
+			,i.cod_ingreso		--COD_OPERACION
+			,convert(varchar, i.fecha_ingreso, 103) --FECHA_OPERACION
+			,c.nro_comprobante	--NRO_COMPROBANTE
+			,convert(varchar, c.fecha_comprobante, 103)	--FECHA_COMPROBANTE
+			,e.nom_estado_comprobante	--NOM_ESTADO_COMPROBANTE	
+			,a.cod_cuenta_contable	--COD_CUENTA_CONTABLE
+			,cc.nom_cuenta_contable	--NOM_CUENTA_CONTABLE
+			,d.rut					--RUT
+			,d.dig_verif			--DIG_VERIF
+			,a.monto_debe			--MONTO_DEBE
+			,a.monto_haber			--MONTO_HABER
+	from ingreso i, usuario u, comprobante c, estado_comprobante e
+		, analitico_comprobante a left outer join deudor d on d.cod_deudor = a.cod_deudor
+		, cuenta_contable cc, analitico_comprobante_ingreso ci
+	where fecha_ingreso between @ve_fecha_inicio and @ve_fecha_termino	
+	  and i.cod_usuario = @ve_cod_usuario
+	  and u.cod_usuario = i.cod_usuario
+	  and ci.cod_ingreso = i.cod_ingreso
+	  and ci.cod_analitico_comprobante = a.cod_analitico_comprobante
+	  and c.cod_comprobante = i.cod_comprobante
+	  and e.cod_estado_comprobante = c.cod_estado_comprobante
+	  and a.cod_comprobante = c.cod_comprobante
+	  and cc.cod_cuenta_contable = a.cod_cuenta_contable
+		
+	select * from @TEMPO
+	ORDER BY COD_OPERACION ASC
+end

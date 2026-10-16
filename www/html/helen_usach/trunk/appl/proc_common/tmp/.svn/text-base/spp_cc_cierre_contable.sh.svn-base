@@ -1,0 +1,1 @@
+exec spp_cc_cierre_contable(24);

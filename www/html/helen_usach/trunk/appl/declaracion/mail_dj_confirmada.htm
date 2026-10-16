@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+	<html lang="es">
+	<head>
+		<title></title>
+	</head>
+	
+	<style type="text/css">
+  .boton_personalizado{
+    text-decoration: none;
+    padding: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #f44336;
+    border-radius: 6px;
+    border: 1px solid #0016b0;
+  }
+  .boton_personalizado:hover{
+    color: #1883ba;
+    background-color: #ffffff;
+  }
+</style>
+	<body>
+		<table bgcolor="#DADADA" width="800px;" height="450px" align="center">
+			<tr>
+				<td>
+					<table bgcolor="#F2F2F2" width="785px" height="435px;" align="center" font="san-serif;">
+						<tr>
+							<td width="20%;" rowspan=2 height="80px;"><img src='cid:logo_ua' width="100" heigth="100" position="absolute"></td>
+							<td valign="bottom">
+								<font face="sans-serif" size="3"><h3>Estimado(a) Deudor(a)</h3></font>
+							</td>
+						</tr>	
+						<tr>
+							<td valign="top">
+								<font face ="san-serif" size="2"><p><b>Sr(a) {nombre}</b></p></font>
+								<font face="san-serif" size="2" color="#9698A5"><p><b></b></p></font>
+							</td>
+						</tr>
+						<tr>						
+							<td bgcolor="white" height="180px;" colspan="2" align="center">
+								<h3>Sus documentos han sido revisados y presentan observaciones</h3>
+								<p>Favor volver a cargar los archivos listados a continuación en el siguiente link:
+								 <a class="boton_personalizado" href="{LINK}">Click aquí</a>
+								</p>
+								<table width="700px">
+								<thead>
+								<tr style="background-color: #007dbd; color: white;">
+									<td width="200px">Tipo Archivo</td>
+									<td width="500px">Observación</td>
+								</tr>
+								</thead>
+								<tbody>
+									{OBS_ARCHIVOS}
+								</tbody>
+								</table>
+								
+							</td>
+						</tr>
+						<tr>
+						<td colspan="2" align="center">
+							<font face="san-serif" size="2" color="#9698A5"><p><b>Este es un e-mail solo de envío, favor no responder o enviar mensajes al remitente</b></p></font>
+						</td>
+						</tr>
+						<tr>
+							<tr>
+								<td><br><br></td>
+							</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+	</html>

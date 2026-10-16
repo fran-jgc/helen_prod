@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Modulo Suspension</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+<script src="../../../../commonlib_seven/trunk/script_js/SpryTabbedPanels.js" type="text/javascript"></script>
+<link href="../../../../commonlib_seven/trunk/css/SpryTabbedPanels.css" rel="stylesheet" type="text/css"/>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="utf-8" src="./suspension.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function get_returnVal() {
+		var aTR = get_TR('LLAMADO');
+		var cod_deuda = '';
+		for (i=0; i<aTR.length; i++){
+			var rec_tr =get_num_rec_field(aTR[i].id);
+			if (document.getElementById('RADIO_' + rec_tr).checked){
+				cod_deuda = document.getElementById('COD_DEUDA_' + rec_tr).innerHTML;
+			}
+			
+		}
+		if(cod_deuda == ''){
+			alert('Debe seleccionar una Deuda');
+			return false;
+		}
+		return cod_deuda;
+	}
+</script>
+<style type="text/css">
+<!--
+body {
+	background-color: #E5E5E5;
+	text-align:center;
+	font-size:14px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+-->
+</style>
+</head>
+<body>
+<table> 
+	<tr>
+		<td width="666" height="282">
+			<table width="650" rules="none" border="1" align="center" class="claro">	
+				<tr class="encabezado_center">
+					<th width="100">Seleccionar</th>
+					<th width="200">Familia</th>
+					<th width="150">Tipo Deuda</th>
+					<th width="100">Nro Deuda</th>
+				</tr>
+			</table>
+			<p>
+			<div style="overflow-x:hidden; overflow-y:auto; height:200; margin-top:-1em;">
+				<table width="650" rules="none" border="1" align="center" class="" id="LLAMADO">
+					<!-- startBlock(LLAMADO) -->
+						<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+							<td width="100" align="center">{RADIO}</td>
+							<td width="200" align="left">{NOM_FAMILIA_DEUDA}</td>
+							<td width="150" align="left">{COD_TIPO_DEUDA}</td>
+							<td width="100" align="right">{COD_DEUDA}</td>
+						</tr>
+					<!-- endBlock(LLAMADO) -->	
+				
+				</table>
+				
+			</div>	
+		<table width="100" rules="none" border="0" align="right" class="claro">	
+				<tr >
+					<th> <input type="button" value="Cancelar" align= "left" onClick="window.close(); returnValue=null;" /></th>
+					<th> <input type="button" value="Aceptar" align= "left" onclick="if(!(get_returnVal())){ return false; } else { returnValue= get_returnVal();}  window.close();"/></th>					
+				</tr>
+		  </table>
+	  </td>
+		
+	</tr>
+	
+</table>
+</body>
+</html>

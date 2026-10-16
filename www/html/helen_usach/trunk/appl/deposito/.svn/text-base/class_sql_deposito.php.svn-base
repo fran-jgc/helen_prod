@@ -1,0 +1,425 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+class sql_deposito extends sql_tabla {
+	const K_ESTADO_DEPOSITO_INGRESADO 		= 1;
+	const K_ESTADO_DEPOSITO_CONFIRMADO 		= 2;
+	const K_ESTADO_DEPOSITO_ANULADA 		= 3;
+	const K_ESTADO_PAG_POR_DEPOSITAR		= 1;
+	const K_TIPO_DOC_PAG_DEPOSITO 			= 3;
+	const K_TIPO_DOC_PAG_TRANSBANK 			= 6;
+	const K_ESTADO_ING_SIMULACION 			= 1000;
+	const K_ESTADO_ING_ANULADO				= 2;
+	const K_ESTADO_ING_POR_RENDIR			= 4;
+	
+	const K_ESTADO_EMITIDA					= 1;
+	const K_ESTADO_APROBADA					= 2;
+	static function get_sql($selector_sql) {
+
+		switch ($selector_sql) {
+			//////////////////// INPUT ////////////////////
+			case 'INPUT' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT 	D.COD_DEPOSITO
+							        ,D.NRO_DEPOSITO
+							        ,TO_CHAR(D.FECHA_DEPOSITO,'dd/mm/yyyy') FECHA_DEPOSITO
+							        ,D.COD_USUARIO
+							        ,D.COD_CUENTA_CORRIENTE
+							        ,D.COD_ESTADO_DEPOSITO
+							        ,D.COD_ESTADO_DEPOSITO COD_ESTADO_DEPOSITO_OLD
+							        ,D.COD_COMPROBANTE
+							        ,D.COD_COMPROBANTE_ANULA
+							        ,D.COD_USUARIO_CONFIRMA
+							        ,UC.NOM_USUARIO NOM_USUARIO_CONFIRMA
+			    	                ,TO_CHAR(D.FECHA_CONFIRMA,'dd/mm/yyyy') FECHA_CONFIRMA
+			        	            ,D.COD_USUARIO_ANULA
+			        	            ,UA.NOM_USUARIO NOM_USUARIO_ANULA
+			            	        ,TO_CHAR(D.FECHA_ANULA,'dd/mm/yyyy') FECHA_ANULA
+			                	    ,D.MOTIVO_ANULA
+							        ,CC.NOM_CUENTA_CORRIENTE
+							        ,U.NOM_USUARIO
+							        ,NOM_BANCO
+							        ,CC.NRO_CUENTA_CORRIENTE
+							        ,ED.NOM_ESTADO_DEPOSITO
+					                ,FD.COD_FAMILIA_DEUDA
+					                ,FD.NOM_FAMILIA_DEUDA
+									,case D.COD_ESTADO_DEPOSITO
+			  							when ".self::K_ESTADO_DEPOSITO_ANULADA." then '' 
+				  						else 'none'
+					    			end TR_DISPLAY
+					                
+					          FROM  DEPOSITO D, CUENTA_CORRIENTE CC, USUARIO U, BANCO B, ESTADO_DEPOSITO ED, 
+					                FAMILIA_DEUDA FD, USUARIO UC, USUARIO UA
+							  WHERE D.COD_DEPOSITO = {KEY1} AND
+							        D.COD_CUENTA_CORRIENTE = CC.COD_CUENTA_CORRIENTE AND
+							        D.COD_USUARIO = U.COD_USUARIO AND
+							        D.COD_CUENTA_CORRIENTE = CC.COD_CUENTA_CORRIENTE AND
+							        D.COD_ESTADO_DEPOSITO = ED.COD_ESTADO_DEPOSITO AND
+							        CC.COD_BANCO = B.COD_BANCO AND
+			                		FD.COD_FAMILIA_DEUDA = D.COD_FAMILIA_DEUDA AND
+			                		UC.COD_USUARIO(+) = D.COD_USUARIO_CONFIRMA AND
+			                		UA.COD_USUARIO(+) = D.COD_USUARIO_ANULA";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT 	D.COD_DEPOSITO
+									,D.NRO_DEPOSITO
+									,convert(varchar(20), D.FECHA_DEPOSITO, 103) FECHA_DEPOSITO
+									,D.COD_USUARIO
+									,D.COD_CUENTA_CORRIENTE
+									,D.COD_ESTADO_DEPOSITO
+									,D.COD_ESTADO_DEPOSITO COD_ESTADO_DEPOSITO_OLD
+									,D.COD_COMPROBANTE
+									,D.COD_COMPROBANTE_ANULA
+									,D.COD_USUARIO_CONFIRMA
+									,UC.NOM_USUARIO NOM_USUARIO_CONFIRMA
+									,convert(varchar(20), D.FECHA_CONFIRMA, 103) FECHA_CONFIRMA
+									,D.COD_USUARIO_ANULA
+									,UA.NOM_USUARIO NOM_USUARIO_ANULA
+									,convert(varchar(20), D.FECHA_ANULA, 103) FECHA_ANULA
+									,D.MOTIVO_ANULA
+									,CC.NOM_CUENTA_CORRIENTE
+									,CC.NRO_CUENTA_CORRIENTE
+									,U.NOM_USUARIO	
+									,NOM_BANCO
+									,ED.NOM_ESTADO_DEPOSITO
+									,D.COD_FAMILIA_DEUDA
+									,FD.NOM_FAMILIA_DEUDA
+									,case D.COD_ESTADO_DEPOSITO
+										when ".self::K_ESTADO_DEPOSITO_ANULADA." then '' 
+										else 'none'
+									end TR_DISPLAY					        
+							FROM	DEPOSITO D LEFT OUTER JOIN USUARIO UC ON D.COD_USUARIO_CONFIRMA = UC.COD_USUARIO
+										LEFT OUTER JOIN USUARIO UA ON D.COD_USUARIO_ANULA = UA.COD_USUARIO
+									,CUENTA_CORRIENTE CC
+									,USUARIO U
+									,BANCO B
+									,ESTADO_DEPOSITO ED
+									,FAMILIA_DEUDA FD
+							WHERE	D.COD_DEPOSITO = {KEY1} 
+							AND		D.COD_CUENTA_CORRIENTE = CC.COD_CUENTA_CORRIENTE
+							AND		D.COD_USUARIO = U.COD_USUARIO
+							AND		CC.COD_BANCO = B.COD_BANCO
+							AND		D.COD_ESTADO_DEPOSITO = ED.COD_ESTADO_DEPOSITO
+							AND		D.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA";
+				}
+				break;
+
+				////////////////////// OUTPUT /////////////////////
+			case 'OUTPUT' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT 	D.COD_DEPOSITO
+							        ,D.NRO_DEPOSITO
+			        				,TO_CHAR(D.FECHA_DEPOSITO,'dd/mm/yyyy') FECHA_DEPOSITO
+			        				,B.NOM_BANCO
+			               			,f_doc_pago_get_monto_depos(COD_DEPOSITO)MONTO_DEPOSITADO
+			               			,f_doc_pago_get_cant_doc(COD_DEPOSITO)CANTIDAD_DOCUMENTOS
+			               			,FD.NOM_FAMILIA_DEUDA
+			               			,ED.NOM_ESTADO_DEPOSITO
+							FROM 	DEPOSITO D, CUENTA_CORRIENTE CC, BANCO B, FAMILIA_DEUDA FD, ESTADO_DEPOSITO ED
+							WHERE 	D.COD_CUENTA_CORRIENTE = CC.COD_CUENTA_CORRIENTE AND
+									CC.COD_BANCO = B.COD_BANCO AND
+									FD.COD_FAMILIA_DEUDA = D.COD_FAMILIA_DEUDA AND
+									ED.COD_ESTADO_DEPOSITO = D.COD_ESTADO_DEPOSITO
+									ORDER BY D.COD_DEPOSITO DESC";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT 	D.COD_DEPOSITO
+							        ,D.NRO_DEPOSITO
+			        				,CONVERT(VARCHAR(20),D.FECHA_DEPOSITO, 103) FECHA_DEPOSITO
+			        				,B.NOM_BANCO
+			               			,dbo.f_doc_pago_get_monto_depos(COD_DEPOSITO)MONTO_DEPOSITADO
+			               			,dbo.f_doc_pago_get_cant_doc(COD_DEPOSITO)CANTIDAD_DOCUMENTOS
+			               			,FD.NOM_FAMILIA_DEUDA
+			               			,ED.NOM_ESTADO_DEPOSITO
+							FROM 	DEPOSITO D, CUENTA_CORRIENTE CC, BANCO B, FAMILIA_DEUDA FD, ESTADO_DEPOSITO ED
+							WHERE 	D.COD_CUENTA_CORRIENTE = CC.COD_CUENTA_CORRIENTE AND
+									CC.COD_BANCO = B.COD_BANCO AND
+									FD.COD_FAMILIA_DEUDA = D.COD_FAMILIA_DEUDA AND
+									ED.COD_ESTADO_DEPOSITO = D.COD_ESTADO_DEPOSITO
+									ORDER BY D.COD_DEPOSITO DESC";
+				}
+				break;
+
+				////////////////// DW_DOCUMENTO_PAGO ///////////////////
+			case 'DW_DOCUMENTO_PAGO' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT 'S' SELECCION
+							        ,1 SELECCION_V
+							        ,DP.COD_DOCUMENTO_PAGO
+							      	, f_doc_nro_ingreso(DP.COD_DOCUMENTO_PAGO) NRO_INGRESO
+							        ,B.COD_BANCO COD_BANCO_DP
+							        ,NOM_BANCO NOM_BANCO_DP
+									,NOM_PLAZA
+							        ,NRO_DOCUMENTO_PAGO							        
+									,To_Char(DP.FECHA_DOCUMENTO_PAGO,'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO
+									,MONTO
+							        ,RUT
+							        ,DIG_VERIF
+							        ,DD.COD_DEPOSITO
+							        ,D.COD_ESTADO_DEPOSITO
+							        ,NOM_TIPO_DOCUMENTO_PAGO
+							        ,COD_DEPOSITO_DOCUMENTO
+							FROM    DOCUMENTO_PAGO DP, TIPO_DOCUMENTO_PAGO TDP, BANCO B, PLAZA P, DEUDOR DR, DEPOSITO_DOCUMENTO DD, DEPOSITO D
+							WHERE   DP.COD_BANCO = B.COD_BANCO (+)
+							AND     DP.COD_PLAZA = P.COD_PLAZA (+)
+							AND     DP.COD_DEUDOR = DR.COD_DEUDOR
+							AND     DD.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+							AND     D.COD_DEPOSITO = DD.COD_DEPOSITO
+							AND     TDP.COD_TIPO_DOCUMENTO_PAGO = DP.COD_TIPO_DOCUMENTO_PAGO
+							AND     DD.COD_DEPOSITO = {KEY1}
+							ORDER BY  	DP.FECHA_DOCUMENTO_PAGO";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT 'S' SELECCION
+									,1 SELECCION_V
+									,DP.COD_DOCUMENTO_PAGO
+							      	, dbo.f_doc_nro_ingreso(DP.COD_DOCUMENTO_PAGO) NRO_INGRESO
+							        ,B.COD_BANCO COD_BANCO_DP
+									,NOM_BANCO NOM_BANCO_DP 
+									,NOM_PLAZA
+									,NRO_DOCUMENTO_PAGO
+									,CONVERT(VARCHAR(20), DP.FECHA_DOCUMENTO_PAGO, 103) FECHA_DOCUMENTO_PAGO
+									,MONTO
+									,RUT
+									,DIG_VERIF					        
+									,DD.COD_DEPOSITO
+									,D.COD_ESTADO_DEPOSITO
+									,NOM_TIPO_DOCUMENTO_PAGO	
+									,COD_DEPOSITO_DOCUMENTO
+							FROM 	DOCUMENTO_PAGO DP LEFT OUTER JOIN BANCO B ON DP.COD_BANCO = B.COD_BANCO
+										LEFT OUTER JOIN PLAZA P ON DP.COD_PLAZA = P.COD_PLAZA
+									,DEUDOR DR
+									,DEPOSITO_DOCUMENTO DD
+									,DEPOSITO D
+									,TIPO_DOCUMENTO_PAGO TDP
+							WHERE 	DP.COD_DEUDOR = DR.COD_DEUDOR
+							AND		DP.COD_DOCUMENTO_PAGO = DD.COD_DOCUMENTO_PAGO
+							AND		D.COD_DEPOSITO = DD.COD_DEPOSITO
+							AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO
+							AND     DD.COD_DEPOSITO = {KEY1}
+							ORDER BY  	DP.FECHA_DOCUMENTO_PAGO";
+				}
+				break;
+
+				////////////////// DD_COD_CUENTA_CORRIENTE ////////////////////
+			case 'DD_COD_CUENTA_CORRIENTE' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT 	COD_CUENTA_CORRIENTE
+									 ,NOM_CUENTA_CORRIENTE
+							FROM 	 CUENTA_CORRIENTE
+							ORDER BY COD_CUENTA_CORRIENTE ASC";
+				}
+				break;
+
+			///////////////// DD_COD_ESTADO_DEPOSITO ///////////////
+			case 'DD_COD_ESTADO_DEPOSITO' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT 	COD_ESTADO_DEPOSITO
+									,NOM_ESTADO_DEPOSITO
+							FROM 	 ESTADO_DEPOSITO
+							ORDER BY COD_ESTADO_DEPOSITO";
+				}
+				break;
+
+				//////////////// DD_COD_BANCO /////////////////
+			case 'DD_COD_BANCO' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT 	COD_BANCO
+								  	,NOM_BANCO 
+							FROM 	BANCO 
+							ORDER BY COD_BANCO";
+				}
+				break;
+
+				///////////////// DD_COD_FAMILIA_DEUDA ///////////////
+			case 'DD_COD_FAMILIA_DEUDA' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT 	COD_FAMILIA_DEUDA
+							 		,NOM_FAMILIA_DEUDA 
+							FROM 	 FAMILIA_DEUDA 
+							ORDER BY COD_FAMILIA_DEUDA";
+				}
+				break;
+				
+									///////////////// DD_DEPENDIENTE_CCORRIENTE ///////////////
+			case 'DD_DEPENDIENTE_CCORRIENTE' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+
+					$sql = "SELECT 	COD_CUENTA_CORRIENTE
+									 ,NOM_CUENTA_CORRIENTE
+							FROM 	 CUENTA_CORRIENTE
+							WHERE COD_FAMILIA_DEUDA = {KEY1}
+							ORDER BY COD_CUENTA_CORRIENTE ASC";
+				}
+				break;
+				
+				////////////////// CUENTA_CORRIENTE ////////////////////
+			case 'CUENTA_CORRIENTE' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT 	CC.COD_CUENTA_CORRIENTE,
+							        B.NOM_BANCO,
+									NRO_CUENTA_CORRIENTE,
+							        CC.COD_FAMILIA_DEUDA,
+							        FD.NOM_FAMILIA_DEUDA
+							FROM 	CUENTA_CORRIENTE CC, BANCO B, FAMILIA_DEUDA FD
+							WHERE   CC.COD_CUENTA_CORRIENTE = {PARAM1} 
+							AND     CC.COD_BANCO = B.COD_BANCO
+							AND     CC.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA";
+				}
+				break;
+				//////////////////		DOCUMENTO_DEPOSITO		//////////////////////
+			case 'DOCUMENTO_DEPOSITO' :
+				if (K_TIPO_BD=="oci"){
+					$sql= 	"SELECT  NRO_DOCUMENTO_PAGO
+							        ,'S' SELECCION 	--LF SOLICITA QUE TODOS APAREZCAN MARCADOS AL CREAR DEPOSITO
+									,1 SELECCION_V	--LF SOLICITA QUE TODOS APAREZCAN MARCADOS AL CREAR DEPOSITO
+							        ,DP.COD_DOCUMENTO_PAGO
+							      	, f_doc_nro_ingreso(DP.COD_DOCUMENTO_PAGO) NRO_INGRESO
+							        ,B.COD_BANCO COD_BANCO_DP
+							        ,NOM_BANCO NOM_BANCO_DP
+							        ,NOM_PLAZA 
+							        ,NRO_DOCUMENTO_PAGO
+							        ,To_Char(DP.FECHA_DOCUMENTO_PAGO,'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO
+									,MONTO
+							    	,RUT
+							        ,DIG_VERIF
+							        ,'' COD_DEPOSITO_DOCUMENTO
+							        ,NOM_TIPO_DOCUMENTO_PAGO
+							FROM 	DOCUMENTO_PAGO DP LEFT OUTER JOIN BANCO B ON DP.COD_BANCO = B.COD_BANCO 
+													  LEFT OUTER JOIN PLAZA P ON DP.COD_PLAZA = P.COD_PLAZA
+									,DEUDOR D
+									,TIPO_DOCUMENTO_PAGO TDP
+									,FAMILIA_DEUDA FD
+									,CUENTA_CORRIENTE CC
+							WHERE 	DP.COD_DEUDOR = D.COD_DEUDOR
+							AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO
+							AND		DP.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA
+							AND		FD.COD_FAMILIA_DEUDA = CC.COD_FAMILIA_DEUDA
+							AND     DP.COD_TIPO_DOCUMENTO_PAGO NOT IN (".self::K_TIPO_DOC_PAG_DEPOSITO.", ".self::K_TIPO_DOC_PAG_TRANSBANK.")
+							AND     DP.COD_ESTADO_DOCUMENTO_PAGO = ".self::K_ESTADO_PAG_POR_DEPOSITAR."
+							AND     NVL(DP.FECHA_DOCUMENTO_PAGO, sysdate) <= {PARAM2}
+							AND     DP.COD_DOCUMENTO_PAGO NOT IN(SELECT 	COD_DOCUMENTO_PAGO 
+																	FROM 	DEPOSITO_DOCUMENTO DD, DEPOSITO DEP
+																	WHERE 	DD.COD_DEPOSITO=DEP.COD_DEPOSITO
+																	AND 	DEP.COD_ESTADO_DEPOSITO IN (".self::K_ESTADO_EMITIDA.",".self::K_ESTADO_APROBADA."))
+							AND		DP.COD_DOCUMENTO_PAGO NOT IN(SELECT 	COD_DOCUMENTO_PAGO 
+																	FROM 	DOCUMENTO_INGRESO DI, INGRESO I
+																	WHERE 	I.COD_INGRESO=DI.COD_INGRESO
+																	AND 	I.COD_ESTADO_INGRESO IN (".self::K_ESTADO_ING_SIMULACION.", ".self::K_ESTADO_ING_ANULADO.", ".self::K_ESTADO_ING_POR_RENDIR."))
+							AND     CC.COD_CUENTA_CORRIENTE = {PARAM1}
+							ORDER BY RUT ASC";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql= "SELECT 	NRO_DOCUMENTO_PAGO 
+									,'S' SELECCION 	--LF SOLICITA QUE TODOS APAREZCAN MARCADOS AL CREAR DEPOSITO
+									,1 SELECCION_V	--LF SOLICITA QUE TODOS APAREZCAN MARCADOS AL CREAR DEPOSITO
+									,DP.COD_DOCUMENTO_PAGO
+							      	, dbo.f_doc_nro_ingreso(DP.COD_DOCUMENTO_PAGO) NRO_INGRESO
+							        ,B.COD_BANCO COD_BANCO_DP
+									,NOM_BANCO NOM_BANCO_DP
+									,NOM_PLAZA
+									,NRO_DOCUMENTO_PAGO
+									,convert(varchar(20),DP.FECHA_DOCUMENTO_PAGO,103) FECHA_DOCUMENTO_PAGO
+									,MONTO
+									,RUT 
+									,DIG_VERIF
+									,'' COD_DEPOSITO_DOCUMENTO
+									,NOM_TIPO_DOCUMENTO_PAGO
+
+							FROM 	DOCUMENTO_PAGO DP LEFT OUTER JOIN BANCO B ON DP.COD_BANCO = B.COD_BANCO 
+													  LEFT OUTER JOIN PLAZA P ON DP.COD_PLAZA = P.COD_PLAZA
+									,DEUDOR D
+									,TIPO_DOCUMENTO_PAGO TDP
+									,FAMILIA_DEUDA FD
+									,CUENTA_CORRIENTE CC
+							WHERE 	DP.COD_DEUDOR = D.COD_DEUDOR
+							AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO
+							AND		DP.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA
+							AND		FD.COD_FAMILIA_DEUDA = CC.COD_FAMILIA_DEUDA
+							AND     DP.COD_TIPO_DOCUMENTO_PAGO NOT IN (".self::K_TIPO_DOC_PAG_DEPOSITO.", ".self::K_TIPO_DOC_PAG_TRANSBANK.")
+							AND     DP.COD_ESTADO_DOCUMENTO_PAGO = ".self::K_ESTADO_PAG_POR_DEPOSITAR."
+							AND     ISNULL(DP.FECHA_DOCUMENTO_PAGO, getdate()) <= {PARAM2}
+							AND     DP.COD_DOCUMENTO_PAGO NOT IN(SELECT 	COD_DOCUMENTO_PAGO 
+																	FROM 	DEPOSITO_DOCUMENTO DD, DEPOSITO DEP
+																	WHERE 	DD.COD_DEPOSITO=DEP.COD_DEPOSITO
+																	AND 	DEP.COD_ESTADO_DEPOSITO IN (".self::K_ESTADO_EMITIDA.",".self::K_ESTADO_APROBADA."))
+							AND		DP.COD_DOCUMENTO_PAGO NOT IN(SELECT 	COD_DOCUMENTO_PAGO 
+																	FROM 	DOCUMENTO_INGRESO DI, INGRESO I
+																	WHERE 	I.COD_INGRESO=DI.COD_INGRESO
+																	AND 	I.COD_ESTADO_INGRESO IN (".self::K_ESTADO_ING_SIMULACION.", ".self::K_ESTADO_ING_ANULADO.", ".self::K_ESTADO_ING_POR_RENDIR."))
+							AND     CC.COD_CUENTA_CORRIENTE = {PARAM1}
+							ORDER BY RUT ASC";
+				}
+				break;
+				/////////////////////// PRINT_RECORD ///////////////////////////
+			case 'PRINT_RECORD' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT  D.COD_DEPOSITO
+							        ,NRO_DEPOSITO
+							        ,To_Char(FECHA_DEPOSITO,'dd/mm/yyyy') FECHA_DEPOSITO
+							        ,NOM_CUENTA_CORRIENTE
+									,NRO_CUENTA_CORRIENTE
+							        ,BD.NOM_BANCO NOM_BANCO 
+							        ,NOM_FAMILIA_DEUDA
+							        ,NOM_ESTADO_DEPOSITO||' '||To_Char(FECHA_CONFIRMA,'dd/mm/yyyy') ESTADO
+							        ,RUT||'-'||DIG_VERIF RUT_DEUDOR
+							        ,DP.COD_DOCUMENTO_PAGO
+							        ,B.NOM_BANCO NOM_BANCO_DP
+							        ,P.NOM_PLAZA
+							        ,NRO_DOCUMENTO_PAGO NRO_CHEQUE
+							        ,To_Char(DP.FECHA_DOCUMENTO_PAGO,'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO
+									,MONTO
+							FROM 	DEPOSITO D, CUENTA_CORRIENTE CC, BANCO BD, FAMILIA_DEUDA F, ESTADO_DEPOSITO ED, DEPOSITO_DOCUMENTO DD, DOCUMENTO_PAGO DP, DEUDOR DR, BANCO B, PLAZA P
+							WHERE 	DD.COD_DEPOSITO = {PARAM1}
+							AND 	CC.COD_CUENTA_CORRIENTE = D.COD_CUENTA_CORRIENTE
+							AND 	CC.COD_BANCO = BD.COD_BANCO
+							AND 	F.COD_FAMILIA_DEUDA = CC.COD_FAMILIA_DEUDA
+							AND 	D.COD_ESTADO_DEPOSITO = ED.COD_ESTADO_DEPOSITO
+							AND 	DD.COD_DEPOSITO = D.COD_DEPOSITO
+							AND 	DP.COD_DOCUMENTO_PAGO = DD.COD_DOCUMENTO_PAGO
+							AND 	DP.COD_DEUDOR = DR.COD_DEUDOR                            
+							AND 	DP.COD_BANCO = B.COD_BANCO (+)
+							AND 	DP.COD_PLAZA = P.COD_PLAZA (+)
+							AND     DP.COD_TIPO_DOCUMENTO_PAGO <> ".self::K_TIPO_DOC_PAG_DEPOSITO." 
+							ORDER BY  	DP.FECHA_DOCUMENTO_PAGO";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT	D.COD_DEPOSITO
+									,NRO_DEPOSITO
+									,CONVERT(VARCHAR(20), FECHA_DEPOSITO, 103) FECHA_DEPOSITO
+									,CC.NOM_CUENTA_CORRIENTE
+									,CC.NRO_CUENTA_CORRIENTE 
+									,BD.NOM_BANCO 			
+									,F.NOM_FAMILIA_DEUDA						
+									,ED.NOM_ESTADO_DEPOSITO	+ ' ' + convert(varchar(20), FECHA_CONFIRMA, 103) ESTADO
+									,convert(varchar(12), DR.RUT) + '-'+ DR.DIG_VERIF RUT_DEUDOR
+									,DP.COD_DOCUMENTO_PAGO
+									,B.NOM_BANCO NOM_BANCO_DP
+									,NOM_PLAZA
+									,NRO_DOCUMENTO_PAGO NRO_CHEQUE
+									,CONVERT(VARCHAR(20), DP.FECHA_DOCUMENTO_PAGO, 103) FECHA_DOCUMENTO_PAGO
+									,MONTO
+							FROM	DEPOSITO D, CUENTA_CORRIENTE CC, BANCO BD, FAMILIA_DEUDA F, ESTADO_DEPOSITO ED, DEPOSITO_DOCUMENTO DD, DOCUMENTO_PAGO DP LEFT OUTER JOIN BANCO B ON DP.COD_BANCO = B.COD_BANCO LEFT OUTER JOIN PLAZA P ON DP.COD_PLAZA = P.COD_PLAZA, DEUDOR DR
+							WHERE	DD.COD_DEPOSITO = {PARAM1}
+							AND		D.COD_CUENTA_CORRIENTE = CC.COD_CUENTA_CORRIENTE
+							AND		CC.COD_BANCO = BD.COD_BANCO
+							AND		CC.COD_FAMILIA_DEUDA = F.COD_FAMILIA_DEUDA
+							AND		D.COD_ESTADO_DEPOSITO = ED.COD_ESTADO_DEPOSITO
+							AND		D.COD_DEPOSITO = DD.COD_DEPOSITO
+							AND		DD.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+							AND		DP.COD_DEUDOR = DR.COD_DEUDOR
+							AND     DP.COD_TIPO_DOCUMENTO_PAGO <> ".self::K_TIPO_DOC_PAG_DEPOSITO." 
+							ORDER BY  	DP.FECHA_DOCUMENTO_PAGO";
+					}
+				break;
+				/////////////////  ERROR ///////////////
+			default:
+				base::error("sql_deposito::get_sql, selector: '$selector_sql' no definido");
+		}
+		$keys = func_get_args();
+		$sql = sql_tabla::replace_KEYS($sql, $keys);
+		return $sql;
+	}
+}
+?>

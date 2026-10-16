@@ -1,0 +1,54 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="INFORME DEUDORES PERIODO DE GRACIA" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{RUT}" width="8%" border="LB" align="R" font="Arial" format="N0,."/>
+		<Cell text="-  {DIGITO}" width="3%" border="B" align="L" font="Arial"/>
+		<Cell text="{MONTO_INGRESO_DEUDOR}" width="12.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_INGRESO_CONYUGE}" width="12.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{NOM_CONCEPTO_COBRO}" width="12.5%" align="R" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO_CTY}" width="12.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_SALDO_DEUDA}" width="12.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_CAT}" width="12.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_PEC}" width="12.5%" align="R" border="LRTB" format="N4,." font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="sum_ing_deudor" function="SUM" value="MONTO_INGRESO_DEUDOR"/>
+		<Variable name="sum_ing_conyuge" function="SUM" value="MONTO_INGRESO_CONYUGE"/>
+		<Variable name="sum_cty" function="SUM" value="MONTO_CTY"/>
+		<Variable name="sum_saldo_deuda" function="SUM" value="MONTO_SALDO_DEUDA"/>
+		<Variable name="sum_cat" function="SUM" value="MONTO_CAT"/>
+		<Variable name="sum_pec" function="SUM" value="MONTO_PEC"/>
+		<GroupHeader>
+			<Cell text="Rut" width="11%" align="C" border="LTB" font="ArialSmallBlue"/>
+			<Cell text="Ingreso Deudor" width="12.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Ingreso Conyuge" width="12.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Concepto" width="12.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="CTY" width="12.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Saldo Deuda" width="12.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="CAT" width="12.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="PEC" width="12.5%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="Totales:" width="11%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_ing_deudor}" width="12.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ing_conyuge}" width="12.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>	
+			<Cell text="" width="12.5%"   border=""  font="ArialBold"/>
+			<Cell text="{sum_cty}" width="12.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_saldo_deuda}" width="12.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_cat}" width="12.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_pec}" width="12.5%"  align="R" border="LRTB" format="N4,." font="ArialBold" newline="1"/>
+			</GroupFooter>
+	</Group>
+</Report>

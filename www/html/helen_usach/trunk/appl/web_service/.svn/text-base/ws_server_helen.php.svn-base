@@ -1,0 +1,594 @@
+<?php
+	ini_set('display_errors', 'On');
+	require_once("nusoap/lib/nusoap.php");
+    require_once("class_ws_server_helen.php");
+    	
+	
+	//desarrollo
+	//$namespace = "http://repositorio-externo.uct.cl/estudianteswebpay.uct.cl/portal_webpay_uct/web_pay_uct/trunk/web_service/servidor/ws_server.wsdl";
+	//Pre-Produccion
+    //$namespace = "http://pre-pagos.uct.cl/portal_webpay_uct/web_pay_uct/trunk/web_service/servidor/ws_server.wsdl";
+	//Produccion
+    $namespace = "http://192.168.2.141/desarrolladores/evergara/helen_usach/trunk/appl/web_service/ws_server_helen.wsdl";
+	
+	$server = new soap_server();
+    $server->configureWSDL("ws_Datos", "urn:Deuda");
+	
+    $server->register('ws_valida_deuda',	// method name
+      array('ve_rut' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_valida_deuda',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_inicio_repro',	// method name
+      array('ve_cod_deudor' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_inicio_repro',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_inicio_repro_2',	// method name
+      array('ve_cod_deudor' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_inicio_repro_2',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_inicio_repro_3',	// method name
+      array('ve_cod_deudor' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_inicio_repro_3',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_inicio_repro_4',	// method name
+      array('ve_cod_deudor' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_inicio_repro_4',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+
+    $server->register('ws_obtiene_deuda',	// method name
+      array('ve_rut' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_obtiene_deuda',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_obtiene_boleta',	// method name
+      array('ve_cod_plan_pago' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_obtiene_boleta',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_obtiene_ult_boleta',	// method name
+      array('ve_cod_plan_pago' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_obtiene_ult_boleta',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_cant_cruzado',	// method name
+      array('ve_cod_deuda' => 'xsd:string'),			// input parameters
+	  array('return'  => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_cant_cruzado',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_ajax_plan_pago_1',	// method name
+      array('ve_cod_deuda' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_ajax_plan_pago_1',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_ajax_plan_pago_2',	// method name
+      array('ve_cod_deuda' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_ajax_plan_pago_2',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_ajax_plan_pago_3',	// method name
+      array('ve_cod_deuda' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_ajax_plan_pago_3',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_ajax_plan_pago_4',	// method name
+      array('ve_cod_deuda' => 'xsd:string','ve_cod_plan_pago' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_ajax_plan_pago_4',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_pago_online_1',	// method name
+      array('ve_cod_plan_pago' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_pago_online_1',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_pago_online_2',	// method name
+      array('ve_cod_deuda' => 'xsd:string','ve_cod_plan_pago' => 'xsd:string','ve_cod_tipo_descuento' => 'xsd:string','ve_monto_abono_pesos' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_pago_online_2',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_validationResult',	// method name
+      array('ve_cod_wp_transaction' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_validationResult',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_bitacora_transaccion',	// method name
+      array('ve_cod_wp_transaction' => 'xsd:string', 've_fase' => 'xsd:string', 've_msg' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_bitacora_transaccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_init_transaccion',	// method name
+      array('ve_cod_wp_transaction' => 'xsd:string', 've_token' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_init_transaccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_crea_sub_boleta',	// method name
+      array('ve_tipo_pago' => 'xsd:string'
+      		,'ve_cod_deudor' => 'xsd:string'
+      		,'ve_cod_sub_boletas' => 'xsd:string'
+      		,'ve_cod_plan_pago' => 'xsd:string'
+      		,'ve_monto_capital' => 'xsd:string'
+      		,'ve_monto_interes' => 'xsd:string'
+      		,'ve_monto_multa' => 'xsd:string'
+      		,'ve_monto_moneda' => 'xsd:string'
+      		,'ve_monto_pesos' => 'xsd:string'
+      		,'ve_cod_tipo_descuento' => 'xsd:string'
+      		,'ve_dscto_utm' => 'xsd:string'
+      		,'ve_dscto_pesos' => 'xsd:string'
+      		,'ve_tipo_pago_web' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_pago_online_2',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_pago_confirmacion',	// method name
+      array('ve_token' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_pago_confirmacion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_datos_exito',	// method name
+      array('ve_cod_transaccion' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_exito',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_datos_deudor_exito',	// method name
+      array('ve_rut' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_deudor_exito',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_datos_inicio',	// method name
+      array('ve_cod' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_direccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_actualiza_direccion',	// method name
+      array('ve_cod_direccion' => 'xsd:string'
+      		,'ve_cod_deudor' => 'xsd:string'
+      		,'ve_tipo_direccion' => 'xsd:string'
+      		,'ve_direccion' => 'xsd:string'
+      		,'ve_cod_comuna' => 'xsd:string'
+      		,'ve_cod_ciudad' => 'xsd:string'
+      		,'ve_cod_pais' => 'xsd:string'
+      		,'ve_email' => 'xsd:string'
+      		,'ve_telefono' => 'xsd:string'
+      		,'ve_celular' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_direccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_datos_direccion_p',	// method name
+      array('ve_cod_deudor' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_direccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_datos_direccion_c',	// method name
+      array('ve_cod_deudor' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_direccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_datos_ciudad',	// method name
+      array('ve_cod_region' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_ciudad',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_cupon_pago_1',	// method name
+      array('ve_cod_deudor' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_cupon_pago_1',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_cupon_pago_cuotas',	// method name
+      array('ve_cod_deudor' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_cupon_pago_cuotas',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_cambio_clave',	// method name
+      array('ve_cod_deudor' => 'xsd:string','ve_clave_nueva' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_cambio_clave',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_cupon_pago_boleta',	// method name
+      array('ve_cod_plan_pago' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_cupon_pago_cuotas',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_datos_comuna',	// method name
+      array('ve_cod_ciudad' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_comuna',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_datos_region',	// method name
+      array('ve_cod_pais' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_region',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+		
+	$server->register('ws_pago_transaccion',	// method name
+      array('ve_operacion' => 'xsd:string'
+      		,'ve_orden_compra' => 'xsd:string'
+      		,'ve_sessionId' => 'xsd:string'
+      		,'ve_numeroTarjeta' => 'xsd:string'
+      		,'ve_expiracion_tarjeta' => 'xsd:string'
+      		,'ve_fecha_autorizacion' => 'xsd:string'
+      		,'ve_fecha_hora_autorizacion' => 'xsd:string'
+      		,'ve_resultado_autenticacion' => 'xsd:string'
+      		,'ve_urlRedirection' => 'xsd:string'
+      		,'ve_codigo_autorizacion' => 'xsd:string'
+      		,'ve_tipo_transaccion' => 'xsd:string'
+      		,'ve_respuesta_pago' => 'xsd:string'
+      		,'ve_monto_pago' => 'xsd:string'
+      		,'ve_null' => 'xsd:string'
+      		,'ve_cantidad_cuota' => 'xsd:string'
+      		,'ve_codigo_comercio' => 'xsd:string'
+      		,'ve_orden_compra_tienda' => 'xsd:string'
+      		,'ve_token' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_pago_transaccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_pago_online_3',	// method name
+      array('ve_cod_deuda' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_pago_online_3',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_pago_online_4',	// method name
+      array('ve_cod_deudor' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_pago_online_4',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_cant_cruzado',	// method name
+      array('ve_cod_deuda' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_cant_cruzado',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_obtiene_plan_pago',	// method name
+      array('ve_cod_deuda' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_obtiene_plan_pago',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_datos_webpay_cupon',	// method name
+      array('ve_rut' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_webpay_cupon',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_datos_deudor',		// method name
+      array('ve_rut' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_deudor',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'		// documentation
+	);
+	
+	$server->register('ws_datos_deuda',		// method name
+      array('ve_rut' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_deuda',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'		// documentation
+	);
+	
+	$server->register('ws_datos_web_pay',		// method name
+      array('ve_cod_deudor' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_datos_web_pay',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'		// documentation
+	);
+	
+	$server->register('ws_detalle_deuda',		// method name
+      array('ve_cod_deuda' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_detalle_deuda',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'		// documentation
+	);
+	
+	$server->register('ws_valida_plan_pago',	// method name
+      array('ve_rut' => 'xsd:string','ve_cod_deuda' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_valida_plan_pago',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_valida_deudor',	// method name
+      array('ve_rut' => 'xsd:string','ve_dig_verif' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_valida_deudor',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_pago_abono',	// method name
+	    array('orden_compra' => 'xsd:string'),			// input parameters
+	    array('return' => 'xsd:string'),			// output parameters
+	    $namespace,								// namespace
+	    $namespace . '#ws_pago_abono',			// soapaction
+	    'rpc',									// style
+	    'encoded',								// use
+	    'Retorna todos los datos solicitados'	// documentation
+	    );
+	
+	$server->register('ws_crea_transaccion',	// method name
+      array('ve_operacion' => 'xsd:string','ve_monto_abono' => 'xsd:string','ve_ip' => 'xsd:string','ve_browser' => 'xsd:string','ve_so' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_crea_transaccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_sub_boleta',	// method name
+      array('ve_cod_plan_pago' => 'xsd:string','ve_monto_abono_pesos' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_sub_boleta',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_deuda_transaccion',	// method name
+      array('ve_operacion' => 'xsd:string','ve_cod_wp_transaccion' => 'xsd:string','ve_nro_deuda' => 'xsd:string','ve_monto_asignado' => 'xsd:string','ve_tipo_abono' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_deuda_transaccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_wp_init_transaccion',	// method name
+      array('ve_cod_wp_transaccion' => 'xsd:string','ve_token' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_wp_init_transaccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_bitacora_transaccion',	// method name
+      array('ve_cod_wp_transaccion' => 'xsd:string','ve_fase' => 'xsd:string','ve_mensaje' => 'xsd:string'),			// input parameters
+	  array('return' => 'xsd:string'),			// output parameters
+	  $namespace,								// namespace
+	  $namespace . '#ws_bitacora_transaccion',			// soapaction
+	  'rpc',									// style
+	  'encoded',								// use
+	  'Retorna todos los datos solicitados'	// documentation
+	);
+	
+	$server->register('ws_wp_pago_transaccion_ws',	// method name
+	    array('ve_operacion' => 'xsd:string'
+	        ,'ve_orden_compra' => 'xsd:string'
+	        ,'ve_sessionId' => 'xsd:string'
+	        ,'ve_numeroTarjeta' => 'xsd:string'
+	        ,'ve_expiracion_tarjeta' => 'xsd:string'
+	        ,'ve_fecha_autorizacion' => 'xsd:string'
+	        ,'ve_fecha_hora_autorizacion' => 'xsd:string'
+	        ,'ve_resultado_autenticacion' => 'xsd:string'
+	        ,'ve_urlRedirection' => 'xsd:string'
+	        ,'ve_codigo_autorizacion' => 'xsd:string'
+	        ,'ve_tipo_transaccion' => 'xsd:string'
+	        ,'ve_respuesta_pago' => 'xsd:string'
+	        ,'ve_monto_pago' => 'xsd:string'
+			,'ve_valor_cuota' => 'xsd:string'
+	        ,'ve_cantidad_cuota' => 'xsd:string'
+	        ,'ve_codigo_comercio' => 'xsd:string'
+	        ,'ve_orden_compra_tienda' => 'xsd:string'
+			,'ve_token' => 'xsd:string'),			// input parameters
+	    array('return' => 'xsd:string'),			// output parameters
+	    $namespace,								// namespace
+	    $namespace . '#ws_wp_pago_transaccion_ws',			// soapaction
+	    'rpc',									// style
+	    'encoded',								// use
+	    'Retorna todos los datos solicitados'	// documentation
+	    );
+	
+    $HTTP_RAW_POST_DATA = isset($HTTP_RAW_POST_DATA) ? $HTTP_RAW_POST_DATA : '';
+	$server->service($HTTP_RAW_POST_DATA);		
+?>

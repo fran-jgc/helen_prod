@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Archivo Carga Banco</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css"></link>
+<script src="../../../../commonlib_seven/trunk/script_js/SpryTabbedPanels.js" type="text/javascript"></script>
+<script charset="utf-8" src="carga_banco.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+
+</head>
+<body class="content_wm">
+<form action="" method="post" name="input" id="input" enctype="multipart/form-data">
+	<div class="titulo_tabla_wm">&nbsp;&nbsp;Archivo Carga Banco</div>
+		<table align="left">
+			<tr>
+			</tr>
+			<tr>
+				<td>
+					<table width="100" border="0" align="left">
+						<tr>
+							<td width="100">{FECHA_REGISTRO_H}</td>
+							<td width="100">{COD_USUARIO_H}{TIPO_DOC_H}</td>
+							<td width="100">{COD_DOC_H}{NOM_RECEPTOR_H}</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+			</tr>
+			<tr>
+				<td>
+					<table width="100" border="0" align="left">
+						<tr>
+						<td ><input id="FILE_NAME" type="file" name="FILE_NAME" /></td>
+							<td align="left">
+								<input id="b_cargar" name="b_cargar" type="submit" value="cargar" 
+								onclick="return validate_load();" class="button"/>
+							</td>
+							<td align="left">
+								<input name="cancelar" type="submit" value="Cancelar" onclick="returnValue=null; window.close();" class="button"/>
+							</td>
+						
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+</form>
+</body>
+</html>

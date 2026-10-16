@@ -1,0 +1,161 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_w_param_informe_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+ini_set('memory_limit', '480M');
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes 
+
+class wi_inf_conta_corto_largo_plazo extends w_param_informe_helen {
+	var $cod_tipo_deuda;
+	
+	function wi_inf_conta_corto_largo_plazo($cod_item_menu) {
+		$xml = session::get('K_ROOT_DIR').'appl/inf_conta_corto_largo_plazo.xml';
+		$sql_informe = sql_inf_conta_corto_largo_plazo::get_sql('INPUT');
+		parent::w_param_informe('inf_conta_corto_largo_plazo', $cod_item_menu,'Corto y Largo Plazo', $xml, $sql_informe, 'spi_conta_corto_largo_plazo');
+
+		$sql = sql_inf_conta_corto_largo_plazo::get_sql('FECHA');
+
+		$this->dws['dw_param'] = new datawindow($sql);
+
+		$sql = sql_inf_conta_corto_largo_plazo::get_sql('DD_COD_TIPO_DEUDA');
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_TIPO_DEUDA', $sql));
+		$this->dws['dw_param']->add_control(new edit_num('ANO', 4, 4));
+		$sql = sql_inf_conta_corto_largo_plazo::get_sql('DD_COD_CARTERA');
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_CARTERA', $sql, 0, '', false));
+
+		// mandatorys		
+		$this->dws['dw_param']->set_mandatory('COD_TIPO_DEUDA', 'Tipo Deuda');	
+		$this->dws['dw_param']->set_mandatory('ANO', 'Año');	
+	}
+	function make_filtro() {
+		$cod_tipo_deuda = $this->dws['dw_param']->get_item(0, 'COD_TIPO_DEUDA'); 
+		$this->cod_tipo_deuda = $cod_tipo_deuda;
+		$ano 			= $this->dws['dw_param']->get_item(0, 'ANO');
+		$cod_cartera	= $this->dws['dw_param']->get_item(0, 'COD_CARTERA');
+
+		if ($cod_cartera==0)
+			$nom_cartera = 'TODAS'; 
+		else {
+			$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+			$sql = "select NOM_CARTERA
+					from CARTERA
+					where COD_CARTERA = $cod_cartera";
+			$result = $db->build_results($sql);
+			$nom_cartera = $result[0]['NOM_CARTERA']; 
+		}
+		// Filtro
+		$this->filtro = "Tipo Deuda = $cod_tipo_deuda; Cartera = $nom_cartera \nAñoo = $ano";
+
+		// Arma los paramaetros para el SP
+		$this->param = "'$cod_tipo_deuda', $ano, $cod_cartera";	
+	}
+	
+	function genera_xls() {
+		ini_set('memory_limit', '128M');
+		ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
+		require_once dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/php_writeexcel-0.3.0/class.writeexcel_workbook.inc.php";
+		require_once dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/php_writeexcel-0.3.0/class.writeexcel_worksheet.inc.php";
+		
+		$fname = tempnam("/tmp", "export.xls");
+		$workbook = new writeexcel_workbook($fname);
+		$worksheet = $workbook->addworksheet('Corto y Largo Plazo');
+		
+		// escribe encabezados
+		# Create a format for the column headings
+		$header =& $workbook->addformat();
+		$header->set_bold();
+		$header->set_color('blue');
+
+		$ano = $this->dws['dw_param']->get_item(0, 'ANO');
+		$ano_sig = $this->dws['dw_param']->get_item(0, 'ANO')+1;
+		
+		// titulos
+		$col = 0;
+		$worksheet->write(0, $col++,  'RUT', $header);
+		$worksheet->write(0, $col++,  'NOMBRE', $header);
+		$worksheet->write(0, $col++,  'CARTERA', $header);
+		$worksheet->write(0, $col++,  'INICIO COBRO', $header);
+		$worksheet->write(0, $col++,  'EMITIDA '.$ano, $header);
+		$worksheet->write(0, $col++,  'ABONO '.$ano, $header);
+		$worksheet->write(0, $col++,  'DESCTOS '.$ano, $header);
+		$worksheet->write(0, $col++,  'CR', $header);
+		$worksheet->write(0, $col++,  'SALDO '.$ano, $header);
+		$worksheet->write(0, $col++,  'CONCEPTO', $header);
+		$worksheet->write(0, $col++,  'EMITIDA '.$ano_sig, $header);
+		$worksheet->write(0, $col++,  'ABONO '.$ano_sig, $header);
+		$worksheet->write(0, $col++,  'DESCTOS '.$ano_sig, $header);
+		$worksheet->write(0, $col++,  'CR '.$ano_sig, $header);
+		$worksheet->write(0, $col++,  'SALDO '.$ano_sig, $header);
+		$worksheet->write(0, $col++,  'CUOTA LP', $header);
+		$worksheet->write(0, $col++,  'EMITIDA LP', $header);
+		$worksheet->write(0, $col++,  'ABONO LP', $header);
+		$worksheet->write(0, $col++,  'DESCTOS LP', $header);
+		$worksheet->write(0, $col++,  'CR LP', $header);
+		$worksheet->write(0, $col++,  'SALDO LP', $header);
+		$worksheet->write(0, $col++,  'CAT', $header);
+		if ($this->cod_tipo_deuda == 'CSR') {
+			$worksheet->write(0, $col++,  'UV_PORC', $header);
+			$worksheet->write(0, $col++,  'UV_EMITIDA '.$ano, $header);
+			$worksheet->write(0, $col++,  'UV_ABONO '.$ano, $header);
+			$worksheet->write(0, $col++,  'UV_DESCTOS '.$ano, $header);
+			$worksheet->write(0, $col++,  'UV_CR', $header);
+			$worksheet->write(0, $col++,  'UV_SALDO '.$ano, $header);
+			$worksheet->write(0, $col++,  'UV_EMITIDA '.$ano_sig, $header);
+			$worksheet->write(0, $col++,  'UV_ABONO '.$ano_sig, $header);
+			$worksheet->write(0, $col++,  'UV_DESCTOS '.$ano_sig, $header);
+			$worksheet->write(0, $col++,  'UV_CR '.$ano_sig, $header);
+			$worksheet->write(0, $col++,  'UV_SALDO '.$ano_sig, $header);
+			$worksheet->write(0, $col++,  'UV_CUOTA LP', $header);
+			$worksheet->write(0, $col++,  'UV_EMITIDA LP', $header);
+			$worksheet->write(0, $col++,  'UV_ABONO LP', $header);
+			$worksheet->write(0, $col++,  'UV_DESCTOS LP', $header);
+			$worksheet->write(0, $col++,  'UV_CR LP', $header);
+			$worksheet->write(0, $col++,  'UV_SALDO LP', $header);
+		}
+		
+		// Exporta la data
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+
+		if (K_TIPO_BD=="mssql") {
+			$sql = "exec ".$this->sp." ".$this->param;
+		}
+		elseif (K_TIPO_BD=="oci") {
+			$db->EXECUTE_SP($this->sp, $this->param);
+			$sql = $this->sql_informe;
+		}
+		$res = $db->query($sql);
+
+		$i = 0;
+		while($my_row = $db->get_row()){
+			if ($worksheet->_datasize > 7000000)
+				break;
+				
+			$columna = 0;
+			for ($j=0; $j < $col; $j++) {		
+				$worksheet->write($i + 1, $columna, $my_row[$j]);
+				$columna++;
+			}
+			$i++;
+		}
+		if ($worksheet->_datasize > 7000000) {
+			$worksheet->write($i + 1, 0, 'No se completo la exportación de datos porque excede el máximo del tamaño de archivo 7 MB', $header);
+		}
+		
+		if($db->database_type=="oci") {
+			oci_free_statement($db->query_id);
+			$db->query_id = false;
+		}
+		
+		$workbook->close();
+		
+		header("Content-Type: application/x-msexcel; name=\"$this->nom_tabla\"");
+		header("Content-Disposition: inline; filename=\"$this->nom_tabla.xls\"");
+		$fh=fopen($fname, "rb");
+		fpassthru($fh);
+		unlink($fname);
+	}
+}
+?>

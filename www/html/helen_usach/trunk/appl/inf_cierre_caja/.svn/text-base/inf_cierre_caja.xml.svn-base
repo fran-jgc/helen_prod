@@ -1,0 +1,38 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Detalle Cierre Caja - Cupones" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{COD_ABONO}" width="10%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{FECHA_REGISTRO}" width="10%" align="R" border="LRTB" font="Arial"/>
+		<Cell text="{FECHA_ABONO}" width="10%" align="R" border="LRTB" font="Arial"/>
+		<Cell text="{RUT}" width="10%" align="R" border="LRTB" font="Arial"/>
+		<Cell text="{NOMBRE}" width="40%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO_PESOS}" width="20%" align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>/>
+	</Content>
+	<Group>
+		<Variable name="sum_monto_pesos" function="SUM" value="MONTO_PESOS"/>
+		<GroupHeader>
+			<Cell text="Nº Abono" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="F.Dig." width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="F.Pago" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Rut" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Nombre" width="40%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto [$]" width="20%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+</GroupHeader>
+		<GroupFooter>
+			<Cell text="Total:" width="80%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_monto_pesos}" width="20%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>
+		</GroupFooter>
+	</Group>
+</Report>

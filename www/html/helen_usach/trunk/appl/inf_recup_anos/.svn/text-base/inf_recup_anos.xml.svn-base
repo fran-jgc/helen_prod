@@ -1,0 +1,88 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="6" style="B" id="ArialBold"/>
+	<Font name="Arial" size="6" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="RECUPERACIÓN POR AÑOS" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{ANO}" width="6%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO_MORA}" width="6.9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_MULTA}" width="6.9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_MULTA_TOTAL_PESOS}" width="7.2%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_CAPITAL_VIGENTE}" width="6.9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_INTERES_VIGENTE}" width="6.9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_CI_VIGENTE_PESOS}" width="7.2%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_CAPITAL_FUTURO}" width="6.9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_INTERES_FUTURO}" width="6.9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_CI_FUTURO_PESOS}" width="7.2%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_CAPITAL_NO_EXIGIBLE}" width="6.9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_INTERES_NO_EXGIGIBLE}" width="6.9%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_CI_NO_EXGIGIBLE_PESOS}" width="7.2%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_TOTAL}" width="6.2%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_TOTAL_PESOS}" width="6.2%" align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="sum_mora" function="SUM" value="MONTO_MORA"/>
+		<Variable name="sum_multa" function="SUM" value="MONTO_MULTA"/>
+		<Variable name="sum_multa_total" function="SUM" value="MONTO_MULTA_TOTAL_PESOS"/>
+		<Variable name="sum_cap_vig" function="SUM" value="MONTO_CAPITAL_VIGENTE"/>
+		<Variable name="sum_int_vig" function="SUM" value="MONTO_INTERES_VIGENTE"/>
+		<Variable name="sum_vigente_total" function="SUM" value="MONTO_CI_VIGENTE_PESOS"/>
+		<Variable name="sum_cap_fut" function="SUM" value="MONTO_CAPITAL_FUTURO"/>
+		<Variable name="sum_int_fut" function="SUM" value="MONTO_INTERES_FUTURO"/>
+		<Variable name="sum_futura_total" function="SUM" value="MONTO_CI_FUTURO_PESOS"/>
+		<Variable name="sum_cap_no_exi" function="SUM" value="MONTO_CAPITAL_NO_EXIGIBLE"/>
+		<Variable name="sum_int_no_exi" function="SUM" value="MONTO_INTERES_NO_EXGIGIBLE"/>
+		<Variable name="sum_no_exigible_total" function="SUM" value="MONTO_CI_NO_EXGIGIBLE_PESOS"/>
+		<Variable name="sum_total" function="SUM" value="MONTO_TOTAL"/>
+		<Variable name="sum_total_pesos" function="SUM" value="MONTO_TOTAL_PESOS"/>
+		<GroupHeader>
+			<Cell text="" width="6%"/>
+			<Cell text="Vencida" width="21%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Vigente" width="21%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Futura" width="21%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="No Exigible" width="21%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+			
+			<Cell text="Año" width="6%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Mora" width="6.9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Multa" width="6.9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto Pesos" width="7.2%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Capital" width="6.9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Interes Normal" width="6.9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto Pesos" width="7.2%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Capital" width="6.9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Interes Normal" width="6.9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto Pesos" width="7.2%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Capital" width="6.9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Interes Normal" width="6.9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto Pesos" width="7.2%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="TOTAL UTM" width="6.2%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="TOTAL $" width="6.2%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="Totales:" width="6%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_mora}" width="6.9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_multa}" width="6.9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_multa_total}" width="7.2%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>	
+			<Cell text="{sum_cap_vig}" width="6.9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_int_vig}" width="6.9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_vigente_total}" width="7.2%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_cap_fut}" width="6.9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_int_fut}" width="6.9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_futura_total}" width="7.2%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_cap_no_exi}" width="6.9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_int_no_exi}" width="6.9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_no_exigible_total}" width="7.2%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_total}" width="6.2%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_total_pesos}" width="6.2%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>
+		</GroupFooter>
+	</Group>
+</Report>

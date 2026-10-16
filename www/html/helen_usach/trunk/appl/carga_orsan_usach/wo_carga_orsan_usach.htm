@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Sistema Helen</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+<script charset="utf-8" src="carga_orsan.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script type="text/javascript">
+function dlg_carga_banco() {
+	var args = "location:no;dialogLeft:600px;dialogTop:300px;dialogWidth:450px;dialogHeight:200px;dialogLocation:0;Toolbar:no;";
+	var returnVal = window.showModalDialog("dlg_carga_banco.php", "_blank", args);
+	if (returnVal == null)		
+		return false;		
+	else {
+		document.getElementById('wo_hidden').value = returnVal;
+		document.output.submit();
+		return true;
+	}
+}
+function abrirVentana() {
+	open("help_script.php","miVentana", "height=750,width=530");
+}
+function abrirVentanaOrigen() {
+	open("help_script_origen.php","miVentana", "height=500,width=460");
+}
+function abrirVentanaErrores() {
+	open("help_script_errores.php","miVentana", "height=600,width=680");
+}
+</script>
+{WO_JAVA_SCRIPT}
+</head>
+<body {WO_ONLOAD}>
+<!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js" type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+<form action="" method="post" name="output" id="output"  enctype="multipart/form-data">
+<input name="wo_hidden" id="wo_hidden" type="hidden" value="">
+<table width="1050" border="0" align="center">
+	<tr bgcolor="#FFFFFF">
+		<!-- menu superior-->
+		<td width="1000"  height="51" align="center" id="awmAnchor-menu" style="width:100px; height:50px;"></td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+			<table width="1000" border="0">
+				<tr>
+					<td>
+						<table width="400" border="0">
+							<tr>
+								<td height="100%"><div class="titulo_central">{WO_RUTA_MENU}</div></td>
+							</tr>
+							<tr>
+								<td height="0%"><div class="tit_superior"><font color="#999999">{WO_FECHA_ACTUAL}</font></div></td>
+							</tr>
+							<tr>
+								<td height="0%"><div class="tit_superior"><font color="#999999">{WO_NOM_USUARIO}</font></div></td>
+							</tr>
+						</table>
+					</td>
+					<td><a href="javascript:abrirVentana()">Formato Carga</a>
+						<a id="origen_pago" href="javascript:abrirVentanaOrigen()" style="color:orange;">Origen Pago</a>
+						<a id="lista_errores" style="display:none; color:red" href="javascript:abrirVentanaErrores()">Lista Errores</a>
+					</td>
+					<td>
+					<td>Archivo Carga Orsan
+					<input id="FILE_NAME" type="file" name="FILE_NAME"/>
+					</td>
+					<td>{WO_LOAD}</td>
+					<td>{WO_EXPORT}</td>					
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>	  
+			<table width="1000" border="0" align="center" height="570">
+				<tr bgcolor="#FFFFFF" height="520">
+					<td valign="top">
+						<table width="1000" border="0" align="center">
+							<tr class="encabezado_center">
+								<th width="6%">Detalle</th>
+								<th width="12%">{H_COD_CARGA_ORSAN_USACH}</th>
+								<th width="12">{H_FECHA_REGISTRO}</th>
+								<th width="12">{H_FECHA_CARGA_ORSAN}</th>
+								<th width="12">{H_NOM_USUARIO}</th>
+								<th width="12"">{H_TOTAL_REG_CARGA}</th>
+								<th width="12">{H_TOTAL_REG_EXITOSO}</th>
+								<th width="12">{H_TOTAL_REG_PDTE}</th>
+								
+							
+						
+								
+							</tr>	
+							<!-- startBlock(wo_registro) -->
+							<tr class="{WO_TR_CSS}">
+								<td align="center">{WO_DETALLE}</td>
+								<td align="center">{COD_CARGA_ORSAN_USACH}</td>
+								<td align="center">{FECHA_REGISTRO}</td>
+								<td align="center">{FECHA_CARGA_ORSAN}</td>
+								<td align="center">{NOM_USUARIO}</td>
+								<td align="right">{TOTAL_REG_CARGA}</td>
+								<td align="right">{TOTAL_REG_EXITOSO}</td>
+								<td align="right">{TOTAL_REG_PDTE}</td>
+								
+							
+								
+							</tr>
+							<!-- endBlock(wo_registro) -->
+						</table>
+					</td>
+				</tr>		
+				<tr bgcolor="#FFFFFF" height="28">
+					<td>						
+						<table width="1000" border="0" align="center">
+							<tr valign="middle">
+								<td width="290" >{WO_BACK}</td>
+								<td align="right">{WO_FIRST}{WO_PREV}</td>
+								<td align="center" class="cant_paginas" width="230">{WO_PAGES}</td>
+								<td align="left">{WO_NEXT}{WO_LAST}</td>
+								<td width="180"></td>
+							</tr>
+						</table> 
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+</html>
+	
+	

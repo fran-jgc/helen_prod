@@ -1,0 +1,46 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="TIPO DOCUMENTO PAGO" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{COD_INGRESO}" width="12%"  align="R" border="LRTB" font="Arial"/>	
+		<Cell text="{RUT}" width="9%"  align="R" border="LTB" format="N0,." font="Arial"/>
+		<Cell text="- {DIG_VERIF}" width="3%"  align="L" border="TB" font="Arial"/>
+		<Cell text="{FECHA_DOCUMENTO_PAGO}" width="8%"  align="R" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_ESTADO_DOCUMENTO_PAGO}" width="16%" border="LRTB" font="Arial"/>
+		<Cell text="{NRO_DOCUMENTO_PAGO}" width="13%"  align="R" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_BANCO}" width="16%" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_PLAZA}" width="13%" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO}" width="10%"  align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>	
+	</Content>
+	<Group>
+		<Variable name="sum" function="SUM" value="MONTO"/>
+		
+		<GroupHeader>				
+			<Cell text="Nº Ingreso" width="12%" align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="Rut" width="12%" align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="Fecha Doc." width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="Estado Doc." width="16%" align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="Nº Doc." width="13%" align="C" border="LRTB"/>
+			<Cell text="Banco" width="16%" align="C" border="LRTB"/>
+			<Cell text="Plaza" width="13%" align="C" border="LRTB"/>
+			<Cell text="Monto" width="10%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+				
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="" width="77%" align="R" border="" font="ArialBold"/>
+			<Cell text="Total" width="13%" align="R" border="LTB" font="ArialBold"/>	
+			<Cell text="{sum}" width="10%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>	
+		</GroupFooter>
+	</Group>
+</Report>

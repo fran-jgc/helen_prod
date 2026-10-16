@@ -1,0 +1,55 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_w_param_informe_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+class wi_inf_libro_diario extends w_param_informe_helen {
+	function __construct($cod_item_menu) {
+		$xml = session::get('K_ROOT_DIR').'appl/inf_libro_diario/inf_libro_diario.xml';		
+		$sql_informe = sql_inf_libro_diario::get_sql('INPUT');
+		parent::__construct('inf_libro_diario', $cod_item_menu, 'Libro diario.pdf', $xml, $sql_informe, 'spi_libro_diario');
+
+		$fecha = getdate();
+  		$ano   = $fecha["year"];
+		$sql = sql_inf_libro_diario::get_sql('FECHA', $ano);
+		
+		$this->dws['dw_param'] = new datawindow($sql);
+		
+		$this->dws['dw_param']->add_control(new edit_date('FECHA_INICIO'));
+		$this->dws['dw_param']->add_control(new edit_date('FECHA_TERMINO'));
+		$sql = sql_inf_libro_diario::get_sql('DD_COD_FAMILIA_DEUDA');
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_FAMILIA_DEUDA', $sql));
+		$this->dws['dw_param']->add_control(new edit_check_box('APROBADO', 'S', 'N', 'Aprobado'));
+		$this->dws['dw_param']->add_control(new edit_check_box('PENDIENTE', 'S', 'N', 'Pendiente'));
+
+		// mandatorys		
+		$this->dws['dw_param']->set_mandatory('FECHA_INICIO', 'Fecha Inicio');	
+		$this->dws['dw_param']->set_mandatory('FECHA_TERMINO', 'Fecha Termino');	
+		$this->dws['dw_param']->set_mandatory('COD_FAMILIA_DEUDA', 'Familia Deuda');	
+	}
+	function make_filtro() {
+		$fecha_inicio = $this->dws['dw_param']->get_item(0, 'FECHA_INICIO'); 
+		$fecha_termino = $this->dws['dw_param']->get_item(0, 'FECHA_TERMINO'); 
+		$cod_familia_deuda = $this->dws['dw_param']->get_item(0, 'COD_FAMILIA_DEUDA'); 
+		$aprobado = $this->dws['dw_param']->get_item(0, 'APROBADO'); 
+		$pendiente = $this->dws['dw_param']->get_item(0, 'PENDIENTE'); 
+		
+		// Filtro
+		$this->filtro = "Fecha Inicio = $fecha_inicio; Fecha Término = $fecha_termino\nEstado = ";
+		if ($aprobado=='S')
+			$this->filtro .= "Contabilizado, ";  		
+		if ($pendiente=='S')
+			$this->filtro .= "Aprobado, ";
+	
+		$nom_familia = $this->dws['dw_param']->controls['COD_FAMILIA_DEUDA']->get_label_from_value($cod_familia_deuda);
+		$this->filtro .= "Familia Deuda = $nom_familia";
+
+		$fecha_inicio 	= $this->str2date($fecha_inicio);
+		$fecha_termino 	= $this->str2date($fecha_termino);
+		
+		// Arma los paramaetros para el SP
+		$this->param = "$fecha_inicio, $fecha_termino, $cod_familia_deuda, '$aprobado', '$pendiente'";		
+	}
+}
+?>

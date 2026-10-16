@@ -1,0 +1,53 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+class wo_suspension extends w_output {
+
+    const K_SOLICITADA = 1;
+
+    function __construct() {
+
+
+        $sql = sql_suspension::get_sql('OUTPUT');
+        
+        parent::__construct('suspension', $sql, $_REQUEST['cod_item_menu']);
+        $this->dw->add_control(new static_num('RUT'));
+        // headers
+        $COD_SUSPENSION = new header_num('COD_SUSPENSION', 'COD_SUSPENSION', 'N° Suspensión');
+        $FECHA_SUSPENSION = new header_date('FECHA_SUSPENSION', 'FECHA_SUSPENSION', 'Fecha Suspensión');
+        $COD_DEUDA = new header_num('COD_DEUDA', 'D.COD_DEUDA', 'N° Deuda');
+        $ANO_SUSPENSION = new header_num('ANO_SUSPENSION', 'ANO_SUSPENSION', 'Año Suspensión');
+        $FECHA_SOLICITUD_TRAMITE = new header_date('FECHA_SOLICITUD_TRAMITE', 'FECHA_SOLICITUD_TRAMITE', 'Fecha Solicitud');
+        
+        $this->add_header($COD_SUSPENSION);
+        $this->add_header($FECHA_SUSPENSION);
+        $this->add_header($COD_DEUDA);
+        $this->add_header($ANO_SUSPENSION);
+        $this->add_header($FECHA_SOLICITUD_TRAMITE);
+
+
+        
+        //////////////// CLASS_SQL = OUTPUT_DD_ESTADO ///////////////
+        $sql_est_susp = sql_suspension::get_sql('OUTPUT_DD_ESTADO');
+        $NOM_ESTADO_SUSPENSION = new header_drop_down('NOM_ESTADO_SUSPENSION', 'ES.COD_ESTADO_SUSPENSION', 'Estado', $sql_est_susp);
+        $this->add_header($NOM_ESTADO_SUSPENSION);
+
+        $this->make_filtros();
+        
+        //////////////// CLASS_SQL = OUTPUT_TIPO_DEUDA ///////////////
+        $sql_tipo_deuda = sql_suspension::get_sql('OUTPUT_TIPO_DEUDA');
+        $NOM_TIPO_DEUDA = new header_drop_down_string('NOM_TIPO_DEUDA', 'TD.COD_TIPO_DEUDA', 'Tipo Deuda', $sql_tipo_deuda);
+        $this->add_header($NOM_TIPO_DEUDA);
+        
+        $RUT = new header_rut('RUT', 'DR', 'Rut');
+        $NOMBRE = new header_text('NOMBRE', 'NOMBRE', 'Nombre');
+        $APELLIDO_PATERNO = new header_text('APELLIDO_PATERNO', 'APELLIDO_PATERNO', 'Paterno');
+        $APELLIDO_MATERNO = new header_text('APELLIDO_MATERNO', 'APELLIDO_MATERNO', 'Materno');
+        
+        $this->add_header($RUT);
+        $this->add_header($NOMBRE);
+        $this->add_header($APELLIDO_PATERNO);
+        $this->add_header($APELLIDO_MATERNO);
+    }
+}
+?>

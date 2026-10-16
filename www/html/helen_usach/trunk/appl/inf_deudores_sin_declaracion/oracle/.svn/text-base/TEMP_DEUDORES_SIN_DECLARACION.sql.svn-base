@@ -1,0 +1,15 @@
+create global temporary table TEMP_DEUDORES_SIN_DECLARACION
+  ( RUT							      VARCHAR2(20)
+  ,NOMBRE                 VARCHAR2(100)
+  ,APELLIDO_PATERNO       VARCHAR2(100)
+  ,APELLIDO_MATERNO       VARCHAR2(100)
+  ,DIRECCION              VARCHAR2(100)
+  ,COMUNA                 VARCHAR2(100)
+  ,CIUDAD                 VARCHAR2(100)
+  ,TELEFONO               VARCHAR2(100)
+  ,EMAIL                  VARCHAR2(100)
+  ,CELULAR                VARCHAR2(100)
+  ,NOM_CRUZADO			  VARCHAR2(50)
+  ,NOM_CARTERA			  VARCHAR2(100)
+)
+on commit delete ROWS;

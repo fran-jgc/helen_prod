@@ -1,0 +1,208 @@
+<html>
+	<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link href="css/estilo.css" rel="stylesheet" type="text/css"> 
+	<link href="css/body-gradient.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<center>
+			<font color= "green">
+				<b>
+					<u>
+						TESORERIA
+					</u>
+				</b>
+			</font>
+			</br></br>
+			<table class="rwd_auto fontsize">	
+				<tr>
+					<th>Nombre Campos</th>
+					<th>Tipo Campo</th>
+					<th>Cantidad de caracteres</th>
+					<th>Descripción Campos</th>
+				</tr>
+				<tr>
+					<td>Rut</td>
+					<td>Numerico</td>
+					<td><center>10</center></td>
+					<td>Rut deudor</td>
+				</tr>
+				<tr>
+					<td>DV</td>
+					<td>Texto </td>
+					<td><center>1</center></td>
+					<td>Digito verificador de rut deudor </td>
+				</tr>
+				<tr>
+					<td>Nomdeu</td>
+					<td>Texto </td>
+					<td><center>100</center></td>
+					<td>Nombre completo deudor </td>
+				</tr>
+				<tr>
+					<td>Rutuni</td>
+					<td>Texto </td>
+					<td><center>15</center></td>
+					<td>Rut Universidad </td>
+				</tr>
+				<tr>
+					<td>Nomuni</td>
+					<td>Texto</td>
+					<td><center>100</center></td>
+					<td>Nombre Universidad </td>
+				</tr>
+				<tr>
+					<td>Valor_utm</td>
+					<td>Numérico </td>
+					<td><center>14</center></td>
+					<td>Monto en  pesos  valor UTM </td>
+				</tr>
+				<tr>
+					<td>Ano_pago</td>
+					<td>Numérico </td>
+					<td><center>10</center></td>
+					<td>Año de cuota pagado</td>
+				</tr>
+				<tr>
+					<td>Comprobante</td>
+					<td>Numérico</td>
+					<td><center>10</center></td>
+					<td>Numero de comprobantes </td>
+				</tr>
+				<tr>
+					<td>Num_cuota</td>
+					<td>Numérico </td>
+					<td><center>10</center></td>
+					<td>Numero de cuota pagada</td>
+				</tr>
+				<tr>
+					<td>Fecha_pago</td>
+					<td>Texto </td>
+					<td><center>10</center></td>
+					<td>Fecha de pago </td>
+				</tr>
+				<tr>
+					<td>Porcent_p</td>
+					<td>Numérico</td>
+					<td><center>14,4*</center></td>
+					<td>Porcentaje deuda Usach</td>
+				</tr>
+				<tr>
+					<td>Rindoutmc</td>
+					<td>Numérico</td>
+					<td><center>14,4*</center></td>
+					<td>Monto Capital UTM Pagado en Porcentaje de Participación Universidad</td>
+				</tr>
+				<tr>
+					<td>Rindopesc</td>
+					<td>Numérico </td>
+					<td><center>14</center></td>
+					<td>Monto Capital Pesos Pagado en Porcentaje de Participación Universidad</td>
+				</tr>
+				<tr>
+					<td>Rindoutmi</td>
+					<td>Numérico</td>
+					<td><center>14,4*</center></td>
+					<td>Monto Interés UTM Pagado en Porcentaje de Participación Universidad</td>
+				</tr>
+				<tr>
+					<td>Rindopesi</td>
+					<td>Numérico </td>
+					<td><center>14</center></td>
+					<td>Monto Interés Pesos Pagado en Porcentaje de Participación Universidad</td>
+				</tr>
+				<tr>
+					<td>Descue</td>
+					<td>Numérico</td>
+					<td><center>14,4*</center></td>
+					<td>Monto DESCUE UTM Pagado en Porcentaje de Participación Universidad</td>
+				</tr>
+				<tr>
+					<td>Descue</td>
+					<td>Numérico</td>
+					<td><center>14</center></td>
+					<td>Monto DESCUE Pesos Pagado en Porcentaje de Participación Universidad</td>
+				</tr>
+				<tr>
+					<td>Total_ren</td>
+					<td>Numérico</td>
+					<td><center>14</center></td>
+					<td>Suma de Capital + Interés en Pesos corresponde a Participación Universidad</td>
+				</tr>
+				<tr>
+					<td>Total_renU</td>
+					<td>Numérico</td>
+					<td><center>14,4*</center></td>
+					<td>Suma de Capital + Interés en UTM corresponde a Participación Universidad</td>
+				</tr>
+				<tr>
+					<td>Codigo_deuda</td>
+					<td>Numérico </td>
+					<td><center>10</center></td>
+					<td>Código de Deudor Universidad</td>
+				</tr>
+				<tr>
+					<td>Cod_tipo_carga</td>
+					<td>Texto</td>
+					<td><center>10</center></td>
+					<td>Tipo de Deuda Universidad</td>
+				</tr>
+				<tr>
+					<td>Vencimiento</td>
+					<td>Texto</td>
+					<td><center>10</center></td>
+					<td>Vencimiento de la Cuota Pagada</td>
+				</tr>
+				<tr>
+					<td>Tipo cobro</td>
+					<td>Texto</td>
+					<td><center>100</center></td>
+					<td>Morosidad o deudores </td>
+				</tr>
+			</table> 
+			</br>
+				<b>
+					Formato: TXT  (Delimitado por tabulación) / eliminar la primera línea (cabecera)
+					</br></br>
+					*Representa que son 10 digitos con 4 decimales
+				</b>
+				</br></br>
+				<font color= "green">
+					<b>
+						<u>
+							Observaciones
+						</u>
+					</b>
+				</font>
+				</br></br>
+			<table>
+				<tr>
+					<td>
+						El separador de cada campo debe ser con tabulación.
+						</br></br>
+						Los montos UTM deben contener un máximo de 4 dígitos y deben ser separados por “,”.
+						</br></br>
+						Los Montos en Pesos no deben contener decimales.
+						<br></br>
+						Las  fechas deben tener un formato de “día/mes/año”.
+						</br></br>
+						Se debe tener presente que
+						</br>
+						<center>
+								•	(Monto Capital UTM + Monto Interes UTM) – Monto descto UTM = monto total UTM
+								</br>
+								•	(Monto total UTM * Monto UTM) = Monto total pesos.
+						</center></br></br>
+
+					</td>
+				</tr>
+			</table>
+			<center>
+				<b>
+					<u>
+						<a href="indice.htm">Volver</a>
+					</u>
+				</b>
+			</center>
+		</center>
+	</body>
+</html>

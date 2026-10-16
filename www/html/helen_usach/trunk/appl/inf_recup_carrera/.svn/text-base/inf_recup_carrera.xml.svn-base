@@ -1,0 +1,49 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="RECUPERACIÓN POR CARRERA" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{COD_CARRERA}	{NOM_CARRERA}" width="34%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{CANT_DEUDOR}" width="6%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_DEUDA_VIGENTE}" width="12%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ABONO_VIGENTE}" width="12%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ABONO_VENCIDA}" width="12%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ABONO_ANTICIPADO}" width="12%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_TOTAL}" width="12%" align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="sum_deuda_vig" function="SUM" value="MONTO_DEUDA_VIGENTE"/>
+		<Variable name="sum_abono_vig" function="SUM" value="MONTO_ABONO_VIGENTE"/>
+		<Variable name="sum_abono_ven" function="SUM" value="MONTO_ABONO_VENCIDA"/>
+		<Variable name="sum_abono_ant" function="SUM" value="MONTO_ABONO_ANTICIPADO"/>
+		<Variable name="sum_monto_total" function="SUM" value="MONTO_TOTAL"/>
+		<GroupHeader>		
+			<Cell text="Carrera" width="34%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Deudor" width="6%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Deudas Vigente UTM" width="12%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Abono Vigente $" width="12%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Abono Vencido $" width="12%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Abono Anticipado $" width="12%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Total" width="12%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="" width="28%" align="R" font="ArialBold"/>
+			<Cell text="Totales:" width="12%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_deuda_vig}" width="12%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_abono_vig}" width="12%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>	
+			<Cell text="{sum_abono_ven}" width="12%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_abono_ant}" width="12%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_monto_total}" width="12%"  align="R" border="LRTB" format="N4,." font="ArialBold" newline="1"/>
+		</GroupFooter>
+	</Group>
+</Report>

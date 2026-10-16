@@ -1,0 +1,332 @@
+header {
+	background:#00A499;
+	color:#fff;
+	border-width:1px 0 0;
+}
+
+.main {
+	background:#ffffff;
+}
+
+.color1 {
+	background: #34495e;
+	color:#fff;
+
+}
+
+
+aside {
+	background:#c0392b;
+	color:#fff;
+}
+
+footer {
+	background:#00A499;
+	color:#fff;
+	display: block;
+}	
+
+/*Color naranjo, de los titulos*/
+.sub_tit_superior {
+	color: #FF6600;
+	padding-left: 2.5em;
+	padding-top: 1em;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: bold;
+}
+
+----manu ---
+body {margin: 0;}
+
+ul.sidenav {
+    list-style-type: none;
+    margin: 1%;
+    padding: 1%;
+    width: auto;
+    background-color: #ffffff;
+    position: auto;
+    height: auto;
+    overflow: auto;
+}
+
+ul.sidenav li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+ 
+ul.sidenav li a.active {
+    background-color: #00A499;
+    color: white;
+}
+
+ul.sidenav li a:hover:not(.active) {
+    background-color: #EA7600;
+    color: white;
+}
+
+div.content {
+    margin-left: 20%;
+    padding: auto;
+    height: auto;
+}
+
+@media screen and (max-width: 900px) {
+    ul.sidenav {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    ul.sidenav li a {
+        float: left;
+        padding: 15px;
+    }
+    div.content {margin-left: auto;}
+}
+
+@media screen and (max-width: 400px) {
+    ul.sidenav li a {
+        text-align: center;
+        float: none;
+    }
+}
+
+---- usach ---
+*{font-family: Arial, Helvetica,sans-serif;}
+.letras
+{
+	text-align: justify;
+	font-style: italic;
+	font-size: 17px;
+	line-height: 20px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 15px;
+}
+#beneficios
+{
+	width: 78%;
+	height: 22%;
+	border-radius: 40px;
+	border: 1px solid #DCE6F2;
+	background-color: #DCE6F2;
+	box-shadow: 2px 2px 0px 2px rgba(0,0,0,0.4);
+	margin: auto;
+}
+
+/*ul
+{
+	list-style-image: url("check-black.png");
+}
+*/
+.beneficios
+{
+	height: 30px;
+	width: 250px;
+	border: 1px solid #f5f6f6;
+	text-align: center;
+	background: #f5f6f6; /* Old browsers */
+	background: #f5f6f6; /* Old browsers */
+	background: -moz-linear-gradient(top,  #f5f6f6 0%, #b8bac6 49%, #dbdce2 60%, #dddfe3 80%, #f5f6f6 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f6f6), color-stop(49%,#b8bac6), color-stop(60%,#dbdce2), color-stop(80%,#dddfe3), color-stop(100%,#f5f6f6)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #f5f6f6 0%,#b8bac6 49%,#dbdce2 60%,#dddfe3 80%,#f5f6f6 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #f5f6f6 0%,#b8bac6 49%,#dbdce2 60%,#dddfe3 80%,#f5f6f6 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #f5f6f6 0%,#b8bac6 49%,#dbdce2 60%,#dddfe3 80%,#f5f6f6 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #f5f6f6 0%,#b8bac6 49%,#dbdce2 60%,#dddfe3 80%,#f5f6f6 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f6f6', endColorstr='#f5f6f6',GradientType=0 ); /* IE6-9 */
+	margin-left: 10px;
+
+}		
+
+.h3
+{
+	text-align: center;
+	color: #96999C;
+	font-size: 16px;
+}
+
+.pasos
+{
+	margin: auto;
+	
+}
+
+
+.pie
+{
+	width: 78%;
+	height: 25%;
+	margin: auto;
+	font-size: 11px;
+	
+}
+
+.border_table
+{
+	border-radius: 10px; 
+    box-shadow: 0 0 5px #333;
+    width: 950px;
+    text-align:center;
+    border: 3px solid #99C7AF;
+    height: 600px;
+    margin: auto;
+
+}
+	
+.parrafo
+{
+	width: 700px;
+	color: #96999C;
+	font-size: 14px;
+}
+
+.tit
+{
+	border: 1px solid black;
+	background-color: green;
+	height: 40px;
+	width: 100px;
+	border-radius: 10px;
+}
+
+.btnSub
+{
+	background-color: #3B78C3;
+	color: white;
+	border-radius: 8px;
+	border-color: #3B78C3; 
+	width: 117px;
+	height: 54px;
+	font-size: 15px;
+	text-align: center;
+}
+
+.btnSub:hover
+{
+	background-color: #3B5998;
+	cursor:pointer; 
+	cursor: hand;
+}
+
+.centrar
+{
+	margin: auto;
+}
+
+.al
+{
+	padding-right: 100px;
+}
+
+.btnWebPay
+{
+	background-image: url("btn_webpay.png");
+	width: 117px;
+	height: 54px;
+
+}
+
+.btnWebPay:hover
+{
+	cursor:pointer; 
+	cursor: hand;
+}
+
+.button
+{
+	background-color: #1589C5;
+	height: 50px;
+	width: 160px;
+	border-radius: 12px;
+	font-size: 18px;
+	color: white;
+	border: 1px outset #3064A2;
+	-webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 5px 5px 5px  0px rgba(0,0,0,0.75);
+	box-shadow: 5px 5px 5px  0px rgba(0,0,0,0.75);
+}
+
+.button:hover
+{
+	background-color: #366CB5;
+	cursor: hand;
+	cursor: pointer;
+	
+	
+}
+
+.divBoton
+{
+	width: 200px;
+	height: 50px;
+	margin: auto;
+}
+
+
+#imagenes
+{
+	width: 100%;
+}
+
+
+/*extra*/
+
+#deuda {
+	background: url(images/menu/consulta_deuda.bmp) no-repeat;
+}
+
+#act_informacion {
+	background: url(images/menu/act_informacion.bmp) no-repeat;
+}
+
+#decla_jurada {
+	background: url(images/menu/declaracion_jurada.bmp) no-repeat;
+}
+
+#cupon {
+	background: url(images/menu/impresion_cupon.bmp) no-repeat;
+}
+
+#cupon_pago_uach {
+	background: url(images/menu/cupon_pago_uach.bmp) no-repeat;
+	margin-top: -5px;
+}
+
+#webpay {
+	background: url(images/menu/webpay.bmp) no-repeat;
+	margin-top: -5px;
+}
+
+td#menu {
+	padding-left: 10px;
+}
+
+td#menu a {
+	display: block;
+	width: 200px;
+	height: 40px;
+	text-decoration: none;
+}
+
+td#menu a:hover {
+	background-position: center;
+	
+}
+
+.titulo_2_tabla_left{
+	color: #A04514;
+	background: none;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 16px;
+	font-weight:bold; 
+}
+
+.titulo_2_tabla_left{
+	color: #A04514;
+	background: none;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 16px;
+	font-weight:bold; 
+}

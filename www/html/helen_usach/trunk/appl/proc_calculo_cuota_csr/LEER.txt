@@ -1,0 +1,6 @@
+son distintos los procedimientos:
+entre mssql y oracle 
+(sp_deuda_cuota_csr.sql)
+obs:
+-- si han pasado mas de 3 meses del vencto => se debe usar la cta de castigo
+-- sino se usa la cta CP  para crear comprobante.

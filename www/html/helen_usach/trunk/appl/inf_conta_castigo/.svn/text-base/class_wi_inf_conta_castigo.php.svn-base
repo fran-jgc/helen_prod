@@ -1,0 +1,200 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_w_param_informe_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+ini_set('memory_limit', '480M');
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes
+class wi_inf_conta_castigo extends w_param_informe_helen {
+    function __construct($cod_item_menu) {
+		$sql_informe = sql_inf_conta_castigo::get_sql('INPUT');
+		parent::__construct('inf_conta_castigo', $cod_item_menu, 'Castigo', $sql_informe, 'spi_conta_castigo');
+
+		$sql = sql_inf_conta_castigo::get_sql('FECHA'); 
+
+		$this->dws['dw_param'] = new datawindow($sql);
+
+		$sql = sql_inf_conta_castigo::get_sql('DD_FAMILIA_DEUDA');
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_FAMILIA_DEUDA', $sql));
+		$sql = sql_inf_conta_castigo::get_sql('DD_TIPO_DEUDA');
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_TIPO_DEUDA', $sql));
+		$this->dws['dw_param']->add_control(new edit_num('ANO', 4, 4));
+		$this->dws['dw_param']->add_control(new drop_down_list('CASTIGO_AGOSTO', array('N', 'S'), array('Marzo','Agosto')));
+		
+		// mandatorys		
+		$this->dws['dw_param']->set_mandatory('COD_FAMILIA_DEUDA', 'Familia Deuda');	
+		$this->dws['dw_param']->set_mandatory('COD_TIPO_DEUDA', 'Tipo Deuda');
+		$this->dws['dw_param']->set_mandatory('ANO', 'Año');	
+	}
+	function make_filtro() {
+		$cod_familia	= $this->dws['dw_param']->get_item(0, 'COD_FAMILIA_DEUDA'); 
+		$ano 			= $this->dws['dw_param']->get_item(0, 'ANO');
+		$castigo_agosto = $this->dws['dw_param']->get_item(0, 'CASTIGO_AGOSTO');
+		// Filtro
+		$this->filtro = "Familia Deuda = $cod_familia;\nAño = $ano";
+	}
+	function genera_xls() {
+		//procesar
+		// Arma los paramaetros para el SP
+		$cod_familia_deuda= $_POST['COD_FAMILIA_DEUDA_0'];
+		$cod_tipo_deuda= $_POST['COD_TIPO_DEUDA_0'];
+		$ano= $_POST['ANO_0'];
+		$castigo_agosto= $_POST['CASTIGO_AGOSTO_0'];
+		$this->param = "$cod_familia_deuda,'$cod_tipo_deuda', $ano, '$castigo_agosto', $this->cod_usuario";
+		$this->sp ="spi_conta_castigo ";
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$db->EXECUTE_SP($this->sp, $this->param);
+		
+		$sql ="SELECT RUT
+                      ,DV
+                      ,COD_DEUDA
+                      ,COD_TIPO_DEUDA
+					  ,SALDO_ANT           
+					  ,SALDO_ANT_PESOS		
+					  ,ABONO_MORA_CP			
+					  ,ABONO_MORA_CP_PESOS		
+					  ,SALDO_CUOTA				
+					  ,SALDO_CUOTA_PESOS
+					  ,to_char(FECHA_VENCTO_CUOTA, 'dd/mm/yyyy')FECHA_VENCTO_CUOTA		
+	                  ,NOM_CARTERA
+	                  ,PORC
+	                  ,DESCUENTO_CR12
+	                  ,DESCUENTO_CR12_PESOS
+	                  ,PORC_INTERNO
+	                  ,PORC_CF
+	                  ,PORC_CU
+	            FROM TEMP_CONTA_CASTIGO
+				where COD_USUARIO = $this->cod_usuario
+				ORDER BY COD_TIPO_DEUDA, RUT";
+		$Datos = $db->build_results($sql);
+		
+		$sql_ano_contable ="SELECT ANO_CONTABLE, HASTA_AGOSTO, COD_TIPO_DEUDA				
+						   FROM TEMP_CONTA_CASTIGO
+						   where COD_USUARIO = $this->cod_usuario
+						   and rownum = 1";
+		$result_ano_contable = $db->build_results($sql_ano_contable);
+		$ano_contable = $result_ano_contable[0]['ANO_CONTABLE'];
+		$tipo_deuda = $result_ano_contable[0]['COD_TIPO_DEUDA'];
+		$hasta_agosto = $result_ano_contable[0]['HASTA_AGOSTO'];
+		
+		include_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/PHP_XLSXWriter_master/xlsxwriter.class.php");
+		ini_set('display_errors', 0);
+		ini_set('log_errors', 1);
+		error_reporting(E_ALL & ~E_NOTICE);
+		
+		$filename = "inf_conta_castigo.xlsx";
+		header('Content-disposition: attachment; filename="'.XLSXWriter::sanitize_filename($filename).'"');
+		header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		header('Content-Transfer-Encoding: binary');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		
+		$ano_ant = $ano_contable - 1;
+		
+		if ($hasta_agosto=='S')
+			$meses = 'JUN-AGO '.$ano;
+		else
+			$meses = 'ENE-MAR '.$ano;
+		
+		if($tipo_deuda == 'CR12'){
+			$header = array(
+		    'RUT'=>'integer',
+		    'DV'=>'string',
+			'COD_DEUDA'=>'integer',
+			'TIPO DEUDA'=>'string',
+			'SALDO ANT '.$ano_ant=>'#,##0.0000',
+			'SALDO ANT '.$ano_ant.' PESOS'=>'integer',
+			'ABONO '.$meses=>'#,##0.0000',
+			'ABONO '.$meses.' PESOS'=>'integer',
+		    'SALDO '.$ano_ant=>'#,##0.0000',
+			'SALDO '.$ano_ant.' PESOS'=>'integer',
+			'VENCTO CUOTA'=>'string',
+			'NOM_CARTERA'=>'string',
+			'PORC USACH'=>'#,##0.00',
+			'DESCTO CR12 OPORTUNO'=>'#,##0.0000',
+			'DESCTO CR12 OPORTUNO PESOS'=>'integer',
+			'PORC INTERNO'=>'#,##0.00',
+			'PORC CF'=>'#,##0.00',
+			'PORC CU'=>'#,##0.00',
+			);
+			$data1 = array();
+			$e = 0;
+			do{
+				$array_row = array($Datos[$e]['RUT']
+								  ,$Datos[$e]['DV']
+								  ,$Datos[$e]['COD_DEUDA']
+								  ,$Datos[$e]['COD_TIPO_DEUDA']
+								  ,$Datos[$e]['SALDO_ANT']
+								  ,$Datos[$e]['SALDO_ANT_PESOS']
+								  ,$Datos[$e]['ABONO_MORA_CP']
+								  ,$Datos[$e]['ABONO_MORA_CP_PESOS']
+								  ,$Datos[$e]['SALDO_CUOTA']
+								  ,$Datos[$e]['SALDO_CUOTA_PESOS']
+								  ,$Datos[$e]['FECHA_VENCTO_CUOTA']
+								  ,$Datos[$e]['NOM_CARTERA']
+								  ,$Datos[$e]['PORC']
+								  ,$Datos[$e]['DESCUENTO_CR12']
+								  ,$Datos[$e]['DESCUENTO_CR12_PESOS']
+								  ,$Datos[$e]['PORC_INTERNO']
+								  ,$Datos[$e]['PORC_CF']
+								  ,$Datos[$e]['PORC_CU']
+								  );
+				array_push($data1, $array_row);
+			$e++;	
+			}while ($e < count($Datos));
+		
+		}
+		else{
+			$header = array(
+			    'RUT'=>'integer'
+			    ,'DV'=>'string'
+				,'COD_DEUDA'=>'integer'
+				,'TIPO DEUDA'=>'string'
+				,'SALDO ANT '.$ano_ant=>'#,##0.0000'
+				,'SALDO ANT '.$ano_ant.' PESOS'=>'integer'
+				,'ABONO '.$meses=>'#,##0.0000'
+				,'ABONO '.$meses.' PESOS'=>'integer'
+			    ,'SALDO '.$ano_ant=>'#,##0.0000'
+				,'SALDO '.$ano_ant.' PESOS'=>'integer'
+				,'VENCTO CUOTA'=>'string'
+				,'NOM_CARTERA'=>'string'
+				,'PORC USACH'=>'#,##0.00'
+				,'PORC INTERNO'=>'#,##0.00'
+				,'PORC CF'=>'#,##0.00'
+				,'PORC CU'=>'#,##0.00'
+			);
+			$data1 = array();
+			$e = 0;
+			do{
+				$array_row = array($Datos[$e]['RUT']
+								  ,$Datos[$e]['DV']
+								  ,$Datos[$e]['COD_DEUDA']
+								  ,$Datos[$e]['COD_TIPO_DEUDA']
+								  ,$Datos[$e]['SALDO_ANT']
+								  ,$Datos[$e]['SALDO_ANT_PESOS']
+								  ,$Datos[$e]['ABONO_MORA_CP']
+								  ,$Datos[$e]['ABONO_MORA_CP_PESOS']
+								  ,$Datos[$e]['SALDO_CUOTA']
+								  ,$Datos[$e]['SALDO_CUOTA_PESOS']
+								  ,$Datos[$e]['FECHA_VENCTO_CUOTA']
+								  ,$Datos[$e]['NOM_CARTERA']
+								  ,$Datos[$e]['PORC']
+								  ,$Datos[$e]['PORC_INTERNO']
+								  ,$Datos[$e]['PORC_CF']
+								  ,$Datos[$e]['PORC_CU']
+								  );
+				array_push($data1, $array_row);
+			$e++;	
+			}while ($e < count($Datos));
+		}
+		
+		$writer = new XLSXWriter();
+		$writer->setAuthor('Some Author');
+		$writer->writeSheet($data1,'Sheet1',$header);
+		$writer->writeToStdOut();
+		exit(0);
+	
+	}
+}
+?>

@@ -1,0 +1,62 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="LIBRO MAYOR" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{FECHA_COMPROBANTE}" width="8%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{NRO_COMPROBANTE}" width="6%" align="C" border="LRTB" font="Arial"/>	
+		<Cell text="{NOM_COMPROBANTE}" width="41%" align="L" border="LRTB" font="Arial"/>	
+		<Cell text="{MONTO_DEBE}" width="15%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_HABER}" width="15%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{SALDO}" width="15%" align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>	
+		
+	</Content>
+	<Group>
+		<Variable name="sum_debe_total" function="SUM" value="MONTO_DEBE"/>
+		<Variable name="sum_haber_total" function="SUM" value="MONTO_HABER"/>
+		<GroupFooter>
+			<cell newline="1"/>
+			<Cell text="" width="45%" align="R" border="LTB" font="ArialBold"/>	
+			<Cell text="TOTALES:" width="10%" border="RTB" font="ArialBold"/>
+			<Cell text="{sum_debe_total}" width="15%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_haber_total}" width="15%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>	
+		</GroupFooter>
+	</Group>
+	<Group LOCAL="COD_CUENTA_CONTABLE">
+		<Variable name="sum_debe" function="SUM" value="MONTO_DEBE"/>
+		<Variable name="sum_haber" function="SUM" value="MONTO_HABER"/>
+		<Variable name="sum_saldo" function="SUM" value="SALDO"/>
+		<GroupHeader>
+			<cell newline="1"/>	
+			<Cell text="Cuenta" width="8%" align="L" font="ArialBold"/>				
+			<Cell text="{COD_CUENTA_CONTABLE}" width="10%" align="L" font="ArialBold"/>
+			<Cell text="{NOM_CUENTA_CONTABLE}" width="41%" align="L" font="ArialBold"/>
+			<Cell text="Saldo Inicial" width="10%" align="R" font="ArialBold"/>
+			<Cell text="{INICIAL_SALDO}" width="12%" align="R" font="ArialBold" newline="1"/>
+
+			<Cell text="Fecha" width="8%"  align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="Nº Com." width="6%"  align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="Glosa" width="41%"  align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Debe" width="15%"  align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Haber" width="15%"  align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Saldo" width="15%"  align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>	
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="" width="45%" font="ArialBold"/>	
+			<Cell text="Subtotal:" width="10%" font="ArialBold"/>	
+			<Cell text="{sum_debe}" width="15%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_haber}" width="15%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>	
+		</GroupFooter>
+	</Group>
+</Report>

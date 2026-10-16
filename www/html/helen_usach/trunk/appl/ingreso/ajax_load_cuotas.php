@@ -1,0 +1,33 @@
+<?php
+require_once("load_cuotas.php");
+
+$rut = $_REQUEST['rut'];
+$fecha_ingreso = $_REQUEST['fecha_ingreso'];
+
+$result = load_cuotas::get_cuotas($rut, $fecha_ingreso);
+
+if ($result == 'DEUDOR_INEXISTENTE'){
+	print $result;
+	return;
+}else if($result == 'CARTERA_DIFERENTE'){
+	print $result;
+	return;
+}else if($result == 'DEUDOR_SIN_DEUDAS'){
+	print $result;
+	return;
+}else{
+
+	// deja como resultado solo las cuotas con saldo > 0
+	$result_final = array();
+	for($i=0; $i<count($result); $i++) {
+	    if ($result[$i]['SALDO_TOTAL'] > 0)
+			$result_final[] = $result[$i]; 
+	}
+	
+	if (count($result_final)==0) {
+		print 'DEUDOR_SIN_DEUDAS';
+		return;
+	}
+	print json_encode($result_final);
+}
+?>

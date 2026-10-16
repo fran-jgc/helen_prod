@@ -1,0 +1,242 @@
+<?php
+////////////////////////////////////////////////////
+////////////// USACH /////////////////
+////////////////////////////////////////////////////
+
+class wi_deuda extends wi_deuda_base {
+	const K_ESTADO_DEUDA_NO_EXIGIBLE= 1;
+	const K_ESTADO_DEUDA_EXIGIBLE 	= 2;
+function __construct($cod_item_menu) {		
+    parent::__construct($cod_item_menu);
+		$this->b_delete_visible  = false;
+
+		$sql = "SELECT 	DA.COD_DEUDA
+						  			, DO.RUT
+						  			, DO.COD_DEUDOR
+						  			, DO.DIG_VERIF
+						  			, DO.NOMBRE
+						  			, DO.APELLIDO_PATERNO
+						  			, DO.APELLIDO_MATERNO
+						  			, DA.COD_TIPO_DEUDA
+						  			, TD.NOM_TIPO_DEUDA
+						  			, DA.COD_ESTADO_DEUDA
+						  			, DA.COD_ESTADO_DEUDA COD_ESTADO_DEUDA_H
+						  			, ED.NOM_ESTADO_DEUDA
+						  			, DA.COD_CARTERA
+						  			, DA.COD_UNIVERSIDAD
+						  			, TO_CHAR(DA.FECHA_INICIO_COBRO,'dd/mm/yyyy') FECHA_INICIO_COBRO  
+						  			, DA.MONTO_INICIO_COBRO
+						  			, M.SIMBOLO
+						  			, DA.CANT_CUOTA
+						  			, f_deuda_cat(DA.COD_DEUDA,To_Number(To_Char(SYSDATE,'yyyy'))) CAT
+						  			, f_deuda_saldo_componente(DA.COD_DEUDA, 1) SALDO_NO_EXIGIBLE
+						  			, f_deuda_saldo_componente(DA.COD_DEUDA, 1) * f_mon_get_valor_moneda(TD.COD_MONEDA) SALDO_NO_EXIGIBLE_PESOS				  
+						  			, f_deuda_saldo_componente(DA.COD_DEUDA, 2) SALDO_VENCIDA
+						  			, f_deuda_saldo_componente(DA.COD_DEUDA, 2) * f_mon_get_valor_moneda(TD.COD_MONEDA) SALDO_VENCIDA_PESOS				  
+						  			, f_deuda_saldo_componente(DA.COD_DEUDA, 3) SALDO_VIGENTE
+						  			, f_deuda_saldo_componente(DA.COD_DEUDA, 3) * f_mon_get_valor_moneda(TD.COD_MONEDA) SALDO_VIGENTE_PESOS				  
+						  			, f_deuda_saldo_componente(DA.COD_DEUDA, 4) SALDO_FUTURO
+						  			, f_deuda_saldo_componente(DA.COD_DEUDA, 4) * f_mon_get_valor_moneda(TD.COD_MONEDA) SALDO_FUTURO_PESOS
+						  			, f_deuda_saldo_total(DA.COD_DEUDA) SALDO_TOTAL
+						  			, f_deuda_saldo_total(DA.COD_DEUDA) * f_mon_get_valor_moneda(TD.COD_MONEDA) SALDO_TOTAL_PESOS
+						  			, decode(DA.COD_ESTADO_DEUDA, 1, ''
+						  										, 2, ''
+						  										, 'none') DISPLAY_BOLETA
+						  			, decode(DA.COD_ESTADO_DEUDA, 3, ''
+						  										, 4, ''
+						  										, 5, ''
+						  										,21, ''
+						  										, 'none') DISPLAY_DEVOLUCION
+						  			, 'EN COBRANZA EXTERNA' TITULO_DEUDA_MOROSA
+						  			, 'none' VISIBLE_CAMPO
+						  			, '' TITULO_DEUDOR_CRUZADO
+									, 'none' VISIBLE_DEUDOR_CRUZADO
+						  			, 'N' SELECCIONA_DICOM
+									, '' COD_EMPRESA_COBRANZA
+									, 0 SUMA_MONTO_ACTUALIZADO
+									, 0 SUMA_MONTO_PORC
+									, 0 VALOR_DICOM_H
+									, 0 VALOR_EM_CO_H
+									, 'DEUDOR CON DOCUMENTOS PROTESTADOS' TITULO_DOC_PROTES
+									, 'none' VISIBLE_CAMPO_PROTES
+									, 'DEUDOR CON PAGARES PROTESTADOS' TITULO_PAGARE_PROTES
+									, 'none' VISIBLE_PAGARE_PROTES
+					                , PORC_CF
+					                , PORC_CU
+					                , (PORC_CF + PORC_CU) SUM_PORC_CFCU						
+						  	 FROM 	DEUDA DA LEFT OUTER JOIN CRUZADO_CFCU CC ON CC.COD_DEUDA = DA.COD_DEUDA
+                      				, DEUDOR  DO, TIPO_DEUDA TD, ESTADO_DEUDA ED, MONEDA M
+				             WHERE  DA.COD_DEUDOR=DO.COD_DEUDOR 
+				     				AND DA.COD_DEUDA= {KEY1}
+				     				AND TD.COD_TIPO_DEUDA = DA.COD_TIPO_DEUDA
+				     				AND ED.COD_ESTADO_DEUDA = DA.COD_ESTADO_DEUDA
+				     				AND M.COD_MONEDA = TD.COD_MONEDA";
+		
+		$this->dws['dw_deuda'] = new datawindow($sql);
+		$this->dws['dw_deuda']->add_control(new static_num('RUT'));
+		$this->dws['dw_deuda']->add_control(new edit_text_hidden('RUT_H',10,10));
+		$this->dws['dw_deuda']->add_control(new edit_text_hidden('COD_DEUDOR'));
+		$sql_1 = sql_deuda::get_sql('DD_COD_CARTERA');
+		$this->dws['dw_deuda']->add_control(new drop_down_dw('COD_CARTERA', $sql_1, 150));
+		$sql_1 = sql_deuda::get_sql('DD_COD_UNIVERSIDAD');
+		$this->dws['dw_deuda']->add_control(new drop_down_dw('COD_UNIVERSIDAD', $sql_1, 150));
+		
+		$this->dws['dw_deuda']->add_control(new static_num('MONTO_INICIO_COBRO',4));
+		$this->dws['dw_deuda']->add_control(new static_num('CAT',4));
+		// saldos por componente
+		$this->dws['dw_deuda']->add_control(new static_num('SALDO_NO_EXIGIBLE',4));
+		$this->dws['dw_deuda']->add_control(new static_num('SALDO_NO_EXIGIBLE_PESOS',0));
+		$this->dws['dw_deuda']->add_control(new static_num('SALDO_VENCIDA',4));
+		$this->dws['dw_deuda']->add_control(new static_num('SALDO_VENCIDA_PESOS',0));
+		$this->dws['dw_deuda']->add_control(new static_num('SALDO_VIGENTE',4));
+		$this->dws['dw_deuda']->add_control(new static_num('SALDO_VIGENTE_PESOS',0));
+		$this->dws['dw_deuda']->add_control(new static_num('SALDO_FUTURO',4));
+		$this->dws['dw_deuda']->add_control(new static_num('SALDO_FUTURO_PESOS',0));
+		$this->dws['dw_deuda']->add_control(new static_num('SALDO_TOTAL',4));
+		$this->dws['dw_deuda']->add_control(new static_num('SALDO_TOTAL_PESOS',0));
+		$this->dws['dw_deuda']->add_control(new edit_text_hidden('COD_ESTADO_DEUDA',10,10));
+		$this->dws['dw_deuda']->add_control(new static_num('SUMA_MONTO_ACTUALIZADO',4));
+		$this->dws['dw_deuda']->add_control(new static_num('SUMA_MONTO_PORC',2));
+		
+		$this->dws['dw_deuda']->add_control($control = new edit_check_box('SELECCIONA_DICOM', 'S', 'N'));
+		$control->set_onChange("seleccion_dicom();");
+		
+		$sql_empresa_cobranza = sql_deuda::get_sql('DD_EMPRESA_COBRANZA');
+		$this->dws['dw_deuda']->add_control($control = new drop_down_dw('COD_EMPRESA_COBRANZA', $sql_empresa_cobranza, 20, '', false));
+		$control->set_onChange("seleccion_emp_cobranza();");
+		
+		$this->dws['dw_deuda']->add_control(new edit_text_upper('VALOR_DICOM_H', 10, 10, 'hidden'));
+		$this->dws['dw_deuda']->add_control(new edit_text_upper('VALOR_EM_CO_H', 10, 10, 'hidden'));
+		
+		$this->dws['dw_deuda_plan_pago'] = new dw_deuda_plan_pago();
+		$this->dws['dw_deuda_pagares'] = new dw_deuda_pagares();
+		$this->dws['dw_deuda_cruzados'] = new dw_deuda_cruzados();
+		$this->dws['dw_deuda_cruzados_interno'] = new dw_deuda_cruzados_interno();
+		$this->dws['dw_deuda_abonos'] = new dw_deuda_abonos();
+		$this->dws['dw_deuda_descuentos'] = new dw_deuda_descuentos();
+		
+		//CRUZADO_CFCU		
+		$this->dws['dw_deuda']->add_control(new static_num('PORC_CF',2));
+		$this->dws['dw_deuda']->add_control(new static_num('PORC_CU',2));
+		$this->dws['dw_deuda']->add_control(new static_num('SUM_PORC_CFCU',2));
+		
+		// asigna los mandatorys		
+		$this->dws['dw_deuda']->set_mandatory('COD_CARTERA', 'Cartera de la deuda');
+		$this->dws['dw_deuda']->set_mandatory('COD_UNIVERSIDAD', 'Universidad que cobra la deuda');
+
+		//audoria
+		$this->add_auditoria('COD_CARTERA');
+		$this->add_auditoria('COD_UNIVERSIDAD');
+		$this->add_auditoria('COD_ESTADO_DEUDA');
+	}
+	function load_record() {
+		parent::load_record(); 
+		//INGRESABLE TIPO REBAJA SIEMPRE QUE LA DEUDA SEA NO EXIGIBLE.
+		$COD_ESTADO_DEUDA = $this->dws['dw_deuda']->get_item(0, 'COD_ESTADO_DEUDA');
+		if($COD_ESTADO_DEUDA == self::K_ESTADO_DEUDA_NO_EXIGIBLE || $COD_ESTADO_DEUDA == self::K_ESTADO_DEUDA_EXIGIBLE){
+			$this->dws['dw_deuda_pagares']->set_entrable('COD_TIPO_REBAJA_PAGARE', true);
+			$this->dws['dw_deuda_pagares']->set_entrable('MONTO_MONEDA_REBAJA', true);
+			$this->dws['dw_deuda_pagares']->set_entrable('MONTO_PESOS_REBAJA', true);
+		}else{
+			$this->dws['dw_deuda_pagares']->set_entrable('COD_TIPO_REBAJA_PAGARE', false);
+			$this->dws['dw_deuda_pagares']->set_entrable('MONTO_MONEDA_REBAJA', false);
+			$this->dws['dw_deuda_pagares']->set_entrable('MONTO_PESOS_REBAJA', false);
+		}
+	}
+	function save_record($db) {
+		$COD_DEUDA 	= $this->dws['dw_deuda']->get_item(0, 'COD_DEUDA');
+		$COD_CARTERA 	= $this->dws['dw_deuda']->get_item(0, 'COD_CARTERA');
+		$COD_UNIVERSIDAD = $this->dws['dw_deuda']->get_item(0, 'COD_UNIVERSIDAD');
+		$COD_ESTADO_DEUDA = $this->dws['dw_deuda']->get_item(0, 'COD_ESTADO_DEUDA');
+		$FECHA_INICIO_COBRO = $this->dws['dw_deuda']->get_item(0, 'FECHA_INICIO_COBRO');
+		
+		//$FECHA_INICIO_COBRO	= ($FECHA_INICIO_COBRO =='') ? "null" : "$FECHA_INICIO_COBRO";
+		$FECHA_INICIO_COBRO = $this->str2date($FECHA_INICIO_COBRO);
+		
+		$sp = 'spu_deuda';
+		if ($this->is_new_record()){
+			$operacion = 'INSERT';
+		}
+		else{
+			$operacion = 'UPDATE';
+		}
+		
+		if (K_CLIENTE=="UV" || K_CLIENTE=="UACH")
+			$param = "'$operacion',$COD_DEUDA,$COD_CARTERA,$COD_UNIVERSIDAD,null,null,$FECHA_INICIO_COBRO,".$this->cod_usuario.",null,null,null,$COD_ESTADO_DEUDA";
+		else
+			$param = "'$operacion',$COD_DEUDA,$COD_CARTERA,$COD_UNIVERSIDAD,null,null,$FECHA_INICIO_COBRO,".$this->cod_usuario;
+
+			if ($db->EXECUTE_SP($sp, $param)){
+			if ($this->is_new_record()) {
+				$COD_DEUDA = $db->GET_IDENTITY("deuda");
+				$this->dws['dw_deuda']->set_item(0, 'COD_DEUDA', $COD_DEUDA);
+			}
+			
+			$valor_dicom = $this->dws['dw_deuda']->get_item(0, 'VALOR_DICOM_H');
+			$valor_emp_co = $this->dws['dw_deuda']->get_item(0, 'VALOR_EM_CO_H');
+			
+			$valor_emp_co				= ($valor_emp_co ==0) ? 'NULL' : $valor_emp_co;
+			
+			if (!$db->EXECUTE_SP($sp, "'EMPRESA_COBRANZA', $COD_DEUDA, $valor_emp_co"))
+				return false;
+			
+			for ($i = 0; $i < $this->dws['dw_deuda_plan_pago']->row_count(); $i++) {
+	        	$publica_dicom_h = $this->dws['dw_deuda_plan_pago']->get_item($i, 'PUBLICA_DICOM_H');
+	        	$cod_plan_pago_h = $this->dws['dw_deuda_plan_pago']->get_item($i, 'COD_PLAN_PAGO_H');
+	        	$cod_estado_plan_pago_h = $this->dws['dw_deuda_plan_pago']->get_item($i, 'COD_ESTADO_PLAN_PAGO_H');
+	        	
+	        	if($publica_dicom_h == 'S')
+	        		$publica_dicom_h = 1;
+	        	else
+	        		$publica_dicom_h = 0; 
+				
+	        	//se modifica para que permita ingresar tambien a los plan de pagos en estado pagado, pero que solo permita desmarcar, no marcar dicom
+	        	if(($cod_estado_plan_pago_h == self::K_ESTADO_PP_MOROSA)||(($cod_estado_plan_pago_h == self::K_ESTADO_PP_PAGADA)&&($publica_dicom_h == 0))){	
+	        		if (!$db->EXECUTE_SP('spu_plan_pago', "'DICOM', $cod_plan_pago_h, $publica_dicom_h"))
+		        		return false;	
+				}		
+	        }
+	        
+	        //INGRESABLE TIPO REBAJA SIEMPRE QUE LA DEUDA SEA NO EXIGIBLE.
+			$COD_ESTADO_DEUDA_H = $this->dws['dw_deuda']->get_item(0, 'COD_ESTADO_DEUDA_H');
+			//graba rebajas
+			for ($i = 0; $i < $this->dws['dw_deuda_pagares']->row_count(); $i++) {
+				$operacion		 = 'REBAJA_PAGARE_DEUDA';
+				$cod_pagare		 = $this->dws['dw_deuda_pagares']->get_item($i, 'COD_PAGARE_H');
+				$vl_fecha_pagare = "null";
+				$vl_folio_pagare = "null";
+				$vl_monto_moneda = "null";
+				$vl_monto_pesos  = "null";
+				$vl_estado_pagare  = "null";
+				$vl_cod_deuda    = "null";
+				$vl_cod_usuario  = $this->cod_usuario;
+				$vl_fecha_protesto = "null";
+				$vl_cod_usuario_protesto = "null";
+				$cod_tipo_rebaja_pagare  = $this->dws['dw_deuda_pagares']->get_item($i, 'COD_TIPO_REBAJA_PAGARE');
+	        	$monto_moneda_rebaja	 = $this->dws['dw_deuda_pagares']->get_item($i, 'MONTO_MONEDA_REBAJA');
+	        	$monto_pesos_rebaja		 = $this->dws['dw_deuda_pagares']->get_item($i, 'MONTO_PESOS_REBAJA');
+ 				
+	        	$cod_tipo_rebaja_pagare = ($cod_tipo_rebaja_pagare=='') ? "null" : $cod_tipo_rebaja_pagare;
+	        	$monto_moneda_rebaja 	= ($monto_moneda_rebaja=='') ? "null" : $monto_moneda_rebaja;
+	        	$monto_pesos_rebaja 	= ($monto_pesos_rebaja=='') ? "null" : $monto_pesos_rebaja;
+	        	
+	        	if($COD_ESTADO_DEUDA_H == self::K_ESTADO_DEUDA_NO_EXIGIBLE || $COD_ESTADO_DEUDA_H == self::K_ESTADO_DEUDA_EXIGIBLE){
+					$param_p = "'$operacion'			,$cod_pagare		,$vl_fecha_pagare			,$vl_folio_pagare
+								,$vl_monto_moneda		,$vl_monto_pesos	,$vl_estado_pagare			,$vl_cod_deuda
+								,$vl_cod_usuario		,$vl_fecha_protesto	,$vl_cod_usuario_protesto	,$cod_tipo_rebaja_pagare
+								,$monto_moneda_rebaja	,$monto_pesos_rebaja";
+					if (!$db->EXECUTE_SP('spu_pagare', $param_p))
+		        		return false;	
+				}		
+	        }
+	        
+			if (!$this->dws['dw_deuda_cruzados']->update($db,$COD_DEUDA,$vl_cod_usuario)){
+				return false;
+			}
+	        
+	        return true;
+		}
+		return false;
+	}
+}
+?>

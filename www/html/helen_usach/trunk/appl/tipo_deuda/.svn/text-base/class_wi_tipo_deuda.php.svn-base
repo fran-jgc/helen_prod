@@ -1,0 +1,290 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+class dw_convenio extends datawindow {
+	function __construct() {
+		$sql = sql_tipo_deuda::get_sql('DW_CONVENIO_BDD');;
+
+		parent::__construct($sql, 'CONVENIO', true, true);
+
+		$this->add_control(new edit_text('COD_CONVENIO_BDD_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('COD_TIPO_DEUDA_CON_H', 10, 10, 'hidden'));
+		$this->add_control($control = new edit_ano('ANO',4,4));
+		$control->set_onChange("valida_ano(this);");
+		$this->add_control(new edit_text('ANO_1',4,4));
+		$this->add_control(new edit_num('CONVENIO',7,7));
+		$this->add_control(new edit_num('CONVENIO_1',7,7));
+		$this->add_control(new edit_check_box('CON_DECLARACION', 'S', 'N'));
+
+		$this->set_mandatory('ANO', 'Año');
+		$this->set_mandatory('CONVENIO', 'Convenio');
+		$this->set_mandatory('CON_DECLARACION', 'Declaración');
+	}
+	function update($db,$cod_tipo_dedua ){
+		$sp = 'spu_convenio_bdd';
+
+		for ($i = 0; $i < $this->row_count(); $i++){
+			$statuts = $this->get_status_row($i);
+			if ($statuts == K_ROW_NOT_MODIFIED || $statuts == K_ROW_NEW){
+				continue;
+			}
+
+			if ($statuts == K_ROW_NEW_MODIFIED){
+				$operacion = 'INSERT';
+			}
+			elseif ($statuts == K_ROW_MODIFIED){
+				$operacion = 'UPDATE';
+			}
+			else{
+				$operacion = 'DELETE';
+			}
+			$COD_CONVENIO_BDD 	= $this->get_item($i, 'COD_CONVENIO_BDD_H');
+			$COD_TIPO_DEUDA 	= $this->get_item($i, 'COD_TIPO_DEUDA_CON_H');
+			$ANO 		  		= $this->get_item($i, 'ANO');
+			$CONVENIO		 	= $this->get_item($i, 'CONVENIO');
+			$CON_DECLARACION 	= $this->get_item($i, 'CON_DECLARACION');
+
+
+			$COD_CONVENIO_BDD = $COD_CONVENIO_BDD =='' ? 'null' : $COD_CONVENIO_BDD;
+			$ANO = $ANO =='' ? 'null' : $ANO;
+			$CONVENIO = $CONVENIO =='' ? 'null' : $CONVENIO;
+			$CON_DECLARACION = $CON_DECLARACION =='' ? 'null' : $CON_DECLARACION;
+
+			$param = "'$operacion', $COD_CONVENIO_BDD, $COD_TIPO_DEUDA, $ANO, $CONVENIO,'$CON_DECLARACION'";
+			if (!$db->EXECUTE_SP($sp, $param)){
+				return false;
+			}
+		}
+		for ($i = 0; $i < $this->row_count('delete'); $i++) {
+			$statuts = $this->get_status_row($i, 'delete');
+			if ($statuts == K_ROW_NEW || $statuts == K_ROW_NEW_MODIFIED){
+				continue;
+			}
+
+			$COD_CONVENIO_BDD = $this->get_item($i, 'COD_CONVENIO_BDD_H', 'delete');
+			if (!$db->EXECUTE_SP($sp, "'DELETE', $COD_CONVENIO_BDD")){
+				return false;
+			}
+		}
+		return true;
+	}
+}
+
+class dw_cuenta_contable extends datawindow{
+    function __construct() {
+
+		//////////////// CLASS_SQL = INPUT ///////////////
+		$sql = sql_tipo_deuda::get_sql('INPUT');
+
+		parent::__construct($sql, 'CUENTA_CONTABLE', true, true);
+		$this->add_control(new edit_text('COD_CONCEPTO_CUENTA', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('COD_TIPO_DEUDA_H', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('COD_CUENTA_TIPO_DEUDA', 10, 10, 'hidden'));
+		$this->add_control(new edit_text('NUEVO', 10, 10, 'hidden'));
+
+		//////////////// CLASS_SQL = INPUT_DD_CUENTA  ///////////////
+		$sql_1 = sql_tipo_deuda::get_sql('INPUT_DD_CUENTA') ;
+
+		$this->add_control(new drop_down_dw('COD_CUENTA_CONTABLE', $sql_1, 400));
+
+		// asigna los mandatorys
+		$this->set_mandatory('COD_CUENTA_CONTABLE', 'Cuenta Contable');
+	}
+
+	function update($db,$COD_TIPO_DEUDA){
+		$sp = 'spu_cuenta_tipo_deuda';
+
+		for ($i = 0; $i < $this->row_count(); $i++){
+			$statuts = $this->get_item($i, 'NUEVO');//$this->get_status_row($i);
+			if ($statuts==1){
+				$operacion = 'INSERT';
+			}
+			if ($statuts==0){
+				$operacion = 'UPDATE';
+			}
+
+			//TOMO VALORES
+			$COD_CUENTA_TIPO_DEUDA	= $this->get_item($i, 'COD_CUENTA_TIPO_DEUDA');
+			$COD_TIPO_DEUDA			= $this->get_item($i, 'COD_TIPO_DEUDA_H');
+			$COD_CONCEPTO_CUENTA	= $this->get_item($i, 'COD_CONCEPTO_CUENTA');
+			$COD_CUENTA_CONTABLE	= $this->get_item($i, 'COD_CUENTA_CONTABLE');
+
+			/*SC
+			 se deja con espacio ya que en el select esta concatenando y cuando es null es un espacio
+			 */
+			
+			if(K_TIPO_BD == "oci"){
+				$COD_CUENTA_TIPO_DEUDA	= ($COD_CUENTA_TIPO_DEUDA=='') ? "null" : $COD_CUENTA_TIPO_DEUDA;
+			}
+			else if(K_TIPO_BD == "mssql"){
+				$COD_CUENTA_TIPO_DEUDA 	= $COD_CUENTA_TIPO_DEUDA ==" " ? "null" : $COD_CUENTA_TIPO_DEUDA;
+			}
+			/*if ($statuts == K_ROW_NEW_MODIFIED){
+				$operacion = 'INSERT';
+				}
+				elseif ($statuts == K_ROW_MODIFIED){
+				$operacion = 'UPDATE';
+				}*/
+
+			$param = "	'$operacion'
+			,$COD_CUENTA_TIPO_DEUDA
+			,$COD_TIPO_DEUDA
+			,$COD_CONCEPTO_CUENTA
+			,$COD_CUENTA_CONTABLE";
+
+			if (!$db->EXECUTE_SP($sp, $param)){
+				return false;
+			}
+			else{
+				if ($statuts == K_ROW_NEW_MODIFIED){
+					$COD_CUENTA_TIPO_DEUDA = $db->GET_IDENTITY("cuenta_tipo_deuda");
+					$this->set_item($i, 'COD_CUENTA_TIPO_DEUDA', $COD_CUENTA_TIPO_DEUDA);
+				}
+			}
+		}
+		return true;
+	}
+}
+
+class wi_tipo_deuda extends w_input{
+	const K_COD_CUENTA_CONTABLE_1=1;
+
+	function __construct($cod_item_menu){
+	    parent::__construct('tipo_deuda', $cod_item_menu);
+		$this->valida_llave = true;
+		$this->b_modify_visible = true;
+
+		//////////////// CLASS_SQL = INPUT_TIPO_DEUDA  ///////////////
+		$sql = sql_tipo_deuda::get_sql('INPUT_TIPO_DEUDA');
+		$this->dws['dw_tipo_deuda'] 	= new datawindow($sql);
+		$this->dws['dw_cuenta_contable']= new dw_cuenta_contable($sql);
+		$this->dws['dw_convenio']		= new dw_convenio($sql);
+
+		// asigna los formatos
+		$this->dws['dw_tipo_deuda']->add_control($control = new edit_text_upper('COD_TIPO_DEUDA', 10, 10));
+		$control->set_onChange("valida_cod_tipo_deuda();");
+		$this->dws['dw_tipo_deuda']->add_control($control = new edit_text_upper('NOM_TIPO_DEUDA', 80, 100));
+		$control->set_onChange("valida_nom_tipo_deuda();");
+		$this->dws['dw_tipo_deuda']->add_control(new edit_num('CANT_CUOTA', 14, 19));
+		$this->dws['dw_tipo_deuda']->add_control(new edit_num('CONVENIO_FUTURA', 15, 15));
+		$this->dws['dw_tipo_deuda']->add_control(new edit_num('CONVENIO_NO_EXIGIBLE', 15, 15));
+		$this->dws['dw_tipo_deuda']->add_control(new edit_num('CONVENIO_PRONTO_PAGO', 15, 15));
+		$this->dws['dw_tipo_deuda']->add_control(new edit_num('MONTO_NO_COBRABLE', 14, 19, 4));
+		$this->dws['dw_tipo_deuda']->add_control(new edit_num('TASA_INTERES_CREDITO', 14, 19, 4));
+		$this->dws['dw_tipo_deuda']->add_control(new edit_num('TASA_INTERES_PENAL', 14, 19, 4));
+		$this->dws['dw_tipo_deuda']->add_control(new edit_num('PERIODO_GRACIA', 14, 19));
+
+		//////////////// CLASS_SQL = INPUT_DD_MONEDA  ///////////////
+		$sql_1 = sql_tipo_deuda::get_sql('INPUT_DD_MONEDA');
+
+		$this->dws['dw_tipo_deuda']->add_control(new drop_down_dw('COD_MONEDA', $sql_1, 140));
+
+		//////////////// CLASS_SQL = INPUT_DD_FAMILIA  ///////////////
+		$sql_2 = sql_tipo_deuda::get_sql('INPUT_DD_FAMILIA');
+
+		$this->dws['dw_tipo_deuda']->add_control(new drop_down_dw('COD_FAMILIA_DEUDA', $sql_2, 180));
+
+		// asigna los mandatorys
+		$this->dws['dw_tipo_deuda']->set_mandatory('COD_TIPO_DEUDA', 'Código ipo Deuda');
+		$this->dws['dw_tipo_deuda']->set_mandatory('NOM_TIPO_DEUDA', 'Tipo Deuda');
+		$this->dws['dw_tipo_deuda']->set_mandatory('COD_FAMILIA_DEUDA', 'Familia deuda');
+		$this->dws['dw_tipo_deuda']->set_mandatory('COD_MONEDA', 'Tipo Moneda');
+		$this->dws['dw_tipo_deuda']->set_mandatory('CANT_CUOTA', 'Cantidad cuotas');
+		$this->dws['dw_tipo_deuda']->set_mandatory('MONTO_NO_COBRABLE', 'Monto No Cobrable');
+		$this->dws['dw_tipo_deuda']->set_mandatory('TASA_INTERES_CREDITO', 'Tasa Interés Crédito');
+		$this->dws['dw_tipo_deuda']->set_mandatory('TASA_INTERES_PENAL', 'Tasa Interés Penal');
+		$this->dws['dw_tipo_deuda']->set_mandatory('PERIODO_GRACIA', 'Periodo Gracia');
+	}
+	function new_record() {
+		$this->b_delete_visible  = false;
+		$this->dws['dw_tipo_deuda']->insert_row();
+
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+
+		$sql1= sql_tipo_deuda::get_sql('INPUT_RESULT');
+		$sql = $this->dws['dw_cuenta_contable']->get_sql();
+		$this->dws['dw_cuenta_contable']->set_sql($sql1);
+		$this->dws['dw_cuenta_contable']->retrieve('');
+		$this->dws['dw_cuenta_contable']->set_sql($sql);
+
+		for ($i=0; $i<$this->dws['dw_cuenta_contable']->row_count(); $i++)
+		$this->dws['dw_cuenta_contable']->set_item($i, 'COD_CUENTA_CONTABLE', self::K_COD_CUENTA_CONTABLE_1);
+	}
+	function load_record() {
+		$this->b_delete_visible  = false;
+		$COD_TIPO_DEUDA = $this->get_item_wo($this->current_record, 'COD_TIPO_DEUDA');
+		$this->dws['dw_tipo_deuda']->retrieve($COD_TIPO_DEUDA);
+		$this->dws['dw_cuenta_contable']->retrieve($COD_TIPO_DEUDA);
+		$this->dws['dw_convenio']->retrieve($COD_TIPO_DEUDA);
+
+		$this->dws['dw_cuenta_contable']->set_visible('COD_CONCEPTO_CUENTA', true);
+		$this->dws['dw_cuenta_contable']->set_visible('COD_CUENTA_TIPO_DEUDA', true);
+	}
+	function get_key() {
+		$COD_TIPO_DEUDA = $this->dws['dw_tipo_deuda']->get_item(0, 'COD_TIPO_DEUDA');
+		return "'" . $COD_TIPO_DEUDA . "'";
+	}
+
+	function save_record($db) {
+		$COD_TIPO_DEUDA			= $this->get_key();
+		$NOM_TIPO_DEUDA			= $this->dws['dw_tipo_deuda']->get_item(0, 'NOM_TIPO_DEUDA');
+		$COD_MONEDA 			= $this->dws['dw_tipo_deuda']->get_item(0, 'COD_MONEDA');
+		$COD_FAMILIA_DEUDA 		= $this->dws['dw_tipo_deuda']->get_item(0, 'COD_FAMILIA_DEUDA');
+		$CANT_CUOTA 			= $this->dws['dw_tipo_deuda']->get_item(0, 'CANT_CUOTA');
+		$MONTO_NO_COBRABLE 		= $this->dws['dw_tipo_deuda']->get_item(0, 'MONTO_NO_COBRABLE');
+		$TASA_INTERES_CREDITO 	= $this->dws['dw_tipo_deuda']->get_item(0, 'TASA_INTERES_CREDITO');
+		$TASA_INTERES_PENAL 	= $this->dws['dw_tipo_deuda']->get_item(0, 'TASA_INTERES_PENAL');
+		$PERIODO_GRACIA 		= $this->dws['dw_tipo_deuda']->get_item(0, 'PERIODO_GRACIA');
+		$CONVENIO_FUTURA 		= $this->dws['dw_tipo_deuda']->get_item(0, 'CONVENIO_FUTURA');
+		$CONVENIO_NO_EXIGIBLE	= $this->dws['dw_tipo_deuda']->get_item(0, 'CONVENIO_NO_EXIGIBLE');
+		$CONVENIO_PRONTO_PAGO 	= $this->dws['dw_tipo_deuda']->get_item(0, 'CONVENIO_PRONTO_PAGO');
+
+		$CONVENIO_FUTURA = $CONVENIO_FUTURA =='' ? 'null' : $CONVENIO_FUTURA;
+		$CONVENIO_NO_EXIGIBLE = $CONVENIO_NO_EXIGIBLE =='' ? 'null' : $CONVENIO_NO_EXIGIBLE;
+		$CONVENIO_PRONTO_PAGO = $CONVENIO_PRONTO_PAGO =='' ? 'null' : $CONVENIO_PRONTO_PAGO;
+			
+		$sp = 'spu_tipo_deuda';
+		if ($this->is_new_record()){
+			$operacion = 'INSERT';
+		}
+		else{
+			$operacion = 'UPDATE';
+		}
+			
+		$param	= "'$operacion'
+		,$COD_TIPO_DEUDA
+		,'$NOM_TIPO_DEUDA'
+		,$COD_MONEDA
+		,$COD_FAMILIA_DEUDA
+		,$CANT_CUOTA
+		,$MONTO_NO_COBRABLE
+		,$TASA_INTERES_CREDITO
+		,$TASA_INTERES_PENAL
+		,$PERIODO_GRACIA
+		,$CONVENIO_FUTURA
+		,$CONVENIO_NO_EXIGIBLE
+		,$CONVENIO_PRONTO_PAGO";
+		if ($db->EXECUTE_SP($sp, $param)){
+			//SETEO EL COD_TIPO_DEUDA EN TODA LA DATA DE CUENTAS
+			for ($i=0; $i<$this->dws['dw_cuenta_contable']->row_count(); $i++){
+				$this->dws['dw_cuenta_contable']->set_item($i, 'COD_TIPO_DEUDA_H', $COD_TIPO_DEUDA);
+			}
+			//VOY A UPDETEAR(ingresar) LA DATA
+			if (!$this->dws['dw_cuenta_contable']->update($db, $COD_TIPO_DEUDA)){
+				return false;
+			}
+
+			for ($i=0; $i<$this->dws['dw_convenio']->row_count(); $i++){
+				$this->dws['dw_convenio']->set_item($i, 'COD_TIPO_DEUDA_CON_H', $COD_TIPO_DEUDA);
+			}
+			if (!$this->dws['dw_convenio']->update($db, $COD_TIPO_DEUDA)){
+				return false;
+			}
+		}
+		else{
+			return false;
+		}
+		return true;
+	}
+}
+?>

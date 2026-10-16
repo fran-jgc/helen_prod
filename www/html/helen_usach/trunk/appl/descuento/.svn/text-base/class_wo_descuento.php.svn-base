@@ -1,0 +1,49 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+class wo_descuento extends w_output {
+    function __construct() {
+        $this->b_add_visible  = false;
+        $sql = sql_descuento::get_sql('OUTPUT');
+        
+        parent::__construct('descuento', $sql, $_REQUEST['cod_item_menu']);
+        
+        //formato numeros
+        $RUT_S = new static_num('RUT');
+        $MONTO_MONEDA = new static_num('MONTO_MONEDA',4);
+        $MONTO_PESOS = new static_num('MONTO_PESOS');
+        
+        
+        $this->dw->add_control($RUT_S);
+        $this->dw->add_control($MONTO_MONEDA);
+        $this->dw->add_control($MONTO_PESOS);
+        
+        // headers
+        $COD_DESCUENTO = new header_num('COD_DESCUENTO', 'COD_DESCUENTO', 'N° Dscto.');
+        $RUT = new header_rut('RUT', 'DEUDOR', 'Rut');
+        $COD_DEUDA = new header_num('COD_DEUDA', 'DEUDA.COD_DEUDA', 'N° Deuda');
+        
+        $sql_tipo_deuda = sql_descuento::get_sql('DD_COD_TIPO_DEUDA');
+        $NOM_TIPO_DEUDA = new header_drop_down_string('NOM_TIPO_DEUDA', 'TD.COD_TIPO_DEUDA', 'Tipo Deuda', $sql_tipo_deuda);
+        $ANO_COBRO = new header_num('ANO_COBRO', 'ANO_COBRO', 'Año');
+        
+        $sql_estado_pp = sql_descuento::get_sql('DD_COD_ESTADO_PLAN_PAGO');
+        $NOM_ESTADO_PLAN_PAGO = new header_drop_down('NOM_ESTADO_PLAN_PAGO', 'PP.COD_ESTADO_PLAN_PAGO', 'Estado Pago', $sql_estado_pp);
+        
+        $FECHA_DESCUENTO = new header_date('FECHA_DESCUENTO', 'FECHA_DESCUENTO', 'Fecha Dscto.');
+        $MONTO_MONEDA = new header_num('MONTO_MONEDA', 'MONTO_MONEDA', 'Tot.Dscto. UTM',4);
+        $MONTO_PESOS = new header_num('MONTO_PESOS', 'MONTO_PESOS', 'Tot.Dscto. $');
+        
+        $this->add_header($COD_DESCUENTO);
+        $this->add_header($RUT);
+        $this->add_header($COD_DEUDA);
+        $this->add_header($NOM_TIPO_DEUDA);
+        $this->add_header($ANO_COBRO);
+        
+        $this->add_header($NOM_ESTADO_PLAN_PAGO);
+        $this->add_header($FECHA_DESCUENTO);
+        $this->add_header($MONTO_MONEDA);
+        $this->add_header($MONTO_PESOS);
+    }
+}
+?>

@@ -1,0 +1,97 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once ("../../../appl.ini");
+require_once ("../funciones.php");
+
+$TBK_ORDEN_COMPRA		= $_POST['TBK_ORDEN_COMPRA'];
+$TBK_TIPO_TRANSACCION	= $_POST['TBK_TIPO_TRANSACCION'];
+$TBK_RESPUESTA	= $_POST['TBK_RESPUESTA'];
+$TBK_MONTO		= $_POST['TBK_MONTO'];
+$TBK_CODIGO_AUTORIZACION	= $_POST['TBK_CODIGO_AUTORIZACION'];
+$TBK_FINAL_NUMERO_TARJETA	= $_POST['TBK_FINAL_NUMERO_TARJETA']; 
+$TBK_FECHA_CONTABLE		= isset($_POST['TBK_FECHA_CONTABLE']) ? $_POST['TBK_FECHA_CONTABLE']: '0';
+$TBK_FECHA_TRANSACCION	= $_POST['TBK_FECHA_TRANSACCION'];
+$TBK_FECHA_EXPIRACION	= $_POST['TBK_FECHA_EXPIRACION'];
+$TBK_HORA_TRANSACCION	= $_POST['TBK_HORA_TRANSACCION'];
+$TBK_ID_SESION		= $_POST['TBK_ID_SESION'];
+$TBK_NUMERO_TARJETA = $_POST['TBK_NUMERO_TARJETA'];
+$TBK_ID_TRANSACCION	= $_POST['TBK_ID_TRANSACCION'];
+$TBK_TIPO_PAGO		= $_POST['TBK_TIPO_PAGO'];
+$TBK_NUMERO_CUOTAS	= $_POST['TBK_NUMERO_CUOTAS']; 
+$TBK_MONTO_CUOTA = $_POST['TBK_MONTO_CUOTA'];
+$TBK_TASA_INTERES_MAX = $_POST['TBK_TASA_INTERES_MAX'];
+$TBK_MAC	= $_POST['TBK_MAC'];
+
+$TBK_ORDEN_COMPRA = ($TBK_ORDEN_COMPRA == '') ? "NULL" : $TBK_ORDEN_COMPRA;
+$TBK_TIPO_TRANSACCION = ($TBK_TIPO_TRANSACCION == '') ? "NULL" : $TBK_TIPO_TRANSACCION;
+$TBK_RESPUESTA = ($TBK_RESPUESTA == '') ? "NULL" : $TBK_RESPUESTA;
+$TBK_MONTO = ($TBK_MONTO == '') ? "NULL" : $TBK_MONTO;
+$TBK_CODIGO_AUTORIZACION = ($TBK_CODIGO_AUTORIZACION == '') ? "NULL" : $TBK_CODIGO_AUTORIZACION;
+$TBK_FINAL_NUMERO_TARJETA = ($TBK_FINAL_NUMERO_TARJETA == '') ? "NULL" : $TBK_FINAL_NUMERO_TARJETA;
+$TBK_FECHA_CONTABLE = ($TBK_FECHA_CONTABLE == '') ? "NULL" : $TBK_FECHA_CONTABLE;
+$TBK_FECHA_TRANSACCION = ($TBK_FECHA_TRANSACCION == '') ? "NULL" : $TBK_FECHA_TRANSACCION;
+$TBK_FECHA_EXPIRACION = ($TBK_FECHA_EXPIRACION == '') ? "NULL" : $TBK_FECHA_EXPIRACION;
+$TBK_HORA_TRANSACCION = ($TBK_HORA_TRANSACCION == '') ? "NULL" : $TBK_HORA_TRANSACCION;
+$TBK_ID_SESION = ($TBK_ID_SESION == '') ? "NULL" : $TBK_ID_SESION;
+$TBK_NUMERO_TARJETA = ($TBK_NUMERO_TARJETA == '') ? "NULL" : $TBK_NUMERO_TARJETA;
+$TBK_ID_TRANSACCION = ($TBK_ID_TRANSACCION == '') ? "NULL" : $TBK_ID_TRANSACCION;
+$TBK_TIPO_PAGO = ($TBK_TIPO_PAGO == '') ? "NULL" : $TBK_TIPO_PAGO;
+$TBK_NUMERO_CUOTAS = ($TBK_NUMERO_CUOTAS == '') ? "NULL" : $TBK_NUMERO_CUOTAS;
+$TBK_MONTO_CUOTA = ($TBK_MONTO_CUOTA == '') ? "NULL" : $TBK_MONTO_CUOTA;
+$TBK_TASA_INTERES_MAX = ($TBK_TASA_INTERES_MAX == '') ? "NULL" : $TBK_TASA_INTERES_MAX;
+$TBK_MAC = ($TBK_MAC == '') ? "NULL" : $TBK_MAC;
+$COD_WP_TRANSACCION = $TBK_ORDEN_COMPRA;  //orden_compra es cod_transaccion
+/*
+$K_SERVER = "(DESCRIPTION =(ADDRESS_LIST =(ADDRESS = (PROTOCOL = TCP)(HOST = 200.73.76.19)(PORT = 1521)))(CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = chaitenorcl)(SRVR = DEDICATED)) )";
+$K_BD = "HELEN_USACH_WP_2511";
+$K_USER = "HELEN_USACH_WP_2511";
+$K_PASS = "HELEN_USACH_WP_2511";
+*/
+$conn = oci_pconnect(K_USER, K_PASS, K_SERVER);
+
+$sql = "INSERT INTO WP_PAGO_TRANSACCION VALUES (wp_pago_transaccion_sq.NEXTVAL,$COD_WP_TRANSACCION,NULL,'$TBK_ORDEN_COMPRA',NULL,NULL,'$TBK_TIPO_TRANSACCION',$TBK_RESPUESTA,$TBK_MONTO,'$TBK_CODIGO_AUTORIZACION',$TBK_FINAL_NUMERO_TARJETA,'$TBK_FECHA_CONTABLE',$TBK_FECHA_TRANSACCION,$TBK_FECHA_EXPIRACION,$TBK_HORA_TRANSACCION,NULL,NULL,'$TBK_TIPO_PAGO',$TBK_NUMERO_CUOTAS,NULL,'$TBK_MAC')";
+$query_id = oci_parse($conn, $sql);
+$resp = oci_execute($query_id);
+
+$sql = "COMMIT";
+$query_id = oci_parse($conn, $sql);
+oci_execute($query_id);
+
+
+if($resp)
+	$vl_respuesta = "ACEPTADO";
+else
+	$vl_respuesta = "RECHAZADO";
+	
+
+if($vl_respuesta == "RECHAZADO"){
+	$sql = "SELECT COD_WP_TRANSACCION, COD_DEUDOR FROM WP_TRANSACCION WHERE ROWNUM <=1 ORDER BY COD_WP_TRANSACCION DESC";
+	$query_id = oci_parse($conn, $sql);
+	$resp = oci_execute($query_id);
+	$row = oci_fetch_array($query_id, OCI_ASSOC+OCI_RETURN_LOBS);
+	$cod_transacion = $row['COD_WP_TRANSACCION'];
+	$cod_deudor = $row['COD_DEUDOR'];
+	
+	$sql = "UPDATE WP_TRANSACCION SET EXITO = 'N' WHERE COD_WP_TRANSACCION = $cod_transacion";
+	$query_id = oci_parse($conn, $sql);
+	$resp_update = oci_execute($query_id);
+	
+	$sql = "COMMIT";
+	$query_id = oci_parse($conn, $sql);
+	oci_execute($query_id);
+
+	//bitacora deudor
+	$K_INTENTO_PAGO_WEBPAY	= 40;
+	$K_USUARIO_WEB	= 2;
+	$sql = "INSERT INTO BITACORA_DEUDOR VALUES(bitacora_deudor_sq.NEXTVAL,'Intento pago vía webpay',sysdate,$K_INTENTO_PAGO_WEBPAY,$cod_deudor,$K_USUARIO_WEB)";
+	$query_id = oci_parse($conn, $sql);
+	$resp_update = oci_execute($query_id);
+	
+	$sql = "COMMIT";
+	$query_id = oci_parse($conn, $sql);
+	oci_execute($query_id);
+	
+}
+	
+print($vl_respuesta);
+?>

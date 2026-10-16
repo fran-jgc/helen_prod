@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<link href="css/body-gradient.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<font color= "green">
+			<b>
+				<u> 
+					Ultima Ejecución
+				</u>
+			</b>
+		</font>
+		</br></br>
+		<b>Fecha: </b>Indicador de la última ejecución de carga en el sistema de pagos. 
+		</br><br>
+		<b>Usuario: </b>Nombre del usuario  que realizo la ejecución.
+		</br><br>
+		<b>Registros procesados: </b>Indicador que cuantifica los registros procesados por el sistema.
+		</br><br>
+		<b>Duración:</b>Tiempo de duración de la última sesión.
+		</br><br>
+		<b>Errores y Alertas: </b>Errores encontrados  en el proceso de registros.
+		</br></br><br>
+		<b>
+			<u>
+				<a href="indice.htm">Volver</a>
+			</u>
+		</b>
+	</body>
+</html>

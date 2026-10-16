@@ -1,0 +1,122 @@
+<?php
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+class wp_cierre_contable extends w_proceso{
+	const K_ORIGEN_CIERRE = 24;
+	const K_CIERRE_CONTABLE = 14;
+	const K_ESTADO_COMP_PENDIENTE = 1;
+	
+   	function __construct(){
+   	    parent::__construct('cierre_contable', $_REQUEST['cod_item_menu'], self::K_CIERRE_CONTABLE);
+   	}
+	
+	function ejecutar_proceso() {
+		if(K_TIPO_BD == "oci"){
+			$sql_cierre 	= "SELECT	COUNT(*)	COUNT_CIERRE_CONTABLE
+										,TO_NUMBER(TO_CHAR(SYSDATE,'yyyy')) ANO_CIERRE
+								FROM    COMPROBANTE
+								WHERE 	COD_ESTADO_COMPROBANTE <> 3
+								AND    TO_NUMBER(TO_CHAR(FECHA_COMPROBANTE,'yyyy')) = TO_NUMBER(TO_CHAR(SYSDATE,'yyyy'))
+								AND   COD_ORIGEN_COMPROBANTE = ".self::K_ORIGEN_CIERRE;
+		}
+		else if(K_TIPO_BD == "mssql"){
+			$sql_cierre 	= "SELECT	COUNT(*)	COUNT_CIERRE_CONTABLE
+										,year(getdate()) ANO_CIERRE
+								FROM    COMPROBANTE
+								WHERE COD_ESTADO_COMPROBANTE <> 3
+								AND  year(FECHA_COMPROBANTE) = year(getdate())
+								AND   COD_ORIGEN_COMPROBANTE = ".self::K_ORIGEN_CIERRE;				
+		}
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$result_cierre 		= $db->build_results($sql_cierre);
+		$COUNT_CIERRE_CONTABLE = $result_cierre[0]['COUNT_CIERRE_CONTABLE'];
+		$ano_cierre = $result_cierre[0]['ANO_CIERRE'];
+
+		if($COUNT_CIERRE_CONTABLE > 0){
+			$this->redraw();
+			$this->alert('Ya existe un Cierre Contable para el año '.$ano_cierre);
+			
+		}else{
+		    $this->inicia_proceso();
+		}
+	}
+	
+	function inicia_proceso(){
+	    $cod_usuario= $this->cod_usuario;
+	    $cod_proceso = self::K_CIERRE_CONTABLE;
+	    $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+	    $this->fecha_carga = $this->str2date($db->current_date(), $db->current_time());
+	    
+	    
+	    $param = "'NEW'
+				,null
+				,$cod_proceso
+				,$cod_usuario
+				,null
+				,null";
+	    
+	    $sp="spu_ejecucion_proceso";
+	    if ($db->EXECUTE_SP($sp, $param)){
+	        $COD_EJECUCION_PROCESO =$db->GET_IDENTITY('ejecucion_proceso');
+	    }
+	    else{
+	        $COD_EJECUCION_PROCESO = "null";
+	    }
+	    
+       $sql_primer_ano = "select TO_NUMBER(TO_CHAR(SYSDATE,'yyyy')-1) ANO FROM dual";
+       $result_primer_ano = $db->build_results($sql_primer_ano);
+       $ano = $result_primer_ano[0]['ANO'];
+	    
+	    $this->redraw();
+	    
+	    ob_start();
+	    for ($i=1; $i<=3; $i++) {
+	        print str_pad('',4096); //para que funcione en todos los navegadores
+	        ob_end_flush();
+	        ob_flush();
+	        flush();
+	        ob_start();
+	        Sleep(1);
+	        print "<script>document.getElementById('img_loader').style.display = '';</script>";
+	    }
+	    ob_end_flush();
+	    
+	    $error = false;
+	    $conn = oci_connect(K_USER, K_PASS, K_SERVER);
+	    
+	    $stid = oci_parse($conn, "begin sp_conta_cierre($ano,1,$this->cod_usuario,$COD_EJECUCION_PROCESO); end;");
+	    if (oci_execute($stid)){
+	        print "<script>document.getElementById('img_loader').style.display = 'none';</script>";
+	        print "<script>document.getElementById('fin_proceso').style.display = '';</script>";
+	        oci_free_statement($stid);
+	        oci_close($conn);
+	    }
+	    else{
+	        print "<script>document.getElementById('img_loader').style.display = 'none';</script>";
+	        print "<script>document.getElementById('fin_proceso').style.display = 'none';</script>";
+	        $error = true;
+	        ob_end_flush();
+	        $e = oci_error($stid);
+	        $error_code= $e['code'];
+	        $error_sqltext= $e['sqltext'];
+	        
+	        $this->redraw();
+	        $this->alert('Error Oracle texto sql ejecutado: '.$error_sqltext);
+	        
+	        oci_free_statement($stid);
+	        oci_close($conn);
+	    }
+	}
+	function procesa_event(){
+	    
+	    if(isset($_POST['b_procesar'])){
+	        $this->ejecutar_proceso();
+	    }
+	    else
+	        parent::procesa_event();
+	}
+}
+?>

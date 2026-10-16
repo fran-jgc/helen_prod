@@ -1,0 +1,43 @@
+#inicio_sesion {
+	background: url(images/menu/inicio_sesion.bmp) no-repeat;
+}
+
+#deuda {
+	background: url(images/menu/consulta_deuda.bmp) no-repeat;
+	margin-top: -5px;
+}
+
+#act_informacion {
+	background: url(images/menu/act_informacion.bmp) no-repeat;
+	margin-top: -5px;
+}
+
+#decla_jurada {
+	background: url(images/menu/declaracion_jurada.bmp) no-repeat;
+	margin-top: -5px;
+}
+
+#cupon_pago_uach{
+	background: url(images/menu/cupon_pago.bmp) no-repeat;
+	margin-top: -5px;
+}
+
+#pago_internet_uach {
+	background: url(images/menu/pago_internet.bmp) no-repeat;
+	margin-top: -5px;
+}
+
+td#menu {
+	padding-left: 10px;
+}
+
+td#menu a {
+	display: block;
+	width: 200px;
+	height: 40px;
+	text-decoration: none;
+}
+
+td#menu a:hover {
+	background-position: center;
+}

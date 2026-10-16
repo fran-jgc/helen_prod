@@ -1,0 +1,130 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link href="css/estilo.css" rel="stylesheet" type="text/css"> 
+<link href="css/body-gradient.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<center>
+		<font color= "green">
+			<b>
+				<u>
+					BANCO SANTANDER
+				</u>
+			</b>
+		</font>
+		<br><br>
+
+		<table class="rwd_auto fontsize">
+			<tr>
+				<th>Nombre Campos</th>
+				<th>Tipo Campo</th>
+				<th>Cantidad de caracteres</th>
+				<th>Descripción Campos</th>
+			</tr>
+			<tr>
+				<td>Tipo registro</td>
+				<td>Numérico</td>
+				<td><center>10</center></td>
+				<td>Tipo registro </td>
+			</tr>
+			<tr>
+				<td>Código Cliente</td>
+				<td>Numérico</td>
+				<td><center>50</center></td>
+				<td>Código cliente realiza pago</td>
+			</tr>
+			<tr>
+				<td>Nro. referencia</td>
+				<td>Numérico</td>
+				<td><center>50</center></td>
+				<td>Rut cliente + fecha vencimiento cuota</td>
+			</tr>
+			<tr>
+				<td>Folio Doc</td>
+				<td>Texto</td>
+				<td><center>10</center></td>
+				<td>Numero de documento</td>
+			</tr>
+			<tr>
+				<td>Tipo documento</td>
+				<td>Texto</td>
+				<td><center>2</center></td>
+				<td>Factura , Nota Crédito, nota debito , etc.</td>
+			</tr>
+			<tr>
+				<td>Nro. cuota</td>
+				<td>Numérico</td>
+				<td><center>3</center></td>
+				<td>Numero cuota a pagar</td>
+			</tr>
+			<tr>
+				<td>Código Banco</td>
+				<td>Numérico</td>
+				<td><center>5</center></td>
+				<td>Código banco</td>
+			</tr>
+			<tr>
+				<td>Monto Interés</td>
+				<td>Numérico</td>
+				<td><center>15</center></td>
+				<td>Morosidades y otros cobros</td>
+			</tr>
+			<tr>
+				<td>Filler</td>
+				<td>Texto</td>
+				<td><center>10</center></td>
+				<td>Espacio para campos futuros</td>
+			</tr>
+			<tr>
+				<td>Fecha Pago</td>
+				<td>Texto </td>
+				<td><center>10</center></td>
+				<td>Fecha que se realizo pago (aaaa/mm/dd)*</td>
+			</tr>
+			<tr>
+				<td>Cod_subboleta</td>
+				<td>Numérico</td>
+				<td><center>10</center></td>
+				<td>Numero de pago generado por el sistema</td>
+			</tr>
+			<tr>
+				<td>Monto Pago</td>
+				<td>Numérico</td>
+				<td><center>15</center></td>
+				<td>Monto del  pago</td>
+			</tr>
+			<tr>
+				<td>Separador</td>
+				<td>Texto</td>
+				<td><center>1</center></td>
+				<td>Separador</td>
+			</tr>
+				<tr>
+				<td>Medio de pago</td>
+				<td>Texto</td>
+				<td><center>2</center></td>
+				<td>Medio para realizar pago</td>
+			</tr>
+			<tr>
+				<td>Indicador del resultado del pago</td>
+				<td>Texto </td>
+				<td><center>1</center></td>
+				<td>Indicador del resultado del pago</td>
+			</tr>
+		</table> <br>
+		<b>
+			Formato: TXT  (Delimitado por tabulación) / eliminar la primera línea (cabecera)
+			</br>
+			*El formato de la fecha es "Año/Mes/Dia"
+		</b>
+		</br></br>
+		<center>
+			<b>
+				<u>
+					<a href="indice.htm">Volver</a>
+				</u>
+			</b>
+		</center>
+	</center>
+</body>
+</html>

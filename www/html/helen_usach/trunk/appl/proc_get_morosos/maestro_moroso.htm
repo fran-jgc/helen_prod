@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Sistema Helen</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="UTF-8" charset="utf-8" src="maestro_moroso.js" type="text/javascript"></script>
+</head>
+
+<body onLoad="load();">
+<!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js" type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+	<table width="1050" height="647" border="0" align="center">
+		<tr bgcolor="#FFFFFF">
+			<!-- menu superior-->
+			<td width="1000" height="51" align="center" id="awmAnchor-menu" style="width: 100px; height: 50px;"></td>
+		</tr>
+		<tr bgcolor="#FFFFFF">
+			<td height="79">
+			<table width="1000" border="0">
+				<tr>
+					<td>
+					<table width="592" border="0">
+						<tr>
+							<td height="100%">
+							<div class="titulo_central_parametro">{WO_RUTA_MENU}</div>
+							</td>
+						</tr>
+						<tr>
+							<td height="0%">
+							<div class="tit_superior"><font color="#999999">{WO_FECHA_ACTUAL}</font></div>
+							</td>
+						</tr>
+						<tr>
+							<td height="0%">
+							<div class="tit_superior"><font color="#999999">{WO_NOM_USUARIO}</font></div>
+							</td>
+						</tr>
+					</table>
+					</td>
+				</tr>
+			</table>
+			</td>
+		</tr>
+		<tr>
+			<td width="667" valign="top" bgcolor="#FFFFFF" height="567">		
+				<form id="form1" name="maestro_matricula" method="post" action="">
+					<table align="center" style="margin-top:3em;">
+								<tr class="titulo_central" align="center">
+									<td>Obtener Morosos</td>
+								</tr>	
+					</table>
+					<table width="327" align="center" style="margin-top:3em;">												
+						<tr>							
+							<td width="143" class="titulo_2_tabla_right">
+								<div align="right" class="LABEL"><strong>Fecha a buscar: </strong></div>
+							</td>
+							<td width="172">
+								<input name="fecha" class="input_text" type="text" id="fecha" value="{W_FECHA}" maxlength="10" size="10" onblur="this.style.borderColor = this.style.borderWidth = this.style.borderStyle = '';" onkeyup="vl_fecha = filter_edit_date(this.value); if (this.value != vl_fecha) this.value = vl_fecha;" onkeypress="return onlyNumbers(this, event,0, 1);" />
+								<input name="anio_actual" style="display:none" type="text" id="anio_actual" value="{W_ANIO_ACTUAL}" />
+							</td>
+						</tr>
+						<tr>
+							<th colspan="2">
+								<div align="center" style="margin-top:3em;">			
+										{BOTON_EJECUCION}
+								</div>
+							</th>
+						</tr>
+					</table>
+				</form>
+				<div style="overflow-x:auto; overflow-y:hidden; width:80%; margin-top:1.7em;margin-left: 10%;">
+					<table align="left" style="margin-top:3em;">
+						<tr class="titulo_central" align="left">
+							<td>Informes</td>
+						</tr>	
+					</table>
+				<table width="100%" border="1" rules="none" align="center">
+					<tr class="encabezado_left">
+						<td width="85px" bgcolor="#024457" align="center">Cod.</td>
+						<td width="100px" bgcolor="#024457"align="center" >Fecha.</td>
+						<td width="100px" bgcolor="#024457" align="center">Estado.</td>
+						<td width="100px" bgcolor="#024457" align="center">Iniciado por:</td>
+						<td width="100px" bgcolor="#024457" align="center">Descarga.</td>
+					</tr>
+				</table>
+				<div style="overflow-x:hidden; overflow-y:auto; width:99,9%;  margin-top:0em;border-style: solid;border-width: 1px;border-color: #c2c8d6; background-color: white;">
+				<table width="100%" border="0"  align="center" > 
+						{TABLA}
+				</table>
+				</div>
+
+			</div>
+			</td>
+		</tr>
+		
+	</table>
+</body>
+</html>

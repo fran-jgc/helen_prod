@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title></title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="utf-8" src="../proc_common/barra_avance.js" type="text/javascript"></script>
+<script charset="utf-8" src="carga_banco.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+
+function oculta_muestra_f_depos(ve_campo) {
+	var cod_origen_carga_banco = ve_campo.value;
+	var K_TRANSBANK = 5;
+	var K_MINEDUC = 17;
+	var K_CARGA_HUARA = 99;
+
+	if(cod_origen_carga_banco == K_TRANSBANK){
+		document.getElementById('visible_campo').style.display = 'none';
+		document.getElementById('visible_label').style.display = 'none';
+		document.getElementById('ID_TR1').style.display = '';
+		document.getElementById('ID_TR2').style.display = '';
+		document.getElementById('ID_TR3').style.display = '';
+		document.getElementById('ID_TR4').style.display = '';
+	}
+	else if(cod_origen_carga_banco == K_MINEDUC){
+		document.getElementById('ID_TR1').style.display = 'none';
+		document.getElementById('ID_TR2').style.display = 'none';
+		document.getElementById('ID_TR3').style.display = 'none';
+		document.getElementById('ID_TR4').style.display = 'none';
+		document.getElementById('visible_campo').style.display = 'none';
+		document.getElementById('visible_label').style.display = 'none';
+	}
+	else if(cod_origen_carga_banco == K_CARGA_HUARA){
+		document.getElementById('ID_TR1').style.display = 'none';
+		document.getElementById('ID_TR2').style.display = 'none';
+		document.getElementById('ID_TR3').style.display = 'none';
+		document.getElementById('ID_TR4').style.display = 'none';
+		document.getElementById('visible_campo').style.display = 'none';
+		document.getElementById('visible_label').style.display = 'none';
+	}
+	else{
+		document.getElementById('visible_campo').style.display = '';
+		document.getElementById('visible_label').style.display = '';
+		document.getElementById('ID_TR1').style.display = '';
+		document.getElementById('ID_TR2').style.display = '';
+		document.getElementById('ID_TR3').style.display = '';
+		document.getElementById('ID_TR4').style.display = '';
+	}
+}
+
+
+
+</script>
+<body><!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js" type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+<form action="" method="post" name="output" id="output"  enctype="multipart/form-data">
+<input name="wo_hidden" id="wo_hidden" type="hidden" value="">
+<table width="1050" border="0" align="center">
+	<tr bgcolor="#FFFFFF">
+		<!-- menu superior-->
+		<td width="1000"  height="51" align="center" id="awmAnchor-menu" style="width:100px; height:50px;"></td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+			<table width="1000" border="0">
+				<tr>
+					<td>
+						<table width="478" border="0">
+							<tr>
+								<td height="100%"><div class="titulo_central_parametro">{WO_RUTA_MENU}</div></td>
+							</tr>
+							<tr>
+								<td height="0%"><div class="tit_superior"><font color="#999999">{WO_FECHA_ACTUAL}</font></div></td>
+							</tr>
+							<tr>
+								<td height="0%"><div class="tit_superior"><font color="#999999">{WO_NOM_USUARIO}</font></div></td>
+							</tr>
+						</table>
+					</td> 
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+	  	<td>
+			<table width="1000" border="0" align="center">
+				<tr>
+					<td height="95" valign="top">
+						<table width="1015" border="0" align="center" >
+							<tr valign="top">
+								<td>						
+									<div style="height:526px;" class="claro">																					
+										<table width="1000" rules="none" border="0" align="center" class="claro">							
+												<tr class="titulo_tabla">				
+													<td colspan="6" >CARGA BANCO</td>
+												</tr>
+										</table>
+										<table width="1000" rules="none" border="1" style="padding-top:5px;"align="center" class="claro">										
+											<tr class="titulo_tabla">				
+												<td colspan="6" ></td>
+											</tr>
+											<tr class="encabezado_right">
+												<td width="200"><div class="encabezado_right">Descripci&oacute;n del Proceso</div></td>
+												<td width="800" class="claro" align="left">
+												<div style="overflow-x:hidden; overflow-y:auto; height:100; widht:100%;">
+													<table width="100%" border="0"align="left" rules="none" class="claro" style="padding-top:5px;">
+														<tr>
+															<td>Proceso encargado de cargar en el sistema pagos realizados por los deudores, en entidades financieras
+															</td>																													
+														</tr>
+													</table>
+												</div>
+												</td>														
+											</tr>
+										</table>	
+										<br><br><br>										
+										<table width="1000" rules="none" border="1" align="center" class="claro" style="display:{LAST_DISPLAY_EJECUCION}">							
+												<tr class="titulo_tabla">				
+													<td colspan="6" >ULTIMA EJECUCION</td>
+												</tr>
+												<tr class="encabezado_right">
+													<td width="200">Fecha:</td>
+													<td width="300" class="claro" align="left">{LAST_FECHA_EJECUCION_PROCESO}</td>	
+													<td width="150">Duración:</td>
+													<td width="350" class="claro" align="left">{LAST_DURACION}<label style="color:#FF0000">{LAST_NOM_USUARIO_CANCELA}</label></td>	
+												</tr>
+												<tr class="encabezado_right">
+													<td>Usuario:</td>
+													<td class="oscuro" align="left" colspan="3">{LAST_NOM_USUARIO}</td>
+												</tr>
+												<tr class="encabezado_right">
+													<td>Registros procesados:</td>
+													<td class="claro" align="left">{LAST_ACTUAL_REGISTRO}</td>
+													<td>Errores:</td>
+													<td class="claro" align="left">{LAST_CANT_ERROR} errores, {LAST_CANT_WARNING} alertas</td>
+												</tr>
+										</table>
+										<br><br><br>
+										<table width="1000" rules="none" border="1" align="center" class="claro">							
+												<tr class="titulo_tabla">				
+													<td colspan="6" >EJECUTAR PROCESO</td>
+												</tr>
+												<tr class="encabezado_right">
+													<td>Tipo de Carga:</td>
+													<td class="claro" align="left">{COD_ORIGEN_CARGA_BANCO}</td>
+													
+													<td id="visible_label" style="display: {VISIBLE_CAMPO}">Fecha Deposito:</td>
+													<td class="claro" align="left" id="visible_campo" style="display: {VISIBLE_CAMPO}">{FECHA_DEPOSITO}</td>	
+											    </tr>
+												<tr class="claro">
+													<td class="encabezado_right">Archivo a cargar:</td>
+													<td colspan="5" >
+													<input id="FILE_NAME" class="Button" type="file" name="FILE_NAME"/>
+													<input type="submit"  class="Button" align="left" name="b_cargar" id="b_cargar" value="Cargar" onClick="return validate_load();"/>		
+													{ARCHIVO_CARGADO}		
+													</td>
+													<td>{CARGADO_MINEDUC}</td>	
+												</tr>
+												<tr class="encabezado_right" style="display: {TR_VISIBLE_CAMPO}" id="ID_TR1">
+													<td class="oscuro" ><input type="submit" name="b_init" id="b_init" value="Iniciar" class="boton" {DISABLE_INIT}></td>
+													<td class="oscuro" align="left" colspan="1">
+													  	<div class="progress-bar" >          
+							    							<div id ="barra_avance" class="bar" style="background-color:#BF5852; width: {ACTUAL_AVANCE}%;"></div>
+							  							</div>
+							  							<div align="center" id ="porcentaje_barra" style="padding-top:8px;padding-left:0px;"></div></td>
+												    <td colspan="3" align="left" class="oscuro"><input type="submit" class="boton" name="b_cancel" id="b_cancel" value="Cancelar" onClick="return confirm_cancel();" {disable_cancel}/></td>
+											    </tr>
+												<tr class="encabezado_right" style="display: {TR_VISIBLE_CAMPO}" id="ID_TR2">
+													<td width="200">Iniciado:</td>
+													<td width="300" class="claro" align="left">{ACTUAL_FECHA_EJECUCION_PROCESO}</td>	
+													<td width="150">Tiempo transcurrido:</td>
+													<td width="350" class="claro" align="left">{ACTUAL_DURACION}</td>	
+												</tr>
+												<tr class="encabezado_right" style="display: {TR_VISIBLE_CAMPO}" id="ID_TR3">
+													<td>Usuario:</td>
+													<td class="oscuro" align="left" colspan="3">{ACTUAL_NOM_USUARIO}</td>
+												</tr>
+												<tr class="encabezado_right" style="display: {TR_VISIBLE_CAMPO}" id="ID_TR4">
+													<td>Registros procesados:</td>
+													<td class="claro" align="left">{ACTUAL_ACTUAL_REGISTRO}</td>
+													<td>Errores:</td>
+													<td class="claro" align="left">{ACTUAL_CANT_ERROR} errores, {ACTUAL_CANT_WARNING} alertas</td>
+												</tr>
+										</table>
+									</div>	
+								</td>
+							</tr>
+						</table>
+						<table width="1000" border="0" align="center">
+				<tr valign="middle">
+					  <td>{WP_BACK}</td>
+				</tr>
+			</table> 		
+					</td>	
+				</tr>  
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

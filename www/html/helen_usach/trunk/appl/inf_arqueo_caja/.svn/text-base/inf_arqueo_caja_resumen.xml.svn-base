@@ -1,0 +1,98 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="8" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="" id="ArialBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="B" id="ArialBold"/>
+	<Font name="Arial" size="9" style="" id="Arial"/>
+	
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="ARQUEO DE CAJA RESUMEN" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text=""/>
+	</Content>
+	<Group >
+		<GroupHeader>		
+			<Cell text="" width="22%" align="C"/>
+			<Cell text="ITEM" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="CANTIDAD" width="16%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="MONTO" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			
+			<Cell text="" width="22%" align="C"/>
+			<Cell text="EFECTIVO" width="20%" align="L" border="LR" font="Arial"/>
+			<Cell text="" width="16%" align="C" border="R" font="Arial"/>
+			<Cell text="{EFECTIVO}" width="20%" align="R" format="N0,." border="R" font="Arial"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			
+			<Cell text="" width="22%" align="C"/>
+			<Cell text="CHEQUE AL DIA" width="20%" align="L" border="LR" font="Arial"/>
+			<Cell text="{COUNT_CH_AL_DIA}" width="16%" align="R" border="R" font="Arial"/>
+			<Cell text="{CHEQUE_AL_DIA}" width="20%" align="R" format="N0,." border="R" font="Arial"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			
+			<Cell text="" width="22%" align="C"/>
+			<Cell text="CHEQUE A FECHA" width="20%" align="L" border="LR" font="Arial"/>
+			<Cell text="{COUNT_CH_A_FECHA}" width="16%" align="R" border="R" font="Arial"/>
+			<Cell text="{CHEQUE_FECHA}" width="20%" align="R" format="N0,." border="R" font="Arial"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			
+			<Cell text="" width="22%" align="C"/>
+			<Cell text="OTROS" width="20%" align="L" border="LRB" font="Arial"/>
+			<Cell text="{COUNT_OTROS}" width="16%" align="R" border="RB" font="Arial"/>
+			<Cell text="{OTROS}" width="20%" align="R" format="N0,." border="RB" font="Arial"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			
+			<Cell text="" width="22%" align="C"/>
+			<Cell text="SUBTOTAL $" width="20%" align="L" border="LRB" font="ArialBlue"/>
+			<Cell text="{TOTAL_COUNT1}" width="16%" align="R" border="RB" font="ArialBold"/>
+			<Cell text="{SUBTOTAL1}" width="20%" align="R" format="N0,." border="RB" font="ArialBold"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			
+			<Cell text="" width="100%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C"/>
+			<Cell text="DESCUENTOS" width="20%" align="L" border="LRT" font="Arial"/>
+			<Cell text="{COUNT_DESCUENTO}" width="16%" align="R" border="RT" font="Arial"/>
+			<Cell text="{DESCUENTO}" width="20%" align="R" format="N0,." border="RT" font="Arial"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			
+			<Cell text="" width="22%" align="C"/>
+			<Cell text="DEPOSITOS" width="20%" align="L" border="LR" font="Arial"/>
+			<Cell text="{COUNT_DEPOSITO}" width="16%" align="R" border="R" font="Arial"/>
+			<Cell text="{DEPOSITO}" width="20%" align="R" format="N0,." border="R" font="Arial"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			
+			<Cell text="" width="22%" align="C"/>
+			<Cell text="SUBTOTAL $" width="20%" align="L" border="TLRB" font="ArialBlue"/>
+			<Cell text="{TOTAL_COUNT2}" width="16%" align="R" border="TRB" font="ArialBold"/>
+			<Cell text="{SUBTOTAL2}" width="20%" align="R" format="N0,." border="TRB" font="ArialBold"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			
+			<Cell text="" width="22%" align="C"/>
+			<Cell text="TOTAL RECAUDACIONES $" width="20%" align="L" border="TLB" font="ArialBlue"/>
+			<Cell text="" width="16%" align="C" border="TB" font="Arial"/>
+			<Cell text="{TOTAL}" width="20%" align="R" format="N0,." border="TLRB" font="ArialBold"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="13%" align="C"/>
+			<Cell text="Encargado de recaudación" width="22%" border="T" align="C"/>
+			<Cell text="" width="30%" align="C"/>
+			<Cell text="Responsable" width="22%" border="T" align="C"/>
+			<Cell text="" width="13%" align="C"/>
+		</GroupHeader>
+	</Group>
+</Report>

@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Devolucion de Pagaré</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css"></link>
+<script src="../../../../commonlib_seven/trunk/script_js/SpryTabbedPanels.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script type="text/javascript">
+function get_returnVal() {
+	estado_dev='';
+	var chequeado=0;
+	var RETIRO = false;
+	if (document.getElementById('DESTRUCCION_0').checked) {
+		estado_dev='DESTRUCCION';
+		chequeado=1;
+	}
+	if (document.getElementById('RETIRO_0').checked) {
+		estado_dev='RETIRO';
+		RETIRO = true;
+		chequeado=1;
+	}
+	if (document.getElementById('ENVIO_DOMICILIO_0').checked) {
+		estado_dev='ENVIO_DOMICILIO';
+		chequeado=1;
+	}
+	if (document.getElementById('ENVIO_CORREO_0').checked) {
+		estado_dev='ENVIO_CORREO';
+		chequeado=1;
+	}
+
+	var nom_dev = document.getElementById('NOM_DEV_0').value;
+	var motivo = document.getElementById('MOTIVO_0').value;
+	var rut_recibe = document.getElementById('RUT_RECIBE_0').value;
+	var dig_verif = document.getElementById('DIG_VERIF_0').value;
+	var rut = rut_recibe+'-'+dig_verif;
+	var res = 	'';
+	if(dig_verif == '' && RETIRO==true){
+		alert('Debe ingresar el Rut correctamente con el dígito verificador');
+		document.getElementById('RUT_RECIBE_0').focus();
+		return false;
+	}else if(nom_dev == '' && RETIRO==true){
+		alert('Debe ingresar el Nombre del Receptor');
+		document.getElementById('NOM_DEV_0').focus();
+		return false;
+	}else if(motivo ==''){
+		alert('Debe Ingresar un Motivo');
+		document.getElementById('MOTIVO_0').focus();
+		return false;
+	
+	}else if(chequeado ==0){
+		alert('Debe elegir un tipo de devolución');		
+		return false;
+	
+	}else{
+		return nom_dev+'|'+rut+'|'+motivo+'|'+estado_dev;
+	}
+}
+//DIALOG Required Code
+var prntWindow = getParentWindowWithDialog(); //$(top)[0];
+
+var $dlg = prntWindow && prntWindow.$dialog;
+
+function getParentWindowWithDialog() {
+	var p = window.parent;
+	var previousParent = p;
+	while (p != null) {
+		if ($(p.document).find('#iframeDialog').length) return p;
+
+		p = p.parent;
+
+		if (previousParent == p) return null;
+
+		// save previous parent
+
+		previousParent = p;
+	}
+	return null;
+}
+
+function setWindowReturnValue(value) {
+	if ($dlg) $dlg.returnValue = value;
+	window.returnValue = value; // in case popup is called using showModalDialog
+
+}
+
+function getWindowReturnValue() {
+	// in case popup is called using showModalDialog
+
+	if (!$dlg && window.returnValue != null)
+		return window.returnValue;
+
+	return $dlg && $dlg.returnValue;
+}
+
+if ($dlg) window.dialogArguments = $dlg.dialogArguments;
+if ($dlg) window.close = function() { if ($dlg) $dlg.dialogWindow.dialog('close'); };
+// END of dialog Required Code
+
+function okMe() {
+	if(!(get_returnVal())) 
+		return false; 
+	else{ 
+	
+		returnValue=get_returnVal();
+		setWindowReturnValue(returnValue);
+	}	
+	$dlg.dialogWindow.dialog('close');
+}
+function closeMe() {
+    setWindowReturnValue(null);
+    $dlg.dialogWindow.dialog('close');
+}
+function checked_radio_button() {
+	var DESTRUCCION = document.getElementById('DESTRUCCION_0').checked;
+	var RETIRO = document.getElementById('RETIRO_0').checked;
+	var ENVIO_DOMICILIO = document.getElementById('ENVIO_DOMICILIO_0').checked;
+	var ENVIO_CORREO = document.getElementById('ENVIO_CORREO_0').checked;
+
+	if (DESTRUCCION) {
+		document.getElementById('fecha').innerHTML='Fecha Destrucción:';
+		document.getElementById("rut_receptor").style.display = "none";
+		document.getElementById("nombre_receptor").style.display = "none";
+	}
+	if (RETIRO) {
+		document.getElementById('fecha').innerHTML='Fecha Retiro:';
+		document.getElementById("rut_receptor").style.display = "";
+		document.getElementById("nombre_receptor").style.display = "";
+	}
+	if (ENVIO_DOMICILIO) {
+		document.getElementById('fecha').innerHTML='Fecha Envió:';
+		document.getElementById("rut_receptor").style.display = "none";
+		document.getElementById("nombre_receptor").style.display = "none";
+	}
+	if (ENVIO_CORREO) {
+		document.getElementById('fecha').innerHTML='Fecha Envió:';
+		document.getElementById("rut_receptor").style.display = "none";
+		document.getElementById("nombre_receptor").style.display = "none";
+	}
+
+}
+</script>
+<style type="text/css">
+	.dig_verif{
+		font-size: 12px;
+		text-align:left;
+	}
+	.titulo{
+		background-color: #E5E5E5;
+		font-size: 12px;
+		font-weight:bold;	
+		color: #000066;
+		text-align:right;
+		padding-top:9px;
+		margin-left:-5px;
+		width:800px;
+	}
+</style>
+
+</head>
+
+<body class="content_wm">
+<div>&nbsp;&nbsp;</div>
+    <form action="" method="post" name="input" id="input"
+	enctype="multipart/form-data">
+        <table width="400" border="0" align="center">
+        						<tr>
+									<td class="titulo">Devolucion Pagare:</td>
+								</tr>
+								<tr>
+									<td width="200" class="encabezado_right">Nombre Usuario:</td>
+									<td width="200" class="oscuro">{USUARIO}{COD_USUARIO}{COD_ESTADO_PAGARE_H}</td>
+								</tr>
+								<tr>
+									<td id="fecha" width="200" class="encabezado_right">Feha Devolución:</td>
+									<td width="200" class="claro">{FECHA}</td>
+								</tr>
+								<tr>									
+									<td width="200" class="encabezado_right">Destrucción: </td>
+									<td width="200" class="oscuro" align="left">{DESTRUCCION}</td>
+								</tr>
+								<tr>									
+									<td width="200" class="encabezado_right">Retiro Presencial:</td>
+									<td width="200" class="oscuro" align="left">{RETIRO}</td>
+								</tr>
+								<tr>									
+									<td width="200" class="encabezado_right">Envió a domicilio:</td>
+									<td width="200" class="oscuro" align="left">{ENVIO_DOMICILIO}</td>
+								</tr>
+								<tr>									
+									<td width="200" class="encabezado_right">Envió por correo:</td>
+									<td width="200" class="oscuro" align="left">{ENVIO_CORREO}</td>
+								</tr>
+								<tr id="rut_receptor">
+									<td width="200" class="encabezado_right">Rut Receptor:</td>
+									<td width="200" class="oscuro" align="left">{RUT_RECIBE}-{DIG_VERIF}</td>
+								</tr>
+								<tr id="nombre_receptor">
+									<td width="200" class="encabezado_right">Nombre Receptor:</td>
+									<td width="200" class="oscuro">{NOM_DEV}</td>
+								</tr>
+								<tr>
+									<td width="200" class="encabezado_right">Motivo:</td>
+									<td width="200" class="claro">{MOTIVO}</td>
+								</tr>
+								<tr>
+								<br>
+								<br>
+									<td align="right"><input name="Aceptar" type="submit" value="Aceptar" onclick="okMe();" class="button"/></td>
+									<td align="left"><input name="cancelar" type="submit" value="Cancelar" onclick="closeMe();" class="button"/></td>
+								</tr>
+								
+								<tr>
+									<td colspan="2" align="right">
+									  	
+									</td>
+									<td colspan="2" align="left">
+									  	
+									</td>								  				   
+								</tr>
+		</table>
+    </form>
+</body>
+</html>
+

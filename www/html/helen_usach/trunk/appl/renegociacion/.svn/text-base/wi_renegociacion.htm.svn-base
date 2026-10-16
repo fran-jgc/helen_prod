@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Sistema Helen</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+
+<script src="../../../../commonlib_seven/trunk/script_js/SpryTabbedPanels.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="utf-8" src="renegociacion.js" type="text/javascript"></script>
+<link href="../../../../commonlib_seven/trunk/css/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+<!--
+.Estilo1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+
+.Estilo2 {
+	color: #993300;
+	font-weight: bold;
+	align: right;
+}
+-->
+</style>
+{WI_JAVA_SCRIPT}
+</head>
+<body {WI_ONLOAD}>
+<!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js"
+	type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+<form action="" method="post" name="input" id="input"
+	enctype="multipart/form-data"><input name="wi_hidden"
+	id="wi_hidden" type="hidden" value="">
+<table width="1050" border="0" align="center">
+	<tr bgcolor="#FFFFFF">
+		<!-- menu superior-->
+		<td width="1000" height="51" align="center" id="awmAnchor-menu"
+			style="width: 100px; height: 50px;"></td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+		<table width="1000" border="0">
+			<tr>
+				<td>
+				<table width="520" border="0">
+					<tr>
+						<td height="100%">
+						<div class="titulo_central">{WI_RUTA_MENU}</div>
+						</td>
+					</tr>
+					<tr>
+						<td height="0%">
+						<div class="tit_superior"><font color="#999999">{WI_FECHA_ACTUAL}
+						</font></div>
+						</td>
+					</tr>
+					<tr>
+						<td height="0%">
+						<div class="tit_superior"><font color="#999999">{WI_FECHA_MODIF}
+						</font></div>
+						</td>
+					</tr>
+				</table>
+				</td>
+				<td width="68">{WI_PRINT}</td>
+				<td width="68">{WI_NO_SAVE}</td>
+				<td width="68">{WI_SAVE}</td>
+				<td width="68">{WI_MODIFY}</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+		<table width="1000" border="0" align="center">
+			<tr>
+				<td height="95">
+				<table width="1015" height="520" border="0" align="center">
+					<tr valign="top">
+						<td>
+						<div id="TabbedPanels1" class="TabbedPanels">
+						<ul class="TabbedPanelsTabGroup">
+							<li class="TabbedPanelsTab" tabindex="0" style="display: {TAB_105005}">Renegociación</li>
+						</ul>
+						<div class="TabbedPanelsContentGroup">
+						<!--INI PRORROGA-->
+						<div class="TabbedPanelsContent">
+						<table width="1000" border="1" rules="none" align="center">
+							<tr class="titulo_tabla">
+								<td colspan="6">RENEGOCIACION</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="166">Nº Renegociación:</td>
+								<td width="166" class="claro" align="left">{COD_RENEGOCIACION}</td>
+								<td width="166">Fecha Registro:</td>
+								<td width="166" class="claro" align="left">{FECHA_RENEGOCIACION}</td>
+								<td width="166">Usuario:</td>
+								<td width="166" class="claro" align="left">{NOM_USUARIO}</td>
+							</tr>
+						</table>
+						<table width="1000" border="1" rules="none" align="center">
+							<tr class="titulo_tabla">
+								<td colspan="6">DEUDOR</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>Rut:</td>
+								<td class="claro" align="left">{RUT}-{DIG_VERIF}</td>
+								<td>Nombre:</td>
+								<td colspan="3" class="claro" align="left">{NOM_DEUDOR}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="166">Tipo Deuda:</td>
+								<td width="166" class="oscuro" align="left">{COD_TIPO_DEUDA}</td>
+								<td width="166">Número Deuda:</td>
+								<td width="166" class="oscuro" align="left">{COD_DEUDA}{COD_DEUDA_H}</td>
+								<td width="166">Moneda:</td>
+								<td width="166" class="oscuro" align="left">{SIMBOLO}{VALOR_MONEDA}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td width="166">Cartera:</td>
+								<td width="166" class="oscuro" align="left">{NOM_CARTERA}</td>
+								<td width="166">Estado:</td>
+								<td width="166" class="oscuro" align="left">{NOM_ESTADO_DEUDA}</td>
+								<td width="166">Nº Cuotas:</td>
+								<td width="166" class="oscuro" align="left">{CANT_CUOTA_DEUDA}</td>
+							</tr>
+						</table>
+						<p />
+						<table width="1000" border="1" rules="none" align="center" style="display:{TABLE_PLAN_PAGO}">
+							<tr>
+								<td width="66%">
+									<table width="100%" rules="none" border="1" align="center">                  			  					  		
+										<tr class="titulo_tabla">
+											<td colspan="6">DETALLE DEUDA</td>
+										</tr>	
+										<tr class="encabezado_center">
+											<td width="10%">Selección</td>
+											<td width="10%">Año</td>
+											<td width="10%">F.Vencto.</td>
+											<td width="10%">Cuota</td>
+											<td width="10%">I. Penal</td>
+											<td width="10%">Total Moneda</td>
+											<td width="10%">Total Pesos</td>
+										</tr>
+									</table>
+									<div style="overflow-x:hidden; overflow-y:auto; height:120; margin-top:0em;">
+									<table width="100%" border="1" rules="none" align="center" class="claro" id="PP_RENEGOCIACION">
+										<!-- startBlock(PP_RENEGOCIACION) -->
+										<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+											<td width="10%" align=center>{SELECCION}{COD_PLAN_PAGO_H}</td>
+											<td width="10%" align=center>{ANO_COBRO}</td>
+											<td width="10%" align="center">{FECHA_VENCTO}</td>
+											<td width="10%" align=right>{SALDO_CUOTA}{SALDO_CUOTA_H}</td>
+											<td width="10%" align=right>{SALDO_MULTA}{SALDO_MULTA_H}</td>
+											<td width="10%" align=right>{TOTAL_SALDO_MONEDA}{TOTAL_SALDO_MONEDA_H}</td>
+											<td width="10%" align=right>{TOTAL_SALDO_PESOS}{TOTAL_SALDO_PESOS_H}</td>
+										</tr>
+										<!-- endBlock(PP_RENEGOCIACION) -->
+									</table>
+									</div>
+									<table width="100%" border="1" rules="none" align="center" class="claro">
+										<tr class="encabezado_right">
+											<td width="30%">Total</td>
+											<td width="10%" class="oscuro">{SUMA_SALDO_CUOTA}</td>
+											<td width="10%" class="oscuro">{SUMA_SALDO_MULTA}</td>
+											<td width="10%" class="oscuro">{SUMA_TOTAL_SALDO_MONEDA}</td>
+											<td width="10%" class="oscuro">{SUMA_TOTAL_SALDO_PESOS}</td>
+										</tr>
+									</table>
+								</td>
+								<td width="34%" valign="top">
+									<table width="100%" border="1" rules="none" align="center" class="claro" >
+										<tr class="titulo_tabla">
+											<td colspan="2">Renegociación</td>
+										</tr>	
+										<tr class="encabezado_right">
+											<td width="20%">{PORC_PAGO_SUGERIDO}{PORC_PAGO_SUGERIDO_H}% Pago Inicial Sugerido/Pagado:</td>
+											<td width="5%" class="oscuro">{PAGO_INICIAL_SUGERIDO}{PAGO_INICIAL_SUGERIDO_H}</td>
+											<td width="5%" class="oscuro">{PAGO_INICIAL}</td>
+										</tr>
+										<tr class="encabezado_right">
+											<td >Monto a Renegociar $/UTM:</td>
+											<td class="oscuro">{MONTO_RENEGOCIAR}{MONTO_RENEGOCIAR_H}</td>
+											<td class="oscuro">{MONTO_RENEGOCIAR_MONEDA}{MONTO_RENEGOCIAR_MONEDA_H}</td>
+										</tr>
+										<tr class="encabezado_right">
+											<td>Año inicio cobro/Monto actualizado UTM:</td>
+											<td class="oscuro">{ANO_INICIO_COBRO}</td>
+											<td class="oscuro">{MONTO_RENEGOCIAR_ACT}{MONTO_RENEGOCIAR_ACT_H}</td>
+										</tr>
+										<tr class="encabezado_right">
+											<td >Cantidad de Años:</td>
+											<td class="oscuro">{CANT_CUOTA}</td>
+											<td class="oscuro"></td>
+										</tr>
+										<tr class="encabezado_right">
+											<td>Cuota anual $/UTM:</td>
+											<td class="oscuro">{CUOTA_ANUAL}</td>
+											<td class="oscuro">{CUOTA_ANUAL_MONEDA}{CUOTA_ANUAL_MONEDA_H}</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>			
+						<table width="1000" border="1" rules="none" align="center">
+							<tr class="encabezado_right">
+								<td width="166">Estado :</td>
+								<td width="80" class="claro" align="left">{COD_ESTADO_RENEGOCIACION}{NOM_ESTADO_RENEGOCIACION}{SALDO_RENEGOCIACION_H}{COD_ESTADO_ACTUAL}{COD_USUARIO_H}</td>
+								<td width="86" class="claro" align="left"> {NOM_USUARIO_CAMBIO}<br>{FECHA_CAMBIO} </td>
+								<td width="110">Autorizado Por:</td>
+								<td width="158" class="claro" align="left">&nbsp;&nbsp;{AUTORIZADO}&nbsp;&nbsp;{USUARIO_AUTORIZA}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{FECHA_AUTORIZA}</td>
+								<td width="100">Nueva deuda :</td>
+								<td width="100" class="claro" align="left">{COD_DEUDA_NUEVA}</td>
+								<td width="117">Código Comprobante :</td>
+								<td width="100" class="claro" align="left">{COD_COMPROBANTE}</td>
+							</tr>
+							<tr class="encabezado_right">
+								<td>Observaciones:</td>
+								<td colspan="9" class="claro" align="left">{OBS}</td>
+							</tr>
+						<!--FIN RENEGOCIACION-->
+						<!--FIN TabbedPanelsContentGroup-->
+				</table>
+				<table width="1000" border="0" align="center">
+					<tr valign="middle">
+						<td width="290">{WI_BACK}</td>
+						<td align="right">{WI_FIRST}{WI_PREV}</td>
+						<td align="left">{WI_NEXT}{WI_LAST}</td>
+						<td width="290"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</td>
+</tr>
+</table>
+<script type="text/javascript">
+<!--
+var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels1");
+//-->
+</script>
+</body>
+</html>

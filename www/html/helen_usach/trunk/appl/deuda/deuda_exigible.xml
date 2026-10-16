@@ -1,0 +1,141 @@
+
+<Report>
+	<Font name="Arial" size="16" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="B" id="ArialBold"/>
+	<Font name="Arial" size="9" style="B" id="ArialBoldBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="12" style="B" id="ArialBoldBlueBig" red="0" green="0" blue="128"/>	
+	<Font name="Arial" size="9" style="" id="Arial"/>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="" id="ArialBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="" id="ArialItem"/>
+	<Font name="Arial" size="8.5" style="B" id="ArialBoldBlueItem" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="BU" id="ArialBoldUItem"/>
+	
+	<PageHeader>	
+		<Cell text="" height="7" newline="1" />
+		<Cell text="" newline="1"/>
+		<Cell text="" newline="1"/>		
+		<Cell text="{strHORA_FECHA}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="SITUACION DEUDA" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="" border="B" newline="1" height="1" redl="199" greenl="199" bluel="199"/>
+		<Cell text="" height="4" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{ANO_COBRO}" width="5%" border="LR" align="C" font="ArialItem"/>
+		<Cell text="{NRO_CUOTA}" width="5%" border="R" align="R"/>
+		<Cell text="{FECHA_VENCTO}" width="9%" border="R" align="C" font="ArialItem"/>
+		<Cell text="{MONTO_CAPITAL}" width="8%" border="R" align="R" format="N4,." font="ArialItem"/>
+		<Cell text="{MONTO_INTERES}" width="8%" border="R" align="R" format="N4,." font="ArialItem"/>
+		<Cell text="{ABONO}" width="8%" border="R" align="R" format="N4,." font="ArialItem"/>
+		<Cell text="{DESCUENTOS}" width="8%" border="R" align="R" format="N4,." font="ArialItem"/>
+		<Cell text="{SALDO_K}" width="8%" border="R" align="R" format="N4,." font="ArialItem"/>
+		<Cell text="{MULTA}" width="8%" border="R" align="R" format="N4,." font="ArialItem"/>
+		<Cell text="{SALDO_VENCIDO}" width="8%" border="R" align="R" format="N4,." font="ArialItem"/>
+		<Cell text="{SALDO_PESOS}" width="9%" border="R" align="R" format="N0,." font="ArialItem"/>
+		<Cell text="{NOM_CONCEPTO_COBRO}" width="8%" border="R" align="R" font="ArialItem"/>
+		<Cell text="{NOM_ESTADO_PLAN_PAGO}" width="9%" border="R" font="ArialItem"  newline="1"/>
+	</Content>
+	<Group local="COD_DEUDA">
+		<GroupHeader>	
+			<Cell text="" align="R" newline="1" />
+			<Cell text="" newline="1"/>		
+			<Cell text="" height="1" newline="1" />			
+			<Cell height="4" newline="1"/>	
+			<Cell text="Rut                                :" width="19%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{RUT}" width="10%" border="B" align="R" font="Arial" format="N0,." redl="192" greenl="192" bluel="192"/>
+			<Cell text="- {DIG_VERIF}" width="6%" border="B" align="L" font="Arial" redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="2%"/>
+			<Cell text="N° Deuda :" width="12%" font="ArialBoldBlue"/>
+			<Cell text="{strCOD_DEUDA}" width="18%" border="B" align="L" font="Arial" redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="2%"/>
+			<Cell text="Tipo Deuda    :" width="12%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{COD_TIPO_DEUDA}" width="18%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			
+			 										
+			<Cell text="Nombre                         :" width="19%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{NOMBRE}" width="59%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			
+			<Cell text="Fecha Inicio Cobranza:" width="19%" font="ArialBoldBlue"/>
+			<Cell text="{FECHA_INICIO_COBRO}" width="16%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="2%"/>
+			<Cell text="Estado Deuda:" width="12%" font="ArialBoldBlue"/>
+			<Cell text="{NOM_ESTADO_DEUDA}" width="29%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			<Cell text="" newline="1"/>
+				
+			<Cell text="Año" width="5%" border="LRTB" align="C" font="ArialBoldBlueItem"/>
+			<Cell text="Cuota" width="5%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="F. Vencto." width="9%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Capital" width="8%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Inters" width="8%" border="LRTB" align="C" font="ArialBoldBlueItem"/>
+			<Cell text="Abono" width="8%" border="LRTB" align="C" font="ArialBoldBlueItem"/>
+			<Cell text="Desctos." width="8%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Saldo K" width="8%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="I. Penal" width="8%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Saldo Vencido" width="8%" border="LRTB" align="C" font="ArialBoldBlueItem"/>
+			<Cell text="Saldo $" width="9%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Concepto" width="8%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Estado" width="9%" border="LRTB" align="C" font="ArialBoldBlueItem" newline="1"/>
+			   
+		</GroupHeader>
+		<GroupFooter>
+				<Cell text="" newline="1"/>
+				<Cell text="" newline="1"/>
+				<Cell text="" newline="1"/>
+				
+				<!-- Titulo  resumen-->
+				<Cell text="" width="3%" border="B" font="ArialBoldBlue" redl="192" greenl="192" bluel="192" />
+				<Cell text="Resumen" align="L" width="36%" border="B" font="ArialBoldBlue" redl="192" greenl="192" bluel="192" newline="1"/>
+				
+				<Cell text="Valor {SIMBOLO}:" align="L" border="L" width="10%" font="ArialBoldBlue" redl="192" greenl="192" bluel="192"/>
+				<Cell text="{MONTO_MONEDA}" align="L" border="R" width="29%" font="Arial" format="N2,." redl="192" greenl="192" bluel="192" newline="1"/>
+				<Cell text="" border="L" width="13%" redl="192" greenl="192" bluel="192"/>
+				<Cell text="UTM" align="C"  width="12%" font="ArialBoldBlue"/>
+				<Cell text="Pesos" align="C" width="12%" font="ArialBoldBlue"/>
+				<Cell text="" border="R" width="2%" redl="192" greenl="192" bluel="192" newline="1"/>
+				<Cell text="" border="L" redl="192" greenl="192" bluel="192" width="5%"/>
+				<Cell text="Vencida:" align="R" width="8%" font="ArialBoldBlue"/>
+				<Cell text="{VENCIDA}" align="R" width="12%" font="Arial" format="N4,." redl="192" greenl="192" bluel="192"/>
+				<Cell text="{VENCIDA_PESOS}" align="R" width="12%" font="Arial" format="N0,."/>
+				<Cell text="" border="R" width="2%" redl="192" greenl="192" bluel="192" newline="1"/>
+				<Cell text="" border="L" width="5%" redl="192" greenl="192" bluel="192"/>
+				<Cell text="Vigente :" align="R" width="8%" font="ArialBoldBlue"/>
+				<Cell text="{VIGENTE}" align="R" width="12%" font="Arial" format="N4,."/>
+				<Cell text="{VIGENTE_PESOS}" align="R" width="12%" font="Arial" format="N0,."/>
+				<Cell text="" border="R" width="2%" redl="192" greenl="192" bluel="192" newline="1"/>
+				<Cell text="" border="L" width="5%" redl="192" greenl="192" bluel="192"/>
+				<Cell text="Futura   :" align="R" width="8%" font="ArialBoldBlue"/>
+				<Cell text="{FUTURA}" align="R" width="12%" font="Arial" format="N4,."/>
+				<Cell text="{FUTURA_PESOS}" align="R" border="B" width="12%" font="Arial" format="N0,."/>
+				<Cell text="" border="R" width="2%" redl="192" greenl="192" bluel="192" newline="1"/>
+				<Cell text="" align="R" border="L" width="13%" font="ArialBoldBlue" redl="192" greenl="192" bluel="192"/>
+				<Cell text="{SALDO_TOTAL}" align="R" border="T" width="12%" font="Arial" format="N4,."/>
+				<Cell text="{SALDO_TOTAL_PESOS}" align="R" border="T" width="12%" font="Arial" format="N0,."/>
+				<Cell text="" border="R" width="2%" redl="192" greenl="192" bluel="192" newline="1"/>
+				<Cell text="" border="T" width="39%" redl="192" greenl="192" bluel="192" newline="1"/>		
+		</GroupFooter>
+	</Group>
+	<Group local="COD_DEUDA">
+		<Variable name="SUM_CAPITAL" function="SUM" value="MONTO_CAPITAL"/>
+		<Variable name="SUM_INTERES" function="SUM" value="MONTO_INTERES"/>
+		<Variable name="SUM_ABONO" function="SUM" value="ABONO"/>
+		<Variable name="SUM_DESCUENTOS" function="SUM" value="DESCUENTOS"/>
+		<Variable name="SUM_SALDO_K" function="SUM" value="SALDO_K"/>
+		<Variable name="SUM_MULTA" function="SUM" value="MULTA"/>
+		<Variable name="SUM_SALDO_VENCIDO" function="SUM" value="SALDO_VENCIDO"/>
+		<Variable name="SUM_SALDO_PESOS" function="SUM" value="SALDO_PESOS"/>
+		<GroupFooter>
+				<Cell text="TOTAL" border="T" align="R" width="19%" font="ArialBoldBlueItem"/>
+				<Cell text="{SUM_CAPITAL}" width="8%" border="LRTB" align="R" font="ArialItem" format="N4,. "/>
+				<Cell text="{SUM_INTERES}" width="8%" border="LRTB" align="R" font="ArialItem" format="N4,. "/>
+				<Cell text="{SUM_ABONO}" width="8%" border="LRTB" align="R" font="ArialItem" format="N4,. "/>
+				<Cell text="{SUM_DESCUENTOS}" width="8%" border="LRTB" align="R" font="ArialItem" format="N4,. "/>
+				<Cell text="{SUM_SALDO_K}" width="8%" border="LRTB" align="R" font="ArialItem" format="N4,. "/>
+				<Cell text="{SUM_MULTA}" width="8%" border="LRTB" align="R" font="ArialItem" format="N4,. "/>
+				<Cell text="{SUM_SALDO_VENCIDO}" width="8%" border="LRTB" align="R" font="ArialItem" format="N4,. "/>
+				<Cell text="{SUM_SALDO_PESOS}" width="9%" border="LRTB" align="R" font="ArialItem" format="N0,. "/>
+				<Cell text="" width="17%" border="T" />
+		</GroupFooter>
+	</Group>
+</Report>

@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Novación de Deudas</title>
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="utf-8" src="novacion.js" type="text/javascript"></script>
+<link href="{W_CSS}" rel="stylesheet" type="text/css"/>
+<style type="text/css">
+<!--
+body 
+{
+	background-color: #E5E5E5;
+	text-align:center;
+	font-size:14px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+.msg {
+	color:#000;
+	text-align:center;
+	font-size:11px;
+	font-weight:bolder;
+}
+
+.table{
+	font-size: 11px;
+	font-weight: bold; 
+	color: #FFF;
+	margin-top:1em;
+	border:#000033 1px solid;
+	margin-left:2px;
+	background: #919191;
+}
+
+.table2{
+	font-size: 10px;
+	font-weight: bold; 
+	color: #666666;	
+	border-top: #fff  1px solid;
+	border-left: #fff  1px solid;
+	border-bottom:#fff  1px solid;
+	border-right: #fff  1px solid;
+	margin-left:2px;
+	background-color:#CCCCCC;	
+}
+
+.titulo_tabla{
+	background-color: #E5E5E5;
+	font-size: 12px;
+	font-weight:bold;	
+	color: #000066;
+	text-align:left;
+	padding-top:9px;
+	margin-left:-5px;
+	width:200px;	
+}
+-->
+</style>
+<script type="text/javascript">
+function get_returnVal(){
+	var aTR = get_TR('DEUDAS');
+	var res = 'false';
+	for (var i=0; i<aTR.length; i++){
+		var seleccion = document.getElementById('OPCION_'+i).checked;
+		
+		if(seleccion == true){
+			var vl_cod_deuda = document.getElementById('COD_DEUDA_H_'+i).value;
+			var vl_rut = document.getElementById('RUT_H_'+i).value;
+			res = 'true';
+		}
+	}
+	
+	if(res == 'true'){
+		var ajax = nuevoAjax();
+		ajax.open("GET", "ajax_seleccion_deuda.php?rut_deudor="+vl_rut+"&cod_deuda="+vl_cod_deuda, false);
+		ajax.send(null);
+		var resp = URLDecode(ajax.responseText);
+		var lista = resp.split('|');
+		return lista;	
+	}else{
+		alert('Debe Seleccionar una Deuda para continuar')
+		return false;
+	}
+}
+</script>
+</head>
+<body>
+<form id="form1" name="form1" method="post" action="">
+	<div class="titulo_tabla_wm">&nbsp;&nbsp;Seleccione la Deuda</div>
+	<div style="overflow-x:hidden; overflow-y:auto; height:180; margin-top:-1em;">
+		<table width="400" rules="none" border="1" align="center" class="table2">							
+			<tr class="encabezado_right" align="center">
+				<td align="center" width="25%">Seleccionar</td>
+				<td align="center" width="30%">Cod Deuda</td>
+				<td align="center" width="45%">Estado Deuda</td>
+			</tr>
+		</table>
+		<table width="400" rules="none" border="1" align="center" class="table2" id="DEUDAS">
+			<!-- startBlock(DEUDAS) -->
+			<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+				<td align="center" width="25%">{REGISTROS}{OPCION}</td>
+				<td align="right" width="30%">{RUT_H}{COD_DEUDA_H}{COD_DEUDA}</td>
+				<td align="left" width="45%">{NOM_ESTADO_DEUDA}</td>
+			</tr>
+			<!-- endBlock(DEUDAS) -->
+		</table>
+	</div>
+	<table width="400" border="0" align="center">
+		<tr>
+			<td align="right"><br/><input name="Aceptar" type="button" value="Aceptar" onclick="if(!(get_returnVal())) return false; else returnValue=get_returnVal();	window.close();" class="button"/></td>
+			<td align="left"><br/><input name="cancelar" type="button" value="Cancelar" onclick="returnValue=null; window.close();" class="button"/></td>
+		</tr>
+	</table>
+</form>
+</body>
+</html>

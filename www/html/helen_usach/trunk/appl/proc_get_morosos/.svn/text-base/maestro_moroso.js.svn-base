@@ -1,0 +1,15 @@
+function load(){
+	document.getElementById('fecha').style.border = '1px solid #FF0000';
+	document.getElementById('fecha').focus();	
+}
+
+function valida_fecha(){
+	var fecha = document.getElementById('fecha').value;
+	if(fecha == ''){
+		alert('Debe ingresar Fecha antes de Importar la información.');
+		load();
+		return false;
+	}
+	
+	return true;
+}

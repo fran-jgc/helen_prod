@@ -1,0 +1,533 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Sistema Helen</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+
+<script src="../../../../commonlib_seven/trunk/script_js/SpryTabbedPanels.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="utf-8" src="deudor.js" type="text/javascript"></script>
+<link href="../../../../commonlib_seven/trunk/css/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+.Estilo1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+
+.Estilo2 {
+	color: #993300;
+	font-weight: bold;
+	align: right;
+}
+-->
+</style>
+{WI_JAVA_SCRIPT}
+</head>
+<body {WI_ONLOAD}>
+<!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js" type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+<form action="" method="post" name="input" id="input" enctype="multipart/form-data"><input name="wi_hidden" id="wi_hidden" type="hidden"
+	value="">
+<table width="1050" border="0" align="center">
+	<tr bgcolor="#FFFFFF">
+		<!-- menu superior-->
+		<td width="1000" height="51" align="center" id="awmAnchor-menu" style="width: 100px; height: 50px;"></td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+			<table width="1000" border="0">
+				<tr>
+					<td>
+						<table width="728" border="0">
+							<tr>
+								<td height="100%" width="30%">
+								<div class="titulo_central">{WI_RUTA_MENU}</div>
+								</td>
+								<td height="150%" width="30%" rowspan="3" align="center" id="val" name="val" style="display:{VISIBLE_CAMPO}"><div class="titulo_docto_anulada">{TITULO_DEUDOR_MOROSO}</div></td>
+								<td height="150%" width="40%" rowspan="3" align="center" id="val" name="val" style="display:{VISIBLE_CAMPO_PROTES}"><div class="titulo_docto_anulada">{TITULO_DOC_PROTES}</div></td>
+							</tr>
+							<tr>
+								<td height="0%">
+								<div class="tit_superior"><font color="#999999">{WI_FECHA_ACTUAL} </font></div>
+								</td>
+							</tr>
+							<tr>
+								<td height="0%">
+									<div class="tit_superior"><font color="#999999">{WI_FECHA_MODIF} </font></div>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td width="68">{WI_PRINT}</td>
+					<td width="68">{WI_NO_SAVE}</td>
+					<td width="68">{WI_SAVE}</td>
+					<td width="68">{WI_MODIFY}</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+			<table width="1000" border="0" align="center">
+				<tr>
+					<td height="95">
+						<table width="1015" border="0" align="center">
+							<tr valign="top">
+								<td>
+									<div id="TabbedPanels1" class="TabbedPanels">
+										<ul class="TabbedPanelsTabGroup">
+											<li class="TabbedPanelsTab" tabindex="0" style="display:{TAB_100505}">Deudor</li>
+											<li class="TabbedPanelsTab" tabindex="0" style="display:{TAB_100510}">Direcciones</li>
+											<li class="TabbedPanelsTab" tabindex="0" style="display:{TAB_100515}">Historico</li>
+											<li class="TabbedPanelsTab" tabindex="0" style="display:{TAB_100520}">Declaraciones</li>
+											<li class="TabbedPanelsTab" tabindex="0" style="display:{TAB_100525}">Simulaciones</li>
+											<li class="TabbedPanelsTab" tabindex="0" style="display:{TAB_100530}">Bitacora</li>
+										</ul>
+										<div class="TabbedPanelsContentGroup">
+											<div class="TabbedPanelsContent" style="height: 492px;">
+												<!--INI DEUDOR-->
+												<table width="1000" rules="none" border="1" align="center" class="claro">
+													<tr class="titulo_tabla">
+														<td colspan="6">ANTECEDENTES PERSONALES</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td width="151">Rut:</td>
+														<td width="165" class="claro" align="left">{RUT}-{DIG_VERIF}{COD_DEUDOR}</td>
+														<td width="151">Sexo:</td>
+														<td width="165" class="claro" align="left">{SEXO}</td>
+														<td width="151">Estado Civil:</td>
+														<td width="165" class="claro" align="left">{COD_ESTADO_CIVIL}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td>Apellido Paterno:</td>
+														<td class="oscuro" align="left">{APELLIDO_PATERNO}</td>
+														<td>Apellido Materno:</td>
+														<td class="oscuro" align="left">{APELLIDO_MATERNO}</td>
+														<td>Nombre:</td>
+														<td class="oscuro" align="left">{NOMBRE}</td>
+													</tr>
+													<tr class="encabezado_right">
+														<td>Fecha de Nacimiento:</td>
+														<td class="claro" align="left">{FECHA_NACIM}</td>
+														<td>Fecha de Defunci&#243;n:</td>
+														<td class="claro" align="left">{FECHA_DEFUNCION}</td>
+														<td colspan="2" class="claro" align="center"><input type="submit" name="b_envio_clave" value="Envio Clave Internet" class="Button" onClick="return envio_clave_internet();" {DISABLE_BUTTON_ENVIO}></td>
+													</tr>
+													<tr class="encabezado_right">
+														<td>Situación Académica:</td>
+														<td class="oscuro" colspan="6" align="left">{COD_SITUACION_ACADEMICA}</td>
+													</tr>
+												</table>	
+													<p />	
+													<p />
+												<table width="1000" rules="none" border="1" align="center" class="claro">
+													<tr class="titulo_tabla">
+														<td width="160" colspan="11">DETALLE DEUDA</td>
+													</tr>
+													<tr class="encabezado_center">
+														<td width="50">Nro. Deuda</td>
+														<td width="160">Estado</td>
+														<td width="80">Inicio Cobro</td>
+														<td width="80">Tipo Deuda</td>
+														<td width="50">Cuotas</td>
+														<td width="80">No Exigible</td>
+														<td width="80">Vencida</td>
+														<td width="80">Vigente</td>
+														<td width="80">Futura</td>
+														<td width="80">Saldo</td>
+														<td width="120">Cartera</td>
+													</tr>
+												</table>
+													<div style="overflow-x: hidden; overflow-y: auto; height: 600;" >
+														<table width="1000" rules="none" border="1" align="center" class="claro" id="DETALLE_DEUDA">
+														<!-- startBlock(DETALLE_DEUDA) -->
+															<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+																<td align="center" width="50">{COD_DEUDA}</td>
+																<td align="left" width="160">{NOM_ESTADO_DEUDA}</td>
+																<td align="center" width="80">{FECHA_INICIO_COBRO}</td>
+																<td align="center" width="80">{COD_TIPO_DEUDA}</td>
+																<td align="right" width="50">{CANT_CUOTA}</td>
+																<td align="right" width="80">{NO_EXIGIBLE}</td>
+																<td align="right" width="80">{VENCIDA}</td>
+																<td align="right" width="80">{VIGENTE}</td>
+																<td align="right" width="80">{FUTURA}</td>
+																<td align="right" width="80">{SALDO}</td>
+																<td align="center" width="120">{NOM_CARTERA}</td>
+															</tr>
+														<!-- endBlock(DETALLE_DEUDA) -->
+														</table>
+													</div>
+											</DIV>
+												<!--FIN DEUDOR-->
+											<div class="TabbedPanelsContent" style="height: 492px; width: 1000px;">
+											<!--INI DIRECCIONES-->
+												<div id="TabbedPanels2" class="TabbedPanels">
+													<ul class="TabbedPanelsTabGroup">
+														<li class="TabbedPanelsTab" tabindex="0" style="display: {">Actuales</li>
+														<li class="TabbedPanelsTab" tabindex="0" style="display: {">Historicas</li>
+													</ul>
+														<div class="TabbedPanelsContentGroup">
+															<div class="TabbedPanelsContent" style="height: 460px;"><!--INI DIRECCIONES_ACTUALES-->
+																<table width="1000" rules="none" border="1" align="center" class="claro">
+																	<tr class="titulo_tabla">
+																		<td colspan="8">DIRECCION PARTICULAR</td>
+																	</tr>
+																	<tr class="encabezado_right">
+																		<td>Dirección:</td>
+																		<td colspan="3" class="claro" align="left">{COD_DIRECCION_PARTICULAR}{DIRECCION_PARTICULAR}</td>
+																		<td>Fecha Ingreso:</td>
+																		<td class="claro" align="left">{FECHA_DIRECCION_PARTICULAR}</td>
+																		<td>Valida:</td>
+																		<td class="claro" align="left">{ES_VALIDA_PARTICULAR}</td>
+																	</tr>
+																	<tr class="encabezado_right">
+																		<td width="10%">Pa&#237;s:</td>
+																		<td width="15%" class="oscuro" align="left">{COD_PAIS_PARTICULAR}{K_CHILE_H}</td>
+																		<td width="10%">Región:</td>
+																		<td width="15%" id="td_cod_region_p" style="display:{DISPLAY_PAIS_CHILE_PARTICULAR}" class="oscuro" align="left">{COD_REGION_PARTICULAR}</td>
+																		<td width="15%" id="td_ext_region_p" style="display:{DISPLAY_EXTRANJERO_PARTICULAR}" class="oscuro" align="left">{EXT_REGION_PARTICULAR}</td>
+																		<td width="10%">Ciudad:</td>
+																		<td width="15%" id="td_cod_ciudad_p" style="display:{DISPLAY_PAIS_CHILE_PARTICULAR}" class="oscuro" align="left">{COD_CIUDAD_PARTICULAR}</td>
+																		<td width="15%" id="td_ext_ciudad_p" style="display:{DISPLAY_EXTRANJERO_PARTICULAR}" class="oscuro" align="left">{EXT_CIUDAD_PARTICULAR}</td>
+																		<td width="10%">Comuna:</td>
+																		<td width="15%" id="td_cod_comuna_p" style="display:{DISPLAY_PAIS_CHILE_PARTICULAR}" class="oscuro" align="left" >{COD_COMUNA_PARTICULAR}</td>
+																		<td width="15%" id="td_ext_comuna_p" style="display:{DISPLAY_EXTRANJERO_PARTICULAR}" class="oscuro" align="left" >{EXT_COMUNA_PARTICULAR}</td>
+																	</tr>
+																	<tr class="encabezado_right">
+																		<td>e-mail:</td>
+																		<td class="claro" align="left">{EMAIL_PARTICULAR}{EMAIL_PARTICULAR_H}</td>
+																		<td>Tel&#233;fono:</td>
+																		<td class="claro" align="left">{TELEFONO_PARTICULAR}</td>
+																		<td>Celular:</td>
+																		<td class="claro" align="left" colspan="3">{CELULAR_PARTICULAR}</td>
+																	</tr>
+																</table>						
+																<table width="1000" rules="none" border="1" align="center" class="claro">
+																	<tr class="titulo_tabla">
+																		<td colspan="8">DIRECCION COMERCIAL</td>
+																	</tr>
+																	<tr class="encabezado_right">
+																		<td>Direcci&#243;n:</td>
+																		<td colspan="3" class="claro" align="left">{COD_DIRECCION_COMERCIAL}{DIRECCION_COMERCIAL}</td>
+																		<td>Fecha Ingreso:</td>
+																		<td class="claro" align="left">{FECHA_DIRECCION_COMERCIAL}</td>
+																		<td>Valida:</td>
+																		<td class="claro" align="left">{ES_VALIDA_COMERCIAL}</td>
+																	</tr>
+																	<tr class="encabezado_right">
+																		<td width="10%">Pa&#237;s:</td>
+																		<td width="15%" class="oscuro" align="left">{COD_PAIS_COMERCIAL}</td>
+																		<td width="10%">Región:</td>
+																		<td width="15%" id="td_cod_region_c" style="display:{DISPLAY_PAIS_CHILE_COMERCIAL}" class="oscuro" align="left">{COD_REGION_COMERCIAL}</td>
+																		<td width="15%" id="td_ext_region_c" style="display:{DISPLAY_EXTRANJERO_COMERCIAL}" class="oscuro" align="left">{EXT_REGION_COMERCIAL}</td>
+																		<td width="10%">Ciudad:</td>
+																		<td width="15%" id="td_cod_ciudad_c" style="display:{DISPLAY_PAIS_CHILE_COMERCIAL}" class="oscuro" align="left">{COD_CIUDAD_COMERCIAL}</td>
+																		<td width="15%" id="td_ext_ciudad_c" style="display:{DISPLAY_EXTRANJERO_COMERCIAL}" class="oscuro" align="left">{EXT_CIUDAD_COMERCIAL}</td>
+																		<td width="10%">Comuna:</td>
+																		<td width="15%" id="td_cod_comuna_c" style="display:{DISPLAY_PAIS_CHILE_COMERCIAL}" class="oscuro" align="left">{COD_COMUNA_COMERCIAL}</td>
+																		<td width="15%" id="td_ext_comuna_c" style="display:{DISPLAY_EXTRANJERO_COMERCIAL}" class="oscuro" align="left">{EXT_COMUNA_COMERCIAL}</td>
+																	</tr>
+																	<tr class="encabezado_right">
+																		<td>e-mail:</td>
+																		<td class="claro" align="left">{EMAIL_COMERCIAL}</td>
+																		<td>Tel&#233;fono:</td>
+																		<td class="claro" align="left">{TELEFONO_COMERCIAL}</td>
+																		<td>Celular:</td>
+																		<td class="claro" align="left" colspan="3">{CELULAR_COMERCIAL}</td>
+																	</tr>
+																</table>
+															</div>
+																<!--FIN DIRECCIONES_ACTUALES-->
+															<div class="TabbedPanelsContent" style="height: 460px;"><!--INI DIRECCIONES_HISTORICAS-->						
+																<div style="overflow-x: auto; overflow-y: hidden; height:250; width:100%;">
+																	<table width="1200" rules="none" border="1" align="center" class="claro">
+																		<tr class="titulo_tabla">
+																			<td colspan="9" width="80">HISTORICAS PARTICULARES</td>
+																		</tr>							
+																		<tr class="encabezado_center">
+																			<td width="220">Direcci&#243;n</td>
+																			<td width="130">Pa&#237;s</td>
+																			<td width="130">Ciudad</td>
+																			<td width="100">Comuna</td>
+																			<td width="90">Tel&#233;fono</td>
+																			<td width="90">Celular</td>
+																			<td width="300">E-mail</td>
+																			<td width="70">Fecha</td>
+																			<td width="65">Es valida</td>
+																		</tr>
+																	</table>
+																		<div style="overflow-x: hidden; overflow-y: auto; height:189; width:1200;">
+																			<table width="1200" rules="none" border="1" align="center" class="claro">
+																				<!-- startBlock(DIRECCION_PARTICULAR_HISTORICA) -->
+																				<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+																					<td width="215" align="left">{DIRECCION}</td>
+																					<td width="125" align="left">{NOM_PAIS}</td>
+																					<td width="130" align="left">{NOM_CIUDAD}</td>
+																					<td width="100" align="left">{NOM_COMUNA}</td>
+																					<td width="85" align="left">{TELEFONO}</td>
+																					<td width="93" align="left">{CELULAR}</td>
+																					<td width="287" align="left">{EMAIL}</td>
+																					<td width="70" align="center">{FECHA_DIRECCION_NO_ING}</td>
+																					<td width="65" align="center">{ES_VALIDA_DIR_PAR_HIST}</td>
+																				</tr>
+																				<!-- endBlock(DIRECCION_PARTICULAR_HISTORICA) -->
+																			</table>
+																		</div>
+																</div>						
+																<p />	
+																<p />						
+																<div style="overflow-x: auto; overflow-y: hidden; height:200;">				
+																	<table width="1200" rules="none" border="1" align="center" class="claro">
+																		<tr class="titulo_tabla">
+																			<td colspan="9" width="80">HISTORICAS COMERCIALES</td>
+																		</tr>
+																		<tr class="encabezado_center">
+																			<td width="220">Direcci&#243;n</td>
+																			<td width="130">Pa&#237;s</td>
+																			<td width="130">Ciudad</td>
+																			<td width="100">Comuna</td>
+																			<td width="90">Tel&#233;fono</td>
+																			<td width="90">Celular</td>
+																			<td width="300">E-mail</td>
+																			<td width="70">Fecha</td>
+																			<td width="65">Es valida</td>
+																		</tr>
+																	</table>						
+																	<div style="overflow-x: hidden; overflow-y: auto; height:141; width:1200;">
+																		<table width="1200" rules="none" border="1" align="center" class="claro">
+																			<!-- startBlock(DIRECCION_COMERCIAL_HISTORICA) -->
+																			<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+																				<td width="215" align="left">{DIRECCION}</td>
+																				<td width="125" align="left">{NOM_PAIS}</td>
+																				<td width="130" align="left">{NOM_CIUDAD}</td>
+																				<td width="100" align="left">{NOM_COMUNA}</td>
+																				<td width="85" align="left">{TELEFONO}</td>
+																				<td width="93" align="left">{CELULAR}</td>
+																				<td width="287" align="left">{EMAIL}</td>
+																				<td width="70" align="center">{FECHA_DIRECCION_NO_ING}</td>
+																				<td width="65" align="center">{ES_VALIDA_DIR_COM_HIST}</td>
+																			</tr>
+																			<!-- endBlock(DIRECCION_COMERCIAL_HISTORICA) -->
+																		</table>
+																	</div>
+																</div>
+															</div>
+															<!--FIN DIRECCIONES_HISTORICAS-->
+														</div>		
+												</div>
+											</div>										
+												<!--FIN DIRECCIONES-->
+												<!--INI HISTORICO-->
+											<div class="TabbedPanelsContent" style="height: 492px;">
+												<table width="1000" rules="none" border="1" align="center" class="claro">
+													<tr class="titulo_tabla">
+														<td colspan="3">CARRERAS</td>
+													</tr>
+													<tr class="encabezado_center">
+														<td width="100">A&#241;o Acad&#233;mico</td>
+														<td width="100">Semestre</td>
+														<td width="400">Carrera</td>
+														<td width="345">Nombre Universidad</td>
+														<td width="55">Eliminar</td>
+													</tr>
+												</table>
+												<div style="overflow-x: hidden; overflow-y: auto; height: 300;">
+													<table width="1000" rules="none" border="1" align="center" class="claro" id="CARRERA_HISTORICA">
+														<!-- startBlock(CARRERA_HISTORICA) -->
+														<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+															<td width="100" align="center">{COD_MATRICULA}{ANO_MATRICULA}</td>
+															<td width="100" align="center">{SEMESTRE}</td>
+															<td width="400" align="left">{COD_CARRERA}</td>
+															<td width="345" align="left">{COD_UNIVERSIDAD}</td>
+															<td width="55"  align="center">{ELIMINAR_CARRERA_HISTORICA}</td>
+														</tr>
+														<!-- endBlock(CARRERA_HISTORICA) -->
+													</table>
+												</div>
+												<table width="1000" rules="none" border="1" align="center" class="claro" id="ADD_CARRERA_HISTORICA">
+													<tr class="claro">
+														<td colspan="4" align="left">{AGREGAR_CARRERA_HISTORICA}</td>
+													</tr>
+												</table>
+											</div>
+												<!--FIN HISTORICO-->
+											<div class="TabbedPanelsContent" style="height: 492px;"><!--INI DECLARACIONES-->
+												<table width="1000" rules="none" border="1" align="center" class="claro">
+													<tr class="titulo_tabla">
+														<td colspan="9">DECLARACIONES</td>
+													</tr>
+													<tr class="encabezado_center">
+														<td width="10%">Folio</td>
+														<td width="7%">A&#241;o Cuota</td>
+														<td width="10%">Fecha Declaraci&#243;n</td>
+														<td width="10%">Estado Civil</td>
+														<td width="10%">Rut Conyuge</td>
+														<td width="10%">Conyuge Deudor</td>
+														<td width="10%">Tiene Hijos</td>
+														<td width="15%">Total declaraci&#243;n Deudor en UTM</td>
+														<td width="15%">Total declaraci&#243;n Conyuge en UTM</td>
+													</tr>
+												</table>
+												<div style="overflow-x: hidden; overflow-y: auto; height:60;">
+													<table width="1000" rules="none" border="1" align="center" class="claro">
+														<!-- startBlock(DECLARACION) -->
+														<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+															<td width="10%" align="center"><a href="#">{COD_DECLARACION}</a></td>
+															<td width="7%" align="center"><a href="#">{ANO}</a></td>
+															<td width="10%" align="center">{FECHA_DECLARACION}</td>
+															<td width="10%">{NOM_ESTADO_CIVIL}</td>
+															<td width="10%">{RUT_CONYUGE}-{DIG_VERIF_CONYUGE}</td>
+															<td width="10%" align="center">{CONYUGE_ES_DEUDOR}</td>
+															<td width="10%" align="center">{CON_HIJO}</td>
+															<td width="15%" align="right">{TOT_DECL_DEUDOR_UTM}</td>
+															<td width="15%" align="right">{TOT_DECL_CONYUGE_UTM}</td>
+														</tr>
+														<!-- endBlock(DECLARACION) -->
+													</table>						
+												</div>
+												<table width="1000" rules="none" border="1" align="center" class="claro">
+													<tr class="titulo_tabla">
+														<td colspan="5">DETALLE DECLARACION AÑO CUOTA {ANO_DECLARACION_SELECCIONADA}</td>
+													</tr>
+													<tr class="encabezado_center">
+														<td width="150">Mes</td>
+														<td width="100">UTM Deudor</td>
+														<td width="100">Pesos Deudor</td>
+														<td width="100">UTM Conyuge</td>
+														<td width="100">Pesos Conyuge</td>
+													</tr>
+												</table>		
+												<div style="overflow-x: hidden; overflow-y: auto; height:305;">			
+													<table width="1000" rules="none" border="1" align="center" class="claro">
+														<!-- startBlock(DETALLE_DECLARACION) -->
+														<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+															<td width="150" align="left">{MES}</td>
+															<td width="100" align="right">{MONTO_DEUDOR_MONEDA}</td>
+															<td width="100" align="right">{MONTO_DEUDOR_PESOS}</td>
+															<td width="100" align="right">{MONTO_CONYUGE_MONEDA}</td>
+															<td width="100" align="right">{MONTO_CONYUGE_PESOS}</td>
+														</tr>
+														<!-- endBlock(DETALLE_DECLARACION) -->
+													</table>
+												</div>
+												<table width="1000" rules="none" border="1" align="center" class="claro">
+													<tr class="titulo_tabla">
+														<td width="150" class="encabezado_center">TOTAL</td>
+														<td width="100" align="right">{SUM_MONTO_DEUDOR_MONEDA}</td>
+														<td width="100" align="right">{SUM_MONTO_DEUDOR_PESOS}</td>
+														<td width="100" align="right">{SUM_MONTO_CONYUGE_MONEDA}</td>
+														<td width="100" align="right">{SUM_MONTO_CONYUGE_PESOS}</td>
+													</tr>
+												</table>
+											</div>
+												<!--FIN DECLARACIONES-->
+												<!--INI SIMULACION-->
+											<div class="TabbedPanelsContent" style="height: 492px;">
+												<table width="1000" rules="none" border="1" align="center" class="claro">
+													<tr class="titulo_tabla">
+														<td colspan="3">SIMULACIONES</td>
+													</tr>
+													<tr class="encabezado_center">
+														<td width="120" align="center">Nº Simulación</td>
+														<td width="100" align="center">Fecha</td>
+														<td width="400" align="left">Deudas</td>
+														<td width="100" align="center">Docs. al día</td>
+														<td width="100" align="center">Docs. a fecha</td>
+														<td width="100" align="center">Total</td>
+														<td width="80" align="lefcentert">Nº ingreso</td>
+													</tr>
+												</table>
+												<div style="overflow-x: hidden; overflow-y: auto; height: 150;">
+													<table width="1000" rules="none" border="1" align="center" class="claro" id="SIMULACION">
+														<!-- startBlock(SIMULACION) -->
+														<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+															<td width="120" align="center">{COD_SIMULACION}</td>
+															<td width="100" align="center">{FECHA_SIMULACION}</td>
+															<td width="400" align="left">{DEUDAS}</td>
+															<td width="100" align="right">{TOT_DOC_AL_DIA}</td>
+															<td width="100" align="right">{TOT_DOC_AFECHA}</td>
+															<td width="100" align="right">{TOT_DOC}</td>
+															<td width="80" align="center">{COD_INGRESO_REAL}</td>
+														</tr>
+														<!-- endBlock(SIMULACION) -->
+													</table>						
+												</div>
+												<table width="1000" border="0" align="center" class="claro">
+													  <tr class="claro">
+														<td colspan="9" align="left">
+															<img style="cursor: pointer;" src="../../../../commonlib_seven/trunk/images/b_add_line.jpg" onclick="window.location.href = 'new_simulacion.php';">                          	  
+														</td>
+													  </tr>
+												</table>
+												<!--FIN SIMULACION-->
+												<!-- INI BITACORA -->
+											</DIV>
+											<div class="TabbedPanelsContent" style="height: 492px;">
+												<table width="1000" rules="none" border="1" align="center" class="claro">
+													<tr class="titulo_tabla">
+														<td colspan="5">BITACORA</td>
+													</tr>
+													<tr class="encabezado_center">
+														<td width="80">Fecha</td>
+														<td width="140">Tipo Evento</td>
+														<td width="300">Descripción</td>
+														<td width="100">Usuario</td>
+														<td width="50">Eliminar</td>
+													</tr>
+												</table>
+												<div style="overflow-x: hidden; overflow-y: auto; height: 350;">
+													<table width="1000" rules="none" border="1" align="center" class="claro" id="BITACORA_DEUDOR">
+														<!-- startBlock(BITACORA_DEUDOR) -->
+														<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+															<td align="center" width="80">{FECHA_BITACORA_DEUDOR}</td>
+															<td align="left" width="140">{COD_TIPO_BITACORA}</td>
+															<td align="left" width="300">{NOM_BITACORA_DEUDOR}</td>
+															<td align="left" width="100">{NOM_USUARIO}</td>
+															<td align="center" width="50">{ELIMINAR_BITACORA_DEUDOR}</td>
+														</tr>
+														<!-- endBlock(BITACORA_DEUDOR) -->
+													</table>
+												</div>
+												<table width="1000" rules="none" border="1" align="center" class="claro" id="ADD_BITACORA_DEUDOR" style="display: {">
+													<tr class="claro">
+														<td colspan="4" align="left">{AGREGAR_BITACORA_DEUDOR}</td>
+													</tr>
+												</table>
+												
+											</div><!--FIN TabbedPanelsContentGroup-->
+										</DIV>
+									</DIV>
+								</td>
+								<!--FIN TabbedPanels-->
+							</tr>
+						</table>
+						<table width="1000" border="0" align="center">
+							<tr valign="middle">
+								<td width="290">{WI_BACK}</td>
+								<td align="right">{WI_FIRST}{WI_PREV}</td>
+								<td align="left">{WI_NEXT}{WI_LAST}</td>
+								<td width="290"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
+<!--
+var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels1");
+var TabbedPanels2 = new Spry.Widget.TabbedPanels("TabbedPanels2");
+//-->
+</script>
+</body>
+</html>

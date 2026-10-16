@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<title>Documento sin t&iacute;tulo</title>
+	<link href="style_web_pay_usach.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<table width="983" height="100%" border="0" cellpadding="0" cellspacing="0">
+		<tr valign="top">
+			<td valign="top" bgcolor="#FFFFFF">
+				<br />			
+				<div class="tit_superior">CONSULTA DE DEUDA</div>						
+				<div class="sesion">
+				<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+					<tr>
+						<td height="20" valign="top">
+							<br />
+							<div align="right">
+								<a href="cambio_clave.php">Cambio de clave</a>&nbsp;&nbsp;&nbsp;
+								<a href="cerrar_sesion.php">Cerrar sesión</a>&nbsp;&nbsp;&nbsp;
+							</div>
+						</td>
+					</tr>
+				</table>
+				</div>
+				<p></p>							
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table width="1000" border="0" align="center" cellpadding="0" cellspacing="0">
+					<tr>						
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table width="1000" border="0" align="left" cellpadding="4" cellspacing="1" class="tabla_deuda">
+					<tr valign="middle">
+						<td width="15%" bgcolor="#F3F3F3">
+							<div align="left">RUT:</div>
+						</td>
+						<td width="75%" bgcolor="#FFFFFF">
+							<div class="deuda_resultado" align="left">{RUT} - {DIG_VERIF}</div>
+						</td>
+					</tr>
+					<tr valign="middle">
+						<td bgcolor="#F3F3F3">
+							<div align="left">Nombre:</div>
+						</td>
+						<td bgcolor="#FFFFFF">
+							<div align="left" class="deuda_resultado">{NOMBRE}</div>
+						</td>
+					</tr>
+					<tr valign="middle">
+						<td bgcolor="#F3F3F3" class="tablas">
+							<div align="left">Direcci&oacute;n Particular:</div>
+						</td>
+						<td bgcolor="#FFFFFF">
+							<div align="left" class="deuda_resultado">{DIRECCION}</div>
+						</td>
+					</tr>
+					<tr valign="middle">
+						<td bgcolor="#F3F3F3" class="tablas">
+							<div align="left">Fono Particular:</div>
+						</td>
+						<td bgcolor="#FFFFFF">
+							<div align="left" class="deuda_resultado">{FONO_PARTICULAR}</div>
+						</td>
+					</tr>
+					<tr valign="middle">
+						<td bgcolor="#F3F3F3" class="tablas">
+							<div align="left">E-mail Particular:</div>
+						</td>
+						<td bgcolor="#FFFFFF">
+							<div align="left" class="deuda_resultado">{EMAIL_PARTICULAR}</div>
+						</td>
+					</tr>
+					<tr valign="middle">
+						<td bgcolor="#F3F3F3" class="tablas">
+							<div align="left">Direcci&oacute;n Comercial:</div>
+						</td>
+						<td bgcolor="#FFFFFF">
+							<div align="left" class="deuda_resultado">{DIRECCION_COMERCIAL}</div>
+						</td>
+					</tr>
+					<tr valign="middle">
+						<td bgcolor="#F3F3F3" class="tablas">
+							<div align="left">Fono Comercial:</div>
+						</td>
+						<td bgcolor="#FFFFFF">
+							<div align="left" class="deuda_resultado">{FONO_COMERCIAL}</div>
+						</td>
+					</tr>
+					<tr valign="middle">
+						<td bgcolor="#F3F3F3" class="tablas">
+							<div align="left">E-mail Comercial:</div>
+						</td>
+						<td bgcolor="#FFFFFF">
+							<div align="left" class="deuda_resultado">{EMAIL_COMERCIAL}</div>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table align="left" cellpadding="4" cellspacing="1" class="tabla_deuda" style="width: 1000px; margin-top:2em;">
+					<tr valign="middle" bgcolor="#F3F3F3">
+						<td width="10%">
+							<div align="center">N&ordm; Deuda</div>
+						</td>
+						<td width="28%">
+							<div align="center">Estado</div>
+						</td>
+						<td width="14%">
+							<div align="center">Tipo deuda</div>
+						</td>
+						<td width="10%">
+							<div align="center">Moneda</div>
+						</td>
+						<td width="12%">
+							<div align="center">Fecha Inicio</div>
+						</td>
+						<td width="13%" >
+							<div align="center">Saldo</div>
+						</td>
+						<td width="13%">
+							<div align="center">Saldo pesos</div>
+						</td>
+					</tr>
+					<!-- startBlock(deuda) -->
+					<tr valign="middle" bgcolor="#FFFFFF">
+						<td>
+							<div class="deuda_resultado" align="center">
+								<a href="detalle_deuda.php?id={COD_DEUDA_DECODE}">{COD_DEUDA}</a>
+							</div>
+						</td>
+						<td>
+							<div class="deuda_resultado">{NOM_ESTADO_DEUDA}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado">{COD_TIPO_DEUDA}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado">{SIMBOLO}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado">{FECHA_INICIO_COBRO}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="right">{SALDO}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="right">{SALDO_PESOS}</div>
+						</td>
+					</tr>
+					<!-- endBlock(deuda) -->
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table width="1000">
+					<tr>						
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td align="right">
+							<a href="javascript:window.scroll(0,0)">Subir</a>
+						</td>								
+					</tr>							
+				</table>	
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

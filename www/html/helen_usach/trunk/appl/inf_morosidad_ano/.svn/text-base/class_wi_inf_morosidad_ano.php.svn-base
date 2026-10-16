@@ -1,0 +1,51 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_w_param_informe_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+ini_set('memory_limit', '480M');
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes
+class wi_inf_morosidad_ano extends w_param_informe_helen {
+    function __construct($cod_item_menu) {
+		$xml = session::get('K_ROOT_DIR').'appl/inf_morosidad_ano/inf_morosidad_ano.xml';
+		
+		$sql_informe = sql_inf_morosidad_ano::get_sql('INPUT');
+		
+		parent::__construct('inf_morosidad_ano', $cod_item_menu, 'Morosidad por Años', $xml, $sql_informe, 'spi_morosidad_ano');
+		
+		$sql = sql_inf_morosidad_ano::get_sql('INPUT_ANO');
+		
+		$this->dws['dw_param'] = new datawindow($sql);
+		
+		$sql = sql_inf_morosidad_ano::get_sql('INPUT_DD_DEUDA');
+		
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_TIPO_DEUDA', $sql));
+		$this->dws['dw_param']->add_control(new edit_num('ANO_INICIAL', 4, 4));
+		$this->dws['dw_param']->add_control(new edit_num('ANO_FINAL', 4, 4));
+
+		// mandatorys		
+		$this->dws['dw_param']->set_mandatory('COD_TIPO_DEUDA', 'Tipo Deuda');	
+		$this->dws['dw_param']->set_mandatory('ANO_INICIAL', 'Año Inicial');
+		$this->dws['dw_param']->set_mandatory('ANO_FINAL', 'Año Final');	
+	}
+	function make_filtro() {
+	 
+		$cod_tipo_deuda = $this->dws['dw_param']->get_item(0, 'COD_TIPO_DEUDA');
+		$ano_inicial    = $this->dws['dw_param']->get_item(0, 'ANO_INICIAL');
+		$ano_final      = $this->dws['dw_param']->get_item(0, 'ANO_FINAL');
+				
+		// Filtro
+		$nom_tipo_deuda = $this->dws['dw_param']->controls['COD_TIPO_DEUDA']->get_label_from_value($cod_tipo_deuda);
+		$this->filtro = "Tipo Deuda = $nom_tipo_deuda\n";
+		$this->filtro .= "Año Inicial = $ano_inicial; Año final = $ano_final\n";
+		
+		// Arma los parametros para el SP
+		$this->param = " '$cod_tipo_deuda', $ano_inicial, $ano_final";			
+	}	
+	/*function genera_pdf($labels = array(), $con_logo = true,$orientation='L',$unit='pt',$format='letter') {
+		//	echo $this->sql_informe.' '.$this->param;
+		parent::genera_pdf($labels, $con_logo,$orientation,$unit,$format);
+	}*/
+}
+?>

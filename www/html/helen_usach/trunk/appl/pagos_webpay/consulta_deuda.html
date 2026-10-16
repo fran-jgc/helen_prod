@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png" href="imagen/logo-usach.png" />
+
+	<title>Universidad de Santiago de Chile</title>
+	
+	<meta name="viewport" content="width= device-width, user-scalable = no">
+	<!--<link rel="stylesheet" href="css/bootstrap.min.css" >-->
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+
+	<style>
+		table {
+		    border-collapse: collapse;
+		    border-spacing: 0;
+		    width: 100%;
+		    border: 1px solid #ddd;
+		}
+		
+		th, td {
+		    text-align: left;
+		    padding: 8px;
+		}
+		
+		tr:nth-child(even){background-color: #f2f2f2}
+</style>
+
+</head>
+<header> 
+	<div class="container">
+		<p><br>
+			<img src="imagen/logo-usach.png" class="img-responsive" align="left" width="110" >
+			<h1> Universidad de Santiago de Chile </h1>
+			<h4> Administración General del Fondo Solidario</h4><br><br><br>
+		</p>
+	</div>
+</header>
+<body>
+	<nav class="navbar navbar-default">
+  		<div class="container">
+    		<div class="navbar-header">
+       			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"  data-target="#myNavbar"  aria-expanded="false">
+					<span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>                       
+				</button>
+    		</div> 
+    		<ul class="nav navbar-nav" >
+		      <li ><a href="inicio_sesion.php">Inicio</a></li>
+			</ul>
+
+	    <ul class="nav navbar-nav navbar-right">
+	    	<li><a href="cerrar_sesion.php"><span class="glyphicon glyphicon-remove"></span> Cerrar sesión</a></li>
+		</ul>
+    	<form class="navbar-form navbar-left" method="post">
+	    	<div class="input-group mb-3">
+        		<input type="text" id="myInput" name="myInput" onfocusout="buscarut()" placeholder=" Buscar Rut" title="Buscar Rut" class="form-control">
+				<INPUT TYPE="Radio" Name="Gender" Value="Rut" onclick="cambiaTXT();" id= "radio_rut" checked>Rut
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<INPUT TYPE="Radio" Name="Gender" Value="Fecha" onclick="cambiaTXT();" id= "radio_fecha">Fecha
+				<input type="hidden" id="tipo_filtro" name="tipo_filtro" value="RUT">
+			</div>
+	       <div>
+	       <div class="input-group">
+			  <span class="input-group-addon">Tipo Deuda</span>
+			  <select name="tipo" id="tipo" class="form-control" onchange="cambiarTipo();">
+                    <option value="Todos">Todos</option>
+                    <option value="Solidario">Solidario</option>
+                    <option value="Institucional">Institucional</option>
+                </select>
+			</div>
+			</div>
+ 			<div>
+	      	    <input  class="btn btn-primary" type="submit" id="EXPORTAR"  name="EXPORTAR"  onclick="" value="EXPORTAR">
+	       </div>
+	    </form>
+	</div>
+</nav>
+
+<div class="table-responsive">	
+				<table class="table table-bordered" id="deudas">
+
+					<thead>
+					<tr class="info">
+						<th>
+							<div align="center">N°</div>
+						</th>
+						<th>
+							<div align="center">RUT</div>
+						</th>
+						<th>
+							<div align="center">DV</div>
+						</th>
+						<th>
+							<div align="center">DEUDOR</div>
+						</th>
+						<th>
+							<div align="center">NOMBRE</div>
+						</th>
+						<th>
+							<div align="center">PATERNO</div>
+						</th>
+						<th>
+							<div align="center">MATERNO</div>
+						</th>
+						<th>
+							<div align="center">FECHA</div>
+						</th>
+						<th>
+							<div align="center">MONTO</div>
+						</th>
+						<th>
+							<div align="center">AUT.</div>
+						</th>
+						<th>
+							<div align="center">DEUDA</div>
+						</th>
+						<th>
+							<div align="center">PLAN PAGO</div>
+						</th>
+						<th>
+							<div align="center">ABONO</div>
+						</th>
+						<th>
+							<div align="center">TIPO</div>
+						</th>
+					</tr>
+					</thead>
+
+					
+					<tbody id="deudas">
+					<!-- startBlock(detalle_cuotas) -->
+					<tr>
+						<td>
+							<div class="deuda_resultado" align="center">{COD_WP_TRANSACCION}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{RUT}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{DIG_VERIF}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{COD_DEUDOR}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{NOMBRE}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{APELLIDO_PATERNO}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{APELLIDO_MATERNO}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{FECHA}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{MONTO}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{CODIGO_AUTORIZACION}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{COD_DEUDA}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{CODIGO_PLAN_PAGO}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{COD_ABONO}</div>
+						</td>
+						<td>
+							<div class="deuda_resultado" align="center">{TIPO_PAGO}</div>
+						</td>
+					</tr>		
+					</tbody>					
+					<!-- endBlock(detalle_cuotas) -->	
+
+				</table>
+		
+		</div>
+				
+		
+		<tr>
+			<td>
+			  	<table>
+					<tr>
+						<td>
+							<br>
+							<p>
+
+							<a href="javascript:window.scroll(0,0)" >  Subir  </a>	
+
+							<br>									
+													
+						</td>								
+					</tr>
+				</table>
+			</td>
+		</tr>
+
+
+	
+
+	
+
+
+
+
+
+	<footer>
+		<br>
+			<div class="container">
+					<h3>Universidad de Santiago de Chile.</h3>
+			<h4>Avenida El Belloto nº 3530, Estacion Central, Santiago, Chile</h4>
+			<h5>Mesa Central (+56) 2 718 15 00</h>
+			</div>
+		<br>
+	</footer>
+
+
+
+	<!--<script scr = "js/bootstrap.min.js" ></script>-->
+	<!-- Latest compiled and minified JavaScript -->
+	
+	
+	
+	<!--<script src="https://code.jquery.com/jquey-latest.js"></script>
+	<script src="Scripts/AC_RunActiveContent.js" type="text/javascript"></script>-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<!--<script charset="iso-8859-1" src="../declaracion/declaracion.js" type="text/javascript"></script>
+	<script charset="iso-8859-1" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+	<script charset="iso-8859-1" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>-->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script>
+
+	function cambiaTXT(){
+		radio_rut = document.getElementById("radio_rut").checked;
+		radio_fecha = document.getElementById("radio_fecha").checked;
+		
+		if(radio_fecha){
+			input = document.getElementById("myInput");
+			$("#myInput").attr("placeholder","Buscar Fecha dd/mm/yyyy");
+			$("#myInput").attr("title","Buscar Fecha dd/mm/yyyy");
+			$("#tipo_filtro").val('FECHA');
+		}
+		if(radio_rut){
+			input = document.getElementById("myInput");
+			$("#myInput").attr("placeholder","Buscar Rut");
+			$("#myInput").attr("title","Buscar Rut");
+			$("#tipo_filtro").val('RUT');
+		}
+	}
+	
+	function buscarut() {
+	  // Declare variables 
+	  var input, filter, table, tr, td, i;
+	  input = document.getElementById("myInput");
+	  filter = input.value.toUpperCase();
+	  table = document.getElementById("deudas");
+	  tr = table.getElementsByTagName("tr");
+	  radio_rut = document.getElementById("radio_rut").checked;
+	  radio_fecha = document.getElementById("radio_fecha").checked;
+	  
+	  // recorre todas las filas de la tabla y oculta las que no coinciden con la consulta de búsqueda
+	  for (i = 0; i < tr.length; i++) {
+		if(radio_rut == true){
+			td = tr[i].getElementsByTagName("td")[1];
+			
+			if (td) {
+				if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			} 
+		}
+		if(radio_fecha == true){
+			td2 = tr[i].getElementsByTagName("td")[7];
+			if (td2) {
+			  if (td2.innerHTML.toUpperCase().indexOf(filter) > -1) {
+				tr[i].style.display = "";
+				} else {
+				tr[i].style.display = "none";
+				}
+			}
+		}
+	  }
+	 
+	  var filtro_tipo = $("#tipo").val();
+		
+		$('#deudas tbody tr').each(function (index,element) {
+			if(filtro_tipo == 'Todos'){
+				return false;
+			}else{
+				var tipo = $(this).find("td").eq(13).find("div").html();
+				if(tipo.indexOf(filtro_tipo) > -1){
+					element.display = "";
+				}else{
+					element.style.display = "none";
+				}
+				
+			}
+	
+		});
+	}
+	
+	function cambiarTipo(){
+		var filter = $("#tipo").val();
+		
+		$('#deudas tbody tr').each(function (index,element) {
+			if(filter == 'Todos'){
+				element.display = "";
+			}else{
+				var tipo = $(this).find("td").eq(13).find("div").html();
+				if(tipo.indexOf(filter) > -1){
+					element.display = "";
+				}else{
+					element.style.display = "none";
+				}
+			}
+	
+		});
+	
+		buscarut();
+	}
+</script>
+</body>
+</html>

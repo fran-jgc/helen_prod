@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<definitions xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="urn:producto" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:producto">
+<types>
+<xsd:schema targetNamespace="urn:producto">
+ <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+ <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
+</xsd:schema>
+</types>
+<message name="getProdRequest">
+  <part name="categoria" type="xsd:string"/></message>
+<message name="getProdResponse">
+  <part name="return" type="xsd:string"/></message>
+<portType name="productoPortType">
+  <operation name="getProd">
+    <documentation>Nos da una lista de productos de cada categoría</documentation>
+    <input message="tns:getProdRequest"/>
+    <output message="tns:getProdResponse"/>
+  </operation>
+</portType>
+<binding name="productoBinding" type="tns:productoPortType">
+  <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="getProd">
+    <soap:operation soapAction="urn:producto#getProd" style="rpc"/>
+    <input><soap:body use="encoded" namespace="urn:producto" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="urn:producto" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+</binding>
+<service name="producto">
+  <port name="productoPort" binding="tns:productoBinding">
+    <soap:address location="http://192.168.2.140/desarrolladores/jvenegas/simulacion_RCS/trunk/appl/web_service/nusoap/example/producto.php"/>
+  </port>
+</service>
+</definitions>

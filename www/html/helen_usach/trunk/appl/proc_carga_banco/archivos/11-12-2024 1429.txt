@@ -1,0 +1,2 @@
+16683314	0	BOLTON VALDIVIA MARCELO ANDRES	60911000-7	Universidad  de  Santiago  de  Chile                                                                	66561	2024	144731	1	07-10-2024	36,86	5,5095	366718	0	0	0	0	366718	5,5095	21035404	8	31-10-2024	1	12	15-11-2024
+16683314	0	BOLTON VALDIVIA MARCELO ANDRES	60911000-7	Universidad  de  Santiago  de  Chile                                                                	66561	2025	144732	1	07-10-2024	36,86	1,1567	76991	0	0	0	0	76991	1,1567	21035404	8	31-12-2025	1	12	15-11-2024

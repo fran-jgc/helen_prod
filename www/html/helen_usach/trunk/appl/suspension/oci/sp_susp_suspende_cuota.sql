@@ -1,0 +1,483 @@
+PROMPT CREATE OR REPLACE PROCEDURE sp_susp_suspende_cuota
+CREATE OR REPLACE PROCEDURE sp_susp_suspende_cuota (
+   ve_cod_deuda        IN   NUMBER
+ , ve_cod_tipo_deuda   IN   VARCHAR
+ , ve_ano_suspension   IN   NUMBER
+)
+AS
+/***************************************************************************************************************
+   NAME:       sp_susp_suspende_cuota
+
+   REVISION:
+   Ver        Date        Author           Description
+   ---------  ----------  ---------------  ------------------------------------
+   1.0        13/10/2009   Paula Cea       SP que suspende la cuota del plan pago de un año y deuda determinado.
+   2.0        19/11/2009   Sergio Castro   Revisión y Cambios
+   NOTAS:
+
+
+****************************************************************************************************************/
+BEGIN
+   DECLARE
+      vl_num_cuota            NUMBER;
+      vl_prox_ano             NUMBER;
+      vl_ult_num_cuota        NUMBER;
+      vl_monto_capital        NUMBER(10,4);
+      vl_monto_interes        NUMBER(10,4);
+      vl_monto_capital_cuota_ant        NUMBER(10,4);
+      vl_monto_interes_cuota_ant        NUMBER(10,4);
+      vl_cod_plan_pago        NUMBER;
+      vl_fecha1               VARCHAR (10);
+      vl_fecha_nueva          VARCHAR (10);
+      vl_ano1                 VARCHAR (4);
+      vl_cod_plan_9999        plan_pago.cod_plan_pago%TYPE;
+      K_COMP_DEUDA_FUTURA     NUMBER:= 4;
+      K_ESTADO_PP_SUSPENDIDA  NUMBER:= 6;
+      K_ESTADO_PP_EMITIDA     NUMBER:=1;
+      vl_tasa_interes_credito NUMBER(5,2);
+      vl_cant_abono			  NUMBER;
+      vl_tiene_99             VARCHAR (10);
+      vl_cod_plan_pago_sq     plan_pago.cod_plan_pago%TYPE;
+      VL_FOLIO_PAGARE		  VARCHAR2(50);
+      VL_FOLIO_PAGARE_SUSP	  VARCHAR2(50);
+	  VL_FECHA_PAGARE		  DATE;
+	  VL_MONTO_MONEDA		  NUMBER(14,4);
+	  VL_TOTAL_PAGARE		  NUMBER(14,4);
+	  VL_MONTO_PESOS		  NUMBER(14,0);
+	  VL_ESTADO_PAGARE		  NUMBER(10,0);
+	  VL_COUNT_CRUZADO		  NUMBER(10,0);
+	  VL_PORC_CRUZADO		  NUMBER(5,2);
+	  K_CANCELADO_SUSP		  NUMBER:= 7;	
+	  VL_COUNT_CUOTAS_PDTES   NUMBER(10,0);
+	  
+	  
+	  CURSOR	C_PAGARES IS
+	  SELECT cod_pagare
+	  		,folio_pagare
+	        ,cod_universidad   
+	        ,cod_estado_pagare
+	  FROM pagare 
+	  WHERE cod_deuda =  ve_cod_deuda
+	  and ESTADO_PAGARE_SUSPENSION IS NULL --original
+      OR  cod_deuda =  ve_cod_deuda AND 
+      ESTADO_PAGARE_SUSPENSION = 'VIGENTE';
+
+	      
+      
+   BEGIN
+      -- OBTENGO NRO DE LA CUOTA QUE SE ELIMINARÁ
+      SELECT  nro_cuota
+              ,cod_plan_pago
+      INTO    vl_num_cuota
+              ,vl_cod_plan_pago
+      FROM    plan_pago
+      WHERE   cod_deuda = ve_cod_deuda
+      AND ano_cobro = ve_ano_suspension;
+      
+      --MIGRACION DE UCM, para supension de cuota CON_DJ y SIN_DJ
+      IF (ve_cod_tipo_deuda = 'CS')  THEN
+     		SELECT case count(*)
+			             when 0 then 'N'
+			             else 'S'
+			             end CON_DJ
+	         INTO   vl_tiene_99
+	         FROM   plan_pago
+	         WHERE  cod_deuda = ve_cod_deuda
+	                AND ano_cobro = 9999;
+       END IF;
+       
+       IF (ve_cod_tipo_deuda = 'CR12') THEN
+       
+       		SELECT  Max(ano_cobro) + 1
+                   ,Max(nro_cuota) + 1
+        	INTO    vl_prox_ano
+                   ,vl_ult_num_cuota
+        	FROM    plan_pago
+        	WHERE   cod_deuda = ve_cod_deuda
+            AND cod_estado_plan_pago <> K_ESTADO_PP_SUSPENDIDA;
+            
+            --FECHAS A REEMPLAZAR
+        	SELECT To_Char(Trunc(fecha_vencto), 'dd/mm/yyyy')
+        	INTO   vl_fecha1
+        	FROM   plan_pago
+        	WHERE  cod_deuda = ve_cod_deuda
+            AND ano_cobro = ve_ano_suspension
+            AND cod_estado_plan_pago <> K_ESTADO_PP_SUSPENDIDA;
+            
+            SELECT SubStr(To_Char(Trunc(fecha_vencto), 'dd/mm/yyyy'), 7)
+	        INTO   vl_ano1
+	        FROM   plan_pago
+	        WHERE  cod_deuda = ve_cod_deuda
+	        AND ano_cobro = ve_ano_suspension
+	        AND cod_estado_plan_pago <> K_ESTADO_PP_SUSPENDIDA;
+
+         	--nueva fecha
+        	SELECT REPLACE(vl_fecha1,vl_ano1,vl_prox_ano)
+        	INTO   vl_fecha_nueva
+        	FROM   DUAL;
+        	
+        	-- Se Crea un nuevo plan de pago en estado suspendido
+        	INSERT INTO plan_pago
+                    (COD_PLAN_PAGO
+                    ,COD_DEUDA
+                    ,NRO_CUOTA
+                    ,ANO_COBRO
+                    ,MONTO_CAPITAL
+                    ,MONTO_INTERES
+                    ,FECHA_VENCTO
+                    ,COD_CONCEPTO_COBRO
+                    ,COD_ESTADO_PLAN_PAGO
+                    ,COD_EMPRESA_COBRANZA
+                    ,PUBLICA_DICOM)
+                    (SELECT  PLAN_PAGO_SQ.NEXTVAL
+                            ,ve_cod_deuda
+                            ,vl_num_cuota
+                            ,ve_ano_suspension
+                            ,0
+                            ,0
+                            ,To_Date(vl_fecha1,'dd/mm/yyyy')
+                            ,null
+                            ,K_ESTADO_PP_SUSPENDIDA
+                            ,NULL
+                            ,'N'
+                    FROM    dual);
+                    
+            UPDATE plan_pago
+        	SET    nro_cuota = vl_ult_num_cuota
+	               ,ano_cobro = vl_prox_ano
+	               ,fecha_vencto = To_Date(vl_fecha_nueva, 'dd/mm/yyyy')
+	               ,cod_estado_plan_pago = K_ESTADO_PP_EMITIDA
+	        WHERE  cod_deuda = ve_cod_deuda
+            AND ano_cobro = ve_ano_suspension
+            AND cod_estado_plan_pago <> K_ESTADO_PP_SUSPENDIDA;
+       		
+       		
+       		SELECT  tasa_interes_credito
+        	INTO    vl_tasa_interes_credito
+        	FROM    tipo_deuda
+        	WHERE   cod_tipo_deuda = 'CR12';
+        	
+        	update plan_pago 
+        	set monto_capital = monto_capital + (monto_capital * (vl_tasa_interes_credito / 100)),
+        	monto_interes = monto_interes + (monto_interes * (vl_tasa_interes_credito / 100))
+        	where cod_deuda = ve_cod_deuda
+        	and ano_cobro > ve_ano_suspension;
+        	
+        	
+			select nvl(sum(f_pp_saldo_plan_pago(cod_plan_pago)), 0) SALDO_TOTAL
+       		into VL_TOTAL_PAGARE
+       		from plan_pago
+       		where cod_deuda = ve_cod_deuda
+       		and cod_estado_plan_pago in (1, 2, 4)
+       		and ano_cobro > ve_ano_suspension;
+        	
+        	select count(*)
+        	into VL_COUNT_CRUZADO
+        	from cruzado 
+        	where cod_deuda = ve_cod_deuda;
+       		
+       
+       		FOR a IN C_PAGARES LOOP
+       			
+       			VL_FOLIO_PAGARE_SUSP:= a.folio_pagare;
+	       		VL_FOLIO_PAGARE := a.folio_pagare || ve_ano_suspension;
+	       		
+	       		
+	       		select count(*)
+	       		into VL_COUNT_CUOTAS_PDTES
+	       		from plan_pago
+	       		where cod_deuda= ve_cod_deuda
+	       		and ano_cobro < ve_ano_suspension
+	       		and cod_estado_plan_pago not in (3 , 6);
+	       		
+	       		if(VL_COUNT_CUOTAS_PDTES > 0)then
+	       			VL_ESTADO_PAGARE:= a.cod_estado_pagare;
+	       		else
+	       			VL_ESTADO_PAGARE:= K_CANCELADO_SUSP;
+	       		end if;
+	       		
+	       		update pagare 
+	       		set cod_estado_pagare = VL_ESTADO_PAGARE
+	       		where cod_pagare = a.cod_pagare;
+	       		
+	       		
+	       		if(VL_COUNT_CRUZADO > 0)then
+	       			select nvl(PORC ,0)
+	       			into VL_PORC_CRUZADO
+	       			from cruzado
+	       			where cod_deuda = ve_cod_deuda
+	       			and cod_universidad = a.cod_universidad;
+	       			
+	       			VL_MONTO_MONEDA:= VL_TOTAL_PAGARE * (VL_PORC_CRUZADO / 100);
+					VL_MONTO_PESOS:= VL_MONTO_MONEDA * f_mon_get_valor_moneda(3, SYSDATE);
+	       		else
+	       			VL_MONTO_MONEDA:= VL_TOTAL_PAGARE;
+					VL_MONTO_PESOS:= VL_MONTO_MONEDA * f_mon_get_valor_moneda(3, SYSDATE);
+	       		end if;
+	       		
+	       		INSERT INTO pagare
+							(cod_pagare
+							, folio_pagare
+							, fecha_pagare
+							, cod_deuda
+							, monto_moneda
+							, monto_pesos
+							, cod_estado_pagare
+							, fecha_protesto
+							, cod_usuario_protesto
+	            			, cod_universidad
+	            			, folio_pagare_suspension
+	            			, fecha_pagare_suspension
+	            			, ano_suspension
+	            			, estado_pagare_suspension)
+					VALUES (pagare_sq.NEXTVAL
+							, VL_FOLIO_PAGARE
+							, SYSDATE
+							, ve_cod_deuda
+							, VL_MONTO_MONEDA
+							, VL_MONTO_PESOS
+							, a.cod_estado_pagare
+							, null
+							, null
+	            			, a.cod_universidad
+	            			, VL_FOLIO_PAGARE_SUSP
+	            			, VL_FECHA_PAGARE
+	            			, ve_ano_suspension
+	            			, 'VIGENTE');
+	            			
+	                 --Despues de procesar el pagare original se deja como no vigente
+       				 update pagare 
+       				 set ESTADO_PAGARE_SUSPENSION = 'NO_VIGENTE'
+       				 where cod_pagare = a.cod_pagare;
+	            			
+            END LOOP;
+      END IF;
+
+     IF (ve_cod_tipo_deuda = 'CSR' OR ve_cod_tipo_deuda = 'CSN' OR ve_cod_tipo_deuda = 'CAME') THEN
+        --AÑO QUE CONTINUARIA EN EL PLAN PAGO
+        --NRO_CUOTA MAXIMA EN EL PLAN PAGO, SE USARÁ EN EL FOR
+        SELECT  Max(ano_cobro) + 1
+                ,Max(nro_cuota) + 1
+        INTO    vl_prox_ano
+                ,vl_ult_num_cuota
+        FROM    plan_pago
+        WHERE   cod_deuda = ve_cod_deuda
+                AND cod_estado_plan_pago <> K_ESTADO_PP_SUSPENDIDA;
+
+        --FECHAS A REEMPLAZAR
+        SELECT To_Char(Trunc(fecha_vencto), 'dd/mm/yyyy')
+        INTO   vl_fecha1
+        FROM   plan_pago
+        WHERE  cod_deuda = ve_cod_deuda
+               AND ano_cobro = ve_ano_suspension
+               AND cod_estado_plan_pago <> K_ESTADO_PP_SUSPENDIDA;
+
+        SELECT SubStr(To_Char(Trunc(fecha_vencto), 'dd/mm/yyyy'), 7)
+        INTO   vl_ano1
+        FROM   plan_pago
+        WHERE  cod_deuda = ve_cod_deuda
+               AND ano_cobro = ve_ano_suspension
+               AND cod_estado_plan_pago <> K_ESTADO_PP_SUSPENDIDA;
+
+         --nueva fecha
+        SELECT REPLACE(vl_fecha1,vl_ano1,vl_prox_ano)
+        INTO   vl_fecha_nueva
+        FROM   DUAL;
+
+        
+        SELECT  monto_capital
+                ,monto_interes
+        INTO    vl_monto_capital
+                ,vl_monto_interes
+        FROM    plan_pago
+        WHERE   cod_deuda = ve_cod_deuda
+        AND     ano_cobro = ve_ano_suspension;
+
+
+        -- Se Crea un nuevo plan de pago en estado suspendido
+        INSERT INTO plan_pago
+                    (COD_PLAN_PAGO
+                    ,COD_DEUDA
+                    ,NRO_CUOTA
+                    ,ANO_COBRO
+                    ,MONTO_CAPITAL
+                    ,MONTO_INTERES
+                    ,FECHA_VENCTO
+                    ,COD_CONCEPTO_COBRO
+                    ,COD_ESTADO_PLAN_PAGO
+                    ,COD_EMPRESA_COBRANZA
+                    ,PUBLICA_DICOM)
+                    (SELECT  PLAN_PAGO_SQ.NEXTVAL
+                            ,ve_cod_deuda
+                            ,vl_num_cuota
+                            ,ve_ano_suspension
+                            ,0
+                            ,0
+                            ,To_Date(vl_fecha1,'dd/mm/yyyy')
+                            ,null
+                            ,K_ESTADO_PP_SUSPENDIDA
+                            ,NULL
+                            ,'N'
+                    FROM    dual);
+		/*******cambio**********/
+        SELECT  monto_capital
+                ,monto_interes
+        INTO    vl_monto_capital_cuota_ant
+                ,vl_monto_interes_cuota_ant
+        FROM    plan_pago
+        WHERE   cod_deuda = ve_cod_deuda
+        AND     ano_cobro = (ve_ano_suspension-1);
+        -- Obtiene los capitales de la cuota anterior a la suspendida
+        
+		        
+        vl_monto_capital_cuota_ant := vl_monto_capital_cuota_ant + (vl_monto_capital_cuota_ant * 0.02);
+        vl_monto_interes_cuota_ant := vl_monto_interes_cuota_ant + (vl_monto_interes_cuota_ant * 0.02);
+        
+                  
+        SELECT  tasa_interes_credito
+        INTO    vl_tasa_interes_credito
+        FROM    tipo_deuda
+        WHERE   cod_tipo_deuda = ve_cod_tipo_deuda;
+   		
+        vl_monto_interes := vl_monto_interes + (vl_monto_interes * power(1+vl_tasa_interes_credito/100, (vl_prox_ano - ve_ano_suspension)));
+
+        UPDATE plan_pago
+        SET    nro_cuota = vl_ult_num_cuota
+               ,ano_cobro = vl_prox_ano
+               ,fecha_vencto = To_Date(vl_fecha_nueva, 'dd/mm/yyyy')
+               ,cod_estado_plan_pago = K_ESTADO_PP_EMITIDA
+               ,monto_capital =  vl_monto_capital_cuota_ant
+               ,monto_interes =  vl_monto_interes_cuota_ant
+        WHERE  cod_deuda = ve_cod_deuda
+               AND ano_cobro = ve_ano_suspension
+               AND cod_estado_plan_pago <> K_ESTADO_PP_SUSPENDIDA;
+               
+        	UPDATE plan_pago
+			SET    monto_capital =  vl_monto_capital
+	               ,monto_interes =  vl_monto_interes
+	        WHERE  cod_deuda = ve_cod_deuda
+	       	AND    ano_cobro > ve_ano_suspension;
+      
+       	
+      ELSIF (ve_cod_tipo_deuda = 'CS') THEN
+      
+      	IF (vl_tiene_99 = 'S') THEN
+	        SELECT  monto_capital
+	                ,monto_interes
+	        INTO    vl_monto_capital
+	                ,vl_monto_interes
+	        FROM    plan_pago
+	        WHERE   cod_plan_pago = vl_cod_plan_pago;
+	
+	        UPDATE  plan_pago
+	        SET     monto_capital = monto_capital + vl_monto_capital
+	                ,monto_interes = monto_interes + vl_monto_interes
+	        WHERE   cod_deuda = ve_cod_deuda
+	                AND ano_cobro = 9999;
+	
+	         --update de tablas relacionadas
+	         UPDATE plan_pago_renegociacion
+	         SET    cod_plan_pago = NULL
+	         WHERE  cod_plan_pago = vl_cod_plan_pago;
+	
+	         UPDATE boleta
+	         SET    cod_plan_pago = NULL
+	         WHERE  cod_plan_pago = vl_cod_plan_pago;
+	
+	         SELECT cod_plan_pago
+	         INTO   vl_cod_plan_9999
+	         FROM   plan_pago
+	         WHERE  cod_deuda = ve_cod_deuda
+	                AND ano_cobro = 9999;
+	
+	         UPDATE abono
+	         SET    cod_plan_pago = vl_cod_plan_9999
+	                ,cod_componente_deuda = K_COMP_DEUDA_FUTURA
+	         WHERE  cod_plan_pago = vl_cod_plan_pago;
+	
+	         UPDATE descuento
+	         SET    cod_plan_pago = vl_cod_plan_9999
+	                ,cod_componente_deuda = K_COMP_DEUDA_FUTURA
+	         WHERE  cod_plan_pago = vl_cod_plan_pago;
+	
+	         sp_pp_actualiza_estado (vl_cod_plan_9999);
+	
+	         --Actualiza el plan de pago suspendido
+	         UPDATE PLAN_PAGO
+	         SET    MONTO_CAPITAL         = 0
+	                ,MONTO_INTERES        = 0
+	                ,COD_ESTADO_PLAN_PAGO = K_ESTADO_PP_SUSPENDIDA
+	         WHERE  COD_PLAN_PAGO = vl_cod_plan_pago;
+	     ELSIF (vl_tiene_99 = 'N') THEN
+	     	--AÑO QUE CONTINUARIA EN EL PLAN PAGO
+        	--NRO_CUOTA MAXIMA EN EL PLAN PAGO, SE USARÁ EN EL FOR
+			SELECT	nro_cuota
+					,cod_plan_pago
+	        		,monto_capital
+	        		,monto_interes
+			INTO	 vl_num_cuota
+					,vl_cod_plan_pago
+	        		,vl_monto_capital
+	        		,vl_monto_interes
+			FROM	plan_pago
+			WHERE	cod_deuda = ve_cod_deuda
+			  AND	ano_cobro = ve_ano_suspension;
+		
+	        SELECT   Max(ano_cobro) + 1
+	                ,Max(nro_cuota) + 1
+	        INTO    vl_prox_ano
+	                ,vl_ult_num_cuota
+	        FROM    plan_pago
+	        WHERE   cod_deuda = ve_cod_deuda;
+
+			-- Se Crea un nuevo plan de pago en estado suspendido
+        	INSERT INTO plan_pago
+                    (COD_PLAN_PAGO
+                    ,COD_DEUDA
+                    ,NRO_CUOTA
+                    ,ANO_COBRO
+                    ,MONTO_CAPITAL
+                    ,MONTO_INTERES
+                    ,FECHA_VENCTO
+                    ,COD_CONCEPTO_COBRO
+                    ,COD_ESTADO_PLAN_PAGO
+                    ,COD_EMPRESA_COBRANZA
+                    ,PUBLICA_DICOM)
+			VALUES(PLAN_PAGO_SQ.NEXTVAL
+					,ve_cod_deuda
+					,vl_ult_num_cuota
+					,vl_prox_ano
+					,vl_monto_capital
+					,vl_monto_interes
+					,To_Date('31/12/' || vl_prox_ano ,'dd/mm/yyyy')
+					,11 --sin DJ
+					,K_ESTADO_PP_EMITIDA
+					,NULL
+					,'N');
+			SELECT  PLAN_PAGO_SQ.CURRVAL
+            INTO    vl_cod_plan_pago_sq
+            FROM    DUAL;
+					
+			UPDATE	PLAN_PAGO
+			SET		monto_capital         = 0
+					,monto_interes        = 0
+					,cod_estado_plan_pago = K_ESTADO_PP_SUSPENDIDA
+			WHERE	cod_plan_pago = vl_cod_plan_pago;
+
+	         /*se mueven los abonos***/
+			select count(*)
+			into	vl_cant_abono
+			from	abono
+			WHERE	cod_deuda = ve_cod_deuda
+	           AND	cod_plan_pago = vl_cod_plan_pago;
+			if(vl_cant_abono > 0)  THEN 
+				UPDATE	abono
+				SET		cod_plan_pago = vl_cod_plan_pago_sq
+				WHERE	cod_deuda = ve_cod_deuda
+		           AND	cod_plan_pago = vl_cod_plan_pago;
+	     	END IF;
+	     END IF;
+	 END IF;
+   END;
+END;
+/

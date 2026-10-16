@@ -1,0 +1,73 @@
+<Report>
+	<Font name="Arial" size="16" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="B" id="ArialBold"/>
+	<Font name="Arial" size="9" style="B" id="ArialBoldBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="12" style="B" id="ArialBoldBlueBig" red="0" green="0" blue="128"/>	
+	<Font name="Arial" size="9" style="" id="Arial"/>
+	<Font name="Arial" size="14" style="B" id="ArialBoldBig"/>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="" id="ArialBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="" id="ArialItem"/>
+	<Font name="Arial" size="8.5" style="B" id="ArialBoldBlueItem" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="BU" id="ArialBoldUItem"/>
+	<PageHeader>	
+		<Cell text="" width="10%"/>
+		<Cell text="{str_familia}" height="20" width="60%" font="ArialBoldBig" newline="1"/>
+		<Cell text="" width="10%"/>
+		<Cell text="{str_universidad}" height="12" width="60%" font="ArialBoldBig"  newline="1"/>
+		<Cell text="" newline="1"/>		
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="DEPOSITO Nº	{strCOD_DEPOSITO}" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="" border="B" newline="1" height="1" redl="199" greenl="199" bluel="199"/>
+		<Cell text="" height="4" newline="1"/>		
+	</PageHeader>
+	<Group local="COD_DEPOSITO">
+		<GroupHeader>	
+			<Cell text="" align="R" newline="1" />
+			<Cell text="" newline="1"/>		
+			<Cell text="" height="1" newline="1" />			
+			<Cell height="4" newline="1"/>	
+			<Cell text="Boleta Depósito:" width="12%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{NRO_DEPOSITO}" width="10%" border="B" align="C" font="Arial" format="N0,." redl="192" greenl="192" bluel="192"/>
+			<Cell text="" width="10%"/>
+			<Cell text="Fecha Depósito :" width="15%" font="ArialBoldBlue"/>
+			<Cell text="{FECHA_DEPOSITO}" width="15%" border="B" align="C" font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			<Cell text="Cta. Cte.       :" width="12%" align="L" font="ArialBoldBlue"/>
+			<Cell text="{NOM_CUENTA_CORRIENTE}" width="20%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192"/>
+			<Cell text="Nº Cuenta           :" width="15%" font="ArialBoldBlue"/>
+			<Cell text="{NRO_CUENTA_CORRIENTE}" width="15%" border="B" align="C"  font="Arial" redl="192" greenl="192" bluel="192"/>
+			<Cell text="Banco :" width="7%" font="ArialBoldBlue"/>
+			<Cell text="{NOM_BANCO}" width="20%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			<Cell text="Estado          :" width="12%" font="ArialBoldBlue"/>
+			<Cell text="{ESTADO}" width="20%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+			<Cell text="" newline="1"/>
+				
+			<Cell text="Rut Deudor" width="10%" border="LRTB" align="C" font="ArialBoldBlueItem"/>
+			<Cell text="Código Documento" width="10%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Banco" width="20%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Plaza" width="20%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Nº Cheque" width="10%" border="LRTB" align="C" font="ArialBoldBlueItem"/>
+			<Cell text="Fecha Pago Documento" width="10%" align="C" border="LRTB" font="ArialBoldBlueItem"/>
+			<Cell text="Monto Documento" width="10%" align="C" border="LRTB" font="ArialBoldBlueItem" newline="1"/>
+		</GroupHeader>
+	</Group>
+	<Content font="Arial">
+		<Cell text="{RUT_DEUDOR}" width="10%" border="LRB" align="C" font="ArialItem"/>
+		<Cell text="{COD_DOCUMENTO_PAGO}" width="10%" border="RB" align="C"/>
+		<Cell text="{NOM_BANCO_DP}" width="20%" border="RB" align="L" font="ArialItem"/>
+		<Cell text="{NOM_PLAZA}" width="20%" border="RB" align="L" font="ArialItem"/>
+		<Cell text="{NRO_CHEQUE}" width="10%" border="RB" align="R" font="ArialItem"/>
+		<Cell text="{FECHA_DOCUMENTO_PAGO}" width="10%" border="RB" align="C" font="ArialItem"/>
+		<Cell text="{MONTO}" width="10%" border="RB" align="R" format="N0,." font="ArialItem" newline="1"/>
+	</Content>
+	<Group local="COD_DEPOSITO">
+		<Variable name="SUM_MONTO" function="SUM" value="MONTO"/>
+		<GroupFooter>
+			<Cell text="" width="42%" border="T" />
+			<Cell text="TOTAL" border="T" align="R" width="38%" font="ArialBoldBlueItem"/>
+			<Cell text="{SUM_MONTO}" width="10%" border="LRTB" align="R" font="ArialItem" format="N0,. "/>
+		</GroupFooter>
+	</Group>
+</Report>

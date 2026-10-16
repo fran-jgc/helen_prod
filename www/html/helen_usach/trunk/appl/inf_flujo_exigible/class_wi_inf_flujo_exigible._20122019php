@@ -1,0 +1,211 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_w_param_informe_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+include_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/PHP_XLSXWriter_master/xlsxwriter.class.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+ini_set('memory_limit', '480M');
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes
+
+class wi_inf_flujo_exigible extends w_param_informe_helen {
+    
+	function __construct($cod_item_menu) {
+		$xml = session::get('K_ROOT_DIR').'appl/inf_flujo_exigible/inf_flujo_exigible.xml';
+		$sql_informe = "";
+		parent::__construct('inf_flujo_exigible', $cod_item_menu, 'Flujo deudas EXIGIBLE', $xml, $sql_informe, 'spi_flujo_exigible');
+
+		$sql = "SELECT	To_Char(SYSDATE,'YYYY') ANO
+						,null COD_CARTERA
+				FROM 	DUAL";
+		
+		$this->dws['dw_param'] = new datawindow($sql);
+		$this->dws['dw_param']->add_control(new edit_num('ANO', 4, 4));
+		$sql = "SELECT	0 			COD_CARTERA
+						,'Todas' 	NOM_CARTERA
+				from DUAL
+				union
+				SELECT		COD_CARTERA
+							, NOM_CARTERA
+				FROM 		CARTERA
+				ORDER BY	COD_CARTERA";
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_CARTERA', $sql, 0, '', false));
+
+		// mandatorys		
+		$this->dws['dw_param']->set_mandatory('ANO', 'Año');	
+	}
+	function make_filtro() {
+		$ano 			= $this->dws['dw_param']->get_item(0, 'ANO');
+		$cod_cartera 	= $this->dws['dw_param']->get_item(0, 'COD_CARTERA'); 
+
+		// Arma los paramaetros para el SP
+		$this->param = "$ano, $cod_cartera,$this->cod_usuario";	
+	}
+	function genera_pdf($labels = array(), $con_logo = true,$orientation='L',$unit='pt',$format='letter') {
+		$ano = $this->dws['dw_param']->get_item(0, 'ANO');
+		$ano = $ano+2;
+		for ($i=0; $i<13; $i++){
+			$labels['str_ano'.($i+1)] = $ano + $i;
+		}
+		parent::genera_pdf($labels, $con_logo,$orientation, $unit,$format);
+	}
+	
+	function genera_xls() {
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		// Arma los paramaetros para el SP
+		$ano= $_POST['ANO_0'];
+		$cod_cartera= $_POST['COD_CARTERA_0'];
+		$this->param = "$ano, $cod_cartera, $this->cod_usuario";
+		$this->sp ="spi_flujo_exigible ";
+		$db->EXECUTE_SP($this->sp, $this->param);
+		
+		$sql ="SELECT RUT							
+						,DIG_VERIF					
+						,COD_DEUDA          		
+						,TIPO_DEUDA					
+						,to_char(FECHA_INICIO_COBRO, 'dd/mm/yyyy') FECHA_INICIO_COBRO			
+						,ANOS_PACTADOS					
+						,PORC_USACH
+						,POR_FONDO					
+						,ESTADO_DEUDA
+						,NOMBRE_UNIVERSIDAD	
+						,NOMBRE_CARTERA	 				
+						,MONTO_ANO1
+						,MONTO_ANO2
+						,MONTO_ANO3
+						,MONTO_ANO4
+						,MONTO_ANO5
+						,MONTO_ANO6
+						,MONTO_ANO7
+						,MONTO_ANO8
+						,MONTO_ANO9
+						,MONTO_ANO10
+						,MONTO_ANO11
+						,MONTO_ANO12
+						,MONTO_ANO13
+						,MONTO_ANO14
+						,MONTO_ANO15
+						,MONTO_ANO16
+						,MONTO_ANO17
+						,MONTO_9999
+						,CTY	
+						,CAT	
+						,CRUZADO	
+						,CRUZADO_INTERNO	
+						,PRORROGA	
+						,SUSPENSION	
+						,FECHA_CONDONACION	
+						,CUOTA_FIJA	
+						,COD_CARRERA	
+						,NOM_CARRERA
+				FROM TEMP_FLUJO_EXIGIBLE
+				where COD_USUARIO = $this->cod_usuario
+				ORDER BY RUT";
+				
+		$res = $db->query($sql);
+		
+		$filename = "inf_flujo_exigible.xlsx";
+		header('Content-disposition: attachment; filename="'.XLSXWriter::sanitize_filename($filename).'"');
+		header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		header('Content-Transfer-Encoding: binary');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		
+		$writer = new XLSXWriter();
+		$writer->setAuthor('Integrasystem');
+		$sheet_name = "Detalle";
+		
+		$ano = $this->dws['dw_param']->get_item(0, 'ANO');
+		
+		$header = array(
+		    'RUT'=>'integer',
+		    'DV'=>'string',
+			'COD_DEUDA'=>'integer',
+			'TIPO DEUDA'=>'string',
+			'FECHA_INICIO_COBRO'=>'string',
+			'ANOS_PACTADOS'=>'integer',
+			'PORC_USACH'=>'#,##0.00',
+			'POR_FONDO'=>'#,##0.00',
+			'ESTADO_DEUDA'=>'string',
+			'NOMBRE_UNIVERSIDAD'=>'string',
+			'NOMBRE_CARTERA'=>'string',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+		    'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO '.$ano++ =>'#,##0.0000',
+			'MONTO_9999'=>'#,##0.0000',
+			'CTY'=>'#,##0.0000',
+			'CAT'=>'#,##0.0000',
+			'CRUZADO'=>'string',
+			'CRUZADO_INTERNO'=>'string',
+			'PRORROGA'=>'string',
+			'SUSPENSION'=>'string',
+			'FECHA_CONDONACION'=>'string',
+			'CUOTA_FIJA'=>'string',
+			'COD_CARRERA'=>'integer',
+			'TIPO NOM_CARRERA'=>'string'
+		);
+
+		$writer->writeSheetHeader($sheet_name, $header);
+		
+		$data1 = array();
+		while($my_row = $db->get_row()){
+			$array_row = array($my_row['RUT']
+							  ,$my_row['DIG_VERIF']
+							  ,$my_row['COD_DEUDA']
+							  ,utf8_encode($my_row['TIPO_DEUDA'])
+							  ,$my_row['FECHA_INICIO_COBRO']
+							  ,$my_row['ANOS_PACTADOS']
+							  ,$my_row['PORC_USACH']
+							  ,$my_row['POR_FONDO']
+							  ,utf8_encode($my_row['ESTADO_DEUDA'])
+							  ,utf8_encode($my_row['NOMBRE_UNIVERSIDAD'])
+							  ,utf8_encode($my_row['NOMBRE_CARTERA'])
+							  ,$my_row['MONTO_ANO1']
+							  ,$my_row['MONTO_ANO2']
+							  ,$my_row['MONTO_ANO3']
+							  ,$my_row['MONTO_ANO4']
+							  ,$my_row['MONTO_ANO5']
+							  ,$my_row['MONTO_ANO6']
+							  ,$my_row['MONTO_ANO7']
+							  ,$my_row['MONTO_ANO8']
+							  ,$my_row['MONTO_ANO9']
+							  ,$my_row['MONTO_ANO10']
+							  ,$my_row['MONTO_ANO11']
+							  ,$my_row['MONTO_ANO12']
+							  ,$my_row['MONTO_ANO13']
+							  ,$my_row['MONTO_ANO14']
+							  ,$my_row['MONTO_ANO15']
+							  ,$my_row['MONTO_ANO16']
+							  ,$my_row['MONTO_ANO17']
+							  ,$my_row['MONTO_9999']
+							  ,$my_row['CTY']
+							  ,$my_row['CAT']
+							  ,$my_row['CRUZADO']
+							  ,$my_row['CRUZADO_INTERNO']
+							  ,$my_row['PRORROGA']
+							  ,$my_row['SUSPENSION']
+							  ,$my_row['FECHA_CONDONACION']
+							  ,$my_row['CUOTA_FIJA']
+							  ,$my_row['COD_CARRERA']
+							  ,utf8_encode($my_row['NOM_CARRERA'])
+							 );
+			$writer->writeSheetRow($sheet_name, $array_row);
+		}
+		$writer->writeToStdOut();
+	}
+}
+?>

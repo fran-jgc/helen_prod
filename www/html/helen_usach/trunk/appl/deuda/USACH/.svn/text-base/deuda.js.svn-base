@@ -1,0 +1,36 @@
+function validate() {
+	var cod_estado_deuda = document.getElementById('COD_ESTADO_DEUDA_0').value;
+	var k_estado_deuda = 1; //ESTADO DEUDA NO EXIGIBLE
+	var k_estado_deuda_exigible = 2; //ESTADO DEUDA EXIGIBLE
+	if (cod_estado_deuda == k_estado_deuda || cod_estado_deuda == k_estado_deuda_exigible) {
+		var aTR = get_TR('DEUDA_PAGARES');
+		var tipo_rebaja = '';
+		var monto_moneda_rebaja = '';
+		var monto_pesos_rebaja = '';
+		for (var i=0; i < aTR.length ; i++) {
+			var record = get_num_rec_field(aTR[i].id);
+			tipo_rebaja = document.getElementById('COD_TIPO_REBAJA_PAGARE_' + record).value;
+			monto_moneda_rebaja = document.getElementById('MONTO_MONEDA_REBAJA_' + record).value;
+			monto_pesos_rebaja = document.getElementById('MONTO_PESOS_REBAJA_' + record).value;
+			
+			if(tipo_rebaja != '' ||  monto_moneda_rebaja != '' || monto_pesos_rebaja != ''){
+				if(tipo_rebaja == ''){
+					alert('Debe Ingresar Tipo Rebaja antes de Grabar.');
+					document.getElementById('COD_TIPO_REBAJA_PAGARE_' + record).focus();
+					return false;
+				}else if (monto_moneda_rebaja == ''){
+					alert('Debe Ingresar Monto UTM Rebaja antes de Grabar.');
+					document.getElementById('MONTO_MONEDA_REBAJA_' + record).focus();
+					return false;
+				}else if(monto_pesos_rebaja == ''){
+					alert('Debe Ingresar Monto $ Rebaja antes de Grabar.');
+					document.getElementById('MONTO_PESOS_REBAJA_' + record).focus();
+					return false;
+				}
+			}else{
+				return true;
+			}
+		}
+	}	
+	return true;	
+}

@@ -1,0 +1,92 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../../common_appl/class_reporte_helen.php");
+//***********dibujo**************/////////
+class print_prorroga extends reporte_helen {	
+	function __construct($sql, $xml, $labels=array(), $titulo, $con_logo, $vuelve_a_presentacion=false) {
+	    parent::__construct($sql, $xml, $labels, $titulo, $con_logo, $vuelve_a_presentacion);		
+	}
+	function dibuja_uno(&$pdf, $result, $nom_universidad, $mail_universidad, $dir_universidad) {
+		
+		$pdf->SetFont('Helvetica','i',10);
+
+		$pdf->Text( 360, 100,'ORD.     : N° ___________/');
+		$pdf->Text( 360, 115,'ANT.     : Solicitud deudor');
+		$pdf->Text( 360, 130,'MAT.     : Da respuesta.	');
+		$pdf->Text( 360, 145,'_____________________');
+		$pdf->SetFont('Helvetica','',10);
+		$pdf->Text( 50, 180,'SANTIAGO,  '.$result['MES'].' '.$result['DIA'].' del '.$result['ANO'].'');		
+		$pdf->SetFont('Helvetica','B',10);
+		$pdf->Text( 50, 210,'DE:  ADMINISTRACIÓN GRAL. FONDO SOLIDARIO CRÉDITO UNIVERSITARIO');
+		$pdf->Text( 50, 240,'A  :');
+		$pdf->SetFont('Helvetica','',10);		
+		$pdf->Text( 70, 240,$result['NOMBRE']);
+		$pdf->Text( 350, 240,'Rut:');
+		$pdf->Text( 380, 240,number_format($result['RUT'], 0, ',', '.')."-".$result['DIG_VERIF']);
+		$pdf->Text( 70, 255,$result['DIRECCION']);
+		
+		$pdf->SetFont('Helvetica','',10);
+		$pdf->Text( 60, 300,'De acuerdo a  antecedentes  aportados por Ud., la Administación General del Fondo Solidario de Crédito ', 0, 'J','R');
+		$pdf->Text( 50, 310,'Universitario de ésta Universidad, ha resuelto lo siguiente:', 0, 'J','R');
+		
+		$pdf->Text( 70, 330,'1.- Acoger su solicitud en orden a verificar su situación académica.');
+		
+		$pdf->Text( 70, 350,'2.- Informar a Ud. que se a dispuesto no hacer efectivo el cobro correspondiente al Crédito de Fondo .',0, 'J','R');
+		$pdf->Text( 50, 360,'Solidario, dado que registra como última matrícula en el año  '.$result['ULT_MAT'].'  en   '.$result['NOM_UNIVERSIDAD'].'.',0, 'J','R');
+		
+		$pdf->Text( 70, 380,'3.- La cobranza de su deuda empezaría a regir 2 años después que Ud. haya dejado de ser alumno estando',0, 'J','R');
+		$pdf->Text( 50, 390,' o no en posesión de su título universitario.',0, 'J','R');
+		
+		$pdf->Text( 70, 410,'4.-Consecuente con lo anterior, Ud. deberí presentar una solicitud y certificado que acredite que es',0, 'J','R');
+		$pdf->Text( 50, 420,'alumno regular de una Institución de Estudios Superiores, a las que se refiere la Ley N° 18591, en caso de requerir ',0, 'J','R');
+		$pdf->Text( 50, 430,'una nueva prórroga .',0, 'J','R');
+		
+		
+		$pdf->Text( 250, 560,'Saluda atentamente a Ud.,');
+		$pdf->Text( 250, 620,$result['NOM_ADMIN']);
+		$pdf->SetFont('Helvetica','B',11);
+		$pdf->Text( 235, 632,'ADMINISTRADOR GENERAL');
+
+
+		/*$pdf->SetFont('Helvetica','B',8);
+		$pdf->Text( 396, 740, $nom_universidad);
+		$pdf->Text( 367, 750, 'DIRECCIï¿½N DE ADMINISTRACIï¿½N Y FINANZAS' );
+		$pdf->Text( 270, 760, 'ADMINISTRACION GRAL. FONDO SOLIDARIO CREDITO UNIVERSITARIO');
+		$pdf->Text( 375, 770, $dir_universidad.' '.$mail_universidad);*/
+
+		
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->Text( 50, 650, 'WJM/PMR' );
+		$pdf->SetFont('Helvetica','B',8);
+		$pdf->Text( 50, 660, 'DISTRIBUCIÓN:-' );
+	    $pdf->SetFont('Helvetica','',8);
+		$pdf->Text( 50, 670, '1.- INTERESADO' );
+		$pdf->Text( 50, 680, '2.- AGFCU' );
+		
+		
+		$pdf->SetFont('Helvetica','',8);
+		$factor = 0.2;
+		//$pdf->Image(dirname(__FILE__)."/../../../images_appl/".K_CLIENTE."/logo_universidad.jpg", 500, 35, $factor * 300, $factor * 450);
+		//$pdf->SetFont('Helvetica','B',22);
+		//$pdf->SetTextColor(0, 0, 128);
+		//$pdf->Text( 500, 130, session::get('K_CLIENTE'));
+	}
+	function modifica_pdf(&$pdf) {
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$result = $db->build_results($this->sql);
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql= sql_prorroga::get_sql('PRINT_PARAM');
+		$result_universidad = $db->build_results($sql);		
+		$nom_universidad = $result_universidad[0]['NOM_UNIVERSIDAD'];
+		$mail_universidad = $result_universidad[0]['MAIL_UNIVERSIDAD'];
+		$dir_universidad = $result_universidad[0]['DIR_UNIVERSIDAD'];
+		
+		for($i=0; $i<count($result); $i++) {
+			$this->dibuja_uno($pdf, $result[$i], $nom_universidad, $mail_universidad, $dir_universidad);
+			if ($i < count($result) - 1)
+			$pdf->AddPage();
+		}
+	}		
+}
+?>

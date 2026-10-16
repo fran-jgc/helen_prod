@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Iniciar sesión | Universidad de Santiago de Chile</title>
+    <link rel="icon" type="image/png" href="imagen/logo-usach.png">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QGNNW6PP2C"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'G-QGNNW6PP2C');
+    </script>
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+
+    <link rel="stylesheet" href="estilo.css">
+    <link rel="stylesheet" href="style_web_pay_usach.css">
+
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap">
+    <style>
+        .portal-header {
+            padding: 24px 15px;
+            text-align: center;
+        }
+
+        .portal-header img {
+            width: 170px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .portal-header h1 {
+            margin: 18px 0 0;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        .portal-layout {
+            margin-top: 15px;
+            margin-bottom: 35px;
+        }
+
+        .portal-nav.navbar-default {
+            background-color: #fff;
+            border-color: #fff;
+        }
+
+        .portal-nav .navbar-brand {
+            color: #002f45;
+        }
+
+        .portal-main {
+            padding: 0 20px 30px;
+        }
+
+        .acceso-fecha {
+            margin: 15px 0;
+            text-align: center;
+            color: #666;
+        }
+
+        .acceso-panel {
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, .15);
+            overflow: hidden;
+        }
+
+        .acceso-panel .acceso-cabecera {
+            padding: 24px;
+            background: #002f45;
+            color: #fff;
+            text-align: center;
+        }
+
+        .acceso-panel .acceso-cabecera h2 {
+            margin: 0 0 8px;
+            color: #fff;
+            font-size: 25px;
+        }
+
+        .acceso-panel .acceso-cabecera p {
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .acceso-panel .acceso-formulario {
+            padding: 24px;
+            margin: 0;
+        }
+
+        .acceso-panel .form-group {
+            margin-bottom: 20px;
+        }
+
+        .acceso-panel label {
+            color: #002f45;
+        }
+
+        .acceso-panel .form-control {
+            width: 100%;
+            height: 44px;
+            font-size: 16px;
+            border-radius: 3px;
+        }
+
+        .acceso-panel .help-block {
+            margin-bottom: 0;
+            font-size: 13px;
+        }
+
+        .acceso-panel .acceso-mostrar {
+            display: block;
+            margin: 0 0 22px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .acceso-panel .acceso-mostrar input {
+            margin-right: 5px;
+        }
+
+        .acceso-panel .acceso-boton {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            border: 0;
+            border-radius: 3px;
+            background: #002f45;
+            color: #fff;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 1.5;
+            text-decoration: none;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .acceso-panel .acceso-boton:hover {
+            background: #004660;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .acceso-panel .acceso-boton:focus {
+            outline: 3px solid #e89420;
+            outline-offset: 3px;
+        }
+
+        .acceso-panel .acceso-recuperar {
+            margin: 20px 0 0;
+            text-align: center;
+        }
+
+        .acceso-panel .acceso-recuperar a {
+            color: #005596;
+            text-decoration: underline;
+        }
+
+        .acceso-panel .acceso-claveunica {
+            padding: 24px;
+            border-top: 1px solid #ddd;
+            background: #f5f5f5;
+            text-align: center;
+        }
+
+        .acceso-panel .acceso-claveunica p {
+            margin: 0 0 15px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .acceso-panel .acceso-boton-cu {
+            background: #0f69c4;
+        }
+
+        .acceso-panel .acceso-boton-cu:hover {
+            background: #0c549d;
+        }
+
+        .portal-footer {
+            clear: both;
+            padding: 25px 15px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+        }
+
+        @media (max-width: 767px) {
+            .portal-header {
+                padding-top: 18px;
+            }
+
+            .portal-main {
+                padding-right: 15px;
+                padding-left: 15px;
+            }
+
+            .portal-nav {
+                margin-bottom: 10px;
+            }
+        }
+/* Colores del portal institucional */
+.acceso-panel .acceso-cabecera {
+    background: #00a499;
+    border-bottom: 4px solid #ffb800;
+    color: #fff;
+}
+
+.acceso-panel .acceso-cabecera h2 {
+    color: #fff;
+    border: 0;
+}
+
+.acceso-panel .acceso-cabecera p {
+    color: #fff;
+}
+
+.acceso-panel label {
+    color: #005c56;
+}
+
+.acceso-panel .acceso-boton {
+    background: #007a72;
+    color: #fff;
+}
+
+.acceso-panel .acceso-boton:hover {
+    background: #005c56;
+    color: #fff;
+}
+
+.acceso-panel .acceso-boton:focus {
+    outline: 3px solid #ffb800;
+    outline-offset: 3px;
+}
+
+.acceso-panel .form-control:focus {
+    border-color: #007a72;
+    box-shadow: 0 0 0 2px rgba(0, 122, 114, .18);
+}
+
+.acceso-panel .acceso-recuperar a {
+    color: #006b64;
+}
+
+.acceso-panel .acceso-claveunica {
+    background: #f0f8f7;
+    border-top: 1px solid #cce5e2;
+}
+
+/* Mantener diferenciado el acceso con ClaveÚnica */
+.acceso-panel .acceso-boton-cu {
+    background: #0f69c4;
+}
+
+.acceso-panel .acceso-boton-cu:hover {
+    background: #0c549d;
+}
+
+/* Texto e íconos del menú lateral */
+.portal-nav .nav > li > a,
+.portal-nav .nav > li > a:hover,
+.portal-nav .nav > li > a:focus,
+.portal-nav .nav > li.active > a,
+.portal-nav .nav > li.active > a:hover,
+.portal-nav .nav > li.active > a:focus {
+    color: #000;
+}
+
+/* Encabezado institucional */
+.portal-header h1 {
+    color: #fff !important;
+}
+
+/* Quitar el fondo oscuro que encierra el menú lateral */
+.portal-layout,
+.portal-layout > .row,
+.portal-layout aside,
+.portal-layout .col-sm-3 {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.portal-nav.navbar-default {
+    margin-bottom: 0;
+    background: #fff !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Distribución independiente de los estilos heredados sidenav/col-sm-3 */
+.portal-sidebar {
+    float: left;
+    width: 25%;
+    min-height: 0;
+    padding: 0 15px 20px;
+    background: #fff !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    box-sizing: border-box;
+}
+
+.portal-sidebar,
+.portal-sidebar nav,
+.portal-sidebar .container-fluid,
+.portal-sidebar .navbar-collapse,
+.portal-sidebar .nav {
+    background-color: #fff !important;
+    background-image: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.portal-main {
+    float: left;
+    width: 75%;
+    box-sizing: border-box;
+}
+
+.portal-layout > .row::after {
+    display: table;
+    clear: both;
+    content: "";
+}
+
+@media (max-width: 767px) {
+    .portal-sidebar,
+    .portal-main {
+        float: none;
+        width: 100%;
+    }
+}
+
+/* Botón ClaveÚnica: guía versión 2.0 */
+.acceso-panel .acceso-boton.acceso-boton-cu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    min-height: 48px;
+    padding: 8px 14px;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 4px;
+    background: #0F69C4;
+    color: #FFFFFF;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 32px;
+    letter-spacing: normal;
+    text-transform: none;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.acceso-panel .acceso-boton.acceso-boton-cu:visited {
+    color: #FFFFFF;
+}
+
+.acceso-panel .acceso-boton.acceso-boton-cu:hover,
+.acceso-panel .acceso-boton.acceso-boton-cu:focus {
+    background: #0B4E91;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.acceso-panel .acceso-boton.acceso-boton-cu:focus {
+    outline: 4px solid #FFBE5C;
+    outline-offset: 0;
+}
+
+.acceso-panel .acceso-boton.acceso-boton-cu:active {
+    background: #07305A;
+}
+
+.acceso-panel .acceso-boton-cu img {
+    display: block;
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    object-fit: contain;
+}
+
+.acceso-panel .acceso-boton-cu span {
+    white-space: nowrap;
+}
+
+    </style>
+</head>
+
+<body class="login-page">
+    <!-- Chat -->
+    <script src="https://code.jivosite.com/widget/SAchRBoiZ8" async></script>
+
+    <header class="portal-header">
+        <a href="index.php">
+            <img src="imagen/logos2023/Usach SB.png"
+                 alt="Universidad de Santiago de Chile - Inicio">
+        </a>
+
+        <h1 style="color: #ffffff !important;">
+            Administración General del Fondo Solidario
+            de Crédito Universitario
+        </h1>
+    </header>
+
+    <div class="container-fluid portal-layout">
+        <div class="row">
+            <aside class="portal-sidebar">
+                <nav class="navbar navbar-default portal-nav"
+                     aria-label="Menú principal">
+
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button"
+                                    class="navbar-toggle collapsed"
+                                    data-toggle="collapse"
+                                    data-target="#myNavbar"
+                                    aria-expanded="false"
+                                    aria-controls="myNavbar">
+                                <span class="sr-only">Mostrar menú</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+
+                            <span class="navbar-brand visible-xs">
+                                Menú
+                            </span>
+                        </div>
+
+                        <div class="collapse navbar-collapse" id="myNavbar">
+                            <ul class="nav nav-pills nav-stacked">
+                                <li>
+                                    <a href="index.php">
+                                        <span class="glyphicon glyphicon-home"
+                                              aria-hidden="true"></span>
+                                        Inicio
+                                    </a>
+                                </li>
+
+                                <li class="active">
+                                    <a href="inicio_sesion.php"
+                                       aria-current="page">
+                                        <span class="glyphicon glyphicon-user"
+                                              aria-hidden="true"></span>
+                                        Inicio Sesión
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="consulta_deuda.php">
+                                        <span class="glyphicon glyphicon-education"
+                                              aria-hidden="true"></span>
+                                        Consulta Deuda
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="actualiza_informacion.php">
+                                        <span class="glyphicon glyphicon-education"
+                                              aria-hidden="true"></span>
+                                        Actualización de Información
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="cupon_pago.php">
+                                        <span class="glyphicon glyphicon-education"
+                                              aria-hidden="true"></span>
+                                        Cupón de Pago
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="ingresa_declaracion.php">
+                                        <span class="glyphicon glyphicon-education"
+                                              aria-hidden="true"></span>
+                                        Declaración Jurada
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="web_pay.php">
+                                        <span class="glyphicon glyphicon-education"
+                                              aria-hidden="true"></span>
+                                        Pago Internet
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#menuInformacion"
+                                       data-toggle="collapse"
+                                       aria-expanded="false"
+                                       aria-controls="menuInformacion">
+                                        <span class="glyphicon glyphicon-education"
+                                              aria-hidden="true"></span>
+                                        Información
+                                        <span class="caret"
+                                              aria-hidden="true"></span>
+                                    </a>
+
+                                    <div class="collapse" id="menuInformacion">
+                                        <ul class="nav nav-pills nav-stacked">
+                                            <li>
+                                                <a href="informacion.html">
+                                                    Información
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="quienes-somos.html">
+                                                    Quiénes Somos
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="leyes.html">
+                                                    Leyes
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="fechas.html">
+                                                    Fechas Importantes
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="faq.html">
+                                                    Preguntas Frecuentes
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="beneficios.html">
+                                                    Beneficios
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="perdida.html">
+                                                    Pérdida de Beneficio
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="noticias.html">
+                                                    Noticias
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="solicitudes.html">
+                                                    Solicitudes Varias
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="horarios.html">
+                                                    Horarios de Atención
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <a href="cambio_clave.php">
+                                        <span class="glyphicon glyphicon-edit"
+                                              aria-hidden="true"></span>
+                                        Cambio de clave
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="cerrar_sesion.php">
+                                        <span class="glyphicon glyphicon-remove"
+                                              aria-hidden="true"></span>
+                                        Cerrar sesión
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="portal-main">
+                <p class="acceso-fecha">
+                    Fecha actual: {FECHA_ACTUAL}
+                </p>
+
+                <section class="acceso-panel"
+                         aria-labelledby="titulo-acceso">
+
+                    <div class="acceso-cabecera">
+                        <h2 id="titulo-acceso">Iniciar sesión</h2>
+                        <p>Portal Fondo Solidario · USACH</p>
+                    </div>
+
+                    <form class="acceso-formulario"
+                          action="inicio_sesion.php"
+                          method="post">
+
+                        <div class="form-group">
+                            <label for="RUT">RUT</label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   id="RUT"
+                                   name="rut"
+                                   placeholder="Ejemplo: 12345678"
+                                   inputmode="numeric"
+                                   autocomplete="username"
+                                   maxlength="8"
+                                   pattern="[0-9]{1,8}"
+                                   aria-describedby="ayuda-rut"
+                                   required>
+
+                            <span class="help-block" id="ayuda-rut">
+                                Sin puntos, guion ni dígito verificador.
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pwd">Contraseña del portal</label>
+
+                            <input type="password"
+                                   class="form-control"
+                                   id="pwd"
+                                   name="pwd"
+                                   autocomplete="current-password"
+                                   aria-describedby="ayuda-clave"
+                                   required>
+
+                            <span class="help-block" id="ayuda-clave">
+                                Fecha de nacimiento dd/mm/aaaa
+                            </span>
+                        </div>
+
+                        <label class="acceso-mostrar" for="showPassword">
+                            <input type="checkbox" id="showPassword">
+                            Mostrar contraseña
+                        </label>
+
+                        <button type="submit"
+                                name="b_ingresar"
+                                id="b_ingresar"
+                                value="1"
+                                class="acceso-boton">
+                            Ingresar
+                        </button>
+
+                        <p class="acceso-recuperar">
+                            <a href="recupera_contrasena.php">
+                                Recuperar contraseña
+                            </a>
+                        </p>
+                    </form>
+
+               <div class="acceso-claveunica">
+    <p>También puedes acceder con:</p>
+
+    <a href="claveunica_login.php"
+       class="acceso-boton acceso-boton-cu"
+       aria-label="Continuar con ClaveÚnica">
+        <img src="imagen/claveunica-isotipo-blanco.svg"
+             width="24"
+             height="24"
+             alt=""
+             aria-hidden="true">
+        <span>ClaveÚnica</span>
+    </a>
+</div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <footer class="portal-footer">
+        <div class="container-fluid">
+            <p>Universidad de Santiago de Chile.</p>
+            <p>
+                Avenida Libertador Bernardo O'Higgins nº 3363.
+                Estación Central. Santiago. Chile.
+            </p>
+            <p>Mesa Central (+56) 2 718 00 00</p>
+            <p>
+                <a href="http://www.usach.cl/contacto">
+                    Oficina de Informaciones, Reclamos y Sugerencias (OIRS)
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <script>
+        document.getElementById('showPassword').addEventListener(
+            'change',
+            function () {
+                var campoClave = document.getElementById('pwd');
+                campoClave.type = this.checked ? 'text' : 'password';
+            }
+        );
+    </script>
+</body>
+</html>

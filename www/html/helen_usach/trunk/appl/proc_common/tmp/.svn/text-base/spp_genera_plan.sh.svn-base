@@ -1,0 +1,1 @@
+exec spp_genera_plan(861, to_date('03/11/2009','dd/mm/yyyy'));

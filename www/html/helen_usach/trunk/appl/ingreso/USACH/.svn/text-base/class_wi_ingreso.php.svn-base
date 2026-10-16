@@ -1,0 +1,42 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once("class_print_ingreso_usach.php");
+////////////////////////////////////////
+/////////////// USACH //////////////////
+////////////////////////////////////////
+
+class wi_ingreso extends wi_ingreso_base {
+	function __construct($cod_item_menu) {
+	    parent::__construct($cod_item_menu);
+		$this->b_print_visible	 	= true;
+		
+		$this->dws['dw_ingreso']->add_control($control = new edit_num('MONTO_CHEQUE_FECHA'));
+		$control->set_onChange("calc_cheque_fecha();verifica_descuento();");
+		$this->dws['dw_ingreso']->add_control($control = new edit_num('CANT_CHEQUE_FECHA'));
+        $control->set_onChange("calc_cheque_fecha();verifica_descuento();");
+	}
+	function load_record() {
+		parent::load_record();
+		$this->b_print_visible	 	= true;
+	}
+	
+	function print_record() {
+		if ($this->nom_tabla == 'simulacion'){
+			parent::print_record();
+		}
+		else{			
+			$cod_ingreso = $this->get_key();
+			$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+			$sql= sql_ingreso::get_sql('PRINT_USACH_GENERAL',$cod_ingreso);
+			//$result = $db->build_results($sql);
+			//$count = count($result);
+			
+			//reporte
+			$labels = array();
+			$file_name = $this->find_file('ingreso', 'ingreso.xml');
+			$rpt = new print_ingreso_usach($sql, $file_name, $labels, "Ingreso".$cod_ingreso, 0);	
+			$this->_load_record();
+		}
+	}
+}
+?>

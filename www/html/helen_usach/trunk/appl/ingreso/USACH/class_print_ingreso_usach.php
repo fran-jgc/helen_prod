@@ -1,0 +1,376 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../../commonlib_seven/trunk/php/auto_load.php");
+ini_set('display_errors', 'Off');
+class print_ingreso_usach extends reporte {
+    function __construct($sql, $xml, $labels=array(), $titulo, $con_logo, $vuelve_a_presentacion=false) {
+        parent::__construct($sql, $xml, $labels, $titulo, $con_logo, $vuelve_a_presentacion);
+	}
+	function dibuja_uno(&$pdf, $result, $iniX, $iniY, $copia) {
+				
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		
+		//CONSTANTE DE TIPO_DOCUMENTO_PAGO
+		$K_DOC_EFECTIVO = 4;
+		$K_DOC_VALE_VISTA = 2;
+		$K_DOC_CHEQUE_DIA = 1;
+		$K_CHEQUE_FECHA = 5;
+		$K_TRANSBANK = 6;
+		$K_DEPOSITO = 3;
+		
+		$count = count($result);
+		$cod_ingreso=$result[0]['COD_INGRESO'];
+		
+		//CADA ITERACION DEL FOR ES UN TIPO DE DEUDA AGREGANDO UNA NUEVA HOJA
+		for($h=0;$h<$count;$h++){
+			if($h > 0){
+				$pdf->AddPage();
+			}
+			
+			//rectangulos para las copias
+			$pdf->SetDrawColor( 0, 0 , 0);
+			$pdf->SetLineWidth(0.8);
+			$pdf->Rect($iniX + 0.8, $iniY + 0.8, $iniX + 610, $iniY + 340);
+			$pdf->Rect($iniX + 0.8, $iniY + 360, $iniX + 610, $iniY + 340);
+			$pdf->SetLineWidth(0.6);
+			
+			$iniX = 0;
+			$iniY = 0;
+			$h_cell=12; //altura de celda
+			$alt_ini = $iniY + 20; //altura inicio de donde comienza a escribir el documento
+			$nexline = 12; //altura de espacio para escritura siguiente linea
+			
+			$cod_tipo_deuda = $result[$h]['COD_TIPO_DEUDA'];
+			
+			$suma_cheque_fecha = '';
+			$total_cheque_fecha = '';
+			$cadena_morosa = '';
+			$cadena_cuota='';
+			$cadena_ano='';
+			
+			$sql_dp= sql_ingreso::get_sql('PRINT_USACH_DOCUMENTO_PAGO',$cod_ingreso);
+			$result_dp = $db->build_results($sql_dp);
+			$count_dp = count($result_dp);
+			
+			$sql_dp_deuda= sql_ingreso::get_sql('PRINT_USACH_DOCUMENTO_PAGO_DEUDA',$cod_ingreso,$cod_tipo_deuda);
+			$result_dp_deuda = $db->build_results($sql_dp_deuda);
+			$count_dp_deuda = count($result_dp_deuda);
+			
+			$sql_cheque_fecha= sql_ingreso::get_sql('PRINT_USACH_CHEQUE_FECHA',$cod_ingreso,$cod_tipo_deuda);
+			$result_cheque_fecha = $db->build_results($sql_cheque_fecha);
+			$count_cheque_fecha = count($result_cheque_fecha);
+	
+			//saca la sumatoria y el valor presentable de los cheques a fecha
+			for($x=0;$x<$count_cheque_fecha;$x=$x+1){
+				$suma_cheque_fecha = $suma_cheque_fecha + $result_cheque_fecha[$x]['MONTO_ASIGNADO'];
+				$total_cheque_fecha =  number_format($suma_cheque_fecha, 0, ',', '.');
+			}
+			
+			$sql_morosa = sql_ingreso::get_sql('PRINT_USACH_MOROSA',$cod_ingreso,$cod_tipo_deuda);
+			$result_morosa = $db->build_results($sql_morosa);
+			$count_morosa = count($result_morosa);
+			
+			//cadena de mensaje para las cuotas morosas
+			for($x=0;$x<$count_morosa;$x=$x+1){
+				$ano = $result_morosa[$x]['ANO_COBRO'];
+				if($cadena_morosa == ''){
+					$cadena_morosa = $ano;
+				}
+				else{
+					$cadena_morosa = $cadena_morosa.', '.$ano;
+				}
+			}
+			
+			$sql_cuota_ano = sql_ingreso::get_sql('PRINT_CUOTA_ANO',$cod_ingreso,$cod_tipo_deuda);
+			$result_cuota_ano = $db->build_results($sql_cuota_ano);
+			$count_cuota_ano = count($result_cuota_ano);
+			
+			for($x=0;$x<$count_cuota_ano;$x=$x+1){
+				if($cadena_cuota == ''){
+					$cadena_cuota = $result_cuota_ano[$x]['NRO_CUOTA'];
+				}else $cadena_cuota = $cadena_cuota.' - '.$result_cuota_ano[$x]['NRO_CUOTA'];
+				
+				if($cadena_ano== ''){
+					$cadena_ano = $result_cuota_ano[$x]['ANO_COBRO'];
+				}else $cadena_ano = $cadena_ano.', '.$result_cuota_ano[$x]['ANO_COBRO'];
+			}
+			
+			//SETEAR VARIABLES PARA DOCUMENTO_PAGO
+			$banco = '';
+			$n_cheque = '';
+			$efectivo = '';
+			$vale_vista = '';
+			$cheque_dia = '';
+			$transbank = '';
+			$otros_gastos ='';
+			$deposito = '';
+			$otros_doctos = '';
+			$cheque_fecha ='';
+			$suma_total = '';
+			$cheque_nuevo = '';
+			$vale_nuevo = '';
+			$efectivo_nuevo = '';
+			$transbank_nuevo = '';
+			$deposito_nuevo = '';
+			$otros_doctos_nuevo = '';
+			
+			if($result_dp[0]['MONTO_OTROS_GASTOS']!=''){
+				$otros_gastos = number_format($result_dp[0]['MONTO_OTROS_GASTOS'], 0, ',', '.');
+				$suma_total = $suma_total + $result_dp[0]['MONTO_OTROS_GASTOS'];
+			}
+			
+			for($x=0;$x<$count_dp_deuda;$x=$x+1){
+				if($result_dp_deuda[$x]['COD_TIPO_DOCUMENTO_PAGO']==$K_DOC_EFECTIVO){
+					$efectivo_nuevo = $efectivo_nuevo + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+					$efectivo = number_format($efectivo_nuevo, 0, ',', '.');
+					$suma_total = $suma_total + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+				}
+				else{
+					if($result_dp_deuda[$x]['COD_TIPO_DOCUMENTO_PAGO']==$K_DOC_VALE_VISTA){
+						$vale_nuevo = $vale_nuevo + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+						$vale_vista = number_format($vale_nuevo, 0, ',', '.');
+						$suma_total = $suma_total + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+					}
+					else{
+						if($result_dp_deuda[$x]['COD_TIPO_DOCUMENTO_PAGO']==$K_DOC_CHEQUE_DIA){
+							$cheque_nuevo = $cheque_nuevo + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+							$cheque_dia = number_format($cheque_nuevo, 0, ',', '.');
+							$suma_total = $suma_total + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+							$n_cheque = $result_dp_deuda[$x]['NRO_DOCUMENTO_PAGO'];
+							$banco = $result_dp_deuda[$x]['NOM_BANCO'];
+						}
+						else{
+							if($result_dp_deuda[$x]['COD_TIPO_DOCUMENTO_PAGO']==$K_TRANSBANK){
+								$transbank_nuevo = $transbank_nuevo + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+								$transbank = number_format($transbank_nuevo, 0, ',', '.');
+								$suma_total = $suma_total + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+							}
+							else{
+								if($result_dp_deuda[$x]['COD_TIPO_DOCUMENTO_PAGO']==$K_DEPOSITO){
+									$deposito_nuevo = $deposito_nuevo + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+									$deposito = number_format($deposito_nuevo, 0, ',', '.');
+									$suma_total = $suma_total + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+								}
+								else{
+									//otros tipos de documentos
+									$otros_doctos_nuevo = $otros_doctos_nuevo + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+									$otros_doctos = number_format($otros_doctos_nuevo, 0, ',', '.');
+									$suma_total = $suma_total + $result_dp_deuda[$x]['MONTO_ASIGNADO'];
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			$suma_total = $suma_total + $suma_cheque_fecha;
+			$suma_total = number_format($suma_total, 0, ',', '.');
+			
+			////////////////////////IMPRESION DOCUMENTO ///////////////////////////
+			for($i=0;$i<=1;$i=$i+1){
+			
+				$pdf->SetFont('Helvetica','B',6);
+				$factor = 0.2;
+				$pdf->Image(dirname(__FILE__)."/../../../images_appl/".K_CLIENTE."/logo-color.jpg",$iniX + 20 ,$alt_ini, $factor * 150, $factor * 200);
+				
+				$pdf->SetFont('Helvetica','',7);
+				$pdf->SetXY($iniX+60,$alt_ini + $iniY);
+				$pdf->Cell(170,12,'UNIVERSIDAD DE SANTIAGO DE CHILE', '', '','L');
+				$pdf->SetXY($iniX+60,$alt_ini + $nexline * 1);
+				$pdf->Cell(170,12,'Administración General del Fondo Solidario', '', '','L');
+				$pdf->SetXY($iniX+60,$alt_ini + $nexline * 2);
+				$pdf->Cell(170,12,'de Crédito Universitario', '', '','L');
+				
+				//TABLA IZQUIERDA
+				$pdf->SetXY($iniX+20,$alt_ini + $nexline * 4);
+				$pdf->Cell(280,$h_cell,'NOMBRE DEL DEUDOR', 'LBRT', '','C');
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*5);
+				$pdf->Cell(280,$h_cell,utf8_decode($result[0]['NOMBRE'].' '.$result[0]['APELLIDO_PATERNO'].' '.$result[0]['APELLIDO_MATERNO']), 'LBRT', '','C');
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*6);
+				$pdf->Cell(280,$h_cell,'OBSERVACION', 'LBRT', '','C');
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*7);
+				$pdf->Cell(280,$h_cell,utf8_decode($result[0]['REFERENCIA']), 'LBRT', '','C');
+				
+				$alt_ini = $iniY + $alt_ini + 5;
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*8);
+				$pdf->Cell(137,$h_cell,'RUT DEUDOR', 'LBRT', '','C');
+				$pdf->SetXY($iniX+165,$alt_ini+$nexline*8);
+				$pdf->Cell(65,$h_cell,'N° DEUDA', 'LBRT', '','C');
+				$pdf->SetXY($iniX+235,$alt_ini+$nexline*8);
+				$pdf->Cell(65,$h_cell,'MONTO UTM', 'LBRT', '','C');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*9);
+				$pdf->Cell(137,$h_cell,number_format($result[0]['RUT'], 0, ',', '.').'-'.$result[0]['DIG_VERIF'], 'LBRT', '','C');
+				$pdf->SetXY($iniX+165,$alt_ini+$nexline*9);
+				$pdf->Cell(65,$h_cell,$result[$h]['COD_DEUDA'], 'LBRT', '','C');
+				$pdf->SetXY($iniX+235,$alt_ini+$nexline*9);
+				$pdf->Cell(65,$h_cell,number_format($result[$h]['MONTO_UTM'], 4, ',', '.'), 'LBRT', '','C');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*10);
+				$pdf->Cell(137,$h_cell,'FORMA PAGO', 'LBRT', '','C');
+				$pdf->SetXY($iniX+165,$alt_ini+$nexline*10);
+				$pdf->Cell(65,$h_cell,'TIPO DEUDA', 'LBRT', '','C');
+				$pdf->SetXY($iniX+235,$alt_ini+$nexline*10);
+				$pdf->Cell(65,$h_cell,'MONTO EN PESOS', 'LBRT', '','C');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*11);
+				$pdf->Cell(69.5,$h_cell,'EFECTIVO', 'LR', '','L');
+				$pdf->SetXY($iniX+89.5,$alt_ini+$nexline*11);
+				$pdf->Cell(67.5,$h_cell,$efectivo, 'LR', '','R');
+				$pdf->SetXY($iniX+165,$alt_ini+$nexline*11);
+				$pdf->Cell(65,$h_cell,$result[$h]['COD_TIPO_DEUDA'], 'LBRT', '','C');
+				$pdf->SetXY($iniX+235,$alt_ini+$nexline*11);
+				$pdf->Cell(65,$h_cell,number_format($result[$h]['MONTO_PESOS'], 0, ',', '.'), 'LBRT', '','C');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*12);
+				$pdf->Cell(69.5,$h_cell,'VALE VISTA', 'LR', '','L');
+				$pdf->SetXY($iniX+89.5,$alt_ini+$nexline*12);
+				$pdf->Cell(67.5,$h_cell,$vale_vista, 'LR', '','R');
+				$pdf->SetXY($iniX+165,$alt_ini+$nexline*12);
+				$pdf->Cell(65,$h_cell,'N° DE CUOTA', 'LBRT', '','C');
+				$pdf->SetXY($iniX+235,$alt_ini+$nexline*12);
+				$pdf->Cell(65,$h_cell,'BANCO', 'LBRT', '','C');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*13);
+				$pdf->Cell(69.5,$h_cell,'CHEQUE AL DIA', 'LR', '','L');
+				$pdf->SetXY($iniX+89.5,$alt_ini+$nexline*13);
+				$pdf->Cell(67.5,$h_cell,$cheque_dia, 'LR', '','R');
+				$pdf->SetXY($iniX+165,$alt_ini+$nexline*13);
+				$pdf->MultiCell(65,$h_cell,$cadena_cuota, 'LBRT','C');
+				$altura_ano=$pdf->GetY();
+				$pdf->SetXY($iniX+235,$alt_ini+$nexline*13);
+				$pdf->Cell(65,$h_cell,substr($banco, 0,15), 'LBRT', '','C');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*14);
+				$pdf->Cell(69.5,$h_cell,'CHEQUE A FECHA', 'LR', '','L');
+				$pdf->SetXY($iniX+89.5,$alt_ini+$nexline*14);
+				$pdf->Cell(67.5,$h_cell,$total_cheque_fecha, 'LR', '','R');
+				$pdf->SetXY($iniX+165,$altura_ano);
+				$pdf->Cell(65,$h_cell,'AÑO PAGO', 'LBRT', '','C');
+				$pdf->SetXY($iniX+235,$alt_ini+$nexline*14);
+				$pdf->Cell(65,$h_cell,'N° DE CHEQUE', 'LBRT', '','C');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*15);
+				$pdf->Cell(69.5,$h_cell,'TRANSBANK', 'LR', '','L');
+				$pdf->SetXY($iniX+89.5,$alt_ini+$nexline*15);
+				$pdf->Cell(67.5,$h_cell,$transbank, 'LR', '','R');
+				$pdf->SetXY($iniX+165,$altura_ano+12);
+				$pdf->MultiCell(65,$h_cell,$cadena_ano, 'LBRT','C');
+				$pdf->SetXY($iniX+235,$alt_ini+$nexline*15);
+				$pdf->Cell(65,$h_cell,$n_cheque, 'LBRT', '','C');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*16);
+				$pdf->Cell(69.5,$h_cell,'OTROS GASTOS', 'LR', '','L');
+				$pdf->SetXY($iniX+89.5,$alt_ini+$nexline*16);
+				$pdf->Cell(67.5,$h_cell,$otros_gastos, 'LR', '','R');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*17);
+				$pdf->Cell(69.5,$h_cell,'DEPOSITO/TRANSF', 'LR', '','L');
+				$pdf->SetXY($iniX+89.5,$alt_ini+$nexline*17);
+				$pdf->Cell(67.5,$h_cell,$deposito, 'LR', '','R');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*18);
+				$pdf->Cell(69.5,$h_cell,'OTROS DOCTOS.', 'LR', '','L');
+				$pdf->SetXY($iniX+89.5,$alt_ini+$nexline*18);
+				$pdf->Cell(67.5,$h_cell,$otros_doctos, 'LR', '','R');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*19);
+				$pdf->Cell(69.5,$h_cell,'TOTAL', 'LRBT', '','L');
+				$pdf->SetXY($iniX+89.5,$alt_ini+$nexline*19);
+				$pdf->Cell(67.5,$h_cell,$suma_total, 'LRBT', '','R');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*20);
+				$pdf->Cell(69.5,$h_cell,'FECHA INGRESO', 'LRBT', '','L');
+				$pdf->SetXY($iniX+89.5,$alt_ini+$nexline*20);
+				$pdf->Cell(67.5,$h_cell,$result_dp[0]['FECHA_PAGO'], 'LRBT', '','C');
+				
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*21);
+				$pdf->Cell(137,$h_cell,'RECEPCIONADO POR', 'LBRT', '','C');
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*22);
+				$pdf->Cell(137,$h_cell,utf8_decode($result[0]['NOM_USUARIO']), 'LBRT', '','C');
+				
+				$pdf->SetXY($iniX+165,$alt_ini+$nexline*23);
+				$pdf->Cell(135,$h_cell,'FECHA Y FIRMA DE CAJA', 'T', '','C');
+				
+				$pdf->SetFont('Helvetica','',7);
+				$pdf->SetXY($iniX+20,$alt_ini+$nexline*24);
+				$pdf->Cell(280,$h_cell,'AÚN REGISTRA MOROSA SU(S) CUOTA(S) AÑO(S):'.utf8_decode($cadena_morosa), '', '','L');
+				
+				//TABLA LADO DERECHO
+				$alt_t_der = $iniY + $alt_ini - 5 + 48;
+				$eje_y = $iniY + $alt_t_der + 14;
+				
+				$pdf->SetXY($iniX+310,$alt_t_der);
+				$pdf->Cell(280,$h_cell,'DETALLE DE CHEQUES A FECHA', 'LBRT', '','C');
+				
+				$pdf->SetXY($iniX+310,$alt_t_der+$nexline*1);
+				$pdf->Cell(100,$h_cell,'BANCO', 'LBRT', '','C');
+				$pdf->SetXY($iniX+410,$alt_t_der+$nexline*1);
+				$pdf->Cell(70,$h_cell,'N° DE CHEQUE', 'LBRT', '','C');
+				$pdf->SetXY($iniX+480,$alt_t_der+$nexline*1);
+				$pdf->Cell(70,$h_cell,'MONTO', 'LBRT', '','C');
+				$pdf->SetXY($iniX+550,$alt_t_der+$nexline*1);
+				$pdf->Cell(40,$h_cell,'VENCTO', 'LBRT', '','C');
+				
+				$banco_fecha = '';
+				$n_cheque_fecha = '';
+				$monto_fecha = '';
+				$vencimiento_fecha = '';
+				$contador = 0;
+
+				for($x=0;$x<=12;$x=$x+1){
+					if($contador < $count_cheque_fecha){
+						$banco_fecha = $result_cheque_fecha[$contador]['NOM_BANCO'];
+						$n_cheque_fecha = $result_cheque_fecha[$contador]['NRO_DOCUMENTO_PAGO'];
+						$monto_fecha = number_format($result_cheque_fecha[$contador]['MONTO_ASIGNADO'], 0, ',', '.');
+						$vencimiento_fecha = $result_cheque_fecha[$contador]['VENCIMIENTO'];
+						$contador = $contador + 1;
+					}else{
+						$banco_fecha = '';
+						$n_cheque_fecha = '';
+						$monto_fecha = '';
+						$vencimiento_fecha = '';
+						$contador = $contador + 1;
+					}
+					
+					$pdf->SetXY($iniX+310,$iniY+$eje_y + 10);
+					$pdf->Cell(100,$h_cell,substr($banco_fecha, 0,29), 'LR', '','L');
+					$pdf->SetXY($iniX+410,$iniY+$eje_y + 10);
+					$pdf->Cell(70,$h_cell,$n_cheque_fecha, 'LR', '','R');
+					$pdf->SetXY($iniX+480,$iniY+$eje_y + 10);
+					$pdf->Cell(70,$h_cell,$monto_fecha, 'LR', '','R');
+					$pdf->SetXY($iniX+550,$iniY+$eje_y + 10);
+					$pdf->Cell(40,$h_cell,$vencimiento_fecha, 'LR', '','L');
+					
+					$eje_y = $eje_y + $iniY + $nexline;
+				}
+				
+				$pdf->SetFont('Helvetica','',7);
+				$pdf->SetXY($iniX+310,$iniY+$eje_y + 10);
+				$pdf->Cell(280,$h_cell,'Se entiende pagada la(s) cuota(s) una vez cobrado y pagado el total de los cheques', 'T', '','L');
+							
+				$alt_ini = $eje_y + 140; //VALOR EN LE CUAL EMPESARA A DIBUJARSE LA COPIA UNIVERSIDAD
+			}
+		
+			$pdf->SetFont('Helvetica','B',7);
+			//FIRMAS
+			$pdf->SetXY($iniX+460,$iniY + 270);
+			$pdf->Cell(100,$h_cell,'ORIGINAL INTERESADO', '', '','L');
+			$pdf->SetXY($iniX+460,$iniY + 630);
+			$pdf->Cell(100,$h_cell,'COPIA UNIVERSIDAD', '', '','L');
+			
+		}
+	}
+
+	function modifica_pdf(&$pdf) {
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$result = $db->build_results($this->sql);
+		$count = count($result);
+		$deudor = 'Deudor';
+		$banco = 'Banco';
+		$row_count = $db->count_rows();
+		
+		$this->dibuja_uno($pdf, $result,0, 0, $deudor);
+	}
+}
+?>

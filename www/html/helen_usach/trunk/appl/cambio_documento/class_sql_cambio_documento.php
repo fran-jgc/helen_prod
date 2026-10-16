@@ -1,0 +1,585 @@
+<?php
+
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");	
+
+class sql_cambio_documento extends sql_tabla {
+	const K_ESTADO_DEUDA_NO_EXIGIBLE 		= 1;
+	const K_ESTADO_DEUDA_CO_NORMAL 			= 2;
+	const K_TIPO_DOC_CHEQUE					= 1;
+	const K_TIPO_DOC_VALE_VISTA				= 2;
+	const K_TIPO_DOC_CHEQUE_FECHA			= 5;
+	const K_ESTADO_DOC_X_DEPOS				= 1;
+	const K_ESTADO_DOC_PROTES				= 3;
+	const K_ESTADO_DOC_JUDICIAL				= 6;
+		
+	static function get_sql($selector_sql) {
+		
+		switch ($selector_sql) {
+			
+			/////////////////////     INPUT     /////////////////////////
+			case 'INPUT' :
+				if (K_TIPO_BD=="oci"){
+					$sql= "SELECT 	COD_CAMBIO_DOCUMENTO
+                  					,TO_char(FECHA_CAMBIO_DOCUMENTO, 'dd/mm/yyyy') FECHA_CAMBIO_DOCUMENTO
+									,RUT
+									,DIG_VERIF
+									,APELLIDO_PATERNO || ' ' || APELLIDO_MATERNO || ', ' || NOMBRE NOMBRE
+									,CD.COD_USUARIO
+									,NOM_USUARIO
+									,D.COD_DEUDOR
+									,DE.COD_DEUDA
+									,RECARGO
+									,DESCUENTO
+									,FD.COD_FAMILIA_DEUDA
+									,NOM_FAMILIA_DEUDA
+									,0 STATIC_RESULT
+							FROM 	CAMBIO_DOCUMENTO CD, DEUDOR D, USUARIO U, DEUDA DE, FAMILIA_DEUDA FD
+							WHERE 	CD.COD_DEUDOR = D.COD_DEUDOR
+								AND		U.COD_USUARIO = CD.COD_USUARIO
+								AND		D.COD_DEUDOR = DE.COD_DEUDOR
+								AND 	CD.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA
+								AND		COD_CAMBIO_DOCUMENTO = {KEY1}";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql= "SELECT 	COD_CAMBIO_DOCUMENTO
+									,CONVERT(VARCHAR(20), FECHA_CAMBIO_DOCUMENTO, 103) FECHA_CAMBIO_DOCUMENTO
+									,RUT
+									,DIG_VERIF
+									,APELLIDO_PATERNO + ' ' + APELLIDO_MATERNO + ', ' + NOMBRE NOMBRE
+									,CD.COD_USUARIO
+									,NOM_USUARIO
+									,D.COD_DEUDOR
+									,DE.COD_DEUDA
+									,RECARGO
+									,DESCUENTO
+									,FD.COD_FAMILIA_DEUDA
+									,NOM_FAMILIA_DEUDA
+									,0 STATIC_RESULT
+							FROM 	CAMBIO_DOCUMENTO CD, DEUDOR D, USUARIO U, DEUDA DE, FAMILIA_DEUDA FD
+							WHERE 	CD.COD_DEUDOR = D.COD_DEUDOR
+							AND		U.COD_USUARIO = CD.COD_USUARIO
+							AND		D.COD_DEUDOR = DE.COD_DEUDOR
+							AND 	CD.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA
+							AND		COD_CAMBIO_DOCUMENTO = {KEY1}";
+				}
+			break;
+			
+			//////////////////////    OUTPUT       ///////////////////// 
+			case 'OUTPUT' :
+				if (K_TIPO_BD=="oci"){
+					$sql=	"SELECT COD_CAMBIO_DOCUMENTO
+									,to_char(FECHA_CAMBIO_DOCUMENTO, 'dd/mm/yyyy') FECHA_CAMBIO_DOCUMENTO
+									,RUT
+									,DIG_VERIF
+									,NOMBRE
+									,APELLIDO_PATERNO	
+									,APELLIDO_MATERNO
+							FROM 	CAMBIO_DOCUMENTO CD, DEUDOR D
+							WHERE 	CD.COD_DEUDOR = D.COD_DEUDOR
+							ORDER BY COD_CAMBIO_DOCUMENTO DESC";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql= "SELECT 	COD_CAMBIO_DOCUMENTO
+									,CONVERT(VARCHAR(20), FECHA_CAMBIO_DOCUMENTO, 103) FECHA_CAMBIO_DOCUMENTO
+									,RUT
+									,DIG_VERIF
+									,NOMBRE
+									,APELLIDO_PATERNO	
+									,APELLIDO_MATERNO
+							FROM 	CAMBIO_DOCUMENTO CD, DEUDOR D
+							WHERE 	CD.COD_DEUDOR = D.COD_DEUDOR
+							ORDER BY COD_CAMBIO_DOCUMENTO DESC";
+				}
+			break;
+			
+			//////////////////////    DW_DOCUMENTO_ORIGINAL       ///////////////////// 
+			case 'DW_DOCUMENTO_ORIGINAL' :
+				if (K_TIPO_BD=="oci"){
+					$sql=	"SELECT	'S' SELECCION
+									,1 SELECCION_V
+									,DP.NRO_DOCUMENTO_PAGO NRO_DOCUMENTO_PAGO_DO
+									,NOM_TIPO_DOCUMENTO_PAGO 
+									,EDP.NOM_ESTADO_DOCUMENTO_PAGO
+									,NOM_BANCO
+									,NOM_PLAZA
+									,DO.COD_DOCUMENTO_PAGO COD_DOCUMENTO_PAGO_DO_H
+                  					,TO_char(FECHA_DOCUMENTO_PAGO, 'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO_DO
+									,MONTO MONTO_DO
+									,DO.COD_DOCUMENTO_ORIGINAL
+									,DO.COD_CAMBIO_DOCUMENTO	
+									,COD_FAMILIA_DEUDA COD_FAMILIA_DEUDA_H
+									,DP.COD_DEUDOR COD_DEUDOR_DOC_ORI	
+									,'' DISPLAY_TR					
+							FROM	DOCUMENTO_ORIGINAL DO, DOCUMENTO_PAGO DP LEFT OUTER JOIN BANCO B ON DP.COD_BANCO = B.COD_BANCO
+										LEFT OUTER JOIN PLAZA P ON DP.COD_PLAZA = P.COD_PLAZA 		
+									, TIPO_DOCUMENTO_PAGO TDP
+									,ESTADO_DOCUMENTO_PAGO EDP
+							WHERE	DO.COD_CAMBIO_DOCUMENTO = {KEY1}
+								AND		DO.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+								AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO
+								AND	    EDP.COD_ESTADO_DOCUMENTO_PAGO = DP.COD_ESTADO_DOCUMENTO_PAGO";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql= "SELECT	'S' SELECCION
+									,1 SELECCION_V
+									,DP.NRO_DOCUMENTO_PAGO NRO_DOCUMENTO_PAGO_DO
+									,NOM_TIPO_DOCUMENTO_PAGO 
+									,EDP.NOM_ESTADO_DOCUMENTO_PAGO
+									,NOM_BANCO
+									,NOM_PLAZA
+									,DO.COD_DOCUMENTO_PAGO COD_DOCUMENTO_PAGO_DO_H
+									,CONVERT(VARCHAR(20), FECHA_DOCUMENTO_PAGO, 103) FECHA_DOCUMENTO_PAGO_DO
+									,MONTO MONTO_DO
+									,DO.COD_DOCUMENTO_ORIGINAL
+									,DO.COD_CAMBIO_DOCUMENTO	
+									,COD_FAMILIA_DEUDA COD_FAMILIA_DEUDA_H
+									,DP.COD_DEUDOR COD_DEUDOR_DOC_ORI	
+									,'' DISPLAY_TR					
+							FROM	DOCUMENTO_ORIGINAL DO, DOCUMENTO_PAGO DP LEFT OUTER JOIN BANCO B ON DP.COD_BANCO = B.COD_BANCO
+										LEFT OUTER JOIN PLAZA P ON DP.COD_PLAZA = P.COD_PLAZA 		
+									, TIPO_DOCUMENTO_PAGO TDP
+									,ESTADO_DOCUMENTO_PAGO EDP
+							WHERE	DO.COD_CAMBIO_DOCUMENTO = {KEY1}
+							AND		DO.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+							AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO
+							AND	    EDP.COD_ESTADO_DOCUMENTO_PAGO = DP.COD_ESTADO_DOCUMENTO_PAGO";
+				}
+			break;
+			
+		////////////// FECHAS ////////////////	
+			case 'FECHAS' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT	To_Char(trunc(SYSDATE - 60), 'DD/MM/YYYY') FECHA_60_DIAS_ANTES
+                            		,f_ultimo_dia(TO_CHAR(SYSDATE, 'MM'),TO_CHAR(SYSDATE, 'YYYY'))||'/'||TO_CHAR(SYSDATE, 'MM')||'/'||TO_CHAR(SYSDATE, 'YYYY') FECHA_ULT_DIA_MES
+                            		,To_Char(trunc(SYSDATE), 'DD/MM/YYYY') FECHA_ACTUAL 
+							FROM 	DUAL";
+				}
+			else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT	convert(varchar(20), DATEADD(day, -60, getdate()), 103) FECHA_60_DIAS_ANTES
+									,convert(varchar(2) ,dbo.f_ultimo_dia (month(getdate()), year(getdate())))+'/'+convert(varchar(2),month(getdate()))+'/'+convert(varchar(4),year(getdate())) FECHA_ULT_DIA_MES
+									,convert(varchar(20), getdate(), 103) FECHA_ACTUAL";
+				}
+			break;
+			
+			
+			
+			//////////////////////		AJAX_EXISTE_RUT	/////////////////
+			case 'AJAX_EXISTE_RUT' :
+				/////////////////  ORACLE ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT COD_DEUDOR 
+							FROM   DEUDOR 
+							WHERE  RUT = {PARAM1}";
+				}
+			break;
+			
+			///////////////// CLASS_SQL = AJAX_INFO_DEUDOR ///////////////
+			case 'AJAX_INFO_DEUDOR' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT  DIG_VERIF
+		       						,APELLIDO_PATERNO || ' ' || APELLIDO_MATERNO || ', ' || NOMBRE NOMBRE
+		       						,DE.COD_DEUDOR
+									,D.COD_DEUDA
+							FROM    DEUDOR DE, DEUDA D
+							WHERE   RUT = {PARAM1}
+							AND     DE.COD_DEUDOR = D.COD_DEUDOR"; 
+				}
+				else if (K_TIPO_BD=="mssql"){
+					/////////////////  SQL-SERVER ///////////////
+					$sql = "SELECT  DIG_VERIF
+		       						,(APELLIDO_PATERNO + ' ' + APELLIDO_MATERNO + ', ' + NOMBRE)  NOMBRE
+		       						,DE.COD_DEUDOR
+		       						,D.COD_DEUDA
+							FROM    DEUDOR DE, DEUDA D
+							WHERE   RUT = {PARAM1}
+							AND     DE.COD_DEUDOR = D.COD_DEUDOR";
+				}
+			break;
+				
+			///////////////// CLASS_SQL = AJAX_OBTIENE_DOCS///////////////
+			case 'AJAX_OBTIENE_DOCS' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT	'N' SELECCION
+									, DP.NRO_DOCUMENTO_PAGO
+									, EDP.NOM_ESTADO_DOCUMENTO_PAGO 
+									, NOM_TIPO_DOCUMENTO_PAGO
+									, NOM_BANCO
+									, NOM_PLAZA
+									,DP.COD_DOCUMENTO_PAGO COD_DOCUMENTO_PAGO_H
+									,TO_CHAR(FECHA_DOCUMENTO_PAGO, 'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO
+									,MONTO
+									,COD_FAMILIA_DEUDA COD_FAMILIA_DEUDA_H
+									,DP.COD_DEUDOR COD_DEUDOR_DOC_ORI
+									,CASE COD_FAMILIA_DEUDA
+										WHEN 1 THEN ''
+										ELSE 'none'
+									END DISPLAY_TR
+							FROM	DOCUMENTO_PAGO DP LEFT OUTER JOIN BANCO B ON DP.COD_BANCO = B.COD_BANCO
+										LEFT OUTER JOIN PLAZA P ON DP.COD_PLAZA = P.COD_PLAZA
+									, TIPO_DOCUMENTO_PAGO TDP
+									, DEUDOR DR
+									, ESTADO_DOCUMENTO_PAGO EDP
+							WHERE	DR.COD_DEUDOR = {PARAM1}
+								AND		DP.COD_ESTADO_DOCUMENTO_PAGO IN (".self::K_ESTADO_DOC_X_DEPOS.",".self::K_ESTADO_DOC_PROTES.",".self::K_ESTADO_DOC_JUDICIAL.")
+								AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO
+								AND		DP.COD_DEUDOR = DR.COD_DEUDOR
+								AND		DP.COD_TIPO_DOCUMENTO_PAGO IN (".self::K_TIPO_DOC_CHEQUE.",".self::K_TIPO_DOC_VALE_VISTA.",".self::K_TIPO_DOC_CHEQUE_FECHA.")
+								AND 	EDP.COD_ESTADO_DOCUMENTO_PAGO = DP.COD_ESTADO_DOCUMENTO_PAGO
+								ORDER BY FECHA_DOCUMENTO_PAGO ASC"; 
+				}
+				else if (K_TIPO_BD=="mssql"){
+					/////////////////  SQL-SERVER ///////////////
+					$sql = "SELECT	'N' SELECCION
+									, DP.NRO_DOCUMENTO_PAGO
+									, EDP.NOM_ESTADO_DOCUMENTO_PAGO 
+									, NOM_TIPO_DOCUMENTO_PAGO
+									, NOM_BANCO
+									, NOM_PLAZA
+									,DP.COD_DOCUMENTO_PAGO COD_DOCUMENTO_PAGO_H
+									,CONVERT(VARCHAR(20), FECHA_DOCUMENTO_PAGO, 103) FECHA_DOCUMENTO_PAGO
+									,MONTO
+									,COD_FAMILIA_DEUDA COD_FAMILIA_DEUDA_H
+									,DP.COD_DEUDOR COD_DEUDOR_DOC_ORI
+									,CASE COD_FAMILIA_DEUDA
+										WHEN 1 THEN ''
+										ELSE 'none'
+									END DISPLAY_TR
+							FROM	DOCUMENTO_PAGO DP LEFT OUTER JOIN BANCO B ON DP.COD_BANCO = B.COD_BANCO
+										LEFT OUTER JOIN PLAZA P ON DP.COD_PLAZA = P.COD_PLAZA
+									, TIPO_DOCUMENTO_PAGO TDP
+									, DEUDOR DR
+									, ESTADO_DOCUMENTO_PAGO EDP
+							WHERE	DR.COD_DEUDOR = {PARAM1}
+							AND		DP.COD_ESTADO_DOCUMENTO_PAGO IN (".self::K_ESTADO_DOC_X_DEPOS.",".self::K_ESTADO_DOC_PROTES.",".self::K_ESTADO_DOC_JUDICIAL.")
+							AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO
+							AND		DP.COD_DEUDOR = DR.COD_DEUDOR
+							AND		DP.COD_TIPO_DOCUMENTO_PAGO IN (".self::K_TIPO_DOC_CHEQUE.",".self::K_TIPO_DOC_VALE_VISTA.",".self::K_TIPO_DOC_CHEQUE_FECHA.")
+							AND 	EDP.COD_ESTADO_DOCUMENTO_PAGO = DP.COD_ESTADO_DOCUMENTO_PAGO
+							ORDER BY FECHA_DOCUMENTO_PAGO ASC";
+				}
+			break;
+			
+			///////////////// CLASS_SQL = AJAX_OBTIENE_DOCS_NUEVOS///////////////
+			case 'AJAX_OBTIENE_DOCS_NUEVOS' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT 'N' SELECCION
+									,DP.NRO_DOCUMENTO_PAGO
+									,NOM_TIPO_DOCUMENTO_PAGO
+									,NOM_BANCO
+									,NOM_PLAZA
+									,DP.COD_DOCUMENTO_PAGO COD_DOCUMENTO_PAGO_H
+                  					,TO_CHAR(FECHA_DOCUMENTO_PAGO, 'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO
+									,MONTO
+									,DP.COD_FAMILIA_DEUDA COD_FAMILIA_DEUDA_H
+									,CASE DP.COD_FAMILIA_DEUDA
+										WHEN 1 THEN ''
+										ELSE 'none'
+									END DISPLAY_TR
+							FROM	CAMBIO_DOCUMENTO CD, DOCUMENTO_NUEVO DN, DOCUMENTO_PAGO DP, TIPO_DOCUMENTO_PAGO TDP, BANCO BA, PLAZA P
+							WHERE	CD.COD_CAMBIO_DOCUMENTO = DN.COD_CAMBIO_DOCUMENTO
+								AND		DN.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+								AND		TDP.COD_TIPO_DOCUMENTO_PAGO = DP.COD_TIPO_DOCUMENTO_PAGO
+								AND		BA.COD_BANCO = DP.COD_BANCO
+								AND		P.COD_PLAZA = DP.COD_PLAZA
+								AND		CD.COD_DEUDOR = {PARAM1}
+								AND		COD_ESTADO_DOCUMENTO_PAGO = {PARAM2}"; 
+				}
+				else if (K_TIPO_BD=="mssql"){
+					/////////////////  SQL-SERVER ///////////////
+					$sql = "SELECT 'N' SELECCION
+									,DP.NRO_DOCUMENTO_PAGO
+									,NOM_TIPO_DOCUMENTO_PAGO
+									,NOM_BANCO
+									,NOM_PLAZA
+									,DP.COD_DOCUMENTO_PAGO COD_DOCUMENTO_PAGO_H
+									,CONVERT(VARCHAR(20), FECHA_DOCUMENTO_PAGO, 103) FECHA_DOCUMENTO_PAGO
+									,MONTO
+									,Dp.COD_FAMILIA_DEUDA COD_FAMILIA_DEUDA_H
+									,CASE DP.COD_FAMILIA_DEUDA
+										WHEN 1 THEN ''
+										ELSE 'none'
+									END DISPLAY_TR
+							FROM	CAMBIO_DOCUMENTO CD, DOCUMENTO_NUEVO DN, DOCUMENTO_PAGO DP, TIPO_DOCUMENTO_PAGO TDP, BANCO BA, PLAZA P
+							WHERE	CD.COD_CAMBIO_DOCUMENTO = DN.COD_CAMBIO_DOCUMENTO
+							AND		DN.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+							AND		TDP.COD_TIPO_DOCUMENTO_PAGO = DP.COD_TIPO_DOCUMENTO_PAGO
+							AND		BA.COD_BANCO = DP.COD_BANCO
+							AND		P.COD_PLAZA = DP.COD_PLAZA
+							AND		CD.COD_DEUDOR = {PARAM1}
+							AND		COD_ESTADO_DOCUMENTO_PAGO = {PARAM2}";
+				}
+			break;
+			
+			/////////////// AJAX_FECHA_POSTERIOR ///////////////
+			case 'AJAX_FECHA_POSTERIOR' :
+				if (K_TIPO_BD=="oci"){
+					$sql= "select to_char(f_get_last_day_cambio_docto('{PARAM1}'),'dd/mm/yyyy') FECHA_POSTERIOR
+							from dual";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql= "select CONVERT(VARCHAR(20), dbo.f_get_last_day_cambio_docto('{PARAM1}'),103) FECHA_POSTERIOR";		
+				}
+			break;
+			
+			/////////////// DW_DOCUMENTO_PAGO_NUEVO ///////////////
+			case 'DW_DOCUMENTO_PAGO_NUEVO' :
+				if (K_TIPO_BD=="oci"){
+					$sql= 	"SELECT	DP.COD_DOCUMENTO_PAGO COD_DOCUMENTO_PAGO_H
+									, TDP.COD_TIPO_DOCUMENTO_PAGO
+									, TDP.NOM_TIPO_DOCUMENTO_PAGO
+									, DP.NRO_DOCUMENTO_PAGO
+									, DP.COD_BANCO
+									, DP.COD_PLAZA
+                  					,TO_CHAR(DP.FECHA_DOCUMENTO_PAGO, 'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO
+									, DP.MONTO MONTO
+									, DN.COD_CAMBIO_DOCUMENTO
+									, DN.COD_DOCUMENTO_NUEVO
+									, DP.COD_DEUDOR COD_DEUDOR_DOC_NEW
+							    , DP.COD_FAMILIA_DEUDA COD_FAMILIA_DEUDA_DOC_NEW 
+							FROM	DOCUMENTO_PAGO DP, TIPO_DOCUMENTO_PAGO TDP, DOCUMENTO_NUEVO DN
+							WHERE	DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO
+							AND		DP.COD_DOCUMENTO_PAGO = DN.COD_DOCUMENTO_PAGO
+							AND		DN.COD_CAMBIO_DOCUMENTO = {KEY1}";
+				}				
+				else if (K_TIPO_BD=="mssql"){
+					$sql= 	"SELECT	DP.COD_DOCUMENTO_PAGO COD_DOCUMENTO_PAGO_H
+									, TDP.COD_TIPO_DOCUMENTO_PAGO
+									, TDP.NOM_TIPO_DOCUMENTO_PAGO
+									, DP.NRO_DOCUMENTO_PAGO
+									, DP.COD_BANCO
+									, DP.COD_PLAZA
+									, convert(varchar(20), DP.FECHA_DOCUMENTO_PAGO, 103) FECHA_DOCUMENTO_PAGO
+									, DP.MONTO MONTO
+									, DN.COD_CAMBIO_DOCUMENTO
+									, DN.COD_DOCUMENTO_NUEVO
+									, DP.COD_DEUDOR COD_DEUDOR_DOC_NEW
+									, DP.COD_FAMILIA_DEUDA COD_FAMILIA_DEUDA_DOC_NEW 
+							FROM	DOCUMENTO_PAGO DP, TIPO_DOCUMENTO_PAGO TDP, DOCUMENTO_NUEVO DN
+							WHERE	DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO
+							AND		DP.COD_DOCUMENTO_PAGO = DN.COD_DOCUMENTO_PAGO
+							AND		DN.COD_CAMBIO_DOCUMENTO = {KEY1}";
+				}
+			break;
+			
+			//////////////// DD_FAMILIA_DEUDA ////////////////
+			case 'DD_FAMILIA_DEUDA' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT 	COD_FAMILIA_DEUDA
+									,NOM_FAMILIA_DEUDA
+							FROM 	FAMILIA_DEUDA";
+				}
+				break;
+				
+			//////////////// PRINT_RECORD ////////////////
+			case 'PRINT_RECORD' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT COD_CAMBIO_DOCUMENTO FROM CAMBIO_DOCUMENTO where COD_CAMBIO_DOCUMENTO = {PARAM1}";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT COD_CAMBIO_DOCUMENTO FROM CAMBIO_DOCUMENTO where COD_CAMBIO_DOCUMENTO = {PARAM1}";
+				}
+				break;	
+
+			/////////////////  DD_TIPO_DOCUMENTO_PAGO ///////////////
+			case 'DD_TIPO_DOCUMENTO_PAGO' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT		COD_TIPO_DOCUMENTO_PAGO
+										, NOM_TIPO_DOCUMENTO_PAGO
+							FROM 		TIPO_DOCUMENTO_PAGO
+							ORDER BY 	COD_TIPO_DOCUMENTO_PAGO";
+				}
+				break;
+								
+			/////////////////  DD_BANCO ///////////////
+			case 'DD_BANCO' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT 		COD_BANCO
+										, NOM_BANCO
+							FROM 		BANCO
+							ORDER BY	COD_BANCO";
+				}
+				break;	
+
+			/////////////////  DD_PLAZA ///////////////
+			case 'DD_PLAZA' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT		COD_PLAZA
+										, NOM_PLAZA
+							FROM 		PLAZA
+							ORDER BY 	COD_PLAZA";
+				}
+			break;	
+
+			/////////////////  DD_BANCO_DEPOSITO ///////////////
+			case 'DD_BANCO_DEPOSITO' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT		CC.COD_BANCO
+										,B.NOM_BANCO 
+							FROM 		CUENTA_CORRIENTE CC
+										,BANCO B
+							          	,DEUDA D
+							          	,TIPO_DEUDA TD
+							          	,FAMILIA_DEUDA FD
+							WHERE 		CC.COD_BANCO = B.COD_BANCO
+							          	AND D.COD_TIPO_DEUDA = TD.COD_TIPO_DEUDA
+							          	AND FD.COD_FAMILIA_DEUDA = TD.COD_FAMILIA_DEUDA
+							          	AND FD.COD_FAMILIA_DEUDA = CC.COD_FAMILIA_DEUDA
+							          	AND D.COD_DEUDA = {PARAM1}
+							ORDER BY  	COD_BANCO";
+				}
+				break;
+				
+				//////////////// PRINT_ENCABEZADO ////////////////
+			case 'PRINT_ENCABEZADO' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT	RUT
+									,DIG_VERIF
+									,(APELLIDO_PATERNO || ' ' || APELLIDO_MATERNO ||', ' || NOMBRE)  NOMBRE
+									,CD.COD_CAMBIO_DOCUMENTO
+                 					,to_char(FECHA_CAMBIO_DOCUMENTO, 'dd/mm/yyyy') FECHA_CAMBIO_DOCUMENTO
+									,RECARGO RECARGO
+									,DESCUENTO DESCUENTO
+									,NOM_FAMILIA_DEUDA FAMILIA
+                 					,NOM_USUARIO 
+							FROM	CAMBIO_DOCUMENTO CD, DEUDOR DR, FAMILIA_DEUDA FD, USUARIO U
+							WHERE	CD.COD_DEUDOR = DR.COD_DEUDOR
+							AND		CD.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA
+              				AND   	CD.COD_USUARIO = U.COD_USUARIO
+							AND		CD.COD_CAMBIO_DOCUMENTO = {PARAM1}";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT	RUT
+									,DIG_VERIF
+									,(APELLIDO_PATERNO + ' ' + APELLIDO_MATERNO +', '+ NOMBRE)  NOMBRE
+									,CD.COD_CAMBIO_DOCUMENTO
+									,convert(varchar(20), FECHA_CAMBIO_DOCUMENTO, 103) FECHA_CAMBIO_DOCUMENTO
+									,RECARGO RECARGO
+									,DESCUENTO DESCUENTO
+									,NOM_FAMILIA_DEUDA FAMILIA
+									,NOM_USUARIO
+							FROM	CAMBIO_DOCUMENTO CD, DEUDOR DR, FAMILIA_DEUDA FD, USUARIO U
+							WHERE	CD.COD_DEUDOR = DR.COD_DEUDOR
+							AND		CD.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA
+							AND		CD.COD_USUARIO= U.COD_USUARIO
+							AND		CD.COD_CAMBIO_DOCUMENTO = {PARAM1}";
+				}
+				break;
+				
+			//////////////// PRINT_CONTENIDO ////////////////
+			case 'PRINT_CONTENIDO' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT DP.NRO_DOCUMENTO_PAGO
+                				,to_char(DP.FECHA_DOCUMENTO_PAGO, 'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO
+								,DP.MONTO
+								,BDO.NOM_BANCO NOM_BANCO_BDO 
+								,PDO.NOM_PLAZA
+								,NOM_TIPO_DOCUMENTO_PAGO
+								FROM	CAMBIO_DOCUMENTO CD
+								, DEUDOR DR
+								, FAMILIA_DEUDA FD
+								, DOCUMENTO_ORIGINAL DO
+								, DOCUMENTO_PAGO DP left outer join BANCO BDO on DP.COD_BANCO = BDO.COD_BANCO 
+								left outer join PLAZA PDO on DP.COD_PLAZA = PDO.COD_PLAZA
+								, TIPO_DOCUMENTO_PAGO TDP
+								WHERE	CD.COD_DEUDOR = DR.COD_DEUDOR 
+								AND		FD.COD_FAMILIA_DEUDA = CD.COD_FAMILIA_DEUDA
+								AND		CD.COD_CAMBIO_DOCUMENTO = {PARAM1}
+								AND		CD.COD_CAMBIO_DOCUMENTO = DO.COD_CAMBIO_DOCUMENTO
+								AND		DO.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+								AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT DP.NRO_DOCUMENTO_PAGO
+								,convert(varchar(20), DP.FECHA_DOCUMENTO_PAGO, 103) FECHA_DOCUMENTO_PAGO
+								,DP.MONTO
+								,BDO.NOM_BANCO NOM_BANCO_BDO 
+								,PDO.NOM_PLAZA
+								,NOM_TIPO_DOCUMENTO_PAGO
+								FROM	CAMBIO_DOCUMENTO CD
+								, DEUDOR DR
+								, FAMILIA_DEUDA FD
+								, DOCUMENTO_ORIGINAL DO
+								, DOCUMENTO_PAGO DP left outer join BANCO BDO on DP.COD_BANCO = BDO.COD_BANCO 
+								left outer join PLAZA PDO on DP.COD_PLAZA = PDO.COD_PLAZA
+								, TIPO_DOCUMENTO_PAGO TDP
+								WHERE	CD.COD_DEUDOR = DR.COD_DEUDOR 
+								AND		FD.COD_FAMILIA_DEUDA = CD.COD_FAMILIA_DEUDA
+								AND		CD.COD_CAMBIO_DOCUMENTO = {PARAM1}
+								AND		CD.COD_CAMBIO_DOCUMENTO = DO.COD_CAMBIO_DOCUMENTO
+								AND		DO.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+								AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO";
+				}
+				break;
+				
+			//////////////// PRINT_FINAL ////////////////
+			case 'PRINT_FINAL' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT	RUT 
+								,DIG_VERIF
+								,(APELLIDO_PATERNO || ' ' || APELLIDO_MATERNO ||', '|| NOMBRE)  NOMBRE
+								,CD.COD_CAMBIO_DOCUMENTO
+                				,to_char(FECHA_CAMBIO_DOCUMENTO, 'dd/mm/yyyy') FECHA_CAMBIO_DOCUMENTO
+								,RECARGO
+								,DESCUENTO
+								,NOM_FAMILIA_DEUDA
+								,DP.NRO_DOCUMENTO_PAGO
+                				,to_char(DP.FECHA_DOCUMENTO_PAGO, 'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO
+								,DP.MONTO
+								,BDN.NOM_BANCO NOM_BANCO_BDO 
+								,PDN.NOM_PLAZA
+								,NOM_TIPO_DOCUMENTO_PAGO
+						FROM	CAMBIO_DOCUMENTO CD   
+								, DEUDOR DR
+								, FAMILIA_DEUDA FD
+								, DOCUMENTO_NUEVO DN
+								, DOCUMENTO_PAGO DP left outer join BANCO BDN on DP.COD_BANCO = BDN.COD_BANCO
+									left outer join PLAZA PDN on DP.COD_PLAZA = PDN.COD_PLAZA
+								,TIPO_DOCUMENTO_PAGO TDP
+						WHERE	CD.COD_DEUDOR = DR.COD_DEUDOR
+						AND		CD.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA
+						AND		CD.COD_CAMBIO_DOCUMENTO = {PARAM1}
+						AND		CD.COD_CAMBIO_DOCUMENTO = DN.COD_CAMBIO_DOCUMENTO
+						AND		DN.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+						AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT	RUT 
+								,DIG_VERIF
+								,(APELLIDO_PATERNO + ' ' + APELLIDO_MATERNO +', '+ NOMBRE)  NOMBRE
+								,CD.COD_CAMBIO_DOCUMENTO
+								,convert(varchar(20), FECHA_CAMBIO_DOCUMENTO, 103) FECHA_CAMBIO_DOCUMENTO
+								,RECARGO
+								,DESCUENTO
+								,NOM_FAMILIA_DEUDA
+								,DP.NRO_DOCUMENTO_PAGO
+								,convert(varchar(20), DP.FECHA_DOCUMENTO_PAGO, 103) FECHA_DOCUMENTO_PAGO
+								,DP.MONTO
+								,BDN.NOM_BANCO NOM_BANCO_BDO 
+								,PDN.NOM_PLAZA
+								,NOM_TIPO_DOCUMENTO_PAGO
+						FROM	CAMBIO_DOCUMENTO CD   
+								, DEUDOR DR
+								, FAMILIA_DEUDA FD
+								, DOCUMENTO_NUEVO DN
+								, DOCUMENTO_PAGO DP left outer join BANCO BDN on DP.COD_BANCO = BDN.COD_BANCO
+									left outer join PLAZA PDN on DP.COD_PLAZA = PDN.COD_PLAZA
+								,TIPO_DOCUMENTO_PAGO TDP
+						WHERE	CD.COD_DEUDOR = DR.COD_DEUDOR
+						AND		CD.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA
+						AND		CD.COD_CAMBIO_DOCUMENTO = {PARAM1}
+						AND		CD.COD_CAMBIO_DOCUMENTO = DN.COD_CAMBIO_DOCUMENTO
+						AND		DN.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+						AND		DP.COD_TIPO_DOCUMENTO_PAGO = TDP.COD_TIPO_DOCUMENTO_PAGO";
+				}
+				break;	
+
+			default:
+				base::error("sql_cambio_documento::get_sql, selector: '$selector_sql' no definido");			
+		}
+		$keys = func_get_args();
+		$sql = sql_tabla::replace_KEYS($sql, $keys);
+		return $sql;
+	}
+}
+?>

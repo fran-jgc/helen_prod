@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Ingreso Pago</title>
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="../../../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<script charset="utf-8" src="../ingreso.js" type="text/javascript"></script>
+<link href="{W_CSS}" rel="stylesheet" type="text/css"/>
+<style type="text/css">
+<!--
+body 
+{
+	background-color: #E5E5E5;
+	text-align:center;
+	font-size:14px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+.msg {
+	color:#000;
+	text-align:center;
+	font-size:11px;
+	font-weight:bolder;
+}
+
+.table{
+	font-size: 11px;
+	font-weight: bold; 
+	color: #FFF;
+	margin-top:1em;
+	border:#000033 1px solid;
+	margin-left:2px;
+	background: #919191;
+}
+
+.table2{
+	font-size: 10px;
+	font-weight: bold; 
+	color: #666666;	
+	border-top: #fff  1px solid;
+	border-left: #fff  1px solid;
+	border-bottom:#fff  1px solid;
+	border-right: #fff  1px solid;
+	margin-left:2px;
+	background-color:#CCCCCC;	
+}
+
+.titulo_tabla{
+	background-color: #E5E5E5;
+	font-size: 12px;
+	font-weight:bold;	
+	color: #000066;
+	text-align:left;
+	padding-top:9px;
+	margin-left:-5px;
+	width:200px;	
+}
+-->
+</style>
+<script type="text/javascript">
+function get_returnVal(){
+	var aTR = get_TR('TIPO_PAGO');
+	var array = '';
+	for (var i=0; i<aTR.length; i++){
+		var seleccion = document.getElementById('SELECCION_'+i).checked;
+		
+		if(seleccion == true){
+			var TIPO = document.getElementById('TIPO_'+i).innerHTML;
+			var CODIGO = document.getElementById('CODIGO_'+i).innerHTML;
+			var COD_CUOTA_CONVENIO = document.getElementById('COD_CUOTA_CONVENIO_'+i).value;
+			var NRO_CUOTA = document.getElementById('NRO_CUOTA_'+i).innerHTML;
+			var MONTO_MONEDA = document.getElementById('MONTO_MONEDA_'+i).innerHTML;
+			var MONTO_PESOS = document.getElementById('MONTO_PESOS_'+i).innerHTML;
+			//el replace solo reemplaza la primera coincidencia
+			var MONTO_PESOS = MONTO_PESOS.replace(".","");
+			var MONTO_PESOS = MONTO_PESOS.replace(".","");
+			var MONTO_PESOS = MONTO_PESOS.replace(".","");
+			var MONTO_PESOS = MONTO_PESOS.replace(".","");
+			
+			var MONTO_MONEDA = MONTO_MONEDA.replace(".","");
+			var MONTO_MONEDA = MONTO_MONEDA.replace(".","");
+			var MONTO_MONEDA = MONTO_MONEDA.replace(",",".");
+
+			var array =array+TIPO+'|'+CODIGO+'|'+ COD_CUOTA_CONVENIO+'|'+NRO_CUOTA+'|'+MONTO_MONEDA+'|'+MONTO_PESOS+'|';
+		}
+	}
+	return array;
+}
+function valida_pago(){
+	var aTR = get_TR('TIPO_PAGO');
+	var tipo_cuota_act =''; 
+	var tipo_cuota_ant ='';
+	var conv_reneg_act ='';
+	var conv_reneg_ant ='';
+	var first_reg = true;
+	
+	for (var i=0; i<aTR.length; i++){
+		
+		var seleccion = document.getElementById('SELECCION_'+i).checked;
+		if(seleccion == true){
+			
+			if(first_reg == true){
+				tipo_cuota_ant = document.getElementById('TIPO_'+i).innerHTML;
+				conv_reneg_ant = document.getElementById('CODIGO_'+i).innerHTML;
+				first_reg = false;
+			}
+			else{
+				tipo_cuota_ant = tipo_cuota_act
+				conv_reneg_ant = conv_reneg_act
+			}
+			
+			tipo_cuota_act = document.getElementById('TIPO_'+i).innerHTML;
+			conv_reneg_act = document.getElementById('CODIGO_'+i).innerHTML;
+			
+			if((tipo_cuota_ant != tipo_cuota_act)||(conv_reneg_act != conv_reneg_ant)){
+				alert('No puede pagar distintos tipos de Conceptos');
+				return false;
+			}
+		}
+	}
+	
+	return true;
+}
+</script>
+</head>
+<body>
+<form id="form1" name="form1" method="post" action="">
+	<div class="titulo_tabla_wm">&nbsp;&nbsp;Seleccione Tipo de Pago</div>
+	<div style="overflow-x:hidden; overflow-y:auto; height:380; margin-top:-1em;">
+		<table width="800" rules="none" border="1" align="center" class="table2">							
+			<tr class="encabezado_right" align="center">
+				<td align="center" width="110">Seleccionar</td>
+				<td align="center" width="190">Tipo</td>
+				<td align="center" width="100">Conv/Reneg</td>
+				<td align="center" width="100">Fecha Cuota</td>
+				<td align="center" width="100">Nro Cuota</td>
+				<td align="center" width="100">Monto UTM</td>
+				<td align="center" width="100">Monto $</td>
+			</tr>
+		</table>
+		<table width="800" rules="none" border="1" align="center" class="table2" id="TIPO_PAGO">
+			<!-- startBlock(TIPO_PAGO) -->
+			<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+				<td align="center" width="110">{SELECCION}{RUT}</td>
+				<td align="left" width="190">{TIPO}</td>
+				<td align="right" width="100">{CODIGO}</td>
+				<td align="right" width="100">{FECHA_CUOTA}</td>
+				<td align="right" width="100">{NRO_CUOTA}{COD_CUOTA_CONVENIO}</td>
+				<td align="right" width="100">{MONTO_MONEDA}</td>
+				<td align="right" width="100">{MONTO_PESOS}</td>
+			</tr>
+			<!-- endBlock(TIPO_PAGO) -->
+		</table>
+	</div>
+	<table width="700" border="0" align="center">
+		<tr>
+			<td align="right"><br/><input name="Aceptar" type="button" value="Aceptar" onclick="if(valida_pago()!=true) return false; returnValue=get_returnVal();	window.close();" class="button"/></td>
+			<td align="left"><br/><input name="cancelar" type="button" value="Cancelar" onclick="returnValue=null; window.close();" class="button"/></td>
+		</tr>
+	</table>
+</form>
+</body>
+</html>

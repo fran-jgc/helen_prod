@@ -1,0 +1,27 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link href="css/body-gradient.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<font color= "green"><b><u> Pasos para ejecutar el proceso</u></b></font><br><br>
+
+	<font size="5"><b><u> Paso 1</u></b></font><br><br>
+	<font size="3"><b>Tipo de carga: </b>Seleccionar entidad financiera que desea cargar.</font><br><br><br>
+
+	<font size="5"><b><u> Paso 2</u></b></font><br><br>
+	<font size="3"><b>Botón Examinar: </b>Buscar Plantilla de Banco seleccionado anteriormente  para cargar los datos en el formato de acuerdo al banco.</font><br><br><br>
+
+	<font size="5"><b><u> Paso 3</u></b></font><br><br>
+	<font size="3"><b>Botón Cargar: </b>Seleccionar entidad financiera que desea cargar.</font><br><br>
+	<font size="3">(En el caso de cargar un archivo equivocado)<br></font>
+	<font size="3"><b>Botón Cancelar: </b>Finaliza la ejecución del botón cargar, así no produciéndose la carga de datos.</font><br><br><br>
+
+	<font size="5"><b><u> Paso 4</u></b></font><br><br>
+	<font size="3"><b>Botón Iniciar: </b></font>Ejecuta el proceso de carga en el sistema los pagos realizados por los deudores acorde a la entidad financiera seleccionada anteriormente.<br><br>
+	<font size="3"><b>Iniciado: </b></font>Indicador de la fecha en la cual se ejecuto la carga de datos al sistema Pagos Realizados.<br><br>
+	<font size="3"><b>Registros procesados </b></font>Indicador que cuantifica los registros procesados por el sistema Pagos Realizados.<br><br>
+	<font size="3"><b>Tiempo Transcurrido:  </b></font>Tiempo medible de la duración de la sesión.<br><br>
+	<font size="3"><b>Errores y Alertas:   </b></font>Errores encontrados en la ejecución los que pueden ser consultados en la auditoria de procesos.<br><br><br>
+	<b><u><a href="indice.htm">Volver</a></u></b>
+</body>
+</html>

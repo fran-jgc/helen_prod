@@ -1,0 +1,26 @@
+1465	19752690	Ingenieria Civil en Mecanica	2020	1
+1465	19752690	Ingenieria Civil en Mecanica	2020	2
+1465	19752690	Ingenieria Civil en Mecanica	2021	1
+1465	19752690	Ingenieria Civil en Mecanica	2021	2
+1465	19752690	Ingenieria Civil en Mecanica	2022	1
+1465	19752690	Ingenieria Civil en Mecanica	2022	2
+1465	19752690	Ingenieria Civil en Mecanica	2023	1
+1465	19752690	Ingenieria Civil en Mecanica	2023	2
+1465	19752690	Ingenieria Civil en Mecanica	2024	2
+1356	20310855	Ingenieria de Ejecución en Metalurgia	2024	2
+1366	20310855	Ingenieria Civil en Metalurgia	2019	1
+1366	20310855	Ingenieria Civil en Metalurgia	2019	2
+1366	20310855	Ingenieria Civil en Metalurgia	2020	1
+1366	20310855	Ingenieria Civil en Metalurgia	2020	2
+1366	20310855	Ingenieria Civil en Metalurgia	2021	1
+1366	20310855	Ingenieria Civil en Metalurgia	2021	2
+1366	20310855	Ingenieria Civil en Metalurgia	2022	1
+1366	20310855	Ingenieria Civil en Metalurgia	2022	2
+1366	20310855	Ingenieria Civil en Metalurgia	2023	1
+1440	21306556	Ingenieria Civil en Biotecnologia	2022	1
+1440	21306556	Ingenieria Civil en Biotecnologia	2022	2
+1440	21306556	Ingenieria Civil en Biotecnologia	2023	1
+1440	21306556	Ingenieria Civil en Biotecnologia	2024	2
+3511	21687660	Ingenieria Comercial  (D)	2023	1
+3511	21687660	Ingenieria Comercial  (D)	2023	2
+3511	21687660	Ingenieria Comercial  (D)	2024	2

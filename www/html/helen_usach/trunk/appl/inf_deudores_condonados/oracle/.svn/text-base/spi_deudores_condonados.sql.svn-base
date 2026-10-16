@@ -1,0 +1,83 @@
+CREATE OR REPLACE PROCEDURE spi_deudores_condonados(ve_fecha_inicio         DATE
+	                                                    ,ve_fecha_termino       DATE
+	                                                    ,ve_tipo_condonacion   NUMBER)
+	AS
+	BEGIN
+	  DECLARE
+	    K_CONDONACION_APROBADA     NUMBER:=2;
+      	vl_total_monto_condonacion NUMBER:=0;
+      	vl_total_registro		   NUMBER:=0;
+	  BEGIN
+	    INSERT INTO TEMP_DEUDORES_CONDONADOS
+	      (COD_CONDONACION
+	      ,FECHA_CONDONACION
+	      ,RUT
+	      ,NOMBRE
+	      ,APELLIDO_PATERNO
+	      ,APELLIDO_MATERNO
+	      ,NOM_TIPO_CONDONACION
+	      ,MONTO_CONDONACION
+        ,TOTAL_MONTO_CONDONACION)
+	    SELECT c.cod_condonacion
+	          ,c.fecha_confirma
+	          ,REPLACE(To_Char(de.rut, '99,999,999'), ',', '.') || '-' || de.dig_verif rut
+	          ,de.nombre
+	          ,de.apellido_paterno
+	          ,de.apellido_materno
+	          ,t.nom_tipo_condonacion
+	          ,Sum(monto_svp + monto_mora + monto_cp + monto_lp) monto_condonacion
+	          ,Sum(monto_svp + monto_mora + monto_cp + monto_lp) total_monto_condonacion
+	    FROM condonacion c, deudor de, tipo_condonacion t, deuda_condonacion dc
+	    WHERE c.fecha_confirma BETWEEN ve_fecha_inicio AND ve_fecha_termino
+	      AND c.cod_estado_condonacion = K_CONDONACION_APROBADA
+	      AND de.cod_deudor = c.cod_deudor
+	      AND t.cod_tipo_condonacion = c.cod_tipo_condonacion
+	      AND dc.cod_condonacion = c.cod_condonacion
+	      AND (C.COD_TIPO_CONDONACION = ve_tipo_condonacion or ve_tipo_condonacion=0)
+	    GROUP BY c.cod_condonacion, c.fecha_confirma, de.rut,de.dig_verif,de.nombre,de.apellido_paterno,de.apellido_materno,t.nom_tipo_condonacion
+	    ORDER BY c.cod_condonacion;
+	    
+	   
+	   	SELECT Count(*)
+	   	INTO vl_total_registro	
+	    FROM condonacion c, deudor de, tipo_condonacion t, deuda_condonacion dc
+	    WHERE c.fecha_confirma BETWEEN ve_fecha_inicio AND ve_fecha_termino
+	      AND c.cod_estado_condonacion = K_CONDONACION_APROBADA
+	      AND de.cod_deudor = c.cod_deudor
+	      AND t.cod_tipo_condonacion = c.cod_tipo_condonacion
+	      AND dc.cod_condonacion = c.cod_condonacion
+	      AND (C.COD_TIPO_CONDONACION = ve_tipo_condonacion or ve_tipo_condonacion=0);
+	  
+	  SELECT sum(TOTAL_MONTO_CONDONACION)
+      INTO vl_total_monto_condonacion
+      FROM TEMP_DEUDORES_CONDONADOS;
+
+      UPDATE TEMP_DEUDORES_CONDONADOS
+      SET TOTAL_MONTO_CONDONACION = vl_total_monto_condonacion;
+
+	  
+      if(vl_total_registro=0)then
+      	INSERT INTO TEMP_DEUDORES_CONDONADOS
+					    (cod_condonacion
+             			 ,fecha_condonacion
+              			 ,rut
+              			 ,nombre
+              			 ,apellido_paterno
+              			 ,apellido_materno
+              			 ,nom_tipo_condonacion
+              			 ,monto_condonacion
+              			 ,total_monto_condonacion)
+		  VALUES (null
+		  		 ,null
+		  		 ,null
+		  		 ,null
+		  		 ,null
+		  		 ,null
+		  		 ,null
+		  		 ,null
+		  		 ,null);
+      end if;
+      
+	  END;
+	END spi_deudores_condonados;
+/

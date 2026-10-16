@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<link href="css/body-gradient.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+	<center>
+		<font color= "green">
+			<b>
+				<u>
+				Descripción
+				</u>
+			</b>
+		</font>
+		</br></br>
+		Proceso encargado de cargar en el sistema pagos realizados por los deudores, en entidades financieras.<br><br>
+		<b>
+			<u>
+				<a href="indice.htm">
+					Volver
+				</a>
+			</u>
+		</b>
+	</center>
+	</body>
+</html>

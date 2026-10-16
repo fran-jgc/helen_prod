@@ -1,0 +1,651 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");	
+
+class sql_suspension extends sql_tabla {
+	const K_ESTADO_SUSPENSION_SOLICITADO	= 1;
+	const K_ESTADO_SUSPENSION_APROBADO		= 2;
+	static function get_sql($selector_sql) {
+		
+		switch ($selector_sql) {
+			/////////////////   INPUT   ///////////////
+			case 'INPUT' :
+				/////////////////  ORACLE ///////////////
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT	DR.RUT
+									, DR.DIG_VERIF
+									, DR.NOMBRE  || ' ' || DR.APELLIDO_PATERNO  || ' ' || DR.APELLIDO_MATERNO NOMBRE
+									, D.COD_TIPO_DEUDA COD_TIPO_DEUDA
+									, D.COD_TIPO_DEUDA COD_TIPO_DEUDA_H
+									, S.COD_DEUDA
+									, S.COD_DEUDA COD_DEUDA_H
+									, S.ANO_SUSPENSION ANO_SUSPENSION
+									, S.ANO_SUSPENSION ANO_SUSPENSION_H
+									, S.COD_TIPO_SUSPENSION COD_TIPO_SUSPENSION
+									, S.COD_COMPROBANTE
+									, S.OBS
+									, S.COD_ESTADO_SUSPENSION
+									, COD_USUARIO_CONFIRMA COD_USUARIO_CONFIRMA
+									, UC.NOM_USUARIO NOM_USUARIO_CONFIRMA
+									, TO_CHAR (FECHA_CONFIRMA, 'DD/MM/YYYY') FECHA_CONFIRMA
+									, TO_CHAR (FECHA_CONFIRMA, 'DD/MM/YYYY') FECHA_CONFIRMA_NO_ING
+									, TO_CHAR(S.FECHA_SUSPENSION,'DD/MM/YYYY') FECHA_SUSPENSION
+									, U.COD_USUARIO
+									, U.NOM_USUARIO
+									, S.COD_SUSPENSION
+									, 'S' EXISTE
+									, DR.COD_DEUDOR
+									, F_GET_ANOS_SUSPENSION(DR.RUT, S.COD_TIPO_SUSPENSION) CANT_SUSPENSIONES
+									,'none' VISIBLE_CAMPO -- SOLO USACH
+									, '' MAX_SUSP_X_TIPO
+									, TO_CHAR(S.FECHA_SOLICITUD_TRAMITE,'dd/mm/yyyy') FECHA_SOLICITUD_TRAMITE
+							FROM	SUSPENSION S
+									, DEUDA D
+									, DEUDOR DR
+									, COMPROBANTE C
+									, USUARIO U
+									, USUARIO UC
+									, ESTADO_SUSPENSION ES
+							WHERE	S.COD_DEUDA		=	D.COD_DEUDA
+							AND		DR.COD_DEUDOR	=	D.COD_DEUDOR
+							AND		S.COD_USUARIO	=	U.COD_USUARIO
+							AND		S.COD_USUARIO_CONFIRMA	=	UC.COD_USUARIO(+)
+							AND		S.COD_COMPROBANTE		=	C.COD_COMPROBANTE(+)
+							AND		ES.COD_ESTADO_SUSPENSION	=	S.COD_ESTADO_SUSPENSION
+							AND		S.COD_SUSPENSION			=	{KEY1}
+							ORDER BY	S.COD_SUSPENSION DESC";
+				}
+				/////////////////  SQL-SERVER  ///////////////
+				else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT	DR.RUT
+									, DR.DIG_VERIF
+									, DR.NOMBRE  + ' ' + DR.APELLIDO_PATERNO  + ' ' + DR.APELLIDO_MATERNO NOMBRE
+									, D.COD_TIPO_DEUDA COD_TIPO_DEUDA
+									, D.COD_TIPO_DEUDA COD_TIPO_DEUDA_H
+									, S.COD_DEUDA
+									, S.COD_DEUDA COD_DEUDA_H
+									, S.ANO_SUSPENSION ANO_SUSPENSION
+									, S.ANO_SUSPENSION ANO_SUSPENSION_H
+									, S.COD_TIPO_SUSPENSION COD_TIPO_SUSPENSION
+									, S.COD_COMPROBANTE
+									, S.OBS
+									, S.COD_ESTADO_SUSPENSION
+									, COD_USUARIO_CONFIRMA COD_USUARIO_CONFIRMA
+									, UC.NOM_USUARIO NOM_USUARIO_CONFIRMA
+									, convert(varchar(20), FECHA_CONFIRMA, 103) FECHA_CONFIRMA
+									, convert(varchar(20), FECHA_CONFIRMA, 103) FECHA_CONFIRMA_NO_ING
+									, convert(varchar(20), S.FECHA_SUSPENSION, 103) FECHA_SUSPENSION
+									, U.COD_USUARIO
+									, U.NOM_USUARIO
+									, S.COD_SUSPENSION
+									, 'S' EXISTE
+									, DR.COD_DEUDOR
+									, dbo.f_get_anos_suspension(DR.RUT, S.COD_TIPO_SUSPENSION) CANT_SUSPENSIONES
+									, '' MAX_SUSP_X_TIPO
+									, convert (varchar (10), S.FECHA_SOLICITUD_TRAMITE,103) FECHA_SOLICITUD_TRAMITE
+							FROM	SUSPENSION S left outer join USUARIO UC on S.COD_USUARIO_CONFIRMA	=	UC.COD_USUARIO
+										left outer join COMPROBANTE C on S.COD_COMPROBANTE = C.COD_COMPROBANTE
+									, DEUDA D
+									, DEUDOR DR
+									, USUARIO U
+									, ESTADO_SUSPENSION ES
+							WHERE	S.COD_DEUDA					=	D.COD_DEUDA
+							AND		DR.COD_DEUDOR				=	D.COD_DEUDOR
+							AND		S.COD_USUARIO				=	U.COD_USUARIO
+							AND		ES.COD_ESTADO_SUSPENSION	=	S.COD_ESTADO_SUSPENSION
+							AND		S.COD_SUSPENSION			=	{KEY1}
+							ORDER BY	S.COD_SUSPENSION DESC";
+				}
+			break;
+				
+			/////////////////  INPUT_SUSPENSION ///////////////
+			case 'INPUT_SUSPENSION' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT	COD_TIPO_SUSPENSION
+									, NOM_TIPO_SUSPENSION
+							FROM	TIPO_SUSPENSION";
+				}
+			break;
+				
+			/////////////////  INPUT_ESTADO_SUSPENSION ///////////////
+			case 'INPUT_ESTADO_SUSPENSION' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT	COD_ESTADO_SUSPENSION
+									, NOM_ESTADO_SUSPENSION
+							FROM	ESTADO_SUSPENSION";
+				}
+			break;
+				
+			///////////////// INPUT_DD_SOLICITADO ///////////////
+			case 'INPUT_DD_SOLICITADO' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT		COD_ESTADO_SUSPENSION
+										,NOM_ESTADO_SUSPENSION
+							FROM		ESTADO_SUSPENSION
+							ORDER BY	COD_ESTADO_SUSPENSION";
+				}
+			break;
+				
+			///////////////// INPUT_DD_APROBADO ///////////////
+			case 'INPUT_DD_APROBADO' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT	COD_ESTADO_SUSPENSION
+									, NOM_ESTADO_SUSPENSION
+							FROM	ESTADO_SUSPENSION
+							WHERE	COD_ESTADO_SUSPENSION <> ".self::K_ESTADO_SUSPENSION_SOLICITADO;
+				}
+			break;
+				
+			///////////////// INPUT_ESTADO ///////////////
+			case 'INPUT_ESTADO' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT	COD_ESTADO_SUSPENSION
+							FROM	ESTADO_SUSPENSION
+							WHERE	NOM_ESTADO_SUSPENSION = 'SOLICITADA'";
+				}
+			break;
+				
+			///////////////// INPUT_ESTADO_APROBADO ///////////////
+			case 'INPUT_ESTADO_APROBADO' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT	COD_ESTADO_SUSPENSION
+							FROM	ESTADO_SUSPENSION
+							WHERE	NOM_ESTADO_SUSPENSION = 'APROBADA'";
+				}
+			break;
+				
+			///////////////// INPUT_BUSCA_PAGO ///////////////
+			case 'INPUT_BUSCA_PAGO' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT	COD_PLAN_PAGO
+							FROM	PLAN_PAGO
+							WHERE	COD_DEUDA= {PARAM1}
+							AND		ANO_COBRO= {PARAM2}";
+				}
+			break;
+				
+			///////////////// INPUT_BUSCO_DESCUENTO ///////////////
+			case 'INPUT_BUSCO_DESCUENTO' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT	Count(COD_DESCUENTO) CUENTA_DESCUENTO
+							FROM 	DESCUENTO
+							WHERE 	
+							COD_ESTADO_PAGO = 1 AND
+							COD_PLAN_PAGO= {PARAM1}";
+				}
+			break;
+				
+			//////////////// OUTPUT ///////////////
+			case 'OUTPUT' :
+					/////////////////  ORACLE ///////////////
+					if (K_TIPO_BD=="oci"){
+						$sql = "SELECT   S.COD_SUSPENSION
+						  				 , TO_CHAR(S.FECHA_SUSPENSION,'dd/mm/yyyy') FECHA_SUSPENSION
+						  				 , ANO_SUSPENSION
+						  				 , S.COD_DEUDA
+						  				 , ES.NOM_ESTADO_SUSPENSION 
+						  				 , DR.RUT
+						  				 , DR.DIG_VERIF
+						  				 , DR.NOMBRE
+						  				 , DR.APELLIDO_PATERNO
+						  				 , DR.APELLIDO_MATERNO
+						  				 , TD.NOM_TIPO_DEUDA
+						  				 , TD.COD_TIPO_DEUDA
+						  				 , TO_CHAR(S.FECHA_SOLICITUD_TRAMITE,'dd/mm/yyyy') FECHA_SOLICITUD_TRAMITE
+								FROM 	 SUSPENSION S
+				          				 , DEUDA D
+				          				 , DEUDOR DR
+				           				 , ESTADO_SUSPENSION ES
+				          				 , TIPO_DEUDA TD
+								WHERE 	 S.COD_DEUDA=D.COD_DEUDA
+				          				 AND DR.COD_DEUDOR=D.COD_DEUDOR
+				          				 AND S.COD_ESTADO_SUSPENSION = ES.COD_ESTADO_SUSPENSION
+				          				 AND D.COD_TIPO_DEUDA = TD.COD_TIPO_DEUDA 
+
+								ORDER BY S.COD_SUSPENSION DESC";
+					}
+					/////////////////  SQL-SERVER ///////////////
+					else if (K_TIPO_BD=="mssql"){
+							$sql = "SELECT   S.COD_SUSPENSION
+							  				 , convert (varchar (10), S.FECHA_SUSPENSION,103) FECHA_SUSPENSION
+							  				 , ANO_SUSPENSION
+							  				 , S.COD_DEUDA
+							  				 , ES.NOM_ESTADO_SUSPENSION 
+							  				 , DR.RUT
+							  				 , DR.DIG_VERIF
+							  				 , DR.NOMBRE
+							  				 , DR.APELLIDO_PATERNO
+							  				 , DR.APELLIDO_MATERNO
+							  				 , TD.NOM_TIPO_DEUDA
+							  				 , TD.COD_TIPO_DEUDA
+							  				 , convert (varchar (10), S.FECHA_SOLICITUD_TRAMITE,103) FECHA_SOLICITUD_TRAMITE
+									FROM 	 SUSPENSION S
+					          				 , DEUDA D
+					          				 , DEUDOR DR
+					           				 , ESTADO_SUSPENSION ES
+					          				 , TIPO_DEUDA TD
+									WHERE 	 S.COD_DEUDA=D.COD_DEUDA
+					          				 AND DR.COD_DEUDOR=D.COD_DEUDOR
+					          				 AND S.COD_ESTADO_SUSPENSION = ES.COD_ESTADO_SUSPENSION
+					           				 AND D.COD_TIPO_DEUDA = TD.COD_TIPO_DEUDA 
+									ORDER BY S.COD_SUSPENSION DESC";
+					}
+			break;
+				
+			///////////////// CLASS_SQL = OUTPUT_DD_ESTADO ///////////////
+			case 'OUTPUT_DD_ESTADO' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT		COD_ESTADO_SUSPENSION
+										, NOM_ESTADO_SUSPENSION
+							FROM		ESTADO_SUSPENSION
+							ORDER BY	COD_ESTADO_SUSPENSION";
+				}
+			break;
+				
+			//////////////// CLASS_SQL = OUTPUT_TIPO_DEUDA ///////////////
+			case 'OUTPUT_TIPO_DEUDA' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT		COD_TIPO_DEUDA ,NOM_TIPO_DEUDA 
+							FROM		TIPO_DEUDA 
+							ORDER BY	COD_TIPO_DEUDA";
+				}
+			break;				
+							
+			///////////////// CLASS_SQL = AJAX_INFO_DEUDOR ////////VI///////
+			/*sentencias programas*/
+			case 'AJAX_INFO_DEUDOR' :
+				if (K_TIPO_BD=="oci"){
+						$sql = "SELECT  DO.DIG_VERIF
+		       							,NOMBRE||' '||APELLIDO_PATERNO||' '||APELLIDO_MATERNO NOMBRE
+		       							,DE.COD_TIPO_DEUDA
+										,DE.COD_DEUDA
+										,DO.COD_DEUDOR
+								FROM    DEUDA DE
+							        	,DEUDOR DO
+								WHERE   DE.COD_DEUDOR=DO.COD_DEUDOR 
+								  AND	DO.RUT={PARAM1}
+								  AND	DE.COD_DEUDA = {PARAM2}
+								  AND	DE.COD_ESTADO_DEUDA = {PARAM3}
+								  AND	DE.COD_TIPO_DEUDA IN ('{PARAM4}','{PARAM5}','{PARAM6}' ,'{PARAM7}','{PARAM8}')";
+								  /*AND	DE.COD_TIPO_DEUDA IN ('CS', 'CSR', 'CSN','CR12', 'CRI')"; */
+				}
+				else if (K_TIPO_BD=="mssql"){
+					/////////////////  SQL-SERVER ///////////////
+					$sql = "SELECT  DO.DIG_VERIF
+									,NOMBRE + ' ' + APELLIDO_PATERNO + ' ' + APELLIDO_MATERNO NOMBRE
+									,DE.COD_TIPO_DEUDA
+									,DE.COD_DEUDA
+									,DO.COD_DEUDOR
+							FROM    DEUDA DE
+							        , DEUDOR DO
+							WHERE   DE.COD_DEUDOR=DO.COD_DEUDOR 
+							  AND	DO.RUT={PARAM1}
+							  AND	DE.COD_DEUDA = {PARAM2}
+							  AND	DE.COD_ESTADO_DEUDA = {PARAM3}
+							  AND	DE.COD_TIPO_DEUDA IN ('{PARAM4}','{PARAM5}','{PARAM6}')"; 
+				}
+				break;
+			
+			///////////////// CLASS_SQL = AJAX_INFO_DEUDOR_ANO ///////////////
+			/*sentencias programas*/
+			case 'AJAX_INFO_DEUDOR_ANO' :
+				if (K_TIPO_BD=="oci"){
+						$sql = "SELECT  DO.DIG_VERIF
+		       							,NOMBRE||' '||APELLIDO_PATERNO||' '||APELLIDO_MATERNO NOMBRE
+								FROM    DEUDA DE
+							        	,DEUDOR DO
+								WHERE   DE.COD_DEUDOR=DO.COD_DEUDOR 
+								  AND	DO.RUT = {PARAM1}
+								  AND	DE.COD_ESTADO_DEUDA = {PARAM2}
+								 /* AND	DE.COD_TIPO_DEUDA IN ('{PARAM3}','{PARAM4}','{PARAM5}')*/
+								  AND   DE.COD_TIPO_DEUDA IN ('CS', 'CSR','CR12', 'CRI')";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					/////////////////  SQL-SERVER ///////////////
+					$sql = "SELECT  DO.DIG_VERIF
+									,NOMBRE + ' ' + APELLIDO_PATERNO + ' ' + APELLIDO_MATERNO NOMBRE
+							FROM    DEUDA DE
+							        , DEUDOR DO
+							WHERE   DE.COD_DEUDOR=DO.COD_DEUDOR 
+							  AND	DO.RUT = {PARAM1}
+							  AND	DE.COD_ESTADO_DEUDA = {PARAM2}
+							  AND	DE.COD_TIPO_DEUDA IN ('{PARAM3}','{PARAM4}','{PARAM5}')";
+				}
+				break;
+				
+			///////////////// AJAX_ANO_PP///////////////
+			case 'AJAX_ANO_PP' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT  PP.ANO_COBRO
+							FROM    DEUDOR DO
+							        ,DEUDA DA
+									,PLAN_PAGO PP
+							WHERE   DO.RUT = {PARAM1}
+									AND DA.COD_ESTADO_DEUDA = {PARAM3}
+									/* AND DA.COD_TIPO_DEUDA IN ('{PARAM4}','{PARAM5}') NO ENCONTRADO EL AJAX*/
+									AND DA.COD_TIPO_DEUDA IN ('CS', 'CSR','CR12') 
+									AND PP.ANO_COBRO = {PARAM2}
+									AND DA.COD_DEUDOR = DO.COD_DEUDOR
+									AND PP.COD_DEUDA = DA.COD_DEUDA";
+					}
+				break;
+				
+			///////////////// AJAX_PP_VIGENTE///////////////
+			case 'AJAX_MONTO_PLAN_PAGO' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT	PP.MONTO_CAPITAL
+							FROM 	DEUDA D
+		 						    ,DEUDOR DR
+		     						,PLAN_PAGO PP
+							WHERE   D.COD_DEUDOR=DR.COD_DEUDOR
+									AND D.COD_DEUDA = PP.COD_DEUDA
+									AND DR.RUT={PARAM1}
+		       						AND cod_estado_deuda = {PARAM3}
+		        					/*AND cod_tipo_deuda IN ('{PARAM4}','{PARAM5}' ,'{PARAM6}') NO ENCONTRADO EL AJAX*/
+		        					AND D.COD_TIPO_DEUDA IN ('CS', 'CSR','CR12')
+                      				AND PP.ANO_COBRO = {PARAM2}";
+					}
+			break;
+				
+			///////////////// CLASS_SQL = AJAX_MAX_SUSP ///////////////
+			case 'AJAX_MAX_SUSP' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+						$sql = "SELECT Count(*) 
+										NUM_SUSP_X_DEUDA 
+								FROM 	DEUDA D, SUSPENSION  S 
+								WHERE  	D.COD_DEUDA=S.COD_DEUDA  
+								AND 	D.COD_DEUDOR= {PARAM1} 
+								AND 	D.COD_DEUDA= {PARAM2}
+								AND		COD_ESTADO_SUSPENSION = ".self::K_ESTADO_SUSPENSION_APROBADO;
+				}
+			break;
+
+			/////////////////////		ABONO		/////////////////////
+			case 'ABONO' :
+				/////////////////  ORACLE  -  O - SQL-SERVER  ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+						$sql = "SELECT 	Count(COD_ABONO) CUENTA_ABONO 
+								FROM 	ABONO 
+								WHERE 	COD_PLAN_PAGO={PARAM1}";
+				}
+			break;
+			//////////////////////		OBTIENE_NOMBRE		///////////////
+			case 'OBTIENE_NOMBRE' :
+				/////////////////  ORACLE ///////////////
+				if (K_TIPO_BD=="oci"){
+						$sql = "SELECT 	NOMBRE || ' ' || APELLIDO_PATERNO || ' ' ||APELLIDO_MATERNO  NOMBRE
+										, DIG_VERIF, COD_DEUDOR
+								FROM	 DEUDOR
+								WHERE 	RUT={PARAM1}";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					/////////////////  SQL-SERVER ///////////////
+					$sql = "SELECT 	NOMBRE + ' ' + APELLIDO_PATERNO + ' ' + APELLIDO_MATERNO  NOMBRE
+									, DIG_VERIF, COD_DEUDOR
+							FROM	DEUDOR
+							WHERE 	RUT={PARAM1}";
+				}
+				break;
+				//////////////////////		NOM_TIPO_DEUDA	/////////////////
+				case 'NOM_TIPO_DEUDA' :
+				/////////////////  ORACLE ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+						$sql = "SELECT  DISTINCT(D.COD_TIPO_DEUDA)
+										,TD.NOM_TIPO_DEUDA
+								FROM 	DEUDA	D, DEUDOR DR, TIPO_DEUDA TD,
+										PLAN_PAGO PP--, SUSPENSION S
+								WHERE 	D.COD_DEUDOR=DR.COD_DEUDOR 
+										AND D.COD_TIPO_DEUDA=TD.COD_TIPO_DEUDA 
+										AND D.COD_DEUDA=PP.COD_DEUDA 
+										AND D.COD_TIPO_DEUDA IN ('CS', 'CSR','CR12','CRI') 
+										AND PP.ANO_COBRO={PARAM1}
+										AND DR.RUT={PARAM2}
+							ORDER BY 	NOM_TIPO_DEUDA";
+				}
+				break;
+				
+				//////////////////////		AJAX_EXISTE_RUT	/////////////////
+				case 'AJAX_EXISTE_RUT' :
+				/////////////////  ORACLE ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT COD_DEUDOR 
+							FROM   DEUDOR 
+							WHERE  RUT = {PARAM1}";
+				}
+				break;
+				
+				//////////////////////	AJAX_ESTADO_DEUDA	/////////////////
+				case 'AJAX_ESTADO_DEUDA' :
+				/////////////////  ORACLE ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT DO.COD_DEUDOR
+							FROM   DEUDOR DO, DEUDA DA 
+							WHERE  DO.RUT = {PARAM1}
+							AND    DA.COD_ESTADO_DEUDA = {PARAM2}
+							AND    DO.COD_DEUDOR = DA.COD_DEUDOR";
+				}
+				break;
+				
+				//////////////////////	AJAX_DEUDA_CS_CSR	/////////////////
+				case 'AJAX_DEUDA_CS_CSR' :
+				/////////////////  ORACLE ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT DO.COD_DEUDOR 
+							FROM   DEUDOR DO, DEUDA DA 
+							WHERE  DO.RUT = {PARAM1}
+							AND    DA.COD_ESTADO_DEUDA = {PARAM2}
+							--AND    DA.COD_TIPO_DEUDA IN ('{PARAM3}','{PARAM4}','{PARAM5}','{PARAM6}','{PARAM7}')
+							AND 	DA.COD_TIPO_DEUDA IN ('CS', 'CSR', 'CSN','CR12' ,'CRI') 
+							AND    DO.COD_DEUDOR = DA.COD_DEUDOR";
+				}
+				break;
+				//////////////////////	AJAX_NO_TIENE_ABONO	/////////////////
+				case 'AJAX_NO_TIENE_ABONO' :
+				/////////////////  ORACLE ///////////////
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT COD_DEUDA
+							FROM ABONO
+							WHERE COD_PLAN_PAGO IN (SELECT  COD_PLAN_PAGO 
+							                        FROM    DEUDOR DO
+							                                ,DEUDA DA
+							                                ,PLAN_PAGO PP 
+							                        WHERE   DO.RUT = {PARAM1}
+							                                AND DA.COD_ESTADO_DEUDA = {PARAM2}
+							                               /*AND DA.COD_TIPO_DEUDA IN ('{PARAM3}','{PARAM4}','{PARAM5}') NO ENCONTRADO EL AJAX*/
+							                                AND DA.COD_TIPO_DEUDA IN ('CS', 'CSR','CSN','CR12')
+			                                                AND DA.COD_DEUDOR = DO.COD_DEUDOR
+							                                AND PP.COD_DEUDA = DA.COD_DEUDA
+        													AND f_deuda_cuota_vigente(DA.COD_DEUDA)= PP.COD_PLAN_PAGO)";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					/////////////////  SQL-SERVER ///////////////
+					$sql = "SELECT COD_DEUDA
+							FROM ABONO
+							WHERE COD_PLAN_PAGO IN (SELECT  COD_PLAN_PAGO 
+							                        FROM    DEUDOR DO
+							                                ,DEUDA DA
+							                                ,PLAN_PAGO PP 
+							                        WHERE   DO.RUT = {PARAM1}
+							                                AND DA.COD_ESTADO_DEUDA = {PARAM2}
+							                                AND DA.COD_TIPO_DEUDA IN ('{PARAM3}','{PARAM4}')
+							                                AND DA.COD_DEUDOR = DO.COD_DEUDOR
+							                                AND PP.COD_DEUDA = DA.COD_DEUDA
+        													AND dbo.f_deuda_cuota_vigente(DA.COD_DEUDA, getdate())= PP.COD_PLAN_PAGO)";
+				}
+				break;
+				
+				//////////////////////	AJAX_SOLICITUD	/////////////////
+				case 'AJAX_SOLICITUD' :
+				/////////////////  ORACLE ///////////////
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = "SELECT 	DA.COD_DEUDA
+							FROM 	DEUDOR DR, DEUDA DA
+							WHERE 	DR.COD_DEUDOR = DA.COD_DEUDOR
+							AND   	DR.RUT = {PARAM1}
+							AND 	DA.COD_ESTADO_DEUDA = {PARAM3}
+							AND 	DA.COD_TIPO_DEUDA IN ('{PARAM4}', '{PARAM5}', '{PARAM6}', '{PARAM7}', '{PARAM8}')
+							AND		DA.COD_DEUDA NOT IN (SELECT SU.COD_DEUDA 
+									  					FROM 	SUSPENSION SU, DEUDA DE
+														WHERE 	DE.COD_DEUDOR = DR.COD_DEUDOR
+														AND 	DE.COD_DEUDA = SU.COD_DEUDA
+														AND 	SU.COD_ESTADO_SUSPENSION IN ({PARAM9}, {PARAM10})
+														AND 	SU.ANO_SUSPENSION = {PARAM2})";
+				}
+				break;
+				
+				//////////////////////	AJAX_ANOS_SUSPENSION	/////////////////
+				case 'AJAX_ANOS_SUSPENSION' :
+				/////////////////  ORACLE ///////////////
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT F_GET_ANOS_SUSPENSION({PARAM1} , {PARAM2}) ANOS_SUSPENSION FROM DUAL";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					/////////////////  SQL-SERVER ///////////////
+					$sql = "SELECT dbo.F_GET_ANOS_SUSPENSION({PARAM1},{PARAM2}) ANOS_SUSPENSION";
+				}
+				break;
+				
+				///////////////////print//////////////////////
+			case 'PRINT_RECORD' :
+				if (K_TIPO_BD=="oci"){
+					
+					$sql=	"SELECT		S.COD_SUSPENSION  
+										, D.RUT
+										, D.DIG_VERIF		
+										, D.NOMBRE ||' '|| D.APELLIDO_PATERNO||' '||D.APELLIDO_MATERNO 	NOMBRE
+                    					, DIR.DIRECCION||', '||CO.NOM_COMUNA    DIRECCION
+					          			, DE.COD_DEUDA
+					          			, f_get_parametro({PARAM2}) NOM_ADMIN
+                    					, TD.NOM_TIPO_DEUDA
+                    					, CO.COD_COMUNA
+                    					, DIR.COD_DIRECCION
+                    					, ANO_SUSPENSION
+                    					, TS.NOM_TIPO_SUSPENSION
+                              			,TO_CHAR (DE.FECHA_INICIO_COBRO, 'YYYY') ANO_COBRO
+                              			, To_Char(SYSDATE, 'dd')  DIA
+							            , f_get_nom_mes(to_number(To_Char(SYSDATE, 'mm'))) MES
+					                    , To_Char(SYSDATE, 'yyyy') ANO_SYS
+					                    ,To_Char(S.FECHA_CONFIRMA, 'YYYY') ANO
+					                    ,To_Char(S.FECHA_CONFIRMA, 'DD/MM/YYYY') ANO_CONFI
+							FROM 		DEUDOR  D, SUSPENSION S,  DEUDA DE   , DIRECCION DIR left outer join COMUNA CO on DIR.COD_COMUNA = CO.COD_COMUNA
+										,  TIPO_DEUDA TD, TIPO_SUSPENSION TS
+							WHERE   	S.COD_SUSPENSION = {PARAM1} 
+								AND   S.COD_DEUDA = DE.COD_DEUDA
+								AND   DE.COD_DEUDOR = D.COD_DEUDOR
+	                            AND   DIR.COD_DEUDOR  =  D.COD_DEUDOR
+				              	AND   DIR.ES_VALIDA   =   'S' 
+	                            AND   TD.COD_TIPO_DEUDA =   DE.COD_TIPO_DEUDA
+	                            AND	  TS.COD_TIPO_SUSPENSION = S.COD_TIPO_SUSPENSION";
+				}
+				else if (K_TIPO_BD=="mssql"){
+					$sql="SELECT		S.COD_SUSPENSION  
+										, D.RUT
+										, D.DIG_VERIF		
+										, D.NOMBRE + ' ' + D.APELLIDO_PATERNO + ' ' + D.APELLIDO_MATERNO NOMBRE
+                    					, DIR.DIRECCION + ', ' + CO.NOM_COMUNA    DIRECCION
+                    					, DIR.DIRECCION DIR_PARTICULAR
+                    					, CO.NOM_COMUNA
+					          			, DE.COD_DEUDA
+					          			, dbo.f_get_parametro({PARAM2}) NOM_ADMIN
+                    					, TD.NOM_TIPO_DEUDA
+                    					, CO.COD_COMUNA
+                    					, DIR.COD_DIRECCION
+                    					, convert(varchar(4), datepart(year, getdate())) ANO
+                    					, ANO_SUSPENSION
+                    					, TS.NOM_TIPO_SUSPENSION
+										, convert(varchar(4), datepart(year, DE.FECHA_INICIO_COBRO)) ANO_COBRO
+										, convert(varchar(2), datepart(day, getdate()))  DIA
+							            , dbo.f_get_nom_mes(month(getdate())) MES
+					                    , YEAR(getdate()) ANO
+							FROM 		DEUDOR  D, SUSPENSION S, DEUDA DE, DIRECCION DIR left outer join COMUNA CO on DIR.COD_COMUNA = CO.COD_COMUNA
+										, TIPO_DEUDA TD, TIPO_SUSPENSION TS
+							WHERE   	S.COD_SUSPENSION	= {PARAM1} 
+								AND		S.COD_DEUDA			= DE.COD_DEUDA
+								AND		DE.COD_DEUDOR		= D.COD_DEUDOR
+	                            AND		DIR.COD_DEUDOR		= D.COD_DEUDOR
+				              	AND		DIR.ES_VALIDA		= 'S' 
+	                            AND		TD.COD_TIPO_DEUDA	= DE.COD_TIPO_DEUDA
+	                            AND		TS.COD_TIPO_SUSPENSION = S.COD_TIPO_SUSPENSION";
+				}
+			break;
+
+			//////////////// PRINT_PARAM ////////////////
+			case 'PRINT_PARAM' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT	f_get_parametro(5) NOM_UNIVERSIDAD
+					                ,f_get_parametro(13) MAIL_UNIVERSIDAD
+					                ,f_get_parametro(9) DIR_UNIVERSIDAD
+					                ,f_get_parametro(10) FONO_UNIVERSIDAD
+					                ,f_get_parametro(15) FAX_UNIVERSIDAD
+							FROM 	DUAL";
+				}else if (K_TIPO_BD=="mssql"){
+					$sql = "SELECT	dbo.f_get_parametro(5) NOM_UNIVERSIDAD
+					                ,dbo.f_get_parametro(13) MAIL_UNIVERSIDAD
+					                ,dbo.f_get_parametro(9) DIR_UNIVERSIDAD
+					                ,dbo.f_get_parametro(10) FONO_UNIVERSIDAD
+					                ,dbo.f_get_parametro(15) FAX_UNIVERSIDAD";
+				}
+			break;
+			
+			//////////////// AJAX_VALIDA_ANO ////////////////
+			/// este c�digo es solo para carpeta UV
+			case 'AJAX_VALIDA_ANO' :
+				if (K_TIPO_BD=="mssql"){
+					$sql = "select	count(*) CANT
+							from	suspension s, deuda da, deudor dr
+							where	s.cod_deuda = da.cod_deuda
+							and		da.cod_deudor = dr.cod_deudor
+							and		rut = {PARAM1}
+							and		ano_suspension = {PARAM2}";
+				}
+			break;
+			
+			//////////////////////////		DEUDA_CARTERA_DIFERENTE		//////////////////////
+			case 'DEUDA_CARTERA_DIFERENTE' :
+				if (K_TIPO_BD=="oci" || K_TIPO_BD=="mssql"){
+					$sql = 	"SELECT COUNT(*) CANT
+								FROM DEUDOR DR, DEUDA DA 
+								WHERE DR.COD_DEUDOR = DA.COD_DEUDOR 
+								AND DA.COD_CARTERA  <> {PARAM1}
+								AND DR.RUT = {PARAM2}
+								AND DA.COD_TIPO_DEUDA IN ('CS', 'CSR','CR12','CRI')
+								AND DA.COD_ESTADO_DEUDA IN (2)";
+				}
+			break;
+
+			//////////////////////////		AJAX_MAX_SUSP_X_TIPO		//////////////////////
+			case 'AJAX_MAX_SUSP_X_TIPO' :
+				if (K_TIPO_BD=="oci"){
+					$sql = "SELECT  	to_char(PERIODO_MAXIMO)PERIODO_MAXIMO  
+								FROM    TIPO_SUSPENSION
+								WHERE   COD_TIPO_SUSPENSION = {PARAM1}";
+				}
+				else if(K_TIPO_BD=="mssql"){
+					$sql = "SELECT  	convert(varchar, PERIODO_MAXIMO)PERIODO_MAXIMO  
+								FROM    TIPO_SUSPENSION
+								WHERE   COD_TIPO_SUSPENSION = {PARAM1}";
+				}
+			break;
+			
+			/////////////////  ERROR ///////////////
+			default: 
+			base::error("sql_suspension::get_sql, selector: '$selector_sql' no definido");				
+				
+		}
+		$keys = func_get_args();
+		$sql = sql_tabla::replace_KEYS($sql, $keys);
+		return $sql;
+	}
+}
+?>

@@ -1,0 +1,400 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Sistema Helen</title>
+<link href="{W_CSS}" rel="stylesheet" type="text/css">
+<script src="../../../../commonlib_seven/trunk/script_js/SpryTabbedPanels.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/edit_filter.js" type="text/javascript"></script>
+<script charset="utf-8" src="{K_ROOT_URL}../../commonlib_seven/trunk/script_js/general.js" type="text/javascript"></script>
+<link href="../../../../commonlib_seven/trunk/css/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+<script charset="utf-8" src="parametro.js" type="text/javascript"></script>
+<style type="text/css">
+<!--
+.Estilo1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+.Estilo2 {
+	color: #993300;
+	font-weight: bold;
+	align: right;
+}
+-->
+</style>
+{WI_JAVA_SCRIPT}
+</head>
+<body {WI_ONLOAD}>
+<!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+<!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+<script type="text/javascript">var MenuLinkedBy="AllWebMenus [4]",awmMenuName="menu",awmBN="740";awmAltUrl="";</script>
+<script charset="UTF-8" src="{K_ROOT_URL}menu/menu.js"
+	type="text/javascript"></script>
+<script type="text/javascript">{W_MENU}</script>
+<!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+<form action="" method="post" name="input" id="input" enctype="multipart/form-data"><input name="wi_hidden" id="wi_hidden" type="hidden" value="">	
+<table width="1050" border="0" align="center">
+	<tr bgcolor="#FFFFFF">
+		<!-- menu superior-->
+		<td width="1000" height="51" align="center" id="awmAnchor-menu"
+			style="width: 100px; height: 50px;"></td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+			<table width="1000" border="0">
+				<tr>
+					<td>
+						<table width="520" border="0">
+							<tr>
+								<td height="100%">
+								<div class="titulo_central">{WI_RUTA_MENU}</div>
+								</td>
+							</tr>
+							<tr>
+								<td height="0%">
+								<div class="tit_superior"><font color="#999999">{WI_FECHA_ACTUAL}</font></div>
+								</td>
+							</tr>
+							<tr>
+								<td height="0%">
+								<div class="tit_superior"><font color="#999999">{WI_FECHA_MODIF}{WO_NOM_USUARIO}</font></div>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td width="68"></td>
+					<td width="68">{WI_PRINT}</td>
+					<td width="68">{WI_NO_SAVE}</td>
+					<td width="68">{WI_SAVE}</td>
+					<td width="68">{WI_MODIFY}</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr bgcolor="#FFFFFF">
+		<td>
+			<table width="1000" border="0" align="center">
+				<tr>
+					<td>
+						<table width="1015" border="0" align="center">
+							<tr valign="top">
+								<td height="520">
+									<div id="TabbedPanels1" class="TabbedPanels">
+										<ul class="TabbedPanelsTabGroup">
+											<li class="TabbedPanelsTab" tabindex="0">Datos Universidad</li>
+											<li class="TabbedPanelsTab" tabindex="0">Otros Par&aacute;metros</li>
+											<li class="TabbedPanelsTab" tabindex="0">Lock Table</li>			
+										</ul>
+										<div class="TabbedPanelsContentGroup">
+											<!--INI DATOS UNIVERSIDAD-->
+											<div class="TabbedPanelsContent">	
+												<div style="height:464;">	
+													<table width="1000" rules="none" align="center">
+														<tr class="claro">
+															<td width="220">Rut Universidad:</td>
+															<td align="left" colspan="4">{RUT_U}</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">Nombre Universidad:</td>
+															<td align="left" colspan="4">{NOM_U}</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">Dirección:</td>
+															<td align="left" colspan="4">{DIRECCION}</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">Comuna:</td>
+															<td align="left" colspan="4">{COMUNA}</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">Ciudad:</td>
+															<td align="left" colspan="4">{CIUDAD}</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">País:</td>
+															<td align="left" colspan="4">{PAIS}</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">Fono:</td>
+															<td align="left" colspan="4">{FONO}</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">Fax:</td>
+															<td align="left" colspan="4">{FAX}</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">E-Mail:</td>
+															<td align="left" colspan="4">{EMAIL}</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">Dirección Internet:</td>
+															<td align="left" colspan="4">{SITIO_WEB}</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">Administrador:</td>
+															<td align="left" colspan="4">{ADMINISTRADOR}</td>
+														</tr>
+													</table>
+													<P/>
+													<table width="1000" rules="none" align="center">
+														<tr class="titulo_tabla">				
+															<td colspan="6">PARA ARCHIVOS PROJECT</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">Nombre Coordinador:</td>
+															<td align="left" colspan="4">{NOM_COORDINADOR}</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">Teléfono Coordinador:</td>
+															<td align="left" colspan="4">{TEL_COORDINADOR}</td>
+														</tr>
+													</table>
+													<P/>
+													<table width="1000" rules="none" align="center">
+														<tr class="titulo_tabla">				
+															<td colspan="6">CUENTA BANCARIA DE LA UNIVERSIDAD</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">Cuenta Corriente Universidad para Deposito de TGR</td>
+															<td align="left" colspan="4">{NRO_CUENTA_UNIVERSIDAD}</td>
+														</tr>
+													</table>
+												</div>
+											</div>
+											<!--FIN DATOS UNIVERSIDAD-->
+											<!--OTROS PARAMETROS-->
+											<div class="TabbedPanelsContent">	
+												<div style="height:464;">													
+													<table width="1000" rules="none" align="center">
+														<tr class="claro">
+															<td width="220">Máximo de Prórrogas de un Cheque:</td>
+															<td align="left" colspan="4">{MAXIMO_PRORROGA}</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">Cartera por Defecto:</td>
+															<td align="left" colspan="4">{CARTERA_DEFEC}    (Universidad en la cual se esta implantando Helen)</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">Universidad por Defecto:</td>
+															<td align="left" colspan="4">{UNIV_DEFECTO}    (Universidad en la cual se esta implantando Helen)</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">Promedio Permanencia:</td>
+															<td align="left" colspan="4">{PROM_PERMANENCIA}		(Corresponde a los años promedio de un alumno en la universidad. Usado para el flujo contable de deudas no exigibles)</td>
+														</tr>
+														<tr class="claro" style="display:none">
+															<td width="220">Dif. Máx. Permitida en un Pago:</td>
+															<td align="left" colspan="4">{MAX_PERMITIDO_PAGO}</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">Tasa Interés Cheque a Fecha:</td>
+															<td align="left" colspan="4">{TAZA_INTERES_CHEQUE}</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">Maximo Nro. Cheque a Fecha</td>
+															<td align="left" colspan="4">{MAX_NUMERO_CHEQUE}</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">Maximo Días Válidez Simulación</td>
+															<td align="left" colspan="4">{MAX_VALIDEZ_SIMULACION}</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">% Pago sugerido Renegociación</td>
+															<td align="left" colspan="4">{PORC_SUGERIDO_RENEGOCIACION}</td>
+														</tr>
+														<tr class="claro" style="display:none">
+															<td width="220">% Interes Convenio </td>
+															<td align="left" colspan="4">{PORC_INTERES_CONVENIO}</td>
+														</tr>
+														<tr class="claro" style="display:none">
+															<td width="220">% Pago Sugerido Convenio </td>
+															<td align="left" colspan="4">{PORC_SUGERIDO_CONVENIO}</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">Password Mineduc</td>
+															<td align="left" colspan="4">{PASSWORD_MINEDUC}</td>
+														</tr>
+														<tr class="claro">
+															<td width="220">Fono Mesa Central </td>
+															<td align="left" colspan="4">{FONO_CENTRAL}</td>
+														</tr>
+														<tr  style="display:none">
+															<td align="left" colspan="5">
+																<p>
+																<p>
+																<table width="1000" rules="none" align="center">
+																	<tr class="titulo_tabla">				
+																		<td colspan="6">CUENTAS CONTABLES</td>
+																	</tr>
+																	<tr class="claro">
+																		<td width="220">Cuenta Utilidad:</td>
+																		<td align="left" colspan="5">{COD_CUENTA_CONTABLE_U} (Cierre Contable)</td>
+																	</tr>
+																	<tr class="oscuro">
+																		<td width="220">Cuenta Corrección Monetaria:</td>
+																		<td align="left" colspan="5">{COD_CUENTA_CONTABLE_CM} (Corrección Monetaria)</td>
+																	</tr>
+																</table>
+																<p>
+															</td>
+														</tr>
+														<tr class="oscuro">
+															<td width="220">
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=afp&cod_item_menu=051502" onclick="return valida_acceso('051502')";>AFP</a>
+															</td>
+															<td width="220">
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=banco&cod_item_menu=051504" onclick="return valida_acceso('051504')";>Banco</a>
+															</td>
+															<td width="220">
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=carrera&cod_item_menu=051506" onclick="return valida_acceso('051506')";>Carrera</a>
+															</td>
+															<td width="220">
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=cartera&cod_item_menu=051508" onclick="return valida_acceso('051508')";>Cartera</a>
+															</td>
+															<td width="220">
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=ciudad&cod_item_menu=051510" onclick="return valida_acceso('051510')";>Ciudad</a>
+															</td>
+														</tr>
+														<tr class="claro">
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=comuna&cod_item_menu=051512" onclick="return valida_acceso('051512')";>Comuna</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=componente_deuda&cod_item_menu=051514" onclick="return valida_acceso('051514')";>Componente Deuda</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=concepto_cobro&cod_item_menu=051516" onclick="return valida_acceso('051516')";>Concepto Cobro</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=cuenta_contable&cod_item_menu=051518" onclick="return valida_acceso('051518')";>Cuenta Contable</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=cuenta_corriente&cod_item_menu=051520" onclick="return valida_acceso('051520')";>Cuenta Corriente</a>
+															</td>
+														</tr>
+														<tr class="oscuro">
+															<td>
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=empresa_cobranza&cod_item_menu=051556" onclick="return valida_acceso('051556')";>Empresa Cobranza</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=estado_deuda&cod_item_menu=051524" onclick="return valida_acceso('051524')";>Estado Deuda</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=estado_pagare&cod_item_menu=051526" onclick="return valida_acceso('051526')";>Estado Pagaré</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=estado_plan_pago&cod_item_menu=051528" onclick="return valida_acceso('051528')";>Estado Plan Pago</a>
+															</td>
+															<td>
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=facultad&cod_item_menu=051554" onclick="return valida_acceso('051554')";>Facultad</a>
+															</td>
+														</tr>
+														<tr class="claro">
+															<td>
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=familia_deuda&cod_item_menu=051530" onclick="return valida_acceso('051530')";>Familia Deuda</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=moneda&cod_item_menu=051532" onclick="return valida_acceso('051532')";>Moneda</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=origen_carga_banco&cod_item_menu=051552" onclick="return valida_acceso('051552')";>Origen Carga Banco</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=origen_pago&cod_item_menu=051562" onclick="return valida_acceso('051562')";>Origen Pago</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=pais&cod_item_menu=051534" onclick="return valida_acceso('051534')";>País</a>
+															</td>
+														</tr>
+														<tr class="oscuro">
+															<td>
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=plaza&cod_item_menu=051536" onclick="return valida_acceso('051536')";>Plaza</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=region&cod_item_menu=051538" onclick="return valida_acceso('051538')";>Región</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=tipo_bitacora&cod_item_menu=051540" onclick="return valida_acceso('051540')";>Tipo Bitácora</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=tipo_condonacion&cod_item_menu=051542" onclick="return valida_acceso('051542')";>Tipo Condonación</a>
+															</td>
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=tipo_deuda&cod_item_menu=051544" onclick="return valida_acceso('051544')";>Tipo Deuda</a>
+															</td>
+														</tr>
+														<tr class="claro">
+															<td >
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=tipo_rebaja_pagare&cod_item_menu=051560" onclick="return valida_acceso('051560')";>Tipo Rebaja Pagaré</a>
+															</td>
+															<td>
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=tipo_suspension&cod_item_menu=051550" onclick="return valida_acceso('051550')";>Tipo Suspensión</a>
+															</td>
+															<td>
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=tipo_descuento&cod_item_menu=051558" onclick="return valida_acceso('051558')";>Tipo Descuento</a>
+															</td>
+															<td>
+																<a href="../../../../commonlib_seven/trunk/php/mantenedor.php?modulo=tipo_documento_pago&cod_item_menu=051546" onclick="return valida_acceso('051546')";>Tipo Documento Pago</a>
+															</td>
+														</tr>
+													</table>
+												</div>
+											</div>
+											<!--FIN OTROS PARAMETROS-->
+											<!--INI LOCK TABLE-->
+											<div class="TabbedPanelsContent">
+												<table width="1000" rules="none" border="1" align="center" class="claro">
+													<tr class="titulo_tabla">
+														<td colspan="5">REGISTROS BLOQUEADOS</td>
+													</tr>
+													<tr class="encabezado_center">
+														<th width="10%">N&ordm; M&oacute;dulo</th>
+														<th width="30%">M&oacute;dulo</th>
+														<th width="30%">Usuario</th>
+														<th width="20%">Fecha Registro</th>
+														<th width="10%">Eliminar<input type="button" class="button" name="b_todos" id="b_todos" value="Todos" onclick="borrar_todos();" {DISABLE_BUTTON}/></th>
+													</tr>
+												</table>
+												<div style="overflow-x:hidden; overflow-y:auto; height:420;">
+													<table width="1000" rules="none" border="1" align="center" class="claro" id="LOCK_TABLE">
+														<!-- startBlock(LOCK_TABLE) -->
+														<tr class="{DW_TR_CSS}" id="{DW_TR_ID}">
+															<td width="10%" align="center">{NRO_MODULO}</td>
+															<td width="30%" align="left">{NOM_MODULO}</td>
+															<td width="30%" align="left">{NOM_USUARIO}</td>
+															<td width="20%" align="left">{FECHA_REGISTRO}</td>
+															<td width="10%" align="center">{ELIMINAR_LOCK_TABLE}</td>													
+														</tr>
+														<!-- endBlock(LOCK_TABLE) -->
+													</table>
+												</div>
+											</div>
+											<!--FIN LOCK TABLE-->
+										</div>						
+										<!--FIN TabbedPanelsContentGroup-->
+									</div>
+								</td>
+							</tr>
+						</table>
+						<table width="1000" border="0" align="center">
+							<tr valign="middle">
+								<td width="290">{WI_BACK}</td>
+								<td align="right"></td>
+								<td align="left"></td>
+								<td width="290"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
+<script type="text/javascript">
+<!--
+var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels1");
+//-->
+</script>
+</body>
+</html>

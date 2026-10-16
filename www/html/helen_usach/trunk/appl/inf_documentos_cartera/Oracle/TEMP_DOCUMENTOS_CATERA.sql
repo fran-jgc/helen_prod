@@ -1,0 +1,9 @@
+create global temporary table TEMP_DOCUMENTOS_CATERA
+(
+ RUT 				VARCHAR2(20)
+,FECHA_DOC_PAGO		VARCHAR2(10)
+,NOM_BANCO			VARCHAR2(100)
+,NOM_PLAZA	    	VARCHAR2(100)
+,MONTO  		 	NUMBER
+)
+on commit delete ROWS;

@@ -1,0 +1,31 @@
+[
+    {
+        "name": "segic/cps",
+        "version": "dev-bootstrap4",
+        "version_normalized": "dev-bootstrap4",
+        "source": {
+            "type": "git",
+            "url": "http://gitlab-ci-token:7p4ZS3JbbRr3G498cyQP@gitlab.segic.cl/segic/cps-client.git",
+            "reference": "798846f9662fe89ed53b7afe20f431c059503374"
+        },
+        "time": "2022-08-08T14:48:24+00:00",
+        "type": "yii-extension",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "segic\\cps\\": ""
+            }
+        },
+        "authors": [
+            {
+                "name": "Gilles Grandguillaume",
+                "email": "gilles.grandguillaume@segic.usach.cl"
+            }
+        ],
+        "description": "Modulo ayuda para pago online",
+        "keywords": [
+            "servipag",
+            "webpay"
+        ]
+    }
+]

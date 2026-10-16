@@ -1,0 +1,106 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_w_param_informe_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+
+class wi_inf_candidato_condonacion extends w_param_informe_helen{
+    function __construct($cod_item_menu) {
+		$xml = session::get('K_ROOT_DIR').'appl/inf_candidato_condonacion/inf_candidato_condonacion.xml';
+		$sql_informe = sql_inf_candidato_condonacion::get_sql('INPUT');
+		parent::__construct('inf_candidato_condonacion', $cod_item_menu, 'Candidatos condonacion', $xml, $sql_informe, 'spi_candidato_condonacion');
+		
+
+		$fecha = getdate();
+  		$ano   = $fecha["year"];
+  		
+		$sql = sql_inf_candidato_condonacion::get_sql('PARAMETRO_CONDONACION', $ano);
+		$this->dws['dw_param'] = new datawindow($sql);
+		
+		//$this->dws['dw_param']->add_control(new edit_date('FECHA_INICIO'));
+		
+	}
+function genera_xls() {
+	    ini_set('memory_limit', '900M');
+	    ini_set('max_execution_time', 900); //300 seconds = 5 minutes
+	    
+	    require_once dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/php_writeexcel-0.3.0/class.writeexcel_workbookbig.inc.php";
+	    require_once dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/php_writeexcel-0.3.0/class.writeexcel_worksheet.inc.php";
+	    
+	    $fname = tempnam("/tmp", "export.xls");
+	    $workbook = new writeexcel_workbookbig($fname);
+	    $worksheet = $workbook->addworksheet('Informe Candidatos condonacion');
+	    
+	    // escribe encabezados
+	    # Create a format for the column headings
+	    $header =& $workbook->addformat();
+	    $header->set_bold();
+	    $header->set_color('blue');
+	    $col=0;
+	   // $worksheet->write(0, $col++,  '', $header);
+	   // $worksheet->write(0, $col++,  '', $header);
+	    $worksheet->write(0, $col++,  'RUT', $header);
+	    $worksheet->write(0, $col++,  'DIG_VERIF', $header);
+	    $worksheet->write(0, $col++,  'TIPO DEUDA', $header);
+	    $worksheet->write(0, $col++,  'INICIO COBRO', $header);
+	    $worksheet->write(0, $col++,  'MONTO INICIO COBRO', $header);
+	    $worksheet->write(0, $col++,  'ESTADO DEUDA', $header);
+	    $worksheet->write(0, $col++,  'CARTERA', $header);
+	    $worksheet->write(0, $col++,  'UNIVERSIDAD', $header);
+	    $worksheet->write(0, $col++,  'SALDO 99', $header);
+	    $worksheet->write(0, $col++,  'EMAIL', $header);
+	    $worksheet->write(0, $col++,  utf8_decode('AÑO ULTIMO PLAN PAGO'), $header);
+
+	    //echo $this->sp .''.$this->param;
+	    $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+	    $session_id = session_id();
+	    $this->sp = "spi_candidato_condonacion";
+	    $this->param = "";
+	    $db->EXECUTE_SP($this->sp, $this->param);
+        $sql = "SELECT x.RUT
+				      ,x.DIG_VERIF
+				      ,x.COD_TIPO_DEUDA
+				      ,x.ANO_INICIO
+				      ,x.MONTO_INICIO_COBRO
+				      ,x.NOM_ESTADO_DEUDA
+				      ,x.NOM_CARTERA
+				      ,x.NOM_UNIVERSIDAD
+				      ,x.SALDO_99 SALDO_FUT
+				      ,x.EMAIL
+				      ,x.ANO_ULTIMO_PP
+				FROM TEMP_CANDIDATO_CONDONACION x 
+				WHERE ES_CAND_CONDONA = 'S'
+				ORDER BY RUT";
+	    $res = $db->query($sql);
+	   
+	    $i = 0;
+	    while($my_row = $db->get_row()){
+	        if ($worksheet->_datasize > 50000000)
+	            break;
+	            
+	            $columna = 0;
+	            for ($j=0; $j <  $col; $j++) {
+	                $worksheet->write($i + 1, $columna, utf8_decode($my_row[$j]));
+	                $columna++;
+	            }
+	            $i++;
+	    }
+	    if ($worksheet->_datasize > 50000000) {
+	        $worksheet->write($i + 1, 0, 'No se completo la exportacion de datos porque excede el maximo del tamaño de archivo 50 MB', $header);
+	    }
+	    
+	    if($db->database_type=="oci") {
+	        oci_free_statement($db->query_id);
+	        $db->query_id = false;
+	    }
+	    
+	    $workbook->close();
+	    
+	    header("Content-Type: application/x-msexcel; name=\"$this->nom_tabla\"");
+	    header("Content-Disposition: inline; filename=\"$this->nom_tabla.xls\"");
+	    $fh=fopen($fname, "rb");
+	    fpassthru($fh);
+	    unlink($fname);
+	}
+	
+}
+?>

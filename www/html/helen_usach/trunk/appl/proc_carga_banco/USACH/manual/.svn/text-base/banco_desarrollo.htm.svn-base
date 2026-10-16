@@ -1,0 +1,239 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<link href="css/estilo.css" rel="stylesheet" type="text/css"> 
+		<link href="css/body-gradient.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+	<center>
+		<font color= "green">
+			<b>
+				<u>
+					Banco del desarrollo
+				</u>
+			</b>
+		</font>
+		<br><br>
+		<table class="rwd_auto fontsize">	
+			<tr>
+				<th>Nombre Campos</th>
+				<th>Tipo Campo</th>
+				<th>Descripción Campos</th>
+			</tr>
+			<tr>
+				<td>Código registro</td>
+				<td>Texto</td>
+				<td>Identifica al registro</td>
+			</tr>
+			<tr>
+				<td>Código convenio</td>
+				<td>Texto</td>
+				<td>Numero de convenio cliente </td>
+			</tr>
+			<tr>
+				<td>Cuenta abono emp.</td>
+				<td>Texto</td>
+				<td>Cuenta abono</td>
+			</tr>
+			<tr>
+				<td>Identificador deudor</td>
+				<td>Texto</td>
+				<td>Dato justificado a la izquierda</td>
+			</tr>
+			<tr>
+				<td>Fecha vencimiento </td>
+				<td>Texto</td>
+				<td>Fecha que vence cuota</td>
+			</tr>
+			<tr>
+				<td>Fecha real pago</td>
+				<td>Texto</td>
+				<td>Fecha que se paga cuota</td>
+			</tr>
+			<tr>
+				<td>Valor cuota</td>
+				<td>Texto</td>
+				<td>Valor cuota a pagar</td>
+			</tr>
+			<tr>
+				<td>Monto recargo</td>
+				<td>Texto</td>
+				<td>Morosidad des y otros cobros</td>
+			</tr>
+			<tr>
+				<td>Valor recaudado efec.</td>
+				<td>Texto</td>
+				<td>Monto pagado</td>
+			</tr>
+			<tr>
+				<td>Valor recaudado doc.</td>
+				<td>Texto</td>
+				<td>Cifra monto pagado</td>
+			</tr>
+			<tr>
+				<td>Sucursal recaudador</td>
+				<td>Texto</td>
+				<td>Numero de la sucursal</td>
+			</tr>
+			<tr>
+				<td>Identificación cajero</td>
+				<td>Texto</td>
+				<td>Rut cajero</td>
+			</tr>
+			<tr>
+				<td>Marca manual</td>
+				<td>Texto</td>
+				<td>Identifica los registro ingresados en forma manual</td>
+			</tr>
+			<tr>
+				<td>Curso </td>
+				<td>Texto</td>
+				<td>Curso</td>
+			</tr>
+			<tr>
+				<td>Numero cuotas</td>
+				<td>Texto</td>
+				<td>Numero de cuota a pagar</td>
+			</tr>
+			<tr>
+				<td>Filler</td>
+				<td>Texto</td>
+				<td>Espacio para futuro</td>
+			</tr>
+		</table>
+		</br></br>
+		<font color= "green">
+			<b>
+				<u>
+					Observaciones
+				</u>
+			</b>
+		</font>
+		</br></br>
+		<table>
+			<tr>
+				<td>
+					El largo de la línea debe ser de 252  caracteres los cuales serán proporcionados de la siguiente manera (Debe tener presente que deben respetarse los espacios en blanco)(La columna 0 es la primera columna)<br><br>
+					<b>Código registro:</b> Empieza en la columna 1 y  solicita 1 carácter.<br> 
+					Ejemplo:		   	
+							<center>
+								2=”2”
+							</center>
+							<br>
+					<b>Código convenio:</b> Empieza en la columna 2 y  solicita 16 caracteres (los caracteres restantes se rellenan con “0” hacia la izquierda).<br>
+					Ejemplo:			
+							<center>
+								481=”0000000000000481”
+							</center>
+							<br>
+					<b>Cuenta abono emp.:</b> Empieza en la columna 18 y  solicita 16 caracteres (los caracteres restantes se rellenan con “0” y espacios en blanco hacia la izquierda).<br>
+					Ejemplo:			
+							<center>
+								8026971 =”&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00008026971”
+							</center>
+							<br>
+					<b>Identificador deudor:</b> Empieza en la columna 33 y  solicita 35 caracteres (los caracteres restantes se rellenan con  espacios en blanco hacia la derecha).<br>
+					Ejemplo:			
+							<center>
+									BBBBBB=”BBBBBB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;”
+							</center>
+							<br>
+					<b>Fecha vencimiento:</b> Empieza en la columna 68 y  solicita 8 caracteres (la estructura de este campo es “año/mes/día” (Sin separación)).<br>
+					Ejemplo:			
+							<center>
+								24/05/2005=”20050524”
+							</center>
+							<br>
+					<b>Fecha real pago:</b> Empieza en la columna 76 y  solicita 8 caracteres (la estructura de este campo es “año/mes/día” (Sin separación)).<br>
+					Ejemplo:			
+							<center>
+								24/05/2005=”20050524”
+							</center>
+							<br>
+					<b>Valor cuota:</b> Empieza en la columna 84 y  solicita 15 caracteres (Decimales con un máximo de 4 decimales, los caracteres restantes se rellenan con “0”  hacia la izquierda).<br>		
+					Ejemplo:			
+							<center>
+								122.563,9858=”000001225639858”
+							</center>
+							<br>
+					<b>Monto recargo:</b> Empieza en la columna 99 y  solicita 15 caracteres (Decimales con un máximo de 4 dígitos, los caracteres restantes se rellenan con “0” hacia la izquierda).<br>	
+					Ejemplo:
+							<center>
+							21.254,4565=”000000212544565”
+							</center>
+							<br> 
+					<b>Valor recaudado efec.:</b> Empieza en la columna 114 y  solicita 15 caracteres (Decimales con un máximo de 4 decimales, los caracteres restantes se rellenan con “0” hacia la izquierda).<br>	
+					Ejemplo:			
+							<center>
+								21.254,4565=”000000212544565”
+							</center>
+							<br>
+					<b>Valor recaudado doc.:</b> Empieza en la columna 129 y  solicita 15 caracteres (Decimales con un máximo de 4 decimales, los caracteres restantes se rellenan con “0” hacia la izquierda).<br>
+					Ejemplo:			
+							<center>
+								21.254,4565=”000000212544565”
+							</center>
+							<br>
+					<b>Sucursal recaudador:</b> Empieza en la columna 144 y  solicita 3 caracteres (Los caracteres restantes se rellenan con “0” hacia la izquierda).<br>
+					Ejemplo:			
+							<center>
+								1=”001”
+							</center>
+							<br>
+					<b>Identificación cajero:</b> Empieza en la columna 147 y  solicita 10 caracteres (Los caracteres restantes se rellenan con “0” hacia la izquierda).<br>	
+					Ejemplo:				
+							<center>
+							1234=”0000001234”
+							</center>
+							<br>
+					<b>Marca manual:</b> Empieza en la columna 157 y  solicita 6 caracteres (los caracteres restantes se rellenan con  espacios en blanco hacia la derecha).<br>
+					Ejemplo:			
+							<center>
+								4568=”&nbsp;&nbsp;4568”
+							</center>
+							<br>
+					<b>Curso:</b> Empieza en la columna 163 y  solicita 3 caracteres (los caracteres restantes se rellenan con  espacios en blanco hacia la derecha).<br>
+					Ejemplo:			
+							<center>
+								6=”&nbsp;&nbsp;6”
+							</center>
+							<br>
+					<b>Numero cuotas:</b> Empieza en la columna 166 y  solicita 3 caracteres (Los caracteres restantes se rellenan con “0” hacia la izquierda).<br>		
+					Ejemplo:			
+							<center>
+								1=”001”
+							</center>
+							<br>
+					<b>Filler:</b> Empieza en la columna 169 y  solicita 111 caracteres (los caracteres restantes se rellenan con  espacios en blanco hacia la derecha).<br>
+					Ejemplo:
+					</br>
+					Hola=” &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									   &nbsp;&nbsp;Hola”
+							<br>
+				</td>
+			</tr>
+		</table>
+		<center>
+			<b>
+				<u>
+					<a href="indice.htm">Volver</a>
+				</u>
+			</b>
+		</center>
+	</body>
+</html>

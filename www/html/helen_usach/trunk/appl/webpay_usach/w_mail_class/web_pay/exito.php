@@ -1,0 +1,71 @@
+<?php 
+require_once(dirname(__FILE__)."/../../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once ("../../../appl.ini");
+require_once ("../funciones.php");
+
+session::set('K_ROOT_URL', K_ROOT_URL);
+session::set('K_ROOT_DIR', K_ROOT_DIR);
+
+$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+
+
+$TBK_ORDEN_COMPRA		= $_POST['TBK_ORDEN_COMPRA'];
+$cod_wp_transaccion = $TBK_ORDEN_COMPRA;
+
+
+$sql_pago	=  "SELECT  CODIGO_AUTORIZACION TBK_CODIGO_AUTORIZACION
+				 ,NUMERO_TARJETA TBK_FINAL_NUMERO_TARJETA
+				 ,CANTIDAD_CUOTA TBK_NUMERO_CUOTAS
+				 ,TIPO_PAGO TBK_TIPO_PAGO
+				 ,ORDEN_COMPRA_TIENDA TBK_ORDEN_COMPRA
+			FROM WP_PAGO_TRANSACCION_WS
+			WHERE COD_WP_TRANSACCION = $cod_wp_transaccion";
+
+$result_pago = $db->build_results($sql_pago);
+//existe la posibilidad que el deudor page la deuda con datos de un tercero validar esa opcion
+$tbk_codigo_autorizacion = $result_pago[0]['TBK_CODIGO_AUTORIZACION'];
+$tbk_final_numero_tarjeta = $result_pago[0]['TBK_FINAL_NUMERO_TARJETA'];
+$tbk_numero_cuotas = $result_pago[0]['TBK_NUMERO_CUOTAS'];
+$tbk_tipo_pago = $result_pago[0]['TBK_TIPO_PAGO'];
+$tbk_orden_compra = $result_pago[0]['TBK_ORDEN_COMPRA'];
+
+///////$dato_compra = explode('_', $orden_compra);
+$sql_deudor	=  "SELECT DE.RUT||DE.DIG_VERIF RUT
+				        ,B.MONTO_PESOS
+				        ,WT.COD_WP_TRANSACCION
+				        ,TO_CHAR(WT.FECHA,'dd/mm/yyyy hh24:mi:ss') FECHA
+				FROM WP_TRANSACCION WT, WP_SUB_BOLETA WS, SUB_BOLETA S, BOLETA B, DEUDOR DE
+				WHERE WT.COD_WP_TRANSACCION = $cod_wp_transaccion
+				AND WS.COD_WP_TRANSACCION = WT.COD_WP_TRANSACCION
+				AND S.COD_SUB_BOLETA = WS.COD_SUB_BOLETA
+				AND B.COD_BOLETA = S.COD_BOLETA
+				AND WT.COD_DEUDOR = DE.COD_DEUDOR";
+$result_deudor = $db->build_results($sql_deudor);
+$tbk_rut = $result_deudor[0]['RUT'];
+$tbk_monto_pesos = $result_deudor[0]['MONTO_PESOS'];
+$tbk_cod_wp_transaccion = $result_deudor[0]['COD_WP_TRANSACCION'];
+$tbk_fecha_transaccion = $result_deudor[0]['FECHA'];
+//$dato_compra = explode('_', $orden_compra);
+$orden_compra = $tbk_rut."_".$tbk_monto_pesos."_".$tbk_cod_wp_transaccion;
+
+$data ="APROBADO|$tbk_codigo_autorizacion|$tbk_fecha_transaccion|$tbk_final_numero_tarjeta|$tbk_numero_cuotas|$tbk_tipo_pago|$orden_compra";
+
+$url  = '../webpay_cupon.php?data='.$data;
+header ('Location: '.$url);
+/*
+$data	= $_REQUEST['data'];
+$dato = explode('|', $data);
+$cod_estado_transaccion = $dato[0];
+$cod_autorizacion = $dato[1];
+$fecha_transaccion = $dato[2];
+$tarjeta_final = $dato[3];
+$nro_cuota = $dato[4];
+$tipo_cuota = $dato[5];
+$orden_compra = $dato[6];
+
+$dato_compra = explode('_', $orden_compra);
+$tbk_rut = $dato_compra[0];
+$tbk_monto_pago = $dato_compra[1];
+$tbk_cod_transacion = $dato_compra[2];
+*/
+?>

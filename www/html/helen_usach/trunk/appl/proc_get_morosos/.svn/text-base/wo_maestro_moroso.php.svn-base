@@ -1,0 +1,147 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+/**************
+ Clase : W_CAMBIO_PASSWORD
+ **************/
+/*SC Se agrega la siguiente linea para aumentar la memoria limite de php*/
+ini_set('memory_limit', '800M');
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes
+
+class wo_maestro_moroso extends w_base {
+    
+	CONST K_RUT_UNIVERSIDAD 	= 4;
+	CONST K_NOM_UNIVERSIDAD 	= 5;
+	CONST K_NOM_COORDINADOR 	= 6;
+	CONST K_FONO_COORDINADOR 	= 7;
+
+	function __construct() {
+	    parent::__construct('', '2575');
+		$this->work_directory = getcwd();
+	}
+	function import_txt($fecha_buscada) {
+		$t = new Template_appl($this->root_dir."/appl/proc_get_morosos/maestro_moroso.htm");
+		$t->setVar('W_FECHA', $fecha_buscada);
+
+		$t->setVar("WO_RUTA_MENU", $this->ruta_menu);
+		$t->setVar("WO_FECHA_ACTUAL", 'Fecha Actual: '.$this->current_date());
+		$t->setVar("WO_NOM_USUARIO", $this->nom_usuario);
+
+		$menu = unserialize(session::get('menu_appl'));
+		$menu->draw($t);
+
+		print $t->toString();
+	}
+
+	function print_txt(){
+		$fecha = $_POST['fecha'];
+		//list($mes, $dia, $ano) 
+		$arrFecha = explode('/', $fecha);
+		$ano = $arrFecha[2]; 
+		$archivo = "".K_CLIENTE."_morosos_".$ano.".TXT";
+		$ruta_dcto = "documentos/".$archivo;
+		$linea = "";
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		// se crea el archivo en documentos/
+		$file = fopen($ruta_dcto,"w");
+		// si se puede escribir en el archivo
+		if (is_writable($ruta_dcto)) {
+			if (!$handle = fopen($ruta_dcto, 'a')) {
+				$this->alert("No se puede Abrir el Archivo: $archivo");
+				exit;
+			}			
+				
+			///////////////// CLASS_SQL = OUTPUT  ///////////////
+			if (K_TIPO_BD == "mssql"){
+				$fecha = $this->str2date($fecha);
+				$sql= "exec spi_get_morosos $fecha";
+				$result = $db->build_results($sql);
+			}
+			else if (K_TIPO_BD == "oci"){
+				//$fecha = str_replace("/","-",$fecha);
+				//$fecha = $this->str2date($fecha);
+				$fecha = $this->str2date($fecha);
+				$db->EXECUTE_SP("spi_get_morosos","$fecha");
+				IF(K_CLIENTE == "UCM"){
+						$sql = "SELECT	rut 
+										,dig_verif  
+										,paterno 
+										,materno 
+										,nombre 
+										,REPLACE(monto_moroso_utm, '.',',')  monto_moroso_utm
+										
+								FROM	TEMP_MOROSO
+								ORDER BY RUT";	
+				}else{
+						$sql = "SELECT	rut 
+										,dig_verif  
+										,paterno 
+										,materno 
+										,nombre 
+										,REPLACE(monto_moroso_utm, '.',',')  monto_moroso_utm
+								FROM	TEMP_MOROSO
+								ORDER BY RUT";
+				}
+				
+				$result = $db->build_results($sql);				
+			}
+			for($i = 0; $i < count($result); $i++){
+				$rut 		= $result[$i][0];
+				$dig_verif  = $result[$i][1];
+				$apellido_p = $result[$i][2];
+				$apellido_m = $result[$i][3];
+				$nombre	    = $result[$i][4];
+				$utm	    = $result[$i][5];
+				
+				
+				IF(K_CLIENTE == "UCM"){
+					$direccion = $result[$i][6];
+					$comuna = $result[$i][7];
+					$ciudad = $result[$i][8];
+					
+					$linea 	= $rut."	".$dig_verif."	".$apellido_p."	".$apellido_m."	".$nombre."	".$direccion."	".$comuna."	".$ciudad."	".$utm;
+				}
+				else
+				{
+					$linea 	= $rut."	".$dig_verif."	".$apellido_p."	".$apellido_m."	".$nombre."	".$utm;	
+				}
+
+				
+				if($i < count($result)){
+					if($i == (count($result)-1))
+					{
+						$linea = $linea;	
+					}else{
+						$linea = $linea."\r\n";
+					}
+				}
+				if (fwrite($handle, $linea) === FALSE) {
+					$this->alert("No se puede escribir en el Archivo: $archivo");
+					exit;
+				}
+			}
+		}
+		else{
+			$this->alert("El Archivo: $archivo no puede ser escrito.");
+		}
+		header("Content-type: application/octet-stream");
+		header("Content-Disposition: attachment; filename=\"$archivo\"\n");
+		//$this->alert(file_get_contents($ruta_dcto));
+		print file_get_contents($ruta_dcto);
+		
+		// SE BORRA EL ARCHIVO DEL SERVIDOR
+		//unlink('documentos/'.$archivo);
+	}
+}
+
+$w = new wo_maestro_moroso();
+if (isset($_POST['b_generar'])){
+	$w->print_txt();
+}
+elseif(isset($_POST['b_cancelar'])){
+	$w->presentacion();
+}
+else{
+	$w->import_txt('');
+}
+?>

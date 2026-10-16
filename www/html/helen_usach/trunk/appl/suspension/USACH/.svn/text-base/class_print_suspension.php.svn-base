@@ -1,0 +1,91 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../../common_appl/class_reporte_helen.php");
+//***********dibujo**************/////////
+class print_suspension extends reporte_helen {	
+    
+    function __construct($sql, $xml, $labels=array(), $titulo, $con_logo, $vuelve_a_presentacion=false) {
+        parent::__construct($sql, $xml, $labels, $titulo, $con_logo, $vuelve_a_presentacion);			
+		
+	}
+function dibuja_uno(&$pdf, $result, $nom_universidad, $mail_universidad, $dir_universidad) {
+		
+		$pdf->SetFont('Helvetica','i',10);
+
+		$pdf->Text( 360, 100,'ORD.     : N° ___________/');
+		$pdf->Text( 360, 115,'ANT.     : Solicitud deudor');
+		$pdf->Text( 360, 130,'MAT.     : Da respuesta.	');
+		$pdf->Text( 360, 145,'_____________________');
+		$pdf->SetFont('Helvetica','',10);
+		$pdf->Text( 50, 180,'SANTIAGO,  '.$result['MES'].' '.$result['DIA'].' del '.$result['ANO'].'');		
+		$pdf->SetFont('Helvetica','B',10);
+		$pdf->Text( 50, 210,'DE:  ADMINISTRACIÓN GRAL. FONDO SOLIDARIO CRÉDITO UNIVERSITARIO');
+		$pdf->Text( 50, 240,'A  :');
+		$pdf->SetFont('Helvetica','',10);		
+		$pdf->Text( 70, 240,$result['NOMBRE']);
+		$pdf->Text( 350, 240,'Rut:');
+		$pdf->Text( 380, 240,number_format($result['RUT'], 0, ',', '.')."-".$result['DIG_VERIF']);
+		$pdf->Text( 70, 255,$result['DIRECCION']);
+		
+		$pdf->SetFont('Helvetica','',10);
+		$pdf->Text( 60, 290,'De acuerdo a  antecedentes  aportados por Ud., la Administación General del Fondo Solidario de Crédito ', 0, 'J','R');
+		$pdf->Text( 50, 300,'Universitario de ésta Universidad, ha resuelto lo siguiente:', 0, 'J','R');
+
+		$pdf->Text( 70, 320,'1.- Acoger su solicitud en orden a verificar su situación académica/socioeconómica.', 0,'J','R');
+		$pdf->Text( 70, 335,'2.- Informar a Ud. que se ha dispuesto suspender el cobro correspondiente a la (s) cuota (s) del ',0, 'J','R');
+		$pdf->Text( 50, 350,'    '.$result['NOM_TIPO_DEUDA'].' del (los) año (s) '.$result['ANO_SUSPENSION'].', dado que presenta situación de '.$result['NOM_TIPO_SUSPENSION'].'. ', 0,'J','R');
+
+		$pdf->Text( 70, 370,'3.- La cobranza de su deuda continuará en cobro a partir del próximo año, conforme a las normas ', 0,'J', 'R');
+		$pdf->Text( 50, 385,'    impartidas por la Ley 19.287 que establece suspensión por:',0, 'J','R');
+     
+
+		$pdf->SetXY(50 , 400);
+		$pdf->MultiCell(500, 15,'               3.1.- Estudios de Posgrados', 0,'J', 'R');
+
+		$pdf->SetXY(50 , 420);
+		$pdf->MultiCell(500, 15,'                        I.  Magíster hasta 3 años', 0,'J', 'R');
+		$pdf->SetXY(50 , 440);
+		$pdf->MultiCell(500, 15,'                        II. Doctorado hasta 4 años', 0,'J', 'R');
+		$pdf->SetXY(50 , 460);
+		$pdf->MultiCell(500, 15,'                        III. Combinación de ambos hasta 4 años', 0,'J', 'R');
+
+		$pdf->SetXY(50 , 480);
+		$pdf->MultiCell(500, 15,'               3.2.- Cesantía sobreviniente, esto es, la producida en el período en que debe efectuarse el pago de la cuota correspondiente. Esta suspensión podría solicitarse por una sola vez y operará por un período máximo de doce meses. En este caso, el plazo máximo para servir la deuda se extenderá por el mismo número de meses que haya operado la suspensión.
+
+', 0,'J', 'R');
+		
+		$pdf->Text( 250, 600,'Saluda atentamente a Ud.,');
+		$pdf->Text( 250, 660,$result['NOM_ADMIN']);
+		$pdf->SetFont('Helvetica','B',11);
+		$pdf->Text( 235, 670,'ADMINISTRADOR GENERAL');
+
+		
+		$pdf->SetFont('Helvetica','B',8);
+		$pdf->Text( 50, 680, 'WJM/NBP' );
+		$pdf->Text( 50, 690, 'DISTRIBUCIÓN:-' );
+		$pdf->Text( 50, 700, '1.- INTERESADO' );
+		$pdf->Text( 50, 710, '2.- AGFCU' );
+		
+		
+		$pdf->SetFont('Helvetica','',8);
+		$factor = 0.2;
+	}
+	function modifica_pdf(&$pdf) {
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$result = $db->build_results($this->sql);
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql= sql_suspension::get_sql('PRINT_PARAM');
+		$result_universidad = $db->build_results($sql);		
+		$nom_universidad = $result_universidad[0]['NOM_UNIVERSIDAD'];
+		$mail_universidad = $result_universidad[0]['MAIL_UNIVERSIDAD'];
+		$dir_universidad = $result_universidad[0]['DIR_UNIVERSIDAD'];
+		
+		for($i=0; $i<count($result); $i++) {
+			$this->dibuja_uno($pdf, $result[$i], $nom_universidad, $mail_universidad, $dir_universidad);
+			if ($i < count($result) - 1)
+			$pdf->AddPage();
+		}
+	}		
+}
+?>

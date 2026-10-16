@@ -1,0 +1,280 @@
+/* *************************************
+* ************** Colors ****************
+* ************************************ */
+.degrad {
+background-image: linear-gradient(to left,rgb(151, 176, 207) 0,rgb(163, 198, 236) 100%)
+
+}
+.blue 										{ background: #00A499; }
+.blue-o1{
+background:#333E48;
+}
+
+.yellow 									{ background: #fec10d; }
+.gray 										{ background: #333e48; }
+.red 										{ background: red; }
+.black 										{ background: #000; } 
+.white 										{ background: #fff; }
+.gray-c1 {
+background: #e1aeb0;
+}
+.gray-c2 {
+background: #c4d3e6;
+}
+.gray-c 									{ background: #ccc; }
+.gray-9 									{ background: #999; }
+.gray-6 									{ background: #666; }
+.gray-3 									{ background: #333; }
+.blue-header{
+	
+	background-image: linear-gradient(to bottom,#4056AB,#FFFFFF);
+
+}
+.gray-header{
+	
+	background-image: linear-gradient(to bottom,#c6baba,#FFFFFF);
+	border-bottom: 1px solid #ffffff;
+	box-shadow:0 1px 0 #000, inset 0 1px 2px 0 rgba(0, 0, 0, 0.26);
+}
+.gris         {
+background-color: #DBE0E6;
+}
+.txt-blue 									{ color: #0068ae; }
+.txt-yellow 								{ color: #fec10d; }
+.txt-gray 									{ color: #333e48; }
+.txt-red 									{ color: red; }
+.txt-black 									{ color: #000; } 
+.txt-white 									{ color: #fff; }
+.txt-gray-c 								{ color: #ccc; }
+.txt-gray-9 								{ color: #999; }
+.txt-gray-6 								{ color: #666; }
+.txt-gray-3 								{ color: #333; }
+
+.lila-half									{ width: 100%; background: white url(img/lila.gif) repeat-y; background-size: 100% auto; } 
+
+
+/* *************************************
+* *************** Slide ****************
+* ************************************ */
+#slide 										{ width: 100%; height: 210px; display: block; overflow: hidden; }
+.info-slide 								{ width: 40%; position: absolute; top: -3px; right: 15px; z-index: 999; }
+.carousel-control 							{ width: 5%; }
+.carousel a 								{ color: rgba(255, 255, 255, .7); }
+
+
+/* *************************************
+* ******** Parallax Scrollorama ********
+* ************************************ */
+.scrollblock 								{ width: 100%; position: relative; margin: 0; }
+#examples-parallax 							{ overflow: hidden; }
+
+
+/* *************************************
+* ************** layout ****************
+* ************************************ */
+
+.container-full 							{ width: 100%; }
+
+.h-100p 									{ height: 100%; }
+
+.h-10 										{ height: 10px; }
+.h-20 										{ height: 20px; }
+.h-30 										{ height: 30px; }
+.h-40 										{ height: 40px; }
+.h-50 										{ height: 50px; }
+.h-60 										{ height: 60px; }
+.h-70 										{ height: 70px; }
+.h-80 										{ height: 80px; }
+.h-90 										{ height: 90px; }
+.h-100 										{ height: 100px; }
+.h-110 										{ height: 110px; }
+.h-120 										{ height: 120px; }
+.h-130 										{ height: 130px; }
+.h-140 										{ height: 140px; }
+.h-150 										{ height: 150px; }
+.h-160 										{ height: 160px; }
+.h-170 										{ height: 170px; }
+.h-180 										{ height: 180px; }
+.h-190 										{ height: 190px; }
+.h-200 										{ height: 200px; }
+.h-300										{ height: 300px; }
+.h-400										{ height: 400px; }
+.h-500										{ height: 500px; }
+.h-600										{ height: 600px; }
+.h-700										{ height: 700px; }
+.h-800										{ height: 800px; }
+.h-900										{ height: 900px; }
+.m-0 										{margin-right: 0px!important; margin-left: 0px!important;}
+.m-10 										{ margin: 10px; }
+.mt-10 										{ margin-top: 10px; }
+.mr-10 										{ margin-right: 10px; }
+.mb-10 										{ margin-bottom: 10px; }
+.ml-10 										{ margin-left: 10px; }
+
+.m-30 										{ margin: 5px; } /* 30px move to 'null' media-queries.css */
+.mt-30 										{ margin-top: 30px; }
+.mr-30 										{ margin-right: 30px; }
+.mb-30 										{ margin-bottom: 30px; }
+.ml-30 										{ margin-left: 30px; }
+
+.m-50 										{ margin: 50px; }
+.mt-50 										{ margin-top: 50px; }
+.mr-50 										{ margin-right: 50px; }
+.mb-50 										{ margin-bottom: 50px; }
+.ml-50 										{ margin-left: 50px; }
+
+.m-100 										{ margin: 100px; }
+.mt-100 									{ margin-top: 100px; }
+.mr-100 									{ margin-right: 100px; }
+.mb-100 									{ margin-bottom: 100px; }
+.ml-100 									{ margin-left: 100px; }
+
+.mtb-10										{ margin: 10px 0; }
+.mtb-30										{ margin: 30px 0; }
+.mtb-50										{ margin: 50px 0; }
+.mtb-100									{ margin: 100px 0; }
+
+.p-10 										{ padding: 10px; }
+.pt-10 										{ padding-top: 10px; }
+.pr-10 										{ padding-right: 10px; }
+.pb-10 										{ padding-bottom: 10px; }
+.pl-10 										{ padding-left: 10px; }
+
+.p-30 										{ padding: 30px; }
+.pt-30 										{ padding-top: 30px; }
+.pr-30 										{ padding-right: 30px; }
+.pb-30 										{ padding-bottom: 30px; }
+.pl-30 										{ padding-left: 30px; }
+
+.p-50 										{ padding: 50px; }
+.pt-50 										{ padding-top: 50px; }
+.pr-50 										{ padding-right: 50px; }
+.pb-50 										{ padding-bottom: 50px; }
+.pl-50 										{ padding-left: 50px; }
+
+.pr-70 										{ padding-right: 70px; }
+
+
+.p-100 										{ padding: 100px; }
+.pt-100 									{ padding-top: 100px; }
+.pr-100 									{ padding-right: 100px; }
+.pb-100 									{ padding-bottom: 100px; }
+.pl-100 									{ padding-left: 100px; }
+
+.ptb-10										{ padding: 10px 0; }
+.ptb-30										{ padding: 30px 0; }
+.ptb-50										{ padding: 50px 0; }
+.ptb-100									{ padding: 100px 0; }
+
+.min-h-100p 								{ min-height: 100%; } /* percent! */
+.min-h-100									{ min-height: 100px; }
+.min-h-200									{ min-height: 200px; }
+.min-h-300									{ min-height: 300px; }
+.min-h-400									{ min-height: 400px; }
+.min-h-500									{ min-height: 500px; }
+.min-h-600									{ min-height: 600px; }
+.min-h-607                                  {min-height: 607px;}
+.min-h-700									{ min-height: 700px; }
+.min-h-769									{ min-height: 0px;} /* 769px move to 'null' media-queries.css */
+.min-h-800									{ min-height: 50px; } /* 800px move to 'null' media-queries.css */
+.min-h-900									{ min-height: 900px; }
+.min-h-1000 								{ min-height: 1000px; }
+.min-h-1150 								{ min-height: 0px; } /* 1150px move to 'null' media-queries.css */
+.max-h-600									{max-height: 300px;}
+.max-h-210 									{max-height: 210px;}
+.max-h-150 									{max-height: 150px;}
+.max-h-70 									{max-height: 70px;}
+.z9 										{ z-index: 9; }
+.z99 										{ z-index: 99; }
+.z999 										{ z-index: 999; }
+.z9999 										{ z-index: 9999; }
+.z99999 									{ z-index: 99999; }
+.z-9 										{ z-index: -9; }
+.z-99 										{ z-index: -99; }
+.z-999 										{ z-index: -999; }
+.z-9999 									{ z-index: -9999; }
+.z-99999 									{ z-index: -99999; }
+
+
+
+/* *************************************
+* ****** Wordpress Compatibility *******
+* ************************************ */
+.aligncenter 								{ display: block; margin: 0 auto; }
+.alignleft 									{ float: left; }
+.alignright 								{ float: right; }
+
+
+/* *************************************
+* ************* Secciones **************
+* ************************************ */
+header .address p							{ font-size: 1.2rem; padding: 24px 15px 0 0; }
+header .address p a.fono					{ color: #333E48; font-weight: 400; }
+header .address p a.fono:hover,
+header .address p a.fono:visited,
+header .address p a.fono:active 			{ color: #333E48; }
+
+footer address br 							{ display: none; }
+
+
+
+.textalignright {
+text-align: right;
+}
+.static-popover { 
+	display: block !important;
+	float: right;
+	position: relative;
+	top: 10px;
+	border: solid #f9a703 2px;
+	margin-right: 62px !important;
+	
+}
+
+.borde-color {
+
+	border-right-color: rgb(249, 167, 3)!important;
+}
+
+#RUT_0 {
+	
+	max-width: 115px;
+}
+
+.rut{
+border-bottom: solid #f9a703 5px;
+border-top: solid #f9a703 5px;
+border-left: solid #f9a703 2px;
+border-right: solid #f9a703 2px;
+max-width: 150px;
+
+}
+
+
+#CLAVE_0 {
+
+	border: solid #f9a703 2px;
+	max-width: 120px;
+}
+
+.bord-bot{
+
+border: solid #92523A 2px !important;
+}
+
+.sub-menu{
+	padding: 5px 0 0 5px !important;
+	margin:  2px 30px 10px !important;
+	max-width: 445px !important;
+}
+
+.titulo {
+padding-top: 100px;
+padding-left: 200px;
+
+}
+.datos{
+
+padding-left: 0px;
+}
+

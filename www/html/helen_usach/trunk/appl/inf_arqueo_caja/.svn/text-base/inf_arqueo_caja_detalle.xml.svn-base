@@ -1,0 +1,75 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="8" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="" id="ArialBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="9" style="B" id="ArialBold"/>
+	<Font name="Arial" size="9" style="" id="Arial"/>
+	<Font name="Arial" size="9" style="" id="Arial_negativo" red="128" green="0" blue="0"/>
+	
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="ARQUEO DE CAJA DETALLE" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{COD_INGRESO}" width="10%" align="R" border="LRTB" font="Arial_negativo" visible="'{NOM_ESTADO_INGRESO}' == 'Anulado'"/>
+		<Cell text="{COD_INGRESO}" width="10%" align="R" border="LRTB" font="Arial" visible="'{NOM_ESTADO_INGRESO}' != 'Anulado'"/>
+		<Cell text="{NOM_ESTADO_INGRESO}" width="10%" align="L" border="LRTB" font="Arial_negativo" visible="'{NOM_ESTADO_INGRESO}' == 'Anulado'"/>
+		<Cell text="{NOM_ESTADO_INGRESO}" width="10%" align="L" border="LRTB" font="Arial" visible="'{NOM_ESTADO_INGRESO}' != 'Anulado'"/>
+		<Cell text="{FECHA_INGRESO}" width="10%" align="C" border="LRTB" font="Arial_negativo" visible="'{NOM_ESTADO_INGRESO}' == 'Anulado'"/>
+		<Cell text="{FECHA_INGRESO}" width="10%" align="C" border="LRTB" font="Arial" visible="'{NOM_ESTADO_INGRESO}' != 'Anulado'"/>
+		<Cell text="{EFECTIVO}" width="10%" align="R" border="LRTB" font="Arial_negativo" format="N0,." visible="'{NOM_ESTADO_INGRESO}' == 'Anulado'"/>
+		<Cell text="{EFECTIVO}" width="10%" align="R" border="LRTB" font="Arial" format="N0,." visible="'{NOM_ESTADO_INGRESO}' != 'Anulado'"/>
+		<Cell text="{CHEQUE_AL_DIA}" width="10%" align="R" border="LRTB" font="Arial_negativo" format="N0,." visible="'{NOM_ESTADO_INGRESO}' == 'Anulado'"/>
+		<Cell text="{CHEQUE_AL_DIA}" width="10%" align="R" border="LRTB" font="Arial" format="N0,." visible="'{NOM_ESTADO_INGRESO}' != 'Anulado'"/>
+		<Cell text="{CHEQUE_FECHA}" width="10%" align="R" border="LRTB" font="Arial_negativo" format="N0,." visible="'{NOM_ESTADO_INGRESO}' == 'Anulado'"/>
+		<Cell text="{CHEQUE_FECHA}" width="10%" align="R" border="LRTB" font="Arial" format="N0,." visible="'{NOM_ESTADO_INGRESO}' != 'Anulado'"/>
+		<Cell text="{OTROS}" width="10%" align="R" border="LRTB" font="Arial_negativo" format="N0,." visible="'{NOM_ESTADO_INGRESO}' == 'Anulado'"/>
+		<Cell text="{OTROS}" width="10%" align="R" border="LRTB" font="Arial" format="N0,." visible="'{NOM_ESTADO_INGRESO}' != 'Anulado'"/>
+		<Cell text="{DEPOSITO}" width="10%" align="R" border="LRTB" font="Arial_negativo" format="N0,." visible="'{NOM_ESTADO_INGRESO}' == 'Anulado'"/>
+		<Cell text="{DEPOSITO}" width="10%" align="R" border="LRTB" font="Arial" format="N0,." visible="'{NOM_ESTADO_INGRESO}' != 'Anulado'"/>
+		<Cell text="{TOTAL}" width="10%" align="R" border="LRTB" font="Arial_negativo" format="N0,." visible="'{NOM_ESTADO_INGRESO}' == 'Anulado'"/>
+		<Cell text="{TOTAL}" width="10%" align="R" border="LRTB" font="Arial" format="N0,." visible="'{NOM_ESTADO_INGRESO}' != 'Anulado'"/>
+		<Cell text="{DESCUENTO}" width="10%" align="R" border="LRTB" font="Arial_negativo" format="N0,." visible="'{NOM_ESTADO_INGRESO}' == 'Anulado'"/>
+		<Cell text="{DESCUENTO}" width="10%" align="R" border="LRTB" font="Arial" format="N0,." visible="'{NOM_ESTADO_INGRESO}' != 'Anulado'"/>
+		<Cell newline="1"/>
+	</Content>
+	<Group>
+		<GroupHeader>		
+			<Cell text="FOLIO" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="ESTADO" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="FECHA" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="EFECTIVO" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="CH. AL DIA" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="CH. A FECHA" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="OTROS" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="DEPOSITOS" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="TOTAL" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="DESCUENTO" width="10%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="" width="20%" align="R" font="ArialBold"/>	
+			<Cell text="TOTALES:" width="10%" align="R" font="ArialBlue"/>	
+			<Cell text="{SUM_EFECTIVO}" width="10%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>		
+			<Cell text="{SUM_CH_AL_DIA}" width="10%"  align="R" border="LRTB" format="N0,." font="ArialBold" />
+			<Cell text="{SUM_CH_FECHA}" width="10%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>		
+			<Cell text="{SUM_OTROS}" width="10%"  align="R" border="LRTB" format="N0,." font="ArialBold" />
+			<Cell text="{SUM_DEPOSITOS}" width="10%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>		
+			<Cell text="{SUM_TOTAL}" width="10%"  align="R" border="LRTB" format="N0,." font="ArialBold" />
+			<Cell text="{SUM_DESCUENTO}" width="10%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="22%" align="C" newline="1"/>
+			<Cell text="" width="13%" align="C"/>
+			<Cell text="Encargado de recaudación" width="22%" border="T" align="C"/>
+			<Cell text="" width="30%" align="C"/>
+			<Cell text="Responsable" width="22%" border="T" align="C"/>
+			<Cell text="" width="13%" align="C"/>
+		</GroupFooter>
+	</Group>
+</Report>

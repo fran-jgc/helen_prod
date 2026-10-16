@@ -1,0 +1,469 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+
+$file_name = dirname(__FILE__)."/".K_CLIENTE."/class_print_reprogramacion.php";
+if (file_exists($file_name)) 
+	require_once(dirname(__FILE__)."/".K_CLIENTE."/class_print_reprogramacion.php");
+else 
+	require_once(dirname(__FILE__)."/class_print_reprogramacion.php");
+
+
+
+class dw_pagare extends datawindow {
+	function __construct(){
+		$sql = sql_reprogramacion::get_sql('DW_PAGARE');
+		parent::__construct($sql,'R_PAGARE');
+		
+		$this->add_control(new edit_text('COD_PAGARE_REPROGRAMACION',1, 1, 'hidden'));
+		$this->add_control(new static_text('NOM_UNIVERSIDAD_P'));
+		$this->add_control(new static_text('ID_PAGARE'));
+		$this->add_control(new static_text('FECHA_GENERACION_PAGARE'));
+		$this->add_control(new static_num('MONTO_PAGARE', 4));
+		$this->add_control(new static_num('MONTO_PAGARE_PESOS', 0));
+		$this->add_control(new static_num('SALDO_CAPITAL_P', 4));
+		$this->add_control(new static_num('INTERESES_P', 4));
+		$this->add_control(new static_num('MONTO_PAGO_INICIAL_PAGARE', 4));
+		$this->add_control(new static_num('CUOTA_PAGO_INICIAL_PAGARE', 4));
+		$this->add_control(new static_num('PORC_CONDONACION_INTERES', 2));
+		$this->add_control(new static_num('MONTO_REPROGRAMADO_P', 4));
+		$this->add_control(new static_text('NRO_CUOTAS_REPROGRAMADO'));
+		$this->add_control(new static_num('PORC_CONDONACION_INTERES_PENAL', 2));
+		$this->add_control($control = new edit_check_box('RECIBIDO', 'S', 'N', ''));
+		$control->set_onChange("change_recibido();");
+	}
+	
+	function update($db){
+        $sp = 'spu_pagare_reprogramacion';
+        for ($i = 0; $i < $this->row_count(); $i++) {
+            $statuts = $this->get_status_row($i);
+            if ($statuts == K_ROW_NOT_MODIFIED){
+                continue;
+            }
+            // siempre es UPDATE
+            $cod_pagare_reprogramacion         = $this->get_item($i, 'COD_PAGARE_REPROGRAMACION');
+            $recibido						   = $this->get_item($i, 'RECIBIDO');
+            
+          	$param = "'UPDATE'
+                        ,$cod_pagare_reprogramacion
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,NULL
+                        ,'$recibido'";
+
+            if (!$db->EXECUTE_SP($sp, $param)){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+class dw_deudor_repro extends datawindow {
+    function __construct(){
+		$sql = sql_reprogramacion::get_sql('DW_DEUDOR_REPRO');
+		parent::__construct($sql);
+		
+		$this->add_control(new edit_rut('RUT_DEUDOR'));
+		$this->add_control(new static_text('DIG_VERIF_DEUDOR'));
+		$this->add_control(new static_text('APELLIDO_PATERNO'));
+		$this->add_control(new static_text('APELLIDO_MATERNO'));
+		$this->add_control(new static_text('TELEFONO1'));
+		$this->add_control(new static_text('TELEFONO2'));
+		$this->add_control(new static_text('EMAIL'));
+		$this->add_control(new static_text('DIRECCION'));
+		$this->add_control(new static_text('COMUNA'));
+		$this->add_control(new static_text('CIUDAD'));
+		$this->add_control(new static_text('REGION'));
+	}
+}
+
+class dw_pagare_repro extends datawindow {
+    function __construct(){
+		$sql = sql_reprogramacion::get_sql('DW_PAGARE_REPRO');
+		parent::__construct($sql,'PAGARE_REPRO');
+		
+		$this->add_control(new static_num('NRO'));
+		$this->add_control(new static_num('CAPITAL', 4));
+		$this->add_control(new static_num('INTERES_PENAL', 4));
+		$this->add_control(new static_num('INTERESES_NORMAL', 4));
+		$this->add_control(new static_num('VALOR_CUOTA_CUPONERA', 4));
+		$this->add_control(new static_num('DESCUENTO_OPORTUNO', 4));
+		$this->add_control(new static_num('MONTO', 4));
+		$this->add_control(new static_num('MONTO_PESOS', 0));
+		$this->add_control(new static_num('NRO_CUOTAS_REPROGRAMADO_P', 0));
+		
+		$this->accumulate('CAPITAL', '', false);
+		$this->accumulate('INTERES_PENAL', '', false);
+		$this->accumulate('INTERESES_NORMAL', '', false);
+		$this->accumulate('VALOR_CUOTA_CUPONERA', '', false);
+		$this->accumulate('DESCUENTO_OPORTUNO', '', false);
+		$this->accumulate('MONTO', '', false);
+		$this->accumulate('MONTO_PESOS', '', false);
+	}
+}
+
+class dw_pago_inicial extends datawindow {
+    function __construct() {
+		$sql = sql_reprogramacion::get_sql('DW_PAGO_INICIAL');
+		parent::__construct($sql);
+		
+		$this->add_control(new static_num('MONTO_PAGO_INICIAL', 4));
+		$this->add_control(new static_num('MONTO_PAGO_INICIAL_PESOS', 0));
+		$this->add_control(new static_num('CUOTA_PAGO_INICIAL', 4));
+		$this->add_control(new static_num('CUOTA_PAGO_INICIAL_PESOS', 0));
+		$this->add_control(new static_num('MONTO_CONDONADO', 4));
+		$this->add_control(new static_num('MONTO_CONDONADO_PESOS', 0));
+		$this->add_control(new static_num('MONTO_REPROGRAMADO', 4));
+		$this->add_control(new static_num('MONTO_REPROGRAMADO_PESOS', 0));
+		$this->add_control(new static_num('PORC_INICIAL', 2));
+	}
+}
+
+class dw_deuda_reprogramada extends datawindow {
+    function __construct() {
+		$sql = sql_reprogramacion::get_sql('DW_DEUDA_REPROGRAMACION');
+		parent::__construct($sql, 'DEUDA_RP');
+		
+		$this->add_control(new static_text('NOM_UNIVERSIDAD'));
+		$this->add_control(new static_num('SALDO_CAPITAL', 4));
+		$this->add_control(new static_num('SALDO_INTERES_PENAL', 4));
+		$this->add_control(new static_num('TOTAL_SALDO_MONEDA', 4));
+		$this->add_control(new static_num('SALDO_CAPITAL_PESOS', 0));
+		$this->add_control(new static_num('SALDO_INTERES_PENAL_PESOS', 0));
+		$this->add_control(new static_num('TOTAL_SALDO_PESOS', 0));
+		$this->add_control(new static_num('PORC', 2));
+		
+		
+		$this->accumulate('SALDO_CAPITAL', '', false);
+		$this->accumulate('SALDO_INTERES_PENAL', '', false);
+		$this->accumulate('TOTAL_SALDO_MONEDA', '', false);
+		$this->accumulate('SALDO_CAPITAL_PESOS', '', false);
+		$this->accumulate('SALDO_INTERES_PENAL_PESOS', '', false);
+		$this->accumulate('TOTAL_SALDO_PESOS', '', false);
+	}
+}
+
+class wi_reprogramacion_base extends w_input {
+	const K_ESTADO_CONFIRMADA = 2;
+	const K_ESTADO_ANULADA = 3;  
+	
+	function __construct($cod_item_menu) {
+	    parent::__construct('reprogramacion', $cod_item_menu);
+		
+		$sql = sql_reprogramacion::get_sql('INPUT');
+		
+		$this->dws['dw_reprogramacion'] = new datawindow($sql);
+		
+		$this->dws['dw_reprogramacion']->add_control(new static_text('COD_REPROGRAMACION'));
+		$this->dws['dw_reprogramacion']->add_control(new static_text('FECHA_REPROGRAMACION'));
+		$this->dws['dw_reprogramacion']->add_control(new edit_date('FECHA_RECEP_MANIFIESTO'));
+		$this->dws['dw_reprogramacion']->add_control(new edit_text('FECHA_RECEP_MANIFIESTO_H',1, 1, 'hidden'));
+		
+		$sql = sql_reprogramacion::get_sql('DD_ESTADO_REPROGRAMACION');
+		$this->dws['dw_reprogramacion']->add_control($control = new drop_down_dw('COD_ESTADO_REPROGRAMACION', $sql, 140, '', false));
+		
+		$this->dws['dw_reprogramacion']->add_control(new edit_rut('RUT'));
+		$this->dws['dw_reprogramacion']->add_control(new edit_text('RUT_H',10, 10, 'hidden'));
+		$this->dws['dw_reprogramacion']->add_control(new static_text('NOM_USUARIO'));
+		$this->dws['dw_reprogramacion']->add_control(new static_text('DIG_VERIF'));
+		$this->dws['dw_reprogramacion']->add_control(new static_text('NOMBRE'));
+		$this->dws['dw_reprogramacion']->add_control(new edit_check_box('DOC_PAGO_INICIAL', 'S', 'N', ' Pago Inicial'));
+		$this->dws['dw_reprogramacion']->add_control(new edit_check_box('DOC_PAGARES', 'S', 'N', ' Pagares Recibidos'));
+		$this->dws['dw_reprogramacion']->add_control($control = new edit_check_box('DOC_MANIFIESTO', 'S', 'N', 'Manifiesto'));
+		$control->set_onChange("checked_manifiesto();");
+		$this->dws['dw_reprogramacion']->add_control(new static_text('COD_DEUDA_CRPI'));
+		$this->dws['dw_reprogramacion']->add_control(new static_text('COD_DEUDA_CR12'));
+		$this->dws['dw_reprogramacion']->add_control(new edit_text('DOC_PAGARES_H',1, 1, 'hidden'));
+		
+		//PAGARE_REPROGRAMACION
+		$this->dws['dw_reprogramacion']->add_control(new static_text('NRO_CUOTAS_REPROGRAMADO_I'));
+		
+		$this->dws['dw_deuda_reprogramada'] = new dw_deuda_reprogramada();
+		$this->dws['dw_pago_inicial'] = new dw_pago_inicial();
+		$this->dws['dw_pagare_repro'] = new dw_pagare_repro();
+		$this->dws['dw_deudor_repro'] = new dw_deudor_repro();
+		$this->dws['dw_pagare'] = new dw_pagare();
+		
+		//audoria
+		$this->add_auditoria('DOC_MANIFIESTO');
+		$this->add_auditoria('COD_ESTADO_REPROGRAMACION');
+		$this->add_auditoria_relacionada('PAGARE_REPROGRAMACION', 'RECIBIDO');
+	}
+
+	function new_record() {
+		$this->dws['dw_reprogramacion']->insert_row();
+	}
+	
+	function load_record(){
+		$cod_reprogramacion	= $this->get_item_wo($this->current_record, 'COD_REPROGRAMACION');
+		$this->dws['dw_reprogramacion']->retrieve($cod_reprogramacion);
+		$this->dws['dw_deuda_reprogramada']->retrieve($cod_reprogramacion);
+		$this->dws['dw_pago_inicial']->retrieve($cod_reprogramacion);
+		$this->dws['dw_pagare_repro']->retrieve($cod_reprogramacion);
+		$this->dws['dw_deudor_repro']->retrieve($cod_reprogramacion);
+		$this->dws['dw_pagare']->retrieve($cod_reprogramacion);
+		
+		//calcula los % de deuda_reprogramacion
+		$count = $this->dws['dw_deuda_reprogramada']->row_count();
+		$sum = 0;
+		 for($i=0;$i<$count;$i++){
+		 	$saldo_capital = $this->dws['dw_deuda_reprogramada']->get_item($i, 'SALDO_CAPITAL');
+		 	$saldo_interes = $this->dws['dw_deuda_reprogramada']->get_item($i, 'SALDO_INTERES_PENAL');
+		 	$sum += $saldo_capital + $saldo_interes;
+		 }
+		 for($i=0;$i<$count;$i++){
+		 	$saldo_capital = $this->dws['dw_deuda_reprogramada']->get_item($i, 'SALDO_CAPITAL');
+		 	$saldo_interes = $this->dws['dw_deuda_reprogramada']->get_item($i, 'SALDO_INTERES_PENAL');
+		 	$this->dws['dw_deuda_reprogramada']->set_item($i, 'PORC',((($saldo_capital+$saldo_interes)*100)/$sum));
+		 }
+		
+		$this->dws['dw_reprogramacion']->set_entrable('RUT', false); 
+		$this->dws['dw_reprogramacion']->set_entrable('DOC_PAGARES', false); 
+		//la marca de pago inicial se realiza en el modulo (ingreso caja). para cosas de prueba se marcarï¿½ asi
+		//$this->dws['dw_reprogramacion']->set_entrable('DOC_PAGO_INICIAL', true); 
+		if(K_CLIENTE =='UTEM') 
+			$this->dws['dw_reprogramacion']->set_entrable('DOC_PAGO_INICIAL', true);
+		else
+		 	$this->dws['dw_reprogramacion']->set_entrable('DOC_PAGO_INICIAL', false);
+		
+		$this->dws['dw_deudor_repro']->set_entrable('RUT_DEUDOR', false);
+		
+		//SE SETEA LA CANTIDAD CUOTAS DEL PAGARE
+		$cantidad_cuota = $this->dws['dw_pagare_repro']->get_item(0, 'NRO_CUOTAS_REPROGRAMADO_P');
+		$this->dws['dw_reprogramacion']->set_item(0, 'NRO_CUOTAS_REPROGRAMADO_I',$cantidad_cuota);
+		
+		$cod_estado_reprogramacion = $this->dws['dw_reprogramacion']->get_item(0, 'COD_ESTADO_REPROGRAMACION');
+
+		switch ($cod_estado_reprogramacion) {
+			case self::K_ESTADO_ANULADA: 
+	            $this->b_print_visible  = false;
+	            $this->b_modify_visible  = false;
+	            $this->b_save_visible  = false;
+	            $this->b_no_save_visible  = false;
+	            break;
+			case self::K_ESTADO_CONFIRMADA: 
+	            $this->b_print_visible  = true;
+	            $this->b_modify_visible  = false;
+	            $this->b_save_visible  = false;
+	            $this->b_no_save_visible  = false;
+	            break;
+	         default:
+	            $this->b_print_visible  = false;
+	            $this->b_modify_visible  = true;
+	            $this->b_save_visible  = true;
+	            $this->b_no_save_visible  = true;
+	    }
+	    
+	}
+	
+	function validate_record(){
+		$estado_repro 	= $this->dws['dw_reprogramacion']->get_item(0, 'COD_ESTADO_REPROGRAMACION');
+		$manifiesto 	= $this->dws['dw_reprogramacion']->get_item(0, 'DOC_MANIFIESTO');
+		$pagare_h		= $this->dws['dw_reprogramacion']->get_item(0, 'DOC_PAGARES_H');
+		$pago_inicial 	= $this->dws['dw_reprogramacion']->get_item(0, 'DOC_PAGO_INICIAL');
+		$rut_deudor		= $this->dws['dw_reprogramacion']->get_item(0, 'RUT_H');
+		$fecha_recep_manifiesto		= $this->dws['dw_reprogramacion']->get_item(0, 'FECHA_RECEP_MANIFIESTO');
+		
+		if(($estado_repro == self::K_ESTADO_CONFIRMADA)&&(($manifiesto == 'N')or($pagare_h == 'N')or($pago_inicial == 'N'))){
+			//return 'Deben estar declarados todos los Documentos Recibidos.';
+			if($pago_inicial == 'N'){
+				return 'Deben estar declarados todos los Documentos Recibidos. Marcar Pago Inicial';
+			}else if($manifiesto == 'N'){
+				return 'Deben estar declarados todos los Documentos Recibidos. Marcar Manifiesto';
+			}else if($pagare_h == 'N'){
+				return 'Marcar Recibido en Pestaña (Pagares)';
+			}
+		}
+		if($manifiesto == 'S' && $fecha_recep_manifiesto == ''){
+			$this->set_first_focus('FECHA_RECEP_MANIFIESTO');
+			return 'Debe Ingresar Fecha de Recepción del Manifiesto';		
+		}
+		/*************************/
+		if($estado_repro == self::K_ESTADO_ANULADA){
+			$cod_reprogramacion	= $this->get_item_wo($this->current_record, 'COD_REPROGRAMACION');
+			$db_sql = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+			//No se puede  anular La deuda  si tiene Abonos.
+			$sql = "SELECT A.COD_ABONO
+					FROM REPROGRAMACION DR, DEUDA DE, ABONO A
+					WHERE DR.COD_REPROGRAMACION = $cod_reprogramacion
+					AND	DR.cod_deuda_crpi = DE.COD_DEUDA
+					AND DE.COD_ESTADO_DEUDA = 2 --EN COBRANZA NORMAL
+					AND DE.COD_DEUDA = A.COD_DEUDA 
+					AND A.COD_ESTADO_PAGO <> 2"; //que el abono no este anulado.
+			$result = $db_sql->build_results($sql);
+			$cant_abonos = $db_sql->count_rows();
+			if($cant_abonos > 0){
+				$nro_abono = $result[0]['COD_ABONO'];
+				return 'No se puede Anular esta Reprogramacion, Tiene Pagos Asociados.\nNro. Abono: '.$nro_abono;
+			}
+        }
+		
+		if($estado_repro == self::K_ESTADO_CONFIRMADA){
+			$cod_reprogramacion	= $this->get_item_wo($this->current_record, 'COD_REPROGRAMACION');
+			$db1 = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);    
+			$sql = sql_reprogramacion::get_sql('CONFIRMA_REPRO', $cod_reprogramacion, $rut_deudor);
+			$result	= $db1->build_results($sql);
+			
+			$cant = count($result);
+			
+			$xml_pagare = '';
+			for($x=0;$x<$cant;$x++){
+				$id_pagare		= $result[$x]['ID_PAGARE'];
+				$fecha_pagare	= $result[$x]['FECHA_PAGARE'];
+				$xml_pagare_aux = "
+									<Pagare>
+									<IdPagare>$id_pagare</IdPagare>
+									<FechaPagare>$fecha_pagare</FechaPagare>
+								</Pagare>";
+				
+			 	$xml_pagare = $xml_pagare.$xml_pagare_aux;
+			}
+			$fecha_reprogramacion	= $result[0]['FECHA_REPROGRAMACION'];
+			$fecha_manifiesto	= $result[0]['FECHA_MANIFIESTO'];
+			/*si recien llenan "$fecha_manifiesto" no estï¿½ grabado en la BD (el select no lo trae)
+			, por ende se lee del get_item la fecha ingresada
+			*/
+			if ($fecha_manifiesto = 'NULL'){
+				$fecha_manifiesto = $fecha_recep_manifiesto;
+			}	
+			
+			$fechapagoinicial	= $result[0]['FECHA_PAGO_INICIAL'];
+			$old_informado_mineduc	= $result[0]['INFORMADO_MINEDUC'];
+			
+        	/* se ocupa cuando es WS de mineduc 
+			demo => "fscu.demo.exec.cl" 
+			oficial => reprogramar.creditosolidario.cl*/
+			//$serverURL = "http://fscu.demo.exec.cl/ws/reprogramar.php";
+			//$serverURL = "http://fscu.curie.exec.cl/ws/reprogramar.php"; // otro ambiente
+			$serverURL = "http://reprogramar.creditosolidario.cl/ws/reprogramar.php";
+		
+			$rut_universidad = str_replace('.', '', base::get_parametro(4)); //$K_PARAM_RUT_UNI = 4
+			$array = explode('-', $rut_universidad);
+			$rut_universidad = $array[0];
+			$div_universidad = $array[1];
+			$clave_ws_mineduc = base::get_parametro(33); //$K_PARAM_MINEDUC = 33
+			
+			$xmlReprogramacion	=	"<EntradaConfirmaReprogramacion>
+										<Pagares>$xml_pagare
+										</Pagares>
+										<FechaReprogramacion>$fecha_reprogramacion</FechaReprogramacion>
+										<FechaManifiesto>$fecha_manifiesto</FechaManifiesto>
+										<FechaPagoInicial>$fechapagoinicial</FechaPagoInicial>
+									</EntradaConfirmaReprogramacion>";
+
+			$ws_client = new ws_cliente($serverURL);
+			$param=array('Universidad'=>$rut_universidad, 'clave'=>$clave_ws_mineduc, 'rutDeudor'=>$rut_deudor, 'xmlReprogramacion'=>$xmlReprogramacion);
+			$array_resp = $ws_client->set_repro_confirma($param);
+			$codigo_resp = $array_resp["ConfirmaREPROGRAMACION"]["CodRespuesta"];
+			//$codigo_resp == '1' => Deudor marcado como reprogramado MINEDUC
+			//$codigo_resp == '0' => Deudor marcado como reprogramado MINEDUC
+			if($codigo_resp == '1'){
+				$acepta_mineduc = 'EXITO';
+			}else{
+				$acepta_mineduc = 'RECHAZADO';
+			}
+			$db1->EXECUTE_SP('sp_log_cambio', "'reprogramacion', '$cod_reprogramacion', $this->cod_usuario, 'U'");
+			$cod_log_cambio = $db1->GET_IDENTITY('log_cambio');
+			//$db1->BEGIN_TRANSACTION();
+			$sp = 'spu_log_reprogramacion';
+			$param ="$cod_reprogramacion
+					,$this->cod_usuario
+					,'REPROGRAMACION'
+					,'cod_reprogramacion'
+					,'Respuesta MINEDUC: $acepta_mineduc | valor anterior => $old_informado_mineduc | valornuevo = S'";
+			$exec = $db1->EXECUTE_SP($sp, $param);
+            
+			if($codigo_resp != '1'){
+				return '¡El Web service Mineduc NO permite realizar esta acción!';
+			}
+			//return $xmlReprogramacion;
+	        /**************************/
+		}
+		/*************************/
+		return '';
+	}
+		
+	function save_record($db){
+		$cod_reprogramacion         = $this->dws['dw_reprogramacion']->get_item(0, 'COD_REPROGRAMACION');
+		$cod_estado_reprogramacion  = $this->dws['dw_reprogramacion']->get_item(0, 'COD_ESTADO_REPROGRAMACION');
+        $doc_manifiesto				= $this->dws['dw_reprogramacion']->get_item(0, 'DOC_MANIFIESTO');
+        $doc_pagare					= $this->dws['dw_reprogramacion']->get_item(0, 'DOC_PAGARES_H');
+        $doc_pago_inical			= $this->dws['dw_reprogramacion']->get_item(0, 'DOC_PAGO_INICIAL');
+        $fecha_recep_manifiesto     = $this->dws['dw_reprogramacion']->get_item(0, 'FECHA_RECEP_MANIFIESTO');
+        $fecha_recep_manifiesto		= $this->str2date($fecha_recep_manifiesto);
+        
+		$sp = 'spu_reprogramacion';
+        $operacion = 'UPDATE';
+        $param = "'$operacion'
+                    ,$cod_reprogramacion
+                    ,null
+                    ,$this->cod_usuario
+                    ,$cod_estado_reprogramacion
+                    ,'$doc_pago_inical'
+                    ,'$doc_pagare'
+                    ,'$doc_manifiesto'
+                    ,null
+                    ,null";
+
+        if (!$db->EXECUTE_SP($sp, $param))
+         	return false;
+         	
+        if (!$this->dws['dw_pagare']->update($db))
+         	return false;
+         	
+        $sp = 'spu_manifiesto';
+        $operacion = 'UPDATE';
+        $param = "'$operacion'
+                    ,NULL
+                    ,$cod_reprogramacion
+                    ,NULL
+                    ,NULL
+                    ,$fecha_recep_manifiesto
+                    ,NULL";
+		
+        if (!$db->EXECUTE_SP($sp, $param))
+        	return false;
+         	
+        return true;
+	}
+        
+	function get_key() {
+		return $this->dws['dw_reprogramacion']->get_item(0, 'COD_REPROGRAMACION');
+	}
+	
+	function print_record(){
+		$cod_reprogramacion = $this->get_key();
+		// reporte
+		$labels = array();
+		$file_name = $this->find_file('reprogramacion', 'reprogramacion.xml');
+		$rpt = new print_reprogramacion($cod_reprogramacion, $file_name, $labels, "reprogramacion".$cod_reprogramacion, 0);
+		$this->_load_record();
+	}
+}
+
+/////////////////////////////////////////////////////////////
+// Se separa por UNIVERSIDAD
+$file_name = dirname(__FILE__)."/".K_CLIENTE."/class_wi_reprogramacion.php";
+
+if (file_exists($file_name)){ 
+	require_once($file_name);
+} else {
+	class wi_reprogramacion extends wi_reprogramacion_base {
+	    function __construct($cod_item_menu) {
+	        parent::__construct($cod_item_menu);
+		}
+	}
+}
+?>

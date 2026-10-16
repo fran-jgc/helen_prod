@@ -1,0 +1,13 @@
+create global temporary table TEMP_BALANCE_OCHO
+  ( COD_CUENTA_CONTABLE					NUMBER
+	,NOM_CUENTA_CONTABLE					VARCHAR2(100)
+	,MONTO_DEBE               	NUMBER
+	,MONTO_HABER              	NUMBER
+	,SALDO_DEBITO				NUMBER
+	,SALDO_CREDITO				NUMBER
+	,ACTIVO						NUMBER
+	,PASIVO						NUMBER
+	,PERDIDA					NUMBER
+	,UTILIDAD					NUMBER
+)
+on commit delete ROWS;

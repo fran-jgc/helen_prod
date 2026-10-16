@@ -1,0 +1,39 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="CRÉDITO ASIGNADO" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{FOLIO}" width="20%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{ANO}" width="20%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{RUT_DEUDOR}" width="30%" align="R" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO_ASIGNADO}" width="30%" align="R" border="LRTB" format="N4,." font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="sum_monto_asig" function="SUM" value="MONTO_ASIGNADO"/>
+		<Variable name="cant_deudor" function="COUNT" value="RUT_DEUDOR"/>
+		<GroupHeader>
+			<Cell text="" width="6%"/>
+			<Cell text="Total Deudores = " width="12%" align="L" border="" font="ArialSmallBlue"/>
+			<Cell text="{cant_deudor}" width="82%" align="L" border="" font="ArialSmallBlue" newline="1"/>
+			
+			<Cell text="Folio" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Año" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Rut Deudor" width="30%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto Asignado" width="30%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="Totales:" width="70%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_monto_asig}" width="30%"  align="R" border="LRTB" format="N4,." font="ArialBold" newline="1"/>
+		</GroupFooter>
+	</Group>
+</Report>

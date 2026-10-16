@@ -1,0 +1,188 @@
+Array
+(
+    [COD_USUARIO] => 1
+    [b_file_xls] => Generar Archivo
+)
+[2025-06-03 16:32:22] ===== NUEVA EJECUCIÓN =====
+[2025-06-03 16:32:22] POST: Array
+(
+    [COD_USUARIO] => 51
+    [b_file_xls] => Generar Archivo
+)
+
+[2025-06-03 16:32:22] Resultado simulado para prueba:
+Array
+(
+    [0] => Array
+        (
+            [0] => Línea de prueba 1
+        )
+
+    [1] => Array
+        (
+            [0] => Línea de prueba 2
+        )
+
+    [2] => Array
+        (
+            [0] => Línea final
+        )
+
+)
+
+[2025-06-03 16:32:22] Archivo creado correctamente en: documentos/DEUDORES_NOMINA_TGR_USACH.txt
+[2025-06-03 16:32:22] Archivo enviado al navegador.
+[2025-06-03 16:35:28] ===== NUEVA EJECUCIÓN =====
+[2025-06-03 16:35:28] POST: Array
+(
+    [COD_USUARIO] => 51
+    [b_file_xls] => Generar Archivo
+)
+
+[2025-06-03 17:52:17] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-06-03 17:52:17] Resultado desde BD:
+Array
+(
+)
+
+[2025-06-03 17:52:17] SP ejecutado, pero sin resultados.
+[2025-06-03 18:14:25] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-06-03 18:14:25] Resultado desde BD:
+Array
+(
+)
+
+[2025-06-03 18:14:25] SP ejecutado, pero sin resultados.
+[2025-06-03 18:18:27] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-06-03 18:18:27] Resultado desde BD:
+Array
+(
+)
+
+[2025-06-03 18:18:27] SP ejecutado, pero sin resultados.
+[2025-06-03 18:18:46] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-06-03 18:18:46] Resultado desde BD:
+Array
+(
+)
+
+[2025-06-03 18:18:46] SP ejecutado, pero sin resultados.
+[2025-06-03 18:33:09] ===== NUEVA EJECUCIÓN =====
+[2025-06-03 18:33:09] POST: Array
+(
+    [COD_USUARIO] => 51
+    [b_file_xls] => Generar Archivo
+)
+
+[2025-06-04 10:41:32] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-06-04 10:41:32] Resultado desde BD:
+Array
+(
+)
+
+[2025-06-04 10:41:32] SP ejecutado, pero sin resultados.
+[2025-06-04 12:52:49] ===== NUEVA EJECUCIÓN =====
+[2025-06-04 12:52:49] POST: Array
+(
+    [COD_USUARIO] => 51
+    [b_file_xls] => Generar Archivo
+)
+
+[2025-06-04 13:45:10] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-06-04 13:45:10] Resultado desde BD:
+Array
+(
+)
+
+[2025-06-04 13:45:10] SP ejecutado, pero sin resultados.
+[2025-06-04 13:56:11] ===== NUEVA EJECUCIÓN =====
+[2025-06-04 13:56:11] POST: Array
+(
+    [COD_USUARIO] => 51
+    [b_file_xls] => Generar Archivo
+)
+
+[2025-06-04 13:58:50] ===== NUEVA EJECUCIÓN =====
+[2025-06-04 13:58:50] POST: Array
+(
+    [COD_USUARIO] => 51
+    [b_file_xls] => Generar Archivo
+)
+
+[2025-06-04 14:05:23] ===== NUEVA EJECUCIÓN =====
+[2025-06-04 14:05:23] POST: Array
+(
+    [COD_USUARIO] => 51
+    [b_file_xls] => Generar Archivo
+)
+
+[2025-06-04 14:26:01] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-06-04 14:26:01] Resultado desde BD:
+Array
+(
+)
+
+[2025-06-04 14:26:01] SP ejecutado, pero sin resultados.
+[2025-06-04 14:26:01] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-06-04 14:26:01] Resultado desde BD:
+Array
+(
+)
+
+[2025-06-04 14:26:01] SP ejecutado, pero sin resultados.
+[2025-06-04 14:26:01] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-06-04 14:26:01] Resultado desde BD:
+Array
+(
+)
+
+[2025-06-04 14:26:01] SP ejecutado, pero sin resultados.
+[2025-06-04 14:27:26] ===== NUEVA EJECUCIÓN =====
+[2025-06-04 14:27:26] POST: Array
+(
+    [COD_USUARIO] => 51
+    [b_file_xls] => Generar Archivo
+)
+
+[2025-06-04 16:03:23] ===== NUEVA EJECUCIÓN =====
+[2025-06-04 16:03:23] POST: Array
+(
+    [COD_USUARIO] => 51
+    [b_file_xls] => Generar Archivo
+)
+
+[2025-06-04 16:08:48] ===== NUEVA EJECUCIÓN =====
+[2025-06-04 16:08:48] POST: Array
+(
+    [COD_USUARIO] => 51
+    [b_file_xls] => Generar Archivo
+)
+
+[2025-07-07 10:36:32] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-07-07 10:36:32] Resultado desde BD:
+Array
+(
+)
+
+[2025-07-07 10:36:32] SP ejecutado, pero sin resultados.
+[2025-07-07 10:36:33] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-07-07 10:36:33] Resultado desde BD:
+Array
+(
+)
+
+[2025-07-07 10:36:33] SP ejecutado, pero sin resultados.
+[2025-07-07 10:36:38] Ejecutado: EXECUTE_SP y luego SELECT
+[2025-07-07 10:36:38] Resultado desde BD:
+Array
+(
+)
+
+[2025-07-07 10:36:38] SP ejecutado, pero sin resultados.
+[2026-03-16 10:42:27] ===== NUEVA EJECUCIÓN =====
+[2026-03-16 10:42:27] POST: Array
+(
+    [COD_USUARIO] => 5
+    [b_file_xls] => Generar Archivo
+)
+

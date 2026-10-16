@@ -1,0 +1,74 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="INFORME ABONOS" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{RUT}" width="8%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{FECHA_PAGO}" width="8%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{COD_TIPO_DEUDA}" width="6%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO_ABONO_NO_EXIGIBLE}" width="7%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{PESOS_ABONO_NO_EXIGIBLE}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_ABONO_FUTURO}" width="7%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{PESOS_ABONO_FUTURO}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_DSCTO_NO_EXIGIBLE}" width="7%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{PESOS_DSCTO_NO_EXIGIBLE}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_DSCTO_FUTURO}" width="7%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{PESOS_DSCTO_FUTURO}" width="9%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_TOTAL}" width="8%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_TOTAL_PESOS}" width="8%" align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="sum_abono_no_ex" function="SUM" value="MONTO_ABONO_NO_EXIGIBLE"/>
+		<Variable name="sum_abono_no_ex_pesos" function="SUM" value="PESOS_ABONO_NO_EXIGIBLE"/>
+		<Variable name="sum_abono_fut" function="SUM" value="MONTO_ABONO_FUTURO"/>
+		<Variable name="sum_abono_fut_pesos" function="SUM" value="PESOS_ABONO_FUTURO"/>
+		<Variable name="sum_dscto_no_ex" function="SUM" value="MONTO_DSCTO_NO_EXIGIBLE"/>
+		<Variable name="sum_dscto_no_ex_pesos" function="SUM" value="PESOS_DSCTO_NO_EXIGIBLE"/>
+		<Variable name="sum_dscto_futuro" function="SUM" value="MONTO_DSCTO_FUTURO"/>
+		<Variable name="sum_dscto_futuro_pesos" function="SUM" value="PESOS_DSCTO_FUTURO"/>
+		<Variable name="sum_total" function="SUM" value="MONTO_TOTAL"/>
+		<Variable name="sum_total_pesos" function="SUM" value="MONTO_TOTAL_PESOS"/>
+		<GroupHeader>
+			<Cell text="" width="22%" align="C" font="ArialSmallBlue"/>
+			<Cell text="ABONOS" width="32%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="DESCUENTOS" width="32%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+			
+			<Cell text="Rut" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Fecha" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Tipo Deuda" width="6%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="No Exigible" width="7%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="No Exigible Pesos" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Futura" width="7%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Futura Pesos" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="No Exigble" width="7%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="No Exigible Pesos" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Futura" width="7%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Futura Pesos" width="9%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="TOTAL" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="TOTAL $" width="8%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="Totales:" width="22%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_abono_no_ex}" width="7%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_abono_no_ex_pesos}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_abono_fut}" width="7%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_abono_fut_pesos}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>	
+			<Cell text="{sum_dscto_no_ex}" width="7%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_dscto_no_ex_pesos}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_dscto_futuro}" width="7%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_dscto_futuro_pesos}" width="9%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_total}" width="8%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_total_pesos}" width="8%"  align="R" border="LRTB" format="N4,." font="ArialBold" newline="1"/>
+			</GroupFooter>
+	</Group>
+</Report>

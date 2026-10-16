@@ -1,0 +1,119 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+include_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/PHP_XLSXWriter_master/xlsxwriter.class.php");
+require_once(dirname(__FILE__)."/../../appl.ini");
+
+class wo_boleta_base extends w_output {
+    
+	function __construct() {		
+		
+		$sql = sql_boleta::get_sql('OUTPUT');
+		if(K_CLIENTE == 'UCM'){
+			$sql = sql_boleta::get_sql('OUTPUT_UCM1');
+		}else if(K_CLIENTE == 'UCM2'){
+			$sql = sql_boleta::get_sql('OUTPUT_UCM2');
+		}
+		
+		parent::__construct('boleta', $sql, $_REQUEST['cod_item_menu']);
+		
+		//formato numeros
+		$this->dw->add_control(new static_num('RUT'));
+		$this->dw->add_control(new static_num('MONTO_PESOS'));
+		
+		// headers
+		$COD_BOLETA = new header_num('COD_BOLETA', 'COD_BOLETA', 'N° Boleta');
+		$FECHA_BOLETA = new header_date('FECHA_BOLETA', 'FECHA_BOLETA', 'Fecha Boleta');
+		$FECHA_VENCTO = new header_date('FECHA_VENCTO', 'PP.FECHA_VENCTO', 'Fecha Vencto');
+		$MONTO_PESOS = new header_num('MONTO_PESOS', 'MONTO_PESOS', 'A Pagar');
+		$COD_DEUDA = new header_num('COD_DEUDA', 'DEUDA.COD_DEUDA', 'Deuda');
+		$RUT = new header_rut('RUT', 'DEUDOR', 'Rut');
+		$NOMBRE = new header_text('NOMBRE', 'NOMBRE', 'Nombre');
+		$APELLIDO_PATERNO = new header_text('APELLIDO_PATERNO', 'APELLIDO_PATERNO', 'Paterno');
+		$APELLIDO_MATERNO = new header_text('APELLIDO_MATERNO', 'APELLIDO_MATERNO', 'Materno');
+		
+		$this->add_header($COD_BOLETA);
+		$this->add_header($FECHA_BOLETA);
+		$this->add_header($FECHA_VENCTO);
+		$this->add_header($MONTO_PESOS);
+		$this->add_header($COD_DEUDA);
+		$this->add_header($RUT);
+		$this->add_header($NOMBRE);
+		$this->add_header($APELLIDO_PATERNO);
+		$this->add_header($APELLIDO_MATERNO);
+		
+		$sql_cartera = sql_boleta::get_sql('DD_CARTERA_CONOCIDA');
+		$CARTERA_CONOCIDA = new header_drop_down_string('CARTERA_CONOCIDA', 'B.CARTERA_CONOCIDA', 'Boleta Cartera Conocida', $sql_cartera);
+		$this->add_header($CARTERA_CONOCIDA);
+      	
+	}
+	
+	function export() {
+	    $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+	    
+	    $filename = "Boletas.xlsx";
+	    header('Content-disposition: attachment; filename="'.XLSXWriter::sanitize_filename($filename).'"');
+	    header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	    header('Content-Transfer-Encoding: binary');
+	    header('Cache-Control: must-revalidate');
+	    header('Pragma: public');
+	    
+	    $writer = new XLSXWriter();
+	    $writer->setAuthor('Integrasystem');
+	    $sheet_name = "Boletas";
+	    
+	    
+	    $this->make_filtros();
+	    $sql = $this->dw->get_sql();
+	    
+	    
+	    
+	    $res = $db->query($sql);
+	    
+	    $header = array(
+	        utf8_encode('N° Boleta'),
+	        utf8_encode('Fecha Boleta'),
+	        utf8_encode('Fecha Vencto'),
+	        'A Pagar',
+	        'Deuda',
+	        'Rut'	,
+	        'Nombre',
+	        'Paterno',
+	        'Materno',
+	        'Cartera Conocida'
+	    );
+	    $writer->writeSheetRow($sheet_name, $header);
+	    $data1 = array();
+	    while($my_row = $db->get_row()){
+	        $array_row = array(
+	            $my_row['COD_BOLETA']
+	            ,$my_row['FECHA_BOLETA']
+	            ,$my_row['FECHA_VENCTO']
+	            ,$my_row['MONTO_PESOS']
+	            ,$my_row['COD_DEUDA']
+	            ,utf8_encode($my_row['RUT'])
+	            ,utf8_encode($my_row['NOMBRE'])
+	            ,utf8_encode($my_row['APELLIDO_PATERNO'])
+	            ,utf8_encode($my_row['APELLIDO_MATERNO'])
+	            ,utf8_encode($my_row['CARTERA_CONOCIDA'])
+	        );
+	        
+	        $writer->writeSheetRow($sheet_name, $array_row);
+	    }
+	    $writer->writeToStdOut();
+	    exit(0);
+	}
+}
+
+// Se separa por UNIVERSIDAD
+$file_name = dirname(__FILE__)."/".K_CLIENTE."/class_wo_boleta.php";
+if (file_exists($file_name)) 
+	require_once($file_name);
+else {
+	class wo_boleta extends wo_boleta_base {
+	    function __construct() {
+	        parent::__construct(); 
+		}
+	}
+}
+
+?>

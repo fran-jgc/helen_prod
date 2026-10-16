@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+	<title>
+Información</title>
+
+	<script src="Scripts/AC_RunActiveContent.js" type="text/javascript">
+</script>
+ 
+	<link type="text/css" rel="stylesheet" href="../estilos.css">
+
+	<link href="style_web_pay_usach.css" rel="stylesheet" type="text/css">
+</link>
+
+</head>
+
+<body>
+
+<div id="usach_content">
+			        			            <p class="componentHeading">Horarios de Atención</p>
+
+<div class="contentTexto">
+	
+	<table border="0" width="100%" cellspacing="4" cellpadding="4">
+<tbody>
+<tr>
+<td class="texto_general">
+Después de estas fechas, la Administración volverá al horario de atención normal<br>
+
+Horario de Atención Personalizada: en nuestras oficinas de lunes a viernes de 9:00 a 13:45 hrs.<br>
+Horario de Atención Telefónica: lunes a jueves: de 15:00 a 17:45 hrs. y viernes: 15:00 a 16:45 hrs.<br>
+</td>
+</tr>
+
+<tr>
+<td>&nbsp;<span class="texto_general">E-mail de Contacto: 
+<a href="mailto:agfcu@lauca.usach.cl">agfcu@usach.cl</a>; 
+<a href="mailto:nora.soto@usach.cl">nora.soto@usach.cl</a></span>
+</td>
+</tr>
+
+<tr>
+<td><strong>Dirección Comercial</strong></td>
+</tr>
+
+<tr>
+<td class="texto_general">Avda. El Belloto 3530 (Ex Avda.Sur) Estación Central <br>
+&nbsp; Fono Directo: 718 1500 <br>&nbsp; Central 718 0000<br>&nbsp; Fax: 6811170
+</td>
+</tr>
+
+<tr>
+<td>
+<strong>Dirección Postal</strong>
+</td>
+</tr>
+
+<tr>
+<td>Adm. Gral. Fondo Solidario de Crédito Universitario<br>
+&nbsp; Universidad de Santiago de Chile<br>&nbsp; Casilla 442, Correo 2, Santiago
+</td>
+</tr>
+
+<tr>
+<td><strong>EMPRESA ORSAN</strong></td>
+</tr>
+
+<tr>
+<td>Huérfanos 886, oficina 1203<br>
+Fonos: 381 8351 - 381 8352 - 381 8354</td>
+</tr></tbody></table>                                
+	
+</div>
+			        					</div>
+</body>
+
+</html>

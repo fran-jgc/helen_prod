@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Reprogramacion {K_CLIENTE}</title>
+<link href="{K_CLIENTE}/estilos_web_service.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="contenedor">
+  <div id="header">
+    <tr bgcolor="#FFFFFF">
+		<td><img src="{K_CLIENTE}/banner.jpg" width="1045" height="93" /></td>    
+	</tr>
+  </div>
+  <div id="contenido">
+	<div class="contiene-formulario" style="display:{DISPLAY_TABLE_FRACASO};">
+      <fieldset>
+        <legend><span class="titulo-formulario rojo">Estimado(a) ex alumno(a):</span></legend>
+        <div class="para-formulario">
+          <span>
+          	<p></p>
+			<p></p>
+				<h3>{MENSAJE_DEUDOR}</h3>	
+			<p></p>
+	       <br />
+			<p></p>
+			<p></p>
+          </span>
+        </div></fieldset>
+    </div>
+     <div class="contiene-formulario" style="display:{DISPLAY_TABLE_EXITO};">
+      <fieldset>
+        <legend><span class="titulo-formulario rojo">Estimado(a) ex alumno(a):</span></legend>
+        <form id="form2" name="form2" method="post" action="{W_RUTA_PAGO}">
+        <div class="para-formulario">
+          <span>
+          		<p>Para finalizar su proceso de Reprogramación debe entregar los siguientes documentos en sala Gabriela Mistral de la Biblioteca Central de la Universidad de Santiago de Chile, ubicada en Enrique Kirberg Nº 4, Estación Central, desde el 24 de octubre de 2012, de lunes a viernes de 9:00 a 19:00 horas y sábados de 9:00 a 13:00 horas.</p>
+          		<ol>
+          			<li>Manifiesto de intención de reprogramar.</li>
+          			<li>Pagare(s) formalizado(s)  ante notario.</li>
+          			<li>Efectuar un pago inicial equivalente al monto determinado en el proceso anterior (página Web MINEDUC), que puede ser hecho por los siguientes medios de pago disponibles en el sitio web de la universidad o personalmente en nuestras oficinas.</li>
+          			<ul>
+						<li>Tarjetas de débito o crédito (Transbank)</li>
+						<li>Imprimir cupón Banco Scotiabank y pagar en sucursales del Banco o en sucursales de Sencillito.</li>
+					</ul>
+				</ol>
+				<p>Sus consultas deben ser enviadas a <a href="mailto:reprograma@usach.cl">reprograma@usach.cl.</a></p>
+				<p>Si se encuentra fuera de Santiago puede hacer llegar toda la documentación anteriormente señalada a la casilla 442, correo 2, Santiago.</p>
+          </span>
+        </div>
+        <div class="para-formulario">
+        	<input type="submit" style="width:70px;height:24px;background:#16264A;color:white;" id="b_ingresar" name="b_ingresar" value="Ingresar" />
+		</div>
+      </form></fieldset>
+    </div>
+  </div>
+ 
+  <div id="footer">
+    <div class="piedepagina" align="center">
+	   <td><img src="{K_CLIENTE}/pie_pagina_usach.png" width="1045" height="70" /></td>  
+	</div>	
+  </div>
+</div>
+</body>
+</html>

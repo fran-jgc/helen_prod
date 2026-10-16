@@ -1,0 +1,1512 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_certificado_ingreso.php");
+
+ini_set('mssql.connect_timeout','300');
+ini_set('mssql.timeout','300');
+
+
+class dw_documento_pago_ch_fecha extends datawindow{
+    
+    function __construct() {
+
+        $sql = sql_ingreso::get_sql('DW_DOCUMENTO_PAGO_CH_FECHA');
+
+        parent::__construct($sql, 'DOCUMENTO_PAGO_CH_FECHA', true, true);
+
+        $this->add_control(new edit_text('COD_DOCUMENTO_INGRESO_CH_FECHA', 10,10, 'hidden'));
+        $this->add_control($control = new edit_num('NRO_DOCUMENTO_PAGO_CH_FECH', 10, 10));
+        $control->set_onChange("cambia_nro_documento(this);");
+
+        $sql = sql_ingreso::get_sql('DD_BANCO');
+        $this->add_control($control = new drop_down_dw('COD_BANCO_CH_FECH', $sql, 250));
+        $control->set_onChange("cambia_banco(this);");
+
+        $sql = sql_ingreso::get_sql('DD_PLAZA');
+        $this->add_control($control = new drop_down_dw('COD_PLAZA_CH_FECH', $sql, 250));
+        $control->set_onChange("cambia_plaza(this);");
+
+        $this->add_control($control = new edit_date('FECHA_DOCUMENTO_PAGO_CH_FECH'));
+        $control->set_onChange("valida_fecha_ch_fecha(this);modifica_fecha_monto(true);");
+
+        $this->add_control($control = new edit_num('MONTO_CH_FECH',10,10));
+        $control->set_onChange("sum_total_documento_pago_ch_fecha(); modifica_fecha_monto(true);");
+
+        $this->add_control($control = new edit_rut('RUT_GIRADOR'));
+        $control->set_onChange("cambia_rut_girador(this);");
+        $this->add_control($control = new edit_dig_verif('DIG_VERIF_GIRADOR'));
+        $control->set_onChange("valida_digito(this, 'RUT_GIRADOR'); this.focus();cambia_rut_girador(this);");
+
+        $this->set_mandatory('COD_BANCO_CH_FECH','Banco');
+      	$this->set_mandatory('COD_PLAZA_CH_FECH','Plaza');
+    }
+    function update($db,$cod_ingreso,$cod_deudor, $cod_familia_deuda){
+        $sp = 'spu_documento_ingreso_ch_fecha ';
+        for ($i = 0; $i < $this->row_count(); $i++) {
+            $statuts = $this->get_status_row($i);
+            if ($statuts == K_ROW_NOT_MODIFIED){
+                continue;
+            }
+            // siempre es INSERT
+            $nro_documento_pago         = $this->get_item($i, 'NRO_DOCUMENTO_PAGO_CH_FECH');
+            $cod_banco                  = $this->get_item($i, 'COD_BANCO_CH_FECH');
+            $cod_plaza                  = $this->get_item($i, 'COD_PLAZA_CH_FECH');
+            $fecha_documento_pago       = $this->get_item($i, 'FECHA_DOCUMENTO_PAGO_CH_FECH');
+            $monto                      = $this->get_item($i, 'MONTO_CH_FECH');
+            $rut_girador                = $this->get_item($i, 'RUT_GIRADOR');
+            $dig_verif_girador            = $this->get_item($i, 'DIG_VERIF_GIRADOR');
+            $nro_documento_pago        = ($nro_documento_pago =='') ? "null" : $nro_documento_pago;
+            $cod_banco                = ($cod_banco =='') ? "null" : $cod_banco;
+            $cod_plaza                = ($cod_plaza =='') ? "null" : $cod_plaza;
+            $fecha_documento_pago    = ($fecha_documento_pago =='') ? "null" : "$fecha_documento_pago";
+            $monto                    = ($monto =='') ? 0 : "$monto";
+
+            $rut_girador            = ($rut_girador =='') ? "null" : "$rut_girador";
+            $dig_verif_girador        = ($dig_verif_girador =='') ? "null" : "'$dig_verif_girador'";
+
+            if ($fecha_documento_pago != "null"){
+                $fecha_documento_pago = $this->str2date($fecha_documento_pago);
+            }
+
+            $param = "    $cod_ingreso
+                        ,$nro_documento_pago
+                        ,$cod_banco
+                        ,$cod_plaza
+                        ,$fecha_documento_pago
+                        ,$monto
+                        ,$cod_deudor
+                        ,$cod_familia_deuda
+                        ,$rut_girador
+                        ,$dig_verif_girador";
+
+            if (!$db->EXECUTE_SP($sp, $param)){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+class dw_documento_pago_base extends datawindow{
+    function __construct() {
+
+        $sql = sql_ingreso::get_sql('DW_DOCUMENTO_PAGO');
+        parent::__construct($sql, 'DOCUMENTO_PAGO', true, true);
+
+        $this->add_control(new edit_text('COD_DOCUMENTO_PAGO_H', 2,2, 'hidden'));
+        $sql = sql_ingreso::get_sql('DD_TIPO_DOCUMENTO_PAGO');
+        $this->add_control(new drop_down_dw('COD_TIPO_DOCUMENTO_PAGO', $sql, 160));
+      
+        $this->add_control(new edit_text('COD_TIPO_DOCUMENTO_PAGO_H', 2,2, 'hidden'));
+
+        $this->add_control(new edit_num('NRO_DOCUMENTO_PAGO', 20, 16 ,0 ,true, false, false));
+
+        $sql = sql_ingreso::get_sql('DD_BANCO');
+        $this->add_control(new drop_down_dw('COD_BANCO', $sql, 120));
+
+        $sql = sql_ingreso::get_sql('DD_PLAZA');
+        $this->add_control(new drop_down_dw('COD_PLAZA', $sql, 120));
+
+        $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+        $sql = sql_ingreso::get_sql('FECHAS');
+        $result = $db->build_results($sql);
+        $fecha_60_dias_antes = $result[0]['FECHA_60_DIAS_ANTES'];
+        $fecha_ult_dia_mes = $result[0]['FECHA_ULT_DIA_MES'];
+
+        $this->add_control($control = new edit_date('FECHA_DOCUMENTO_PAGO', 10, 10));
+        $control->set_onChange("valida_ch_al_dia('$fecha_ult_dia_mes','$fecha_60_dias_antes'); fecha_deposito_ingreso(this);");
+        $this->add_control($control = new edit_num('MONTO'));
+        $control->set_onChange("sum_total_documento_pago();");
+
+        //MANDATORY
+        $this->set_mandatory('COD_TIPO_DOCUMENTO_PAGO', 'Tipo Documento');
+    }
+    function fill_record(&$temp, $record) {
+        parent::fill_record($temp, $record);
+        $row = $this->redirect($record);
+        if ($this->entrable)
+            $eliminar = '<img src="../../../../commonlib_seven/trunk/images/b_delete_line.jpg" onClick="del_line_doc(\''.$this->label_record.'_'.$row.'\', \''.$this->nom_tabla.'\');" style="cursor:pointer"/>';
+        else
+            $eliminar = '<img src="../../../../commonlib_seven/trunk/images/b_delete_line_d.jpg"/>';
+        $temp->setVar($this->label_record.".ELIMINAR_".strtoupper($this->label_record), $eliminar);
+    }
+    function update($db,$cod_ingreso,$cod_deudor,$cod_familia_deuda){
+        $sp = 'spu_documento_ingreso ';
+        for ($i = 0; $i < $this->row_count(); $i++) {
+            $statuts = $this->get_status_row($i);
+            if ($statuts == K_ROW_NOT_MODIFIED){
+                continue;
+            }
+            // siempre es INSERT
+
+            $cod_tipo_documento_pago    = $this->get_item($i, 'COD_TIPO_DOCUMENTO_PAGO');
+            $nro_documento_pago         = $this->get_item($i, 'NRO_DOCUMENTO_PAGO');
+            $cod_banco                  = $this->get_item($i, 'COD_BANCO');
+            $cod_plaza                  = $this->get_item($i, 'COD_PLAZA');
+            $fecha_documento_pago       = $this->get_item($i, 'FECHA_DOCUMENTO_PAGO');
+            $monto                      = $this->get_item($i, 'MONTO');
+
+            $nro_documento_pago        = ($nro_documento_pago =='') ? "null" : $nro_documento_pago;
+            $cod_banco                = ($cod_banco =='') ? "null" : $cod_banco;
+            $cod_plaza                = ($cod_plaza =='') ? "null" : $cod_plaza;
+            $fecha_documento_pago    = ($fecha_documento_pago =='') ? "null" : "$fecha_documento_pago";
+            $monto                    = ($monto =='') ? 0 : "$monto";
+
+            if ($fecha_documento_pago != "null"){
+                $fecha_documento_pago = $this->str2date($fecha_documento_pago);
+            }
+
+            $param = "    $cod_ingreso
+                        ,$cod_tipo_documento_pago
+                        ,$nro_documento_pago
+                        ,$cod_banco
+                        ,$cod_plaza
+                        ,$fecha_documento_pago
+                        ,$monto
+                        ,$cod_deudor
+                        ,$cod_familia_deuda";
+
+            if (!$db->EXECUTE_SP($sp, $param)){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
+class dw_item_ingreso_base extends datawindow{
+    function __construct() {
+
+        $sql = sql_ingreso::get_sql('DW_ITEM_INGRESO');
+
+        parent::__construct($sql, 'ITEM_INGRESO', true, true);
+
+        $this->add_control($control = new edit_check_box('SELECCION', 'S', 'N'));
+        if (K_CLIENTE=="USACH"){
+        	$control->set_onChange("valida_pago_99_usach(this);");
+        }else{
+        	$control->set_onChange("asigna_totales(this);valida_morosa(this);");
+        }
+        
+        if (K_CLIENTE=="UPLA"){
+           	$control->set_onChange("asigna_totales(this);valida_morosa(this);comprueba_seleccion(this);");
+        }
+        
+        $this->add_control(new static_text('COD_DEUDA'));
+        $this->add_control(new edit_text('COD_DEUDA_H', 20,20, 'hidden'));
+        $this->add_control(new edit_text('NRO_CUOTA_H', 20,20, 'hidden'));
+        $this->add_control(new static_text('COD_TIPO_DEUDA'));
+        $this->add_control(new static_text('SIMBOLO'));
+        $this->add_control(new static_text('ANO_COBRO'));
+        $this->add_control(new edit_text('COD_PLAN_PAGO', 10,10, 'hidden'));
+        $this->add_control(new static_text('FECHA_VENCTO'));
+        $this->add_control(new static_num('SALDO_CUOTA', 4));
+        $this->add_control(new edit_text('SALDO_CUOTA_H', 10,10, 'hidden'));
+        $this->add_control(new static_num('SALDO_MULTA', 4));
+        $this->add_control(new edit_text('SALDO_MULTA_H', 10,10, 'hidden'));
+        $this->add_control(new static_num('SALDO_TOTAL', 4));
+        $this->add_control(new edit_text('SALDO_TOTAL_H', 10,10, 'hidden'));
+        $this->add_control(new static_num('SALDO_TOTAL_PESOS'));
+        $this->add_control(new edit_text('SALDO_TOTAL_PESOS_H', 10,10, 'hidden'));
+        $this->add_control(new static_num('MONTO_PAGO', 4));
+        $this->add_control(new edit_text('MONTO_PAGO_H', 10,10, 'hidden'));
+        $this->add_control(new static_num('MONTO_PAGO_PESOS'));
+        $this->add_control(new edit_text('MONTO_PAGO_PESOS_H', 10,10, 'hidden'));
+        $this->add_control(new edit_text('COD_FAMILIA_DEUDA_H', 10, 10, 'hidden'));
+        $this->add_control(new edit_text('COD_SUB_BOLETA_H', 10, 10, 'hidden'));
+		
+        $sql = sql_ingreso::get_sql('DD_TIPO_DESCUENTO');
+       	$this->add_control($control = new drop_down_dw('COD_TIPO_DESCUENTO', $sql, 50));
+        $control->set_onChange("change_descuento(this);");
+        
+        $this->add_control($control = new edit_porcentaje('PORC_DESCUENTO'));
+		$control->set_onChange("change_porc_descuento(this);");
+		
+        $this->add_control(new static_num('MONTO_DESCUENTO', 4));
+        $this->add_control(new edit_text('MONTO_DESCUENTO_H', 10,10, 'hidden'));
+        $this->add_control(new edit_text('SALDO_TOTAL_SIN_DESCTO_H', 10,10, 'hidden'));
+
+    }
+
+    function update($db,$cod_ingreso){
+        $sp = 'spu_item_ingreso ';
+        for ($i = 0; $i < $this->row_count(); $i++) {
+            $statuts = $this->get_status_row($i);
+            if ($statuts == K_ROW_NOT_MODIFIED){
+                continue;
+            }
+            // siempre es INSERT
+            $operacion                    = 'INSERT';
+            $cod_item_ingreso            = $this->get_item($i, 'COD_ITEM_INGRESO');
+            $seleccion                    = $this->get_item($i, 'SELECCION');
+            $cod_deuda                    = $this->get_item($i, 'COD_DEUDA_H');
+            $cod_plan_pago                = $this->get_item($i, 'COD_PLAN_PAGO');
+            $saldo_cuota                = $this->get_item($i, 'SALDO_CUOTA_H');
+            $saldo_multa                = $this->get_item($i, 'SALDO_MULTA_H');
+            $cod_tipo_descuento         = $this->get_item($i, 'COD_TIPO_DESCUENTO');
+            $monto_descuento            = $this->get_item($i, 'MONTO_DESCUENTO_H');
+            $saldo_total                = $this->get_item($i, 'SALDO_TOTAL_H');
+            $saldo_total_pesos            = $this->get_item($i, 'SALDO_TOTAL_PESOS_H');
+            $monto_pago                    = $this->get_item($i, 'MONTO_PAGO_H');
+            $monto_pago_pesos            = $this->get_item($i, 'MONTO_PAGO_PESOS_H');
+            $cod_sub_boleta                = $this->get_item($i, 'COD_SUB_BOLETA');
+            $porc_descuento 			= $this->get_item($i, 'PORC_DESCUENTO');
+
+            $cod_item_ingreso    = ($cod_item_ingreso =='') ? "null" : $cod_item_ingreso;
+            $cod_plan_pago        = ($cod_plan_pago =='') ? "null" : $cod_plan_pago;
+            $cod_tipo_descuento    = ($cod_tipo_descuento =='') ? "null" : $cod_tipo_descuento;
+            $monto_descuento    = ($monto_descuento =='') ? 0 : $monto_descuento;
+            $cod_sub_boleta        = ($cod_sub_boleta =='') ? "null" : $cod_sub_boleta;
+			$porc_descuento		= ($porc_descuento =='') ? "null" : $porc_descuento;
+			
+            $param = "    '$operacion'
+                        ,$cod_item_ingreso
+                        ,'$seleccion'
+                        ,$cod_ingreso
+                        ,$cod_deuda
+                        ,$cod_plan_pago
+                        ,$saldo_cuota
+                        ,$saldo_multa
+                        ,$cod_tipo_descuento
+                        ,$monto_descuento
+                        ,$saldo_total
+                        ,$saldo_total_pesos
+                        ,$monto_pago
+                        ,$monto_pago_pesos
+                        ,$cod_sub_boleta
+                        ,$porc_descuento";
+
+            if (!$db->EXECUTE_SP($sp, $param)){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+class wi_ingreso_base extends w_input {
+    
+    const K_ESTADO_EMITIDO    = 1;
+    const K_ESTADO_ANULADO     = 2;
+    const K_ESTADO_CERRADO     = 3;
+    const K_ESTADO_POR_RENDIR  = 4;
+
+    const K_TASA_INT_CH_FECHA= 22;
+    const K_PARAM_MAX_NUM_CH = 23;
+    const K_ESTADO_DOC_PROTESTADO = 3;
+
+    const K_AUTORIZA_ANULACION = '990510';
+    const K_ESTADO_SIMULACION        = 1000;
+    const K_PARAM_MAX_VALIDEZ_SIMULACION = 24;
+    const K_FAMILIA_CI_UACH        		= 2;
+
+    const K_DEPOSITO = 3;
+
+    function __construct($cod_item_menu) {
+        
+        parent::__construct('ingreso', $cod_item_menu);
+        $this->b_delete_visible  = false;
+
+        $sql = sql_ingreso::get_sql('INPUT');
+
+        $this->dws['dw_ingreso']                    = new datawindow($sql);
+        $this->dws['dw_item_ingreso']                 = new dw_item_ingreso_base();
+        $this->dws['dw_documento_pago']             = new dw_documento_pago_base();
+        $this->dws['dw_documento_pago_ch_fecha']     = new dw_documento_pago_ch_fecha();
+
+        //CONTROLES
+        $this->dws['dw_ingreso']->add_control(new static_text('COD_INGRESO'));
+        $this->dws['dw_ingreso']->add_control(new edit_text_upper('RUT_H', 10, 10, 'hidden'));
+        $this->dws['dw_ingreso']->add_control(new static_text('DIG_VERIF'));
+        $this->dws['dw_ingreso']->add_control(new static_text('NOMBRE'));
+
+        $this->dws['dw_ingreso']->add_control(new edit_text('COD_USUARIO',10, 10, 'hidden'));
+        $this->dws['dw_ingreso']->add_control(new static_text('NOM_USUARIO'));
+        $this->dws['dw_ingreso']->add_control(new edit_text('COD_DEUDOR',10, 10, 'hidden'));
+
+        $sql_estado_ingreso = sql_ingreso::get_sql('DD_ESTADO_INGRESO');
+		$this->dws['dw_ingreso']->add_control(new drop_down_dw('COD_ESTADO_INGRESO', $sql_estado_ingreso, 140, '', false));
+        
+        $this->dws['dw_ingreso']->add_control($control = new edit_num('TASA_INTERES', 14, 19, 4));
+        $control->set_onChange("calc_cheque_fecha();");
+        $this->dws['dw_ingreso']->add_control($control = new edit_num('MONTO_CHEQUE_FECHA'));
+        $control->set_onChange("calc_cheque_fecha();");
+        $this->dws['dw_ingreso']->add_control($control = new edit_num('CANT_CHEQUE_FECHA'));
+        $control->set_onChange("calc_cheque_fecha();");
+        $this->dws['dw_ingreso']->add_control($control = new edit_date('FECHA_PRIMER_CHEQUE_FECHA'));
+        $control->set_onChange("valida_fecha_ch_fecha(this);calc_cheque_fecha();");
+        $this->dws['dw_ingreso']->add_control(new edit_text('FECHA_PRIMER_CHEQUE_FECHA_H', 20,20,'hidden'));
+
+        $this->dws['dw_ingreso']->add_control(new static_num('STATIC_MONTO_INTERES'));
+        $this->dws['dw_ingreso']->add_control(new static_num('STATIC_MONTO_INTERES2'));
+        $this->dws['dw_ingreso']->add_control(new static_num('STATIC_TOTAL'));
+
+        $this->dws['dw_ingreso']->add_control(new static_num('SUMA_MONTO'));
+        $this->dws['dw_ingreso']->add_control(new static_num('SUMA_MONTO_CH_FECHA'));
+
+        $this->dws['dw_ingreso']->add_control(new edit_text('SUMA_MONTO_H',20, 20, 'hidden'));
+        $this->dws['dw_ingreso']->add_control(new edit_text('STATIC_MONTO_CHEQUE_FECHA_H',20, 20, 'hidden'));
+        $this->dws['dw_ingreso']->add_control(new edit_text('VALOR_MONEDA',10, 10, 'hidden'));
+
+        $this->dws['dw_ingreso']->add_control(new static_num('SUMA_MONTO_PAGO', 4));
+        $this->dws['dw_ingreso']->add_control(new static_num('SUMA_MONTO_PAGO_PESOS'));
+
+        $this->dws['dw_ingreso']->add_control(new static_num('SUMA_SALDO_TOTAL', 4));
+        $this->dws['dw_ingreso']->add_control(new static_num('SUMA_SALDO_TOTAL_PESOS'));
+
+        $this->dws['dw_ingreso']->add_control(new static_num('POR_PAGAR'));
+        $this->dws['dw_ingreso']->add_control(new static_num('POR_PAGAR2'));
+
+        $this->dws['dw_ingreso']->add_control(new static_num('STATIC_CH_FECHA_INT'));
+        $this->dws['dw_ingreso']->add_control(new static_num('STATIC_TOTAL_PAGAR'));
+
+        $this->dws['dw_ingreso']->add_control(new edit_text('MAX_CH_H',3, 3, 'hidden'));
+        $this->dws['dw_ingreso']->add_control(new edit_text_upper('REFERENCIA',100, 100));
+
+        $this->dws['dw_ingreso']->add_control($control = new edit_num('MONTO_OTROS_GASTOS',12, 10));
+        $control->set_onChange("asigna_totales();");
+
+        $this->dws['dw_ingreso']->add_control(new edit_text_upper('GLOSA_OTROS_GASTOS',55, 100));
+                                                                                                                  
+        $this->dws['dw_ingreso']->add_control(new static_num('STATIC_MONTO_OTROS_GASTOS'));
+        $this->dws['dw_ingreso']->add_control(new static_text('STATIC_GLOSA_OTROS_GASTOS'));
+
+        $sql = "select COD_FAMILIA_DEUDA
+                        ,NOM_FAMILIA_DEUDA
+                from FAMILIA_DEUDA
+                order by COD_FAMILIA_DEUDA";
+        $this->dws['dw_ingreso']->add_control($control = new drop_down_dw('COD_FAMILIA_DEUDA', $sql, 0, '', false));
+        $control->set_onChange("change_familia_deuda(this);");
+
+        $this->dws['dw_ingreso']->add_control($control = new edit_check_box('USAR_RUT_DEUDOR_GIRADOR', 'S', 'N'));
+        $control->set_onChange("usa_rut_deudor_girador();");
+        $this->dws['dw_ingreso']->add_control(new edit_text_upper('ANO_ACTUAL', 10, 10, 'hidden'));
+        
+        $this->dws['dw_ingreso']->add_control(new static_text('CR_TIPO'));
+        $this->dws['dw_ingreso']->add_control(new static_text('CR_CODIGO'));
+        $this->dws['dw_ingreso']->add_control(new static_text('CR_CUOTAS'));
+        
+        $this->dws['dw_ingreso']->add_control(new edit_text('CR_TIPO_H',20, 20, 'hidden'));
+		$this->dws['dw_ingreso']->add_control(new edit_text('CR_CODIGO_H',20, 20, 'hidden'));
+        $this->dws['dw_ingreso']->add_control(new edit_text('CR_CUOTAS_H',20, 20, 'hidden'));
+        
+        $this->dws['dw_ingreso']->add_control($control = new edit_num('MONTO_EXCEDENTE', 12, 10));
+        $control->set_onChange("asigna_totales();");
+
+        $this->dws['dw_ingreso']->add_control(new static_text('FECHA_INGRESO2'));
+        
+        //audoria
+        $this->add_auditoria('COD_ESTADO_INGRESO');
+
+        $this->set_first_focus('RUT');
+
+        $this->add_button($button = new button('DISTRIBUIR', 'Distribuir'));
+        $button->set_onClick("asignar_pago();");
+        
+    }
+    function new_record() {
+        $this->dws['dw_ingreso']->insert_row();
+        $this->dws['dw_ingreso']->set_item(0, 'FECHA_INGRESO', $this->current_date());
+        $this->dws['dw_ingreso']->set_item(0, 'COD_USUARIO', $this->cod_usuario);
+        $this->dws['dw_ingreso']->set_item(0, 'NOM_USUARIO', $this->nom_usuario);
+        $this->dws['dw_ingreso']->set_item(0, 'COD_ESTADO_INGRESO', self::K_ESTADO_EMITIDO);
+        $this->dws['dw_ingreso']->set_entrable('COD_ESTADO_INGRESO', false);
+        $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_BOLETA', 'none');
+        $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_TR', '');
+        $this->dws['dw_ingreso']->set_item(0, 'VALOR_MONEDA', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'USAR_RUT_DEUDOR_GIRADOR', 'S');
+        $this->dws['dw_ingreso']->set_item(0, 'POR_PAGAR', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'POR_PAGAR2', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'TR_NEW_RECORD', '');
+        $this->dws['dw_ingreso']->set_item(0, 'TD_RUT_GIRADOR', '');
+        $this->dws['dw_ingreso']->set_item(0, 'TR_LOAD_RECORD', 'none');
+        $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_CAMPO', 'none');
+        $this->dws['dw_ingreso']->set_item(0, 'DISPLAY_SIMULACION', '');
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_CH_FECHA', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_MONTO_INTERES', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_TOTAL', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_MONTO_INTERES2', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_H', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_MONTO_CHEQUE_FECHA_H', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_PAGO', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_PAGO_PESOS', 0);
+
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_CH_FECHA_INT', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_TOTAL_PAGAR', 0);
+        
+        $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_CR', 'none'); //area CUOTAS CONV / RENEG 	
+        $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_CR1', ''); //area POR PAGAR
+        
+        $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+      
+        if (K_TIPO_BD=="oci")
+	        $sql="SELECT TO_CHAR(SYSDATE,'YYYY') ANO_ACTUAL FROM DUAL";
+	    else if (K_TIPO_BD=="mssql")
+	    	 $sql="SELECT YEAR(GETDATE()) ANO_ACTUAL";   
+	        
+	   
+	   	$result = $db->build_results($sql);
+        
+        $this->dws['dw_ingreso']->set_item(0, 'ANO_ACTUAL', $result[0]['ANO_ACTUAL']);
+
+        
+        if (K_TIPO_BD=="oci")
+            $sql = "SELECT    to_char(Add_Months(sysdate, 1), 'dd/mm/yyyy') FECHA_PRIMER_CHEQUE_FECHA
+                            ,f_get_parametro(".self::K_TASA_INT_CH_FECHA.") TASA_INTERES
+                    from DUAL";
+        else if (K_TIPO_BD=="mssql")
+            $sql = "SELECT    convert(varchar, dateadd(month, 1, getdate()), 103) FECHA_PRIMER_CHEQUE_FECHA
+                            ,dbo.f_get_parametro(".self::K_TASA_INT_CH_FECHA.") TASA_INTERES";
+        
+            
+        $result = $db->build_results($sql);
+        $this->dws['dw_ingreso']->set_item(0, 'FECHA_PRIMER_CHEQUE_FECHA', $result[0]['FECHA_PRIMER_CHEQUE_FECHA']);
+        $this->dws['dw_ingreso']->set_item(0, 'FECHA_PRIMER_CHEQUE_FECHA_H', $result[0]['FECHA_PRIMER_CHEQUE_FECHA']);
+        $this->dws['dw_ingreso']->set_item(0, 'TASA_INTERES', $result[0]['TASA_INTERES']);
+        $max_ch_h = $this->get_parametro(self::K_PARAM_MAX_NUM_CH);
+        $this->dws['dw_ingreso']->set_item(0, 'MAX_CH_H', $max_ch_h);
+
+        $SUMA_SALDO_TOTAL = number_format(0.0000, 4, ',', '.');
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_SALDO_TOTAL_PESOS', 0);
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_SALDO_TOTAL', $SUMA_SALDO_TOTAL);
+
+        // manejo de depositos
+        $this->dws['dw_ingreso']->add_control($control = new edit_check_box('ES_DEPOSITO', 'S', 'N', 'Depósito'));
+        $control->set_onChange("es_deposito(this);");
+
+        if (session::is_set("CREADA_DESDE_SIMULACION")) {
+            $cod_simulacion = session::get("CREADA_DESDE_SIMULACION");
+            //session::un_set("CREADA_DESDE_SIMULACION");
+            $this->crear_desde_simulacion($cod_simulacion);
+        }
+
+        if (session::is_set("CREADA_DESDE_BOLETA")) {
+            $cod_boleta = session::get("CREADA_DESDE_BOLETA");
+            //session::un_set("CREADA_DESDE_BOLETA");
+            $this->crear_desde_boleta($cod_boleta);
+        }
+        
+        //solo UCT puede modificar la fecha de ingreso
+        //no se maneja en class_wi_ingreso.php de UCT, ya que este cambio podrï¿½a servir para todas las ues, 26/03/2012 IS
+        if (K_CLIENTE=="UCT"){
+        	$this->dws['dw_ingreso']->add_control($control = new edit_num('RUT', 10, 10));
+        	$control->set_onChange("selecciona_pago(); alert_doc_protestado();");
+        	
+        	$this->dws['dw_ingreso']->add_control($control = new edit_date('FECHA_INGRESO'));
+        	$control->set_onChange("selecciona_pago();");
+        }else if (K_CLIENTE=="ULAGOS"){
+        	//se parcha  para que ULAGOS REALIZE EL INGRESO DE PAGO : CON FECHAS PASADAS.
+	        //CONSIDERANDO QUE MARCELO ROSAS ANTERIORMENTE Hubieran sido revisadas.
+	        $this->dws['dw_ingreso']->add_control($control = new edit_num('RUT', 10, 10));
+        	$control->set_onChange("selecciona_pago(this); alert_doc_protestado();");
+        	
+	        if($this->cod_usuario == 9 || $this->cod_usuario == 1 || $this->cod_usuario == 4){ //usuario MARCELO ROSAS or ADMIN or CRISTIAN ALVIAL
+	        	$this->dws['dw_ingreso']->add_control($control = new edit_date('FECHA_INGRESO'));
+	        	$control->set_onChange("fecha_deposito_ingreso(this);");	
+	        }else{
+	        	$this->dws['dw_ingreso']->add_control(new static_text('FECHA_INGRESO'));
+	        }
+		}else if (K_CLIENTE=="UMCE"){
+	        $this->dws['dw_ingreso']->add_control($control = new edit_num('RUT', 10, 10));
+        	$control->set_onChange("selecciona_pago(this); alert_doc_protestado();");
+        	
+        	$this->dws['dw_ingreso']->add_control($control = new edit_date('FECHA_INGRESO'));
+        	$control->set_onChange("fecha_deposito_ingreso(this);");	
+        }else if (K_CLIENTE=="USACH"){
+        	//USACH
+	        $this->dws['dw_ingreso']->add_control($control = new edit_num('RUT', 10, 10));
+        	$control->set_onChange("selecciona_pago(this); alert_doc_protestado();");
+        	$this->dws['dw_ingreso']->add_control($control = new edit_date('FECHA_INGRESO'));
+	        $control->set_onChange("fecha_deposito_ingreso(this);");
+        }else{
+        	$this->dws['dw_ingreso']->add_control($control = new edit_num('RUT', 10, 10));
+        	$control->set_onChange("selecciona_pago(this); alert_doc_protestado();");
+        	
+		 	$this->dws['dw_ingreso']->add_control(new static_text('FECHA_INGRESO'));        
+        }
+        
+        if (session::is_set("CREADA_DESDE_SIMULACION")||session::is_set("CREADA_DESDE_BOLETA")){
+	         $rut     = $this->dws['dw_ingreso']->get_item(0, 'RUT');
+	          session::un_set("CREADA_DESDE_SIMULACION");
+	          session::un_set("CREADA_DESDE_BOLETA");
+        }
+        
+    	/*if(K_CLIENTE=="UACH"){
+        	$this->dws['dw_item_ingreso']->set_entrable('COD_TIPO_DESCUENTO', false);
+        }*/
+    }
+
+    function load_record(){
+    	$cod_ingreso    = $this->get_item_wo($this->current_record, 'COD_INGRESO');
+        $this->dws['dw_ingreso']->retrieve($cod_ingreso);
+        $this->dws['dw_ingreso']->set_entrable('RUT', false);
+		
+        //no se maneja en class_wi_ingreso.php de UCT, ya que este cambio podrï¿½a servir para todas las ues, 26/03/2012 IS
+        if (K_CLIENTE=="UCT"){
+        	$this->dws['dw_ingreso']->set_entrable('FECHA_INGRESO', false);
+        }
+        
+        $this->dws['dw_item_ingreso']->retrieve($cod_ingreso);
+        $this->dws['dw_item_ingreso']->set_entrable_dw(false);
+
+        $this->dws['dw_documento_pago']->retrieve($cod_ingreso);
+        $this->dws['dw_documento_pago']->set_entrable_dw(false);
+
+        $this->dws['dw_documento_pago_ch_fecha']->retrieve($cod_ingreso);
+        $this->dws['dw_documento_pago_ch_fecha']->set_entrable_dw(false);
+        
+        $this->dws['dw_ingreso']->set_entrable('MONTO_EXCEDENTE', false);
+        
+        $sum_monto = 0;
+        for ($i = 0; $i < $this->dws['dw_documento_pago']->row_count(); $i++) {
+            $sum_monto = $sum_monto + $this->dws['dw_documento_pago']->get_item($i, 'MONTO');
+        }
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO', $sum_monto);
+
+        $monto_cheque_fecha = $this->dws['dw_ingreso']->get_item(0, 'MONTO_CHEQUE_FECHA');
+        $monto_otros_gastos = $this->dws['dw_ingreso']->get_item(0, 'MONTO_OTROS_GASTOS');
+
+        $static_total =  $sum_monto + $monto_cheque_fecha - $monto_otros_gastos;
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_TOTAL', $static_total);
+
+
+        $sum_monto_ch_fecha = 0;
+        for ($i = 0; $i < $this->dws['dw_documento_pago_ch_fecha']->row_count(); $i++) {
+            $sum_monto_ch_fecha = $sum_monto_ch_fecha + $this->dws['dw_documento_pago_ch_fecha']->get_item($i, 'MONTO_CH_FECH');
+        }
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_CH_FECHA', $sum_monto_ch_fecha);
+
+        $sum_monto_pago = 0;
+        $sum_monto_pago_pesos = 0;
+        for ($i = 0; $i < $this->dws['dw_item_ingreso']->row_count(); $i++) {
+            $sum_monto_pago = round($sum_monto_pago + $this->dws['dw_item_ingreso']->get_item($i, 'MONTO_PAGO_H'), 4);
+            $sum_monto_pago_pesos = $sum_monto_pago_pesos + $this->dws['dw_item_ingreso']->get_item($i, 'MONTO_PAGO_PESOS_H');
+        }
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_PAGO', $sum_monto_pago);
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_PAGO_PESOS', $sum_monto_pago_pesos);
+
+        $monto_interes = $sum_monto_ch_fecha - $this->dws['dw_ingreso']->get_item(0, 'MONTO_CHEQUE_FECHA');
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_MONTO_INTERES', $monto_interes);
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_MONTO_INTERES2', $monto_interes);
+
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_CH_FECHA_INT', $sum_monto_ch_fecha);
+
+        $por_pagar_con_interes = $sum_monto + $sum_monto_ch_fecha;
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_TOTAL_PAGAR', $por_pagar_con_interes);
+
+        $cod_estado_ingreso = $this->dws['dw_ingreso']->get_item(0, 'COD_ESTADO_INGRESO');
+        if ($cod_estado_ingreso == self::K_ESTADO_EMITIDO){
+            $this->b_print_visible        = true;
+            $priv = $this->get_privilegio_opcion_usuario(self::K_AUTORIZA_ANULACION, $this->cod_usuario);
+            if ($priv=='E') {
+                $this->dws['dw_ingreso']->set_entrable('COD_ESTADO_INGRESO', true);
+            }
+            else {
+                $this->b_modify_visible         = false;
+                $this->b_save_visible         = false;
+                $this->b_no_save_visible    = false;
+                $this->dws['dw_ingreso']->set_entrable('COD_ESTADO_INGRESO', false);
+            }
+        }
+        elseif ($cod_estado_ingreso == self::K_ESTADO_ANULADO) {
+            $this->b_modify_visible         = false;
+            $this->b_save_visible         = false;
+            $this->b_no_save_visible    = false;
+            $this->b_print_visible = false;
+            $this->dws['dw_ingreso']->set_entrable('COD_ESTADO_INGRESO', false);
+        }
+        elseif ($cod_estado_ingreso == self::K_ESTADO_CERRADO) {
+            $this->b_modify_visible         = false;
+            $this->b_save_visible         = false;
+            $this->b_no_save_visible    = false;
+            $this->b_print_visible = true;
+            $this->dws['dw_ingreso']->set_entrable('COD_ESTADO_INGRESO', false);
+        }
+        elseif ($cod_estado_ingreso == self::K_ESTADO_SIMULACION) {
+            $this->b_modify_visible         = false;
+            $this->b_save_visible         = false;
+            $this->b_no_save_visible    = false;
+            $this->b_print_visible = true;
+        }
+
+
+        $this->dws['dw_ingreso']->set_entrable('COD_FAMILIA_DEUDA', false);
+        $this->dws['dw_ingreso']->set_entrable('TASA_INTERES', false);
+        $this->dws['dw_ingreso']->set_entrable('MONTO_CHEQUE_FECHA', false);
+        $this->dws['dw_ingreso']->set_entrable('CANT_CHEQUE_FECHA', false);
+        $this->dws['dw_ingreso']->set_entrable('FECHA_PRIMER_CHEQUE_FECHA', false);
+        $this->dws['dw_ingreso']->set_entrable('REFERENCIA', false);
+        $this->dws['dw_ingreso']->set_entrable('USAR_RUT_DEUDOR_GIRADOR', false);
+        $this->dws['dw_ingreso']->set_entrable('ES_DEPOSITO', false);
+
+        $this->dws['dw_ingreso']->set_item(0, 'TR_NEW_RECORD', 'none');
+        $this->dws['dw_ingreso']->set_item(0, 'TD_RUT_GIRADOR', '');
+        $this->dws['dw_ingreso']->set_item(0, 'TR_LOAD_RECORD', '');
+
+        // Si la 1ra linea tiene asociada COD_SUB_BOLETA entonces el registro se creo desde BOLETA
+        if ($this->dws['dw_item_ingreso']->row_count()==0)
+            $cod_sub_boleta = '';
+        else
+            $cod_sub_boleta = $this->dws['dw_item_ingreso']->get_item(0, 'COD_SUB_BOLETA_H');
+        if($cod_sub_boleta != ''){
+            $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+            $sql = "SELECT B.COD_BOLETA
+                            ,B.COD_DEUDA
+                    FROM    SUB_BOLETA SB, BOLETA B
+                    WHERE SB.COD_SUB_BOLETA = $cod_sub_boleta
+                      and B.COD_BOLETA = SB.COD_BOLETA";
+            $result = $db->build_results($sql);
+            $cod_boleta = $result[0]['COD_BOLETA'];
+            $cod_deuda    = $result[0]['COD_DEUDA'];
+
+            $this->dws['dw_ingreso']->set_item(0, 'COD_BOLETA', $cod_boleta);
+            $this->dws['dw_ingreso']->set_item(0, 'COD_DEUDA_BOLETA', $cod_deuda);
+
+            $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_BOLETA', '');
+            $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_TR', 'none');
+        }else{
+            $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_BOLETA', 'none');
+            $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_TR', '');
+        }
+
+        //muestra mensaje, si el deudor tiene documentos protestados
+        $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+        $rut     = $this->dws['dw_ingreso']->get_item(0, 'RUT');
+        $sql_doc_protes = sql_ingreso::get_sql('ALERT_DOC_PROTESTADO', $rut);
+        $result    = $db->build_results($sql_doc_protes);
+        $count     = $result[0]['CANT'];
+        if ($count == 0)
+            $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_CAMPO', 'none');
+        else if    ($count > 0)
+            $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_CAMPO', '');
+            
+    }
+    function get_key() {
+        return $this->dws['dw_ingreso']->get_item(0, 'COD_INGRESO');
+    }
+    function validate_record() {
+		$cod_familia_deuda = $this->dws['dw_ingreso']->get_item(0, 'COD_FAMILIA_DEUDA');
+        $cod_estado_ingreso = $this->dws['dw_ingreso']->get_item(0, 'COD_ESTADO_INGRESO');
+		
+        $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+
+        //en la simulacion no es necesario validar la cuenta corriente, ya que en la simulacion no se ingresa banco
+        if($cod_estado_ingreso != self::K_ESTADO_SIMULACION){
+            $row_count = $this->dws['dw_documento_pago']->row_count();
+            for ($i = 0; $i < $row_count; $i++){
+                $cod_tipo_documento_pago     = $this->dws['dw_documento_pago']->get_item($i, 'COD_TIPO_DOCUMENTO_PAGO');
+                $cod_banco                     = $this->dws['dw_documento_pago']->get_item($i, 'COD_BANCO');
+                $cod_plza					   = $this->dws['dw_documento_pago']->get_item($i, 'COD_PLAZA');
+
+                // valida que tenga banco y plaza
+                if ($cod_tipo_documento_pago==1){
+                	if ($cod_banco=='')
+                		return 'Debe ingresar banco';
+                	if ($cod_plza=='')
+                		return 'Debe ingresar Plaza';
+                }
+                	
+                //obtiene la cuenta de ingreso
+                $sql = "SELECT COD_CUENTA_CONTABLE
+                                ,USAR_CUENTA_CTACTE
+                        FROM CUENTA_TIPO_DOCUMENTO_PAGO
+                        WHERE COD_FAMILIA_DEUDA = $cod_familia_deuda
+                              AND COD_TIPO_DOCUMENTO_PAGO = $cod_tipo_documento_pago";
+
+                $result = $db->build_results($sql);
+                $cod_cuenta_contable     = $result[0]['COD_CUENTA_CONTABLE'];
+                $usar_cuenta_ctacte        = $result[0]['USAR_CUENTA_CTACTE'];
+
+                if($usar_cuenta_ctacte == 'S'){
+                    $sql = "SELECT COUNT(*) COUNT
+                            FROM CUENTA_CORRIENTE
+                            WHERE COD_FAMILIA_DEUDA = $cod_familia_deuda
+                              AND COD_BANCO = $cod_banco";
+                    $result = $db->build_results($sql);
+                    $count     = $result[0]['COUNT'];
+					
+                    if($count == 0)
+                        return 'El banco seleccionado no tiene cuenta corriente';
+                }
+                else if($usar_cuenta_ctacte == 'N')
+                    if($cod_cuenta_contable == '')
+                        return 'No existe cuenta contable asociada al documento seleccionado';
+            }
+        }
+        
+        $db1 = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS); 
+        //VALIDAR LOS DOCUMENTOS
+        $row_count = $this->dws['dw_documento_pago']->row_count();
+        $K_TIPO_DOC_TGR = 11;
+        $doc_tgr = false;
+        $rut = $this->dws['dw_ingreso']->get_item(0, 'RUT');
+        
+        //VALIDA QUE NO HAYAN MAS DOCUMENTOS TIPO TGR
+     	for ($i = 0; $i < $row_count; $i++){
+         	$cod_tipo_documento_pago	= $this->dws['dw_documento_pago']->get_item($i, 'COD_TIPO_DOCUMENTO_PAGO');
+         	if($cod_tipo_documento_pago == $K_TIPO_DOC_TGR){
+         		if($doc_tgr == true){
+         			return 'Solo puede ingresar un documento pago Disponible TGR.';
+         		}
+         		$doc_tgr = true;
+         	}
+        }
+        
+        return '';
+    }
+
+    function save_record($db) {
+        $cod_ingreso                = $this->dws['dw_ingreso']->get_item(0, 'COD_INGRESO');
+        $cod_usuario                = $this->dws['dw_ingreso']->get_item(0, 'COD_USUARIO');
+        $cod_deudor                    = $this->dws['dw_ingreso']->get_item(0, 'COD_DEUDOR');
+        $cod_estado_ingreso         = $this->dws['dw_ingreso']->get_item(0, 'COD_ESTADO_INGRESO');
+        $tasa_interes                 = $this->dws['dw_ingreso']->get_item(0, 'TASA_INTERES');
+        $monto_cheque_fecha            = $this->dws['dw_ingreso']->get_item(0, 'MONTO_CHEQUE_FECHA');
+        $cant_cheque_fecha            = $this->dws['dw_ingreso']->get_item(0, 'CANT_CHEQUE_FECHA');
+        $fecha_primer_cheque_fecha     = $this->dws['dw_ingreso']->get_item(0, 'FECHA_PRIMER_CHEQUE_FECHA');
+        $referencia                    = $this->dws['dw_ingreso']->get_item(0, 'REFERENCIA');
+        $cod_familia_deuda            = $this->dws['dw_ingreso']->get_item(0, 'COD_FAMILIA_DEUDA');
+        $cod_ingreso_desde            = $this->dws['dw_ingreso']->get_item(0, 'COD_INGRESO_DESDE');
+        $monto_otros_gastos            = $this->dws['dw_ingreso']->get_item(0, 'MONTO_OTROS_GASTOS');
+        $glosa_otros_gastos            = $this->dws['dw_ingreso']->get_item(0, 'GLOSA_OTROS_GASTOS');
+        
+        if($cod_estado_ingreso <> self::K_ESTADO_SIMULACION){
+        	$monto_excedente            = $this->dws['dw_ingreso']->get_item(0, 'MONTO_EXCEDENTE');
+        }
+        else 
+        	$monto_excedente ='';
+
+        $cr_tipo					= $this->dws['dw_ingreso']->get_item(0, 'CR_TIPO_H');
+        $cr_codigo					= $this->dws['dw_ingreso']->get_item(0, 'CR_CODIGO_H');
+        $cr_cuotas					= $this->dws['dw_ingreso']->get_item(0, 'CR_CUOTAS_H');
+        
+        $cod_ingreso            = ($cod_ingreso=='') ? "null" : $cod_ingreso;
+        $tasa_interes                 = ($tasa_interes=='') ? "null" : $tasa_interes;
+        $monto_cheque_fecha            = ($monto_cheque_fecha=='') ? "null" : $monto_cheque_fecha;
+        $cant_cheque_fecha            = ($cant_cheque_fecha=='') ? "null" : $cant_cheque_fecha;
+        $fecha_primer_cheque_fecha     = $this->str2date($fecha_primer_cheque_fecha);
+        $referencia                    = ($referencia =='') ? "null" : "'$referencia'";
+        $cod_ingreso_desde             = ($cod_ingreso_desde=='') ? "null" : $cod_ingreso_desde;
+        $monto_otros_gastos            = ($monto_otros_gastos=='') ? "null" : $monto_otros_gastos;
+        $glosa_otros_gastos            = ($glosa_otros_gastos=='') ? "null" : "'$glosa_otros_gastos'";
+        $monto_excedente            = ($monto_excedente=='') ? "null" : "$monto_excedente";
+        
+        $cr_tipo					= ($cr_tipo=='') ? "null" : "'$cr_tipo'";
+        $cr_codigo					= ($cr_codigo=='') ? "null" : "'$cr_codigo'";
+        $cr_cuotas					= ($cr_cuotas=='') ? "null" : "'$cr_cuotas'";
+
+        
+        $sp = 'spu_ingreso ';
+        if ($this->is_new_record()){
+            if ($cod_estado_ingreso == self::K_ESTADO_SIMULACION) //simulacion
+                $operacion = 'INSERT_SIMULACION';
+            else //ingreso
+                $operacion = 'INSERT';
+        }
+        else{
+            $operacion = 'UPDATE';
+        }
+        
+        /*no se maneja en class_wi_ingreso.php de UCT, ya que este cambio podrï¿½a servir para todas las ues, 26/03/2012 IS
+         VMC, 15-02-2013 se agrega ULAGOS que tambien tiene ingresable la fecha de ingreso 
+        */
+        if (K_CLIENTE=="UCT" || K_CLIENTE=="ULAGOS" || K_CLIENTE=="USACH" || K_CLIENTE=="UMCE"){
+        	$fecha_ingreso		= $this->dws['dw_ingreso']->get_item(0, 'FECHA_INGRESO');
+        	$fecha_ingreso		= $this->str2date($fecha_ingreso, $this->current_time());
+
+        	$param = " '$operacion'
+                    ,$cod_ingreso
+                    ,$fecha_ingreso
+                    ,$cod_usuario
+                    ,$cod_deudor
+                    ,$cod_estado_ingreso
+                    ,$tasa_interes
+                    ,$monto_cheque_fecha
+                    ,$cant_cheque_fecha
+                    ,$fecha_primer_cheque_fecha
+                    ,$referencia
+                    ,$cod_familia_deuda
+                    ,$cod_ingreso_desde
+                    ,$monto_otros_gastos
+                    ,$glosa_otros_gastos
+                    ,$monto_excedente
+                    ,$cr_tipo
+                    ,$cr_codigo
+                    ,$cr_cuotas";
+        }
+        else if (K_CLIENTE=="UACH"){
+        	if(($cod_familia_deuda == self::K_FAMILIA_CI_UACH)&&($cod_estado_ingreso == self::K_ESTADO_SIMULACION)){
+	        	$monto_descuento             = $this->dws['dw_ingreso']->get_item(0, 'MONTO_DESCTO');
+	        	$glosa_descuento            = $this->dws['dw_ingreso']->get_item(0, 'GLOSA_DESCTO');
+        	}
+        	
+        	$monto_descuento            = ($monto_descuento=='') ? "null" : $monto_descuento;
+        	$glosa_descuento            = ($glosa_descuento=='') ? "null" : "'$glosa_descuento'";
+        	
+        	$param = " '$operacion'
+                    ,$cod_ingreso
+                    ,$cod_usuario
+                    ,$cod_deudor
+                    ,$cod_estado_ingreso
+                    ,$tasa_interes
+                    ,$monto_cheque_fecha
+                    ,$cant_cheque_fecha
+                    ,$fecha_primer_cheque_fecha
+                    ,$referencia
+                    ,$cod_familia_deuda
+                    ,$cod_ingreso_desde
+                    ,$monto_otros_gastos
+                    ,$glosa_otros_gastos
+                    ,$monto_excedente
+                    ,$cr_tipo
+                    ,$cr_codigo
+                    ,$cr_cuotas
+                    ,null
+                    ,$monto_descuento
+                    ,$glosa_descuento";
+        }else{
+        	$param = " '$operacion'
+                    ,$cod_ingreso
+                    ,$cod_usuario
+                    ,$cod_deudor
+                    ,$cod_estado_ingreso
+                    ,$tasa_interes
+                    ,$monto_cheque_fecha
+                    ,$cant_cheque_fecha
+                    ,$fecha_primer_cheque_fecha
+                    ,$referencia
+                    ,$cod_familia_deuda
+                    ,$cod_ingreso_desde
+                    ,$monto_otros_gastos
+                    ,$glosa_otros_gastos
+                    ,$monto_excedente
+                    ,$cr_tipo
+                    ,$cr_codigo
+                    ,$cr_cuotas";
+        }
+         
+        if ($db->EXECUTE_SP($sp, $param)){
+            if ($this->is_new_record()) {
+                if ($cod_estado_ingreso == self::K_ESTADO_SIMULACION) //obtiene el nï¿½mero de simulacion
+                    $sql = "select max(COD_INGRESO) COD_INGRESO from INGRESO where COD_ESTADO_INGRESO = ".self::K_ESTADO_SIMULACION." AND COD_USUARIO =".$this->cod_usuario;
+                else //obtiene el nï¿½mero de ingreso
+                    $sql = "select max(COD_INGRESO) COD_INGRESO from INGRESO where COD_ESTADO_INGRESO <> ".self::K_ESTADO_SIMULACION." AND COD_USUARIO =".$this->cod_usuario;
+
+                $result = $db->build_results($sql);
+                $cod_ingreso = $result[0]['COD_INGRESO'];
+                $this->dws['dw_ingreso']->set_item(0, 'COD_INGRESO', $cod_ingreso);
+            }
+        }
+        else{
+            return false;
+        }
+        if ($this->is_new_record()){
+            if (!$this->dws['dw_item_ingreso']->update($db,$cod_ingreso))
+                return false;
+
+            if (!$this->dws['dw_documento_pago']->update($db,$cod_ingreso,$cod_deudor,$cod_familia_deuda))
+                return false;
+
+            if (!$this->dws['dw_documento_pago_ch_fecha']->update($db,$cod_ingreso,$cod_deudor,$cod_familia_deuda))
+                return false;
+
+            if ($cod_estado_ingreso == self::K_ESTADO_SIMULACION){
+                if (!$db->EXECUTE_SP($sp, "'END_SIMULACION', $cod_ingreso"))
+                    return false;
+            }
+            else {    // solo para ingreso debe ejecutar el ASIGNA
+                if (!$db->EXECUTE_SP($sp, "'ASIGNA', $cod_ingreso"))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    function print_record() {
+        $cod_ingreso = $this->get_key();
+         $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+        $sql= sql_ingreso::get_sql('PRINT_RECORD',$cod_ingreso);
+        // reporte
+        $labels = array();
+        
+        if(K_CLIENTE == 'ALIANSE'){
+	        
+	        $labels['str_nom_universidad'] = 'ALIANSE';
+			$labels['str_direccion'] = 'HUÉRFANOS 1022, OF. 1202';
+			$labels['str_comuna'] = 'SANTIAGO';
+			$labels['str_ciudad'] = 'SANTIAGO';
+			$labels['str_pais'] = 'CHILE';
+			$labels['str_telefono'] = '';
+			$labels['str_fax'] = '';
+			$labels['str_email'] = '';
+			$labels['str_sitio_web'] = '';
+        }
+        
+        $file_name = $this->find_file('ingreso', 'ingreso.xml');
+        $rpt = new print_ingreso($sql, $file_name, $labels, "ingreso".$cod_ingreso,1);
+        $this->_load_record();
+    }
+
+    function crear_desde_simulacion($cod_simulacion) {
+        $this->dws['dw_ingreso']->set_entrable('RUT', false);
+    	if (K_CLIENTE=="UCT"){
+        	$this->dws['dw_ingreso']->set_entrable('FECHA_INGRESO', false);
+        }
+        $this->dws['dw_ingreso']->set_entrable('REFERENCIA', false);
+        $this->dws['dw_ingreso']->set_entrable('COD_FAMILIA_DEUDA', false);
+        $this->dws['dw_ingreso']->set_entrable('MONTO_CHEQUE_FECHA', false);
+        $this->dws['dw_ingreso']->set_entrable('CANT_CHEQUE_FECHA', false);
+        $this->dws['dw_ingreso']->set_entrable('FECHA_PRIMER_CHEQUE_FECHA', false);
+        $this->dws['dw_ingreso']->set_entrable('TASA_INTERES', false);
+        $this->dws['dw_ingreso']->set_entrable('ES_DEPOSITO', false);
+
+        $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+
+        if(K_TIPO_BD == "oci") {
+            $sql="SELECT     DE.RUT
+                            ,DE.DIG_VERIF
+                            ,I.COD_DEUDOR
+                            ,NOMBRE||' '||APELLIDO_PATERNO||' ' NOMBRE
+                            ,REFERENCIA
+                            ,f_mon_get_valor_moneda(3, FECHA_INGRESO)  VALOR_MONEDA
+                            ,COD_FAMILIA_DEUDA
+                            ,null MAX_CH_H
+                            ,MONTO_CHEQUE_FECHA
+                            ,CANT_CHEQUE_FECHA
+                            ,TO_CHAR(FECHA_PRIMER_CHEQUE_FECHA, 'dd/mm/yyyy') FECHA_PRIMER_CHEQUE_FECHA
+                            ,TASA_INTERES
+                            ,null COD_BOLETA
+                            ,null COD_DEUDA_BOLETA
+                            ,null SUMA_MONTO_PAGO
+                            ,null SUMA_MONTO_PAGO_PESOS
+                            ,MONTO_OTROS_GASTOS
+                            ,GLOSA_OTROS_GASTOS
+                    FROM    INGRESO I, DEUDOR DE
+                    WHERE    COD_INGRESO = $cod_simulacion
+                      AND    DE.COD_DEUDOR = I.COD_DEUDOR";
+        }
+        else if(K_TIPO_BD == "mssql"){
+            $sql="SELECT     DE.RUT
+                            ,DE.DIG_VERIF
+                            ,I.COD_DEUDOR
+                            ,NOMBRE ' ' APELLIDO_PATERNO ' ' APELLIDO_MATERNO
+                            ,REFERENCIA
+                            ,dbo.f_mon_get_valor_moneda(3, FECHA_INGRESO)  VALOR_MONEDA
+                            ,COD_FAMILIA_DEUDA
+                            ,null MAX_CH_H
+                            ,MONTO_CHEQUE_FECHA
+                            ,CANT_CHEQUE_FECHA
+                            ,convert(varchar(10), FECHA_PRIMER_CHEQUE_FECHA, 103) FECHA_PRIMER_CHEQUE_FECHA
+                            ,TASA_INTERES
+                            ,null COD_BOLETA
+                            ,null COD_DEUDA_BOLETA
+                            ,null SUMA_MONTO_PAGO
+                            ,null SUMA_MONTO_PAGO_PESOS
+                            ,MONTO_OTROS_GASTOS
+                            ,GLOSA_OTROS_GASTOS
+                    FROM    INGRESO I, DEUDOR DE
+                    WHERE    I.COD_INGRESO = $cod_simulacion
+                      AND    DE.COD_DEUDOR = I.COD_DEUDOR";
+        }
+
+        $result = $db->build_results($sql);
+        $this->dws['dw_ingreso']->set_item(0, 'RUT', $result[0]['RUT']);
+        $rut = $result[0]['RUT'];
+        $this->dws['dw_ingreso']->set_item(0, 'RUT_H', $result[0]['RUT']);
+        $this->dws['dw_ingreso']->set_item(0, 'COD_DEUDOR', $result[0]['COD_DEUDOR']);
+        $this->dws['dw_ingreso']->set_item(0, 'DIG_VERIF', $result[0]['DIG_VERIF']);
+        $this->dws['dw_ingreso']->set_item(0, 'NOMBRE', $result[0]['NOMBRE']);
+        $this->dws['dw_ingreso']->set_item(0, 'REFERENCIA', $result[0]['REFERENCIA']);
+
+        $this->dws['dw_ingreso']->set_item(0, 'VALOR_MONEDA', $result[0]['VALOR_MONEDA']);
+        $this->dws['dw_ingreso']->set_item(0, 'COD_FAMILIA_DEUDA', $result[0]['COD_FAMILIA_DEUDA']);
+        $this->dws['dw_ingreso']->set_item(0, 'MAX_CH_H', $result[0]['MAX_CH_H']);
+        $this->dws['dw_ingreso']->set_item(0, 'MONTO_CHEQUE_FECHA', $result[0]['MONTO_CHEQUE_FECHA']);
+        $monto_cheque_fecha = $result[0]['MONTO_CHEQUE_FECHA']; //para el calculo del interï¿½s
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_MONTO_CHEQUE_FECHA_H', $result[0]['MONTO_CHEQUE_FECHA']);
+        $this->dws['dw_ingreso']->set_item(0, 'CANT_CHEQUE_FECHA', $result[0]['CANT_CHEQUE_FECHA']);
+        $fecha_primer_cheque_fecha = $result[0]['FECHA_PRIMER_CHEQUE_FECHA'];
+        $this->dws['dw_ingreso']->set_item(0, 'FECHA_PRIMER_CHEQUE_FECHA', $fecha_primer_cheque_fecha);
+        $this->dws['dw_ingreso']->set_item(0, 'FECHA_PRIMER_CHEQUE_FECHA_H', $fecha_primer_cheque_fecha);
+        $this->dws['dw_ingreso']->set_item(0, 'TASA_INTERES', $result[0]['TASA_INTERES']);
+        $this->dws['dw_ingreso']->set_item(0, 'USAR_RUT_DEUDOR_GIRADOR', 'S');
+        $this->dws['dw_ingreso']->set_item(0, 'DISPLAY_SIMULACION', 'none');
+        $this->dws['dw_ingreso']->set_item(0, 'COD_INGRESO_DESDE', $cod_simulacion);
+        $this->dws['dw_ingreso']->set_item(0, 'TR_NEW_RECORD', 'none');
+        $this->dws['dw_ingreso']->set_item(0, 'TD_RUT_GIRADOR', '');
+        $this->dws['dw_ingreso']->set_item(0, 'TR_LOAD_RECORD', '');
+        $monto_otros_gastos = $result[0]['MONTO_OTROS_GASTOS'];
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_MONTO_OTROS_GASTOS', $monto_otros_gastos);
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_GLOSA_OTROS_GASTOS', $result[0]['GLOSA_OTROS_GASTOS']);
+        $this->dws['dw_ingreso']->set_item(0, 'MONTO_OTROS_GASTOS', $monto_otros_gastos);
+        $this->dws['dw_ingreso']->set_item(0, 'GLOSA_OTROS_GASTOS', $result[0]['GLOSA_OTROS_GASTOS']);
+
+        //muestra mensaje, si el deudor tiene documentos protestados
+        $rut     = $this->dws['dw_ingreso']->get_item(0, 'RUT');
+        $sql_doc_protes = sql_ingreso::get_sql('ALERT_DOC_PROTESTADO', $rut);
+        $result    = $db->build_results($sql_doc_protes);
+        $count     = $result[0]['CANT'];
+        if ($count == 0)
+            $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_CAMPO', 'none');
+        else if    ($count > 0)
+            $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_CAMPO', '');
+
+        //dw_item_ingreso
+        $this->dws['dw_item_ingreso']->set_entrable('SELECCION', false);
+        $this->dws['dw_item_ingreso']->set_entrable('COD_TIPO_DESCUENTO', false);
+        $this->dws['dw_item_ingreso']->set_entrable('PORC_DESCUENTO', false);
+
+        if(K_TIPO_BD == "oci"){
+            $sql = "select     COD_INGRESO
+                            ,IT.COD_DEUDA
+                            ,null NRO_SUB_BOLETA
+                            ,D.COD_TIPO_DEUDA
+                            ,COD_FAMILIA_DEUDA
+                            ,M.SIMBOLO
+                            ,IT.COD_PLAN_PAGO
+                            ,PP.ANO_COBRO
+                            ,To_Char(PP.FECHA_VENCTO, 'dd/mm/yyyy') FECHA_VENCTO
+                            ,SALDO_CUOTA
+                            ,SALDO_MULTA
+                            ,COD_TIPO_DESCUENTO
+                            ,SALDO_TOTAL
+                            ,MONTO_DESCUENTO
+                            ,SALDO_TOTAL_PESOS
+                            ,null COD_SUB_BOLETA_H
+                            ,MONTO_PAGO
+                            ,MONTO_PAGO_PESOS
+                    from     ITEM_INGRESO IT left outer join PLAN_PAGO PP on PP.COD_PLAN_PAGO = IT.COD_PLAN_PAGO
+                            , DEUDA D, TIPO_DEUDA TD, MONEDA M
+                    where     COD_INGRESO = $cod_simulacion
+                    and     D.COD_DEUDA = IT.COD_DEUDA
+                    and        TD.COD_TIPO_DEUDA = D.COD_TIPO_DEUDA
+                    and     M.COD_MONEDA = TD.COD_MONEDA";
+        }
+        else if(K_TIPO_BD == "mssql"){
+            $sql = "select     COD_INGRESO
+                            ,IT.COD_DEUDA
+                            ,null NRO_SUB_BOLETA
+                            ,D.COD_TIPO_DEUDA
+                            ,COD_FAMILIA_DEUDA
+                            ,M.SIMBOLO
+                            ,IT.COD_PLAN_PAGO
+                            ,PP.ANO_COBRO
+                            ,convert(varchar(10), PP.FECHA_VENCTO, 103) FECHA_VENCTO
+                            ,SALDO_CUOTA
+                            ,SALDO_MULTA
+                            ,COD_TIPO_DESCUENTO
+                            ,SALDO_TOTAL
+                            ,MONTO_DESCUENTO
+                            ,SALDO_TOTAL_PESOS
+                            ,null COD_SUB_BOLETA_H
+                            ,MONTO_PAGO
+                            ,MONTO_PAGO_PESOS
+                    from     ITEM_INGRESO IT left outer join PLAN_PAGO PP on PP.COD_PLAN_PAGO = IT.COD_PLAN_PAGO
+                            , DEUDA D, TIPO_DEUDA TD, MONEDA M
+                    where     COD_INGRESO = $cod_simulacion
+                    and     D.COD_DEUDA = IT.COD_DEUDA
+                    and        TD.COD_TIPO_DEUDA = D.COD_TIPO_DEUDA
+                    and     M.COD_MONEDA = TD.COD_MONEDA";
+        }
+        $result = $db->build_results($sql);
+        $sum_monto_pago = 0;
+        $sum_monto_pago_pesos = 0;
+        for ($i=0; $i<count($result); $i++) {
+            $row = $this->dws['dw_item_ingreso']->insert_row();
+            $this->dws['dw_item_ingreso']->set_item($row, 'SELECCION', 'S');
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_DEUDA', $result[$i]['COD_DEUDA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_DEUDA_H', $result[$i]['COD_DEUDA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'NRO_SUB_BOLETA', $result[$i]['NRO_SUB_BOLETA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_TIPO_DEUDA', $result[$i]['COD_TIPO_DEUDA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_FAMILIA_DEUDA_H', $result[$i]['COD_FAMILIA_DEUDA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SIMBOLO', $result[$i]['SIMBOLO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_PLAN_PAGO', $result[$i]['COD_PLAN_PAGO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'ANO_COBRO', $result[$i]['ANO_COBRO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'FECHA_VENCTO', $result[$i]['FECHA_VENCTO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_CUOTA', $result[$i]['SALDO_CUOTA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_CUOTA_H', $result[$i]['SALDO_CUOTA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_MULTA', $result[$i]['SALDO_MULTA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_MULTA_H', $result[$i]['SALDO_MULTA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_TIPO_DESCUENTO', $result[$i]['COD_TIPO_DESCUENTO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_TOTAL_SIN_DESCTO_H', $result[$i]['SALDO_TOTAL']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_DESCUENTO', $result[$i]['MONTO_DESCUENTO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_DESCUENTO_H', $result[$i]['MONTO_DESCUENTO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_TOTAL', $result[$i]['SALDO_TOTAL']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_TOTAL_H', $result[$i]['SALDO_TOTAL']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_TOTAL_PESOS', $result[$i]['SALDO_TOTAL_PESOS']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_TOTAL_PESOS_H', $result[$i]['SALDO_TOTAL_PESOS']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_PAGO', $result[$i]['MONTO_PAGO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_PAGO_H', $result[$i]['MONTO_PAGO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_PAGO_PESOS', $result[$i]['MONTO_PAGO_PESOS']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_PAGO_PESOS_H', $result[$i]['MONTO_PAGO_PESOS']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'DISPLAY_TR', '');
+
+            $sum_monto_pago += $result[$i]['MONTO_PAGO'];
+            $sum_monto_pago_pesos += $result[$i]['MONTO_PAGO_PESOS'];
+        }
+        $sum_monto_pago = round($sum_monto_pago, 4);
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_PAGO', $sum_monto_pago);
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_PAGO_PESOS', $sum_monto_pago_pesos);
+
+        //dw_documento_pago
+        unset($this->dws['dw_documento_pago']->controls['MONTO']);
+        $this->dws['dw_documento_pago']->add_control(new static_num('MONTO'));
+        $this->dws['dw_documento_pago']->set_entrable('COD_TIPO_DOCUMENTO_PAGO', false);
+
+        if(K_TIPO_BD == "oci"){
+	        $sql="SELECT DP.COD_TIPO_DOCUMENTO_PAGO
+	                    ,DP.MONTO
+	                    ,to_char(DP.FECHA_DOCUMENTO_PAGO, 'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO
+	                FROM DOCUMENTO_INGRESO DI, DOCUMENTO_PAGO DP
+	                WHERE DI.COD_INGRESO = $cod_simulacion
+	                  AND DP.COD_DOCUMENTO_PAGO = DI.COD_DOCUMENTO_PAGO";
+        }
+        else if(K_TIPO_BD == "mssql"){
+	        $sql="SELECT DP.COD_TIPO_DOCUMENTO_PAGO
+	                    ,DP.MONTO
+	                    ,convert(varchar, DP.FECHA_DOCUMENTO_PAGO, 103) FECHA_DOCUMENTO_PAGO
+	                FROM DOCUMENTO_INGRESO DI, DOCUMENTO_PAGO DP
+	                WHERE DI.COD_INGRESO = $cod_simulacion
+	                  AND DP.COD_DOCUMENTO_PAGO = DI.COD_DOCUMENTO_PAGO";
+        }     
+        
+        $result = $db->build_results($sql);
+        $suma_monto = 0;
+      //---------------Erich Petautschnig 01/12/2014------------------------------------------------
+        // si viene desde simulacion se destruye el control FECHA_DOCUMENTO_PAGO.-
+        // y se vuelve a crear sin el JS 
+        unset($this->dws['dw_documento_pago']->controls['FECHA_DOCUMENTO_PAGO']);
+        $this->dws['dw_documento_pago']->add_control(new edit_date('FECHA_DOCUMENTO_PAGO'));
+     //------FIN-------Erich Petautschnig 01/12/2014------------------------------------------------  
+        
+        for ($i=0; $i<count($result); $i++) {
+            $row = $this->dws['dw_documento_pago']->insert_row();
+            $this->dws['dw_documento_pago']->set_item($row, 'COD_TIPO_DOCUMENTO_PAGO', $result[$i]['COD_TIPO_DOCUMENTO_PAGO']);
+            $this->dws['dw_documento_pago']->set_item($row, 'COD_TIPO_DOCUMENTO_PAGO_H', $result[$i]['COD_TIPO_DOCUMENTO_PAGO']);
+            $this->dws['dw_documento_pago']->set_item($row, 'FECHA_DOCUMENTO_PAGO', $result[$i]['FECHA_DOCUMENTO_PAGO']);
+            $this->dws['dw_documento_pago']->set_item($row, 'MONTO', $result[$i]['MONTO']);
+            $this->dws['dw_documento_pago']->set_item($row, 'DISPLAY_ELIMINAR_DOCUMENTO', 'none');
+
+			if ($result[$i]['COD_TIPO_DOCUMENTO_PAGO']==3)	// deposito
+	        	$this->dws['dw_documento_pago']->set_entrable('FECHA_DOCUMENTO_PAGO', false);
+
+	        	
+            $suma_monto += $result[$i]['MONTO'];
+
+        }
+        
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO', $suma_monto);
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_H', $suma_monto);
+
+        //dw_documento_pago_ch_fecha
+        unset($this->dws['dw_documento_pago_ch_fecha']->controls['FECHA_DOCUMENTO_PAGO_CH_FECH']);
+        $this->dws['dw_documento_pago_ch_fecha']->add_control(new static_text('FECHA_DOCUMENTO_PAGO_CH_FECH'));
+
+        unset($this->dws['dw_documento_pago_ch_fecha']->controls['MONTO_CH_FECH']);
+        $this->dws['dw_documento_pago_ch_fecha']->add_control(new static_num('MONTO_CH_FECH'));
+
+        if(K_TIPO_BD == "oci"){
+            $sql = "SELECT     to_char(FECHA_DOCUMENTO_PAGO, 'dd/mm/yyyy') FECHA_DOCUMENTO_PAGO_CH_FECH
+                            ,MONTO MONTO_CH_FECH
+                            ,DR.RUT
+                            ,DR.DIG_VERIF
+                    FROM     DOCUMENTO_INGRESO_CH_FECHA D, DOCUMENTO_PAGO DP, DEUDOR DR
+                    WHERE     D.COD_INGRESO = $cod_simulacion
+                    AND       D.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+                    AND        DP.COD_DEUDOR = DR.COD_DEUDOR";
+        }
+        else if(K_TIPO_BD == "mssql"){
+            $sql = "SELECT     convert(varchar(20), FECHA_DOCUMENTO_PAGO, 103) FECHA_DOCUMENTO_PAGO_CH_FECH
+                            ,MONTO MONTO_CH_FECH
+                            ,DR.RUT
+                            ,DR.DIG_VERIF
+                    FROM     DOCUMENTO_INGRESO_CH_FECHA D, DOCUMENTO_PAGO DP, DEUDOR DR
+                    WHERE     D.COD_INGRESO = $cod_simulacion
+                    AND       D.COD_DOCUMENTO_PAGO = DP.COD_DOCUMENTO_PAGO
+                    AND        DP.COD_DEUDOR = DR.COD_DEUDOR";
+        }
+
+
+        $result = $db->build_results($sql);
+        $suma_monto_ch_fecha = 0;
+        for ($i=0; $i<count($result); $i++) {
+            $row = $this->dws['dw_documento_pago_ch_fecha']->insert_row();
+            $this->dws['dw_documento_pago_ch_fecha']->set_item($row, 'RUT_GIRADOR', $result[$i]['RUT']);
+            $this->dws['dw_documento_pago_ch_fecha']->set_item($row, 'DIG_VERIF_GIRADOR', $result[$i]['DIG_VERIF']);
+            $this->dws['dw_documento_pago_ch_fecha']->set_item($row, 'FECHA_DOCUMENTO_PAGO_CH_FECH', $result[$i]['FECHA_DOCUMENTO_PAGO_CH_FECH']);
+            $this->dws['dw_documento_pago_ch_fecha']->set_item($row, 'MONTO_CH_FECH', $result[$i]['MONTO_CH_FECH']);
+
+            $suma_monto_ch_fecha += $result[$i]['MONTO_CH_FECH'];
+        }
+
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_MONTO_CH_FECHA', $suma_monto_ch_fecha);
+        $interes = $suma_monto_ch_fecha - $monto_cheque_fecha;
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_MONTO_INTERES', $interes);
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_MONTO_INTERES2', $interes);
+        $static_total = $suma_monto + $monto_cheque_fecha - $monto_otros_gastos;
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_TOTAL', $static_total);
+
+           $this->dws['dw_ingreso']->set_item(0, 'STATIC_CH_FECHA_INT', $suma_monto_ch_fecha);
+        $por_pagar_con_interes = $suma_monto + $suma_monto_ch_fecha;
+        $this->dws['dw_ingreso']->set_item(0, 'STATIC_TOTAL_PAGAR', $por_pagar_con_interes);
+
+        // Si la simulaciï¿½n indica DEPOSITO, deja como banco aquellos que tienen cuenta corriente
+        if ($this->dws['dw_documento_pago']->row_count()==1) {
+            $cod_tipo_documento = $this->dws['dw_documento_pago']->get_item(0, 'COD_TIPO_DOCUMENTO_PAGO');
+            if ($cod_tipo_documento==self::K_DEPOSITO) {
+                $sql = sql_ingreso::get_sql('DD_BANCO_DEPOSITO');
+                $this->dws['dw_documento_pago']->controls['COD_BANCO']->set_sql($sql);
+                $this->dws['dw_documento_pago']->controls['COD_BANCO']->retrieve();
+            }
+        }
+    }
+
+    function crear_desde_boleta($cod_boleta) {
+        // Cuando es desde boleta no se puede modificar nada en la linea seleccionada
+        $this->dws['dw_ingreso']->set_entrable('RUT', false);
+    	if (K_CLIENTE=="UCT"){
+        	$this->dws['dw_ingreso']->set_entrable('FECHA_INGRESO', false);
+        }
+        $this->dws['dw_ingreso']->set_entrable('COD_FAMILIA_DEUDA', false);
+        $this->dws['dw_item_ingreso']->set_entrable('COD_TIPO_DESCUENTO', false);
+        $this->dws['dw_item_ingreso']->set_visible('COD_DEUDA', false);
+        $this->dws['dw_item_ingreso']->set_entrable('PORC_DESCUENTO', false);
+        
+
+        // El boton distribuir queda no visible
+        $this->btns['DISTRIBUIR']->visible = false;
+
+
+         $db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+         if(K_TIPO_BD == "oci"){
+             $sql = "SELECT    DR.RUT
+                            ,DR.DIG_VERIF
+                            ,DR.COD_DEUDOR
+                            ,APELLIDO_PATERNO ||' '|| APELLIDO_PATERNO ||' '||APELLIDO_MATERNO NOMBRE
+                            ,f_mon_get_valor_moneda(T.COD_MONEDA, sysdate)  VALOR_MONEDA
+                            ,T.COD_FAMILIA_DEUDA
+                    FROM    BOLETA B, DEUDA DA, DEUDOR DR, TIPO_DEUDA T
+                    WHERE    B.COD_DEUDA = DA.COD_DEUDA
+                    AND        DA.COD_DEUDOR = DR.COD_DEUDOR
+                    AND        DA.COD_TIPO_DEUDA = T.COD_TIPO_DEUDA
+                    AND        COD_BOLETA = $cod_boleta";
+         }
+         else if(K_TIPO_BD == "mssql"){
+            $sql = "SELECT    DR.RUT
+                            ,DR.DIG_VERIF
+                            ,DR.COD_DEUDOR
+                            ,NOMBRE ' ' APELLIDO_PATERNO ' 'APELLIDO_MATERNO 
+                            ,dbo.f_mon_get_valor_moneda(T.COD_MONEDA, getdate())  VALOR_MONEDA
+                            ,T.COD_FAMILIA_DEUDA
+                    FROM    BOLETA B, DEUDA DA, DEUDOR DR, TIPO_DEUDA T
+                    WHERE    B.COD_DEUDA = DA.COD_DEUDA
+                    AND        DA.COD_DEUDOR = DR.COD_DEUDOR
+                    AND        DA.COD_TIPO_DEUDA = T.COD_TIPO_DEUDA
+                    AND        COD_BOLETA = $cod_boleta";
+         }
+        $result = $db->build_results($sql);
+        $this->dws['dw_ingreso']->set_item(0, 'RUT', $result[0]['RUT']);
+        $rut = $result[0]['RUT'];
+        $this->dws['dw_ingreso']->set_item(0, 'RUT_H', $result[0]['RUT']);
+        $this->dws['dw_ingreso']->set_item(0, 'COD_DEUDOR', $result[0]['COD_DEUDOR']);
+        $this->dws['dw_ingreso']->set_item(0, 'DIG_VERIF', $result[0]['DIG_VERIF']);
+        $this->dws['dw_ingreso']->set_item(0, 'NOMBRE', $result[0]['NOMBRE']);
+        $this->dws['dw_ingreso']->set_item(0, 'VALOR_MONEDA', $result[0]['VALOR_MONEDA']);
+        $this->dws['dw_ingreso']->set_item(0, 'COD_FAMILIA_DEUDA', $result[0]['COD_FAMILIA_DEUDA']);
+        $this->dws['dw_ingreso']->set_item(0, 'TAB_151510', 'none');
+
+        //muestra mensaje, si el deudor tiene documentos protestados
+        $rut     = $this->dws['dw_ingreso']->get_item(0, 'RUT');
+        $sql_doc_protes = sql_ingreso::get_sql('ALERT_DOC_PROTESTADO', $rut);
+        $result    = $db->build_results($sql_doc_protes);
+        $count     = $result[0]['CANT'];
+        if ($count == 0)
+            $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_CAMPO', 'none');
+        else if    ($count > 0)
+            $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_CAMPO', '');
+
+        /* El select siempre trae las subboletas
+         *
+         * Si la boleta tiene solo 1 sub_boleta (la mayoria de los casos), entonces SALDO_TOTAL_PESOS lo lee desde BOLETA.MONTO_PESOS
+         * en caso contrario se calcula (SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * dbo.f_mon_get_valor_moneda(T.COD_MONEDA, getdate())
+        */
+        if(K_TIPO_BD == "oci"){
+            $sql = "SELECT  B.COD_DEUDA
+                            , DA.COD_TIPO_DEUDA
+                            , M.SIMBOLO
+                            , B.COD_PLAN_PAGO
+                            , PP.ANO_COBRO
+                            ,TO_CHAR(PP.FECHA_VENCTO, 'dd/mm/yyyy') FECHA_VENCTO
+                            ,SB.MONTO_CAPITAL + SB.MONTO_INTERES SALDO_CUOTA
+                            ,SB.MONTO_MULTA SALDO_MULTA
+                            ,SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA SALDO_TOTAL
+                            ,(CASE DA.COD_TIPO_DEUDA  
+								WHEN 'CRPI' THEN round((SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * f_mon_get_valor_moneda(TD.COD_MONEDA, SYSDATE), 0)  
+								WHEN 'CR12' THEN round((SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * f_mon_get_valor_moneda(TD.COD_MONEDA, SYSDATE), 0)
+								ELSE (CASE B.CANT
+										WHEN 1 THEN B.MONTO_PESOS
+										ELSE round((SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * f_mon_get_valor_moneda(TD.COD_MONEDA, SYSDATE), 0)
+									  END)
+							 END) SALDO_TOTAL_PESOS
+                            ,TD.COD_FAMILIA_DEUDA
+                            ,B.COD_TIPO_DESCUENTO
+                            ,(B.DSCTO_CAPITAL + B.DSCTO_INTERES + B.DSCTO_MULTA) MONTO_DESCUENTO
+                            ,SB.COD_SUB_BOLETA
+                            ,SB.NRO_SUB_BOLETA
+                    FROM     BOLETA B LEFT OUTER JOIN PLAN_PAGO PP ON B.COD_PLAN_PAGO = PP.COD_PLAN_PAGO
+                            ,DEUDA DA
+                            ,TIPO_DEUDA TD
+                            ,MONEDA M
+                            ,SUB_BOLETA SB
+                    WHERE     B.COD_DEUDA = DA.COD_DEUDA
+                    AND        DA.COD_TIPO_DEUDA = TD.COD_TIPO_DEUDA
+                    AND        TD.COD_MONEDA = M.COD_MONEDA
+                    AND        B.COD_BOLETA = SB.COD_BOLETA
+                    AND        B.COD_BOLETA = $cod_boleta
+                    AND     FECHA_PAGO IS NULL";
+        }
+    	else if(K_CLIENTE == "UTEM"){
+            $sql = "SELECT     B.COD_DEUDA
+                            , DA.COD_TIPO_DEUDA
+                            , M.SIMBOLO
+                            , B.COD_PLAN_PAGO
+                            , PP.ANO_COBRO
+                            ,convert(varchar, SB.FECHA_VENCTO, 103) FECHA_VENCTO
+                            ,SB.MONTO_CAPITAL + SB.MONTO_INTERES SALDO_CUOTA
+                            ,SB.MONTO_MULTA SALDO_MULTA
+                            ,SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA SALDO_TOTAL
+							 ,(CASE DA.COD_TIPO_DEUDA  
+								WHEN 'CRPI' THEN round((SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * dbo.f_mon_get_valor_moneda(TD.COD_MONEDA, getdate()), 0)  
+								WHEN 'CR12' THEN round((SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * dbo.f_mon_get_valor_moneda(TD.COD_MONEDA, getdate()), 0)
+								ELSE (CASE B.CANT
+										WHEN 1 THEN 
+											(CASE CONVERT(VARCHAR,MONTH(B.FECHA_BOLETA))+'/'+CONVERT(VARCHAR,YEAR(B.FECHA_BOLETA))
+												WHEN CONVERT(VARCHAR,MONTH(GETDATE()))+'/'+CONVERT(VARCHAR,YEAR(GETDATE())) THEN B.MONTO_PESOS
+												ELSE round((SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * dbo.f_mon_get_valor_moneda(TD.COD_MONEDA, getdate()), 0)
+											END)
+										ELSE round((SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * dbo.f_mon_get_valor_moneda(TD.COD_MONEDA, getdate()), 0)
+									  END)
+							 END) SALDO_TOTAL_PESOS
+                            ,TD.COD_FAMILIA_DEUDA
+                            ,B.COD_TIPO_DESCUENTO
+                               ,(B.DSCTO_CAPITAL + B.DSCTO_INTERES + B.DSCTO_MULTA) MONTO_DESCUENTO
+                            ,SB.COD_SUB_BOLETA
+                            ,SB.NRO_SUB_BOLETA
+                    FROM     BOLETA B LEFT OUTER JOIN PLAN_PAGO PP ON B.COD_PLAN_PAGO = PP.COD_PLAN_PAGO, DEUDA DA, TIPO_DEUDA TD, MONEDA M, SUB_BOLETA SB
+                    WHERE     B.COD_DEUDA = DA.COD_DEUDA
+                    AND        DA.COD_TIPO_DEUDA = TD.COD_TIPO_DEUDA
+                    AND        TD.COD_MONEDA = M.COD_MONEDA
+                    AND        B.COD_BOLETA = SB.COD_BOLETA
+                    and        B.COD_BOLETA = $cod_boleta
+                    and     FECHA_PAGO IS NULL";
+        }
+        else if(K_TIPO_BD == "mssql"){
+            $sql = "SELECT     B.COD_DEUDA
+                            , DA.COD_TIPO_DEUDA
+                            , M.SIMBOLO
+                            , B.COD_PLAN_PAGO
+                            , PP.ANO_COBRO
+                            ,convert(varchar, PP.FECHA_VENCTO, 103) FECHA_VENCTO
+                            ,SB.MONTO_CAPITAL + SB.MONTO_INTERES SALDO_CUOTA
+                            ,SB.MONTO_MULTA SALDO_MULTA
+                            ,SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA SALDO_TOTAL
+                            ,(CASE DA.COD_TIPO_DEUDA  
+								WHEN 'CRPI' THEN round((SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * dbo.f_mon_get_valor_moneda(TD.COD_MONEDA, getdate()), 0)  
+								WHEN 'CR12' THEN round((SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * dbo.f_mon_get_valor_moneda(TD.COD_MONEDA, getdate()), 0)
+								ELSE (CASE B.CANT
+										WHEN 1 THEN B.MONTO_PESOS
+										ELSE round((SB.MONTO_CAPITAL + SB.MONTO_INTERES + SB.MONTO_MULTA) * dbo.f_mon_get_valor_moneda(TD.COD_MONEDA, getdate()), 0)
+									  END)
+							 END) SALDO_TOTAL_PESOS
+                            ,TD.COD_FAMILIA_DEUDA
+                            ,B.COD_TIPO_DESCUENTO
+                               ,(B.DSCTO_CAPITAL + B.DSCTO_INTERES + B.DSCTO_MULTA) MONTO_DESCUENTO
+                            ,SB.COD_SUB_BOLETA
+                            ,SB.NRO_SUB_BOLETA
+                    FROM     BOLETA B LEFT OUTER JOIN PLAN_PAGO PP ON B.COD_PLAN_PAGO = PP.COD_PLAN_PAGO, DEUDA DA, TIPO_DEUDA TD, MONEDA M, SUB_BOLETA SB
+                    WHERE     B.COD_DEUDA = DA.COD_DEUDA
+                    AND        DA.COD_TIPO_DEUDA = TD.COD_TIPO_DEUDA
+                    AND        TD.COD_MONEDA = M.COD_MONEDA
+                    AND        B.COD_BOLETA = SB.COD_BOLETA
+                    and        B.COD_BOLETA = $cod_boleta
+                    and     FECHA_PAGO IS NULL";
+        }  
+        $result = $db->build_results($sql);
+        $suma_saldo_total = 0;
+        $suma_saldo_total_pesos = 0;
+        for ($i=0; $i<count($result); $i++) {
+            $row = $this->dws['dw_item_ingreso']->insert_row();
+            $this->dws['dw_item_ingreso']->set_item($row, 'SELECCION', 'N');
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_DEUDA', $result[$i]['COD_DEUDA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_DEUDA_H', $result[$i]['COD_DEUDA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_TIPO_DEUDA', $result[$i]['COD_TIPO_DEUDA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SIMBOLO', $result[$i]['SIMBOLO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_PLAN_PAGO', $result[$i]['COD_PLAN_PAGO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'ANO_COBRO', $result[$i]['ANO_COBRO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'FECHA_VENCTO', $result[$i]['FECHA_VENCTO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_CUOTA', $result[$i]['SALDO_CUOTA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_CUOTA_H', $result[$i]['SALDO_CUOTA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_MULTA', $result[$i]['SALDO_MULTA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_MULTA_H', $result[$i]['SALDO_MULTA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_TOTAL', $result[$i]['SALDO_TOTAL']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_TOTAL_H', $result[$i]['SALDO_TOTAL']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_TOTAL_SIN_DESCTO_H', $result[$i]['SALDO_TOTAL']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_TOTAL_PESOS', $result[$i]['SALDO_TOTAL_PESOS']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'SALDO_TOTAL_PESOS_H', $result[$i]['SALDO_TOTAL_PESOS']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_PAGO', 0);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_PAGO_H', 0);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_PAGO_PESOS', 0);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_PAGO_PESOS_H', 0);
+
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_FAMILIA_DEUDA_H', $result[$i]['COD_FAMILIA_DEUDA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'DISPLAY_TR', '');
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_TIPO_DESCUENTO', $result[$i]['COD_TIPO_DESCUENTO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_DESCUENTO', $result[$i]['MONTO_DESCUENTO']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'MONTO_DESCUENTO_H', $result[$i]['MONTO_DESCUENTO']);
+
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_SUB_BOLETA', $result[$i]['COD_SUB_BOLETA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'COD_SUB_BOLETA_H', $result[$i]['COD_SUB_BOLETA']);
+            $this->dws['dw_item_ingreso']->set_item($row, 'NRO_SUB_BOLETA', $result[$i]['NRO_SUB_BOLETA']);
+
+            $suma_saldo_total += $result[$i]['SALDO_TOTAL'];
+            $suma_saldo_total_pesos += $result[$i]['SALDO_TOTAL_PESOS'];
+        }
+        // los totales
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_SALDO_TOTAL', $suma_saldo_total);
+        $this->dws['dw_ingreso']->set_item(0, 'SUMA_SALDO_TOTAL_PESOS', $suma_saldo_total_pesos);
+
+        $this->dws['dw_ingreso']->set_item(0, 'COD_BOLETA', $cod_boleta);
+        $this->dws['dw_ingreso']->set_item(0, 'COD_DEUDA_BOLETA', $result[0]['COD_DEUDA']);
+        $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_BOLETA', '');
+        $this->dws['dw_ingreso']->set_item(0, 'VISIBLE_TR', 'none');
+    }
+}
+
+/****************************************************************/
+
+/////////////////////////////////////////////////////////////
+// Se separa por UNIVERSIDAD
+$file_name = dirname(__FILE__)."/".K_CLIENTE."/class_wi_ingreso.php";
+if (file_exists($file_name))
+    require_once($file_name);
+else {
+    class wi_ingreso extends wi_ingreso_base {
+        function __construct($cod_item_menu) {
+            parent::__construct($cod_item_menu);
+        }
+    }
+	class dw_documento_pago extends dw_documento_pago_base {
+	    function __construct() {
+	        parent::__construct();
+        }
+    }
+	class dw_item_ingreso extends dw_item_ingreso_base {
+	    function __construct() {
+	        parent::__construct();
+        }
+    }
+    
+}
+?>

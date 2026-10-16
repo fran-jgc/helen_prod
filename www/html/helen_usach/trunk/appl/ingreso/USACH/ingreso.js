@@ -1,0 +1,1277 @@
+/*
+POR REQUERIMIENTO TEMPORAL EN USACH, SE MODIFICÓ VALIDACIÓN EN FX valida_ch_al_dia
+LA IDEA ES QUE PERMITA INGRESAR CHEQUES MAS ANTIGUOS DE 60 DÍAS.
+
+SE HIZO ESTA MODIFICACION EN ingreso.js (generico) Y ESTE CAMBIO ESTA SOLO EN LA USACH, YA QUE ES SOLO UNA MODIFICACION TEMPORAL
+
+CREADOR = BP
+IDEA = IS
+FECHA = 30/04/2013
+*/
+
+function valida_pago_99_usach(ve_obj){
+	var record 	= get_num_rec_field(ve_obj.id);
+	var cod_deuda = document.getElementById('COD_DEUDA_H_' + record).value;
+	var ano_cuota = document.getElementById('ANO_COBRO_' + record).innerHTML;
+
+	if(ano_cuota == '9999'){
+		var ajax = nuevoAjax();
+		ajax.open("GET", "USACH/ajax_valida_pago_99.php?cod_deuda="+cod_deuda, false);	
+		ajax.send(null);	
+		var resp = ajax.responseText;
+		
+		if(resp == 'S'){
+			//se puede pagar la cuota 99
+			document.getElementById('SELECCION_' + record).disabled = false;
+			document.getElementById('SELECCION_' + record).checked = true;
+			asigna_totales();valida_morosa(ve_obj);
+			//return true;
+		}else{
+			//no se puede pagar la cuota 99
+			//document.getElementById('SELECCION_' + record).disabled = true;
+			alert('No se puede pagar con descuento si no tiene ingresada la cuota del A\u00F1o Actual.');
+			asigna_totales();
+			//document.getElementById('SELECCION_' + record).checked = false;
+			//return false;
+		}
+	}else{
+		document.getElementById('SELECCION_' + record).disabled = false;
+		asigna_totales(ve_obj);valida_morosa(ve_obj);
+	}
+}
+
+function habilita_descuento_uach(ve_familia){
+	if(ve_familia == 2){
+		document.getElementById('TR_DESCUENTO').style.display = '';
+		document.getElementById('COD_TIPO_DESCUENTO_0').disabled = true;
+	}
+	else if(ve_familia == 1)
+		document.getElementById('TR_DESCUENTO').style.display = 'none';
+}
+
+function validate(){
+	var nom_tabla = document.getElementById('NOM_TABLA').value; // 'simulacion'  ó  'ingreso'
+	//valida que se ingrese algun documento
+	var cant_docto_pago = parseInt(get_TR('DOCUMENTO_PAGO').length);
+	var cant_docto_pago_ch = parseInt(get_TR('DOCUMENTO_PAGO_CH_FECHA').length);
+	var cant_pagos = cant_docto_pago+cant_docto_pago_ch;
+	if (cant_pagos == 0){
+		if(nom_tabla == 'ingreso')
+			TabbedPanels1.showPanel(0);
+		alert('Debe ingresar algún documento.');
+		return false;
+	}
+	//si se ingresa MONTO_CHEQUE_FECHA, es obligatorio CANT_CHEQUE_FECHA
+	if(document.getElementById('MONTO_CHEQUE_FECHA_0') && document.getElementById('CANT_CHEQUE_FECHA_0')){ //si existen los objetos realiza la validacion, cuando se crea desde simulacion no exiten los values
+		var monto_ch_fecha = document.getElementById('MONTO_CHEQUE_FECHA_0').value; 
+		var cant_ch_fecha = document.getElementById('CANT_CHEQUE_FECHA_0').value;
+		if ((monto_ch_fecha > 0) && (cant_ch_fecha == '' || cant_ch_fecha == 0)){
+			if(nom_tabla == 'ingreso')
+				TabbedPanels1.showPanel(1);
+			document.getElementById('CANT_CHEQUE_FECHA_0').focus();
+			alert('Debe ingresar la cantidad de cheques a fecha');
+			return false;		
+		}
+	}
+	var vl_necesita_recalcula = document.getElementById('NECESITA_RECALCULA').value;
+	if (vl_necesita_recalcula == 'S') {
+		if(nom_tabla == 'ingreso')
+			TabbedPanels1.showPanel(1);
+		alert('Ud. a modificado los montos o fechas de los cheques a fecha, necesita recalcular el monto del último cheque.');
+		return false;
+	}
+	if(nom_tabla == 'ingreso'){ //hace las validaciondes en los documentos pagos
+		var aTR = get_TR('DOCUMENTO_PAGO');
+		
+		for (var i=0; i < aTR.length ; i++) {
+			var record 					= get_num_rec_field(aTR[i].id);
+			
+			if(document.getElementById('COD_TIPO_DOCUMENTO_PAGO_'+ record)){
+				var cod_tipo_documento_pago = document.getElementById('COD_TIPO_DOCUMENTO_PAGO_'+ record);
+				cod_tipo_documento_pago 	= cod_tipo_documento_pago.options[cod_tipo_documento_pago.selectedIndex].value;
+			}else
+				cod_tipo_documento_pago = document.getElementById('COD_TIPO_DOCUMENTO_PAGO_H_'+ record).value;
+							
+			var nro_documento_pago		= document.getElementById('NRO_DOCUMENTO_PAGO_'+ record).value;
+			var cod_banco				= document.getElementById('COD_BANCO_'+ record).value;
+			var fecha_documento_pago	= document.getElementById('FECHA_DOCUMENTO_PAGO_'+ record).value;
+			var monto					= to_num(get_value('MONTO_' + record));
+			//solo se debe ingresar el monto
+			var K_EFECTIVO 		= 4;
+			
+			//se deben ingresar todos los datos
+			var K_CHEQUE   		= 1;
+			var	K_CHEQUE_FECHA	= 5;
+			var K_VALE_VISTA	= 2;	
+			var K_DEPOSITO		= 3;
+			var K_TRANSBANK		= 6;
+	
+			if(cod_tipo_documento_pago == K_EFECTIVO) {
+				if(monto == '' || monto == null){
+					TabbedPanels1.showPanel(0);
+					document.getElementById('MONTO_'+ record).focus();
+					alert('Debe ingresar "Monto" antes de grabar.');
+					return false;
+				}
+			}
+			else if (cod_tipo_documento_pago == K_TRANSBANK){
+				if(nro_documento_pago == '' || nro_documento_pago == null){
+					TabbedPanels1.showPanel(0);
+					document.getElementById('NRO_DOCUMENTO_PAGO_'+ record).focus();
+					alert('Debe Ingresar "Nro de transacción" antes de grabar.');
+					return false;
+				}
+			}
+			else if (cod_tipo_documento_pago == K_CHEQUE | cod_tipo_documento_pago == K_VALE_VISTA | cod_tipo_documento_pago == K_DEPOSITO | cod_tipo_documento_pago ==K_CHEQUE_FECHA){						
+				if(nro_documento_pago == '' || nro_documento_pago == null){
+					TabbedPanels1.showPanel(0);
+					document.getElementById('NRO_DOCUMENTO_PAGO_'+ record).focus();
+					alert('Debe Ingresar "Nro del documento" antes de grabar.');
+					return false;
+				}
+				else if(cod_banco == '' || cod_banco == null){
+					TabbedPanels1.showPanel(0);
+					document.getElementById('COD_BANCO_'+ record).focus();
+					alert('Debe Ingresar "Banco" antes de grabar.');
+					return false;
+				}
+				else if(fecha_documento_pago == '' || fecha_documento_pago == null){
+					TabbedPanels1.showPanel(0);
+					document.getElementById('FECHA_DOCUMENTO_PAGO_'+ record).focus();
+					alert('Debe Ingresar "Fecha Documento" antes de grabar.');
+					return false;
+				}
+				else if(monto == '' || monto == null){
+					TabbedPanels1.showPanel(0);
+					document.getElementById('MONTO_'+ record).focus();
+					alert('Debe ingresar "Monto" antes de grabar.');
+					return false;
+				}
+			}
+		}
+		
+		var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+		for (var i=0; i < aTR.length ; i++) {
+			var record 					= get_num_rec_field(aTR[i].id);
+			var nro_documento_pago_ch	= document.getElementById('NRO_DOCUMENTO_PAGO_CH_FECH_'+ record).value;
+			var cod_banco_ch			= document.getElementById('COD_BANCO_CH_FECH_'+ record).value;
+			var fecha_documento_pago_ch	= get_value('FECHA_DOCUMENTO_PAGO_CH_FECH_' + record);
+			var monto_ch				= to_num(get_value('MONTO_CH_FECH_' + record));
+			if(nro_documento_pago_ch == '' || nro_documento_pago_ch == null){
+				TabbedPanels1.showPanel(1);
+				document.getElementById('NRO_DOCUMENTO_PAGO_CH_FECH_'+ record).focus();
+				alert('Debe Ingresar "Número" antes de grabar.');
+				return false;
+			}
+			else if(cod_banco_ch == '' || cod_banco_ch == null){
+				TabbedPanels1.showPanel(1);
+				document.getElementById('COD_BANCO_CH_FECH_'+ record).focus();
+				alert('Debe Ingresar "Nombre Banco" antes de grabar.');
+				return false;
+			}
+			else if(fecha_documento_pago_ch == '' || fecha_documento_pago_ch == null){
+				TabbedPanels1.showPanel(1);
+				document.getElementById('FECHA_DOCUMENTO_PAGO_CH_FECH_'+ record).focus();
+				alert('Debe Ingresar "Fecha" antes de grabar.');
+				return false;
+			}
+			else if(monto_ch == '' || monto_ch == null){
+				TabbedPanels1.showPanel(1);
+				document.getElementById('MONTO_CH_FECH_'+ record).focus();
+				alert('Debe ingresar "Monto" antes de grabar.');
+				return false;
+			}
+		}
+		
+	}//if(nom_tabla == 'ingreso')
+	else if(nom_tabla == 'simulacion'){ //hace las validaciondes en los documentos pagos
+		var aTR = get_TR('DOCUMENTO_PAGO');
+		for (var i=0; i < aTR.length ; i++) {
+			var record 					= get_num_rec_field(aTR[i].id);
+			var monto					= document.getElementById('MONTO_'+ record).value;
+			
+			if(monto == '' || monto == null){
+					document.getElementById('MONTO_'+ record).focus();
+					alert('Debe ingresar "Monto" antes de grabar.');
+					return false;
+			}
+		}
+		
+		var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+		for (var i=0; i < aTR.length ; i++) {
+			var record 					= get_num_rec_field(aTR[i].id);
+			var monto_ch				= document.getElementById('MONTO_CH_FECH_'+ record).value;
+									
+			if(monto_ch == '' || monto_ch == null){
+				document.getElementById('MONTO_CH_FECH_'+ record).focus();
+				alert('Debe ingresar "Monto" antes de grabar.');
+				return false;
+			}
+		}
+	}
+	
+	if(document.getElementById('MONTO_OTROS_GASTOS_0')){
+		var monto_otros_gastos = to_num(document.getElementById('MONTO_OTROS_GASTOS_0').value);
+		var glosa_otros_gastos = document.getElementById('GLOSA_OTROS_GASTOS_0').value;
+		if (monto_otros_gastos != 0 && glosa_otros_gastos == ''){
+			document.getElementById('GLOSA_OTROS_GASTOS_0').focus();
+			alert('Se debe ingresar la "Descripción" del monto "Otros Gastos".');
+			return false;
+		}
+	}
+
+	//valida que los totales de pago sean iguales a por pagar de la deuda esto 
+	//es por que la ingreso de pago es creada desde boleta 
+	var aTR = get_TR('ITEM_INGRESO');
+	if (aTR.length > 0) {
+		var vl_primer = get_num_rec_field(aTR[0].id);
+		var cod_sub_boleta = document.getElementById('COD_SUB_BOLETA_H_' + vl_primer).value;
+		if(cod_sub_boleta != ''){
+			var total_boleta_fecha	= to_num(document.getElementById('SUMA_SALDO_TOTAL_PESOS_0').innerHTML);
+			var total_pago_doc_fecha = to_num(document.getElementById('STATIC_TOTAL_0').innerHTML);
+			if(total_boleta_fecha != total_pago_doc_fecha){
+				alert('El total de pagos debe ser igual al total de la deuda por pagar.');
+				return false;
+			}
+		}
+	}
+		
+	//valida que MONTO_OTROS_GASTOS no sea mayor de los pagos	
+	var static_total = to_num(document.getElementById('STATIC_TOTAL_0').innerHTML);
+	if(static_total < 0){ //si se da esta condición solo es porque MONTO_OTROS_GASTOS es mayor que la suma de pagos
+		document.getElementById('MONTO_OTROS_GASTOS_0').focus();
+		alert('El monto "Otros Gastos" no puede ser mayor que el total de abonos.');
+		return false;
+	}
+	
+	//valida que los $ documentos no sean mayor que los $ asignados 
+	var por_pagar = parseInt(to_num(document.getElementById('POR_PAGAR_0').innerHTML));	
+	if (por_pagar < 0){
+		alert('El total de pagos es mayor que el total de cuotas seleccionadas.');
+		return false;
+	}//solicita confirmación del usuario si desea abonar alguna cuota
+	else if (por_pagar > 0){
+		if(!confirm('Alguna cuota se está abonando.. \n¿Desea de todas maneras registrar el abono?'))
+			return false;
+	}
+	//valida que exista un item_ingreso
+	var aTR = get_TR('ITEM_INGRESO');
+	var  count_select = 0;
+	for (i=0; i<aTR.length; i++){
+	var rec_tr = get_num_rec_field(aTR[i].id);
+		if(document.getElementById('SELECCION_'+rec_tr).checked){
+			count_select = 1;
+		}
+	}
+	//Debe haber al menos 1 item ingreso seleccionado
+	if(count_select < 1){
+		alert('El total de pagos es mayor que el total de cuotas seleccionadas');
+		return false;
+	}
+	//dibuja los totales abonados, para que al grabar haga el get_item
+	asignar_pago();
+	return true;
+}
+
+function selecciona_pago(ve_rut) {
+	// si existe convenio o RIN permite seleccionar que va a pagar
+	load_cuotas(ve_rut);
+}
+
+
+function Utf8ArrayToStr(array) {
+    var out, i, len, c;
+    var char2, char3;
+
+    out = "";
+    len = array.length;
+    i = 0;
+    while(i < len) {
+    c = array[i++];
+    switch(c >> 4)
+    { 
+      case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+        // 0xxxxxxx
+        out += String.fromCharCode(c);
+        break;
+      case 12: case 13:
+        // 110x xxxx   10xx xxxx
+        char2 = array[i++];
+        out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
+        break;
+      case 14:
+        // 1110 xxxx  10xx xxxx  10xx xxxx
+        char2 = array[i++];
+        char3 = array[i++];
+        out += String.fromCharCode(((c & 0x0F) << 12) |
+                       ((char2 & 0x3F) << 6) |
+                       ((char3 & 0x3F) << 0));
+        break;
+    }
+    }
+
+    return out;
+}
+
+function load_cuotas(ve_rut, ve_fecha_ingreso) {
+	
+	if (typeof ve_fecha_ingreso == 'undefined')
+		var fecha_ingreso = null;
+	else
+		var fecha_ingreso = ve_fecha_ingreso.value;
+		
+	var nom_tabla = document.getElementById('NOM_TABLA').value; // 'simulacion'  ó  'ingreso'
+	// borra todo lo anterior
+	var rut = replaceChars(ve_rut.value);
+	var aTR = get_TR('ITEM_INGRESO');
+	for (i=0; i<aTR.length; i++){
+		var rec_tr = get_num_rec_field(aTR[i].id);
+		del_line('ITEM_INGRESO_'+rec_tr, nom_tabla);
+	}
+	if (document.getElementById('COD_FAMILIA_DEUDA_0'))
+		document.getElementById('COD_FAMILIA_DEUDA_0').value = 1;	// fondo solidario
+
+	var ajax = nuevoAjax();
+	ajax.open("GET", "../ingreso/ajax_load_cuotas.php?rut="+rut+"&fecha_ingreso="+fecha_ingreso, false);
+	ajax.send(null);
+	
+	var resp = URLDecode(ajax.responseText);
+    if (resp=='DEUDOR_INEXISTENTE') {
+    	alert('Deudor RUT: ' + rut + ' inexistente.');
+    	ve_rut.value = '';
+    	return;
+    }else if (resp=='DEUDOR_SIN_DEUDAS') {
+    	alert('Deudor RUT: ' + rut + ' no tiene deudas en cobranza, o son de otra cartera.');
+    	ve_rut.value = '';
+    	return;
+    }else if (resp=='CARTERA_DIFERENTE') {
+    	alert('No corresponde a la cartera por defecto. Deudor RUT: ' + rut + '.');
+    	ve_rut.value = '';
+    	return;
+    }
+	var result = JSON.parse(resp);
+  
+	document.getElementById('RUT_H_0').value = rut;
+	document.getElementById('COD_DEUDOR_0').value				= result[0]['COD_DEUDOR'];
+	document.getElementById('DIG_VERIF_0').innerHTML			= result[0]['DIG_VERIF'];
+	document.getElementById('NOMBRE_0').innerHTML				= result[0][21];//result[0]['NOMBRE'];
+	document.getElementById('VALOR_MONEDA_0').value				= result[0]['VALOR_MONEDA'];
+	for (i=0; i < result.length; i++) {
+		var vl_row = add_line('ITEM_INGRESO', nom_tabla);
+		document.getElementById('SELECCION_' + vl_row).checked 				= result[i]['SELECCION']=='S';
+		if(document.getElementById('COD_DEUDA_' + vl_row))
+			document.getElementById('COD_DEUDA_' + vl_row).innerHTML 			= result[i]['COD_DEUDA'];
+		document.getElementById('COD_DEUDA_H_' + vl_row).value				= result[i]['COD_DEUDA'];
+		document.getElementById('COD_TIPO_DEUDA_' + vl_row).innerHTML 		= result[i]['COD_TIPO_DEUDA'];
+		document.getElementById('SIMBOLO_' + vl_row).innerHTML 				= result[i]['SIMBOLO']
+		document.getElementById('COD_PLAN_PAGO_' + vl_row).value 			= result[i]['COD_PLAN_PAGO'];
+		document.getElementById('ANO_COBRO_' + vl_row).innerHTML 			= result[i]['ANO_COBRO'];
+		document.getElementById('NRO_CUOTA_H_' + vl_row).value 				= result[i]['NRO_CUOTA'];
+		document.getElementById('FECHA_VENCTO_' + vl_row).innerHTML 		= result[i]['FECHA_VENCTO'];
+		document.getElementById('SALDO_CUOTA_' + vl_row).innerHTML 			= number_format(result[i]['SALDO_CUOTA'], 4, ',', '.');
+		document.getElementById('SALDO_CUOTA_H_' + vl_row).value 			= result[i]['SALDO_CUOTA'];  
+		document.getElementById('SALDO_MULTA_' + vl_row).innerHTML 			= number_format(result[i]['SALDO_MULTA'], 4, ',', '.');
+		document.getElementById('SALDO_MULTA_H_' + vl_row).value 			= result[i]['SALDO_MULTA'];
+		document.getElementById('SALDO_TOTAL_' + vl_row).innerHTML 			= number_format(result[i]['SALDO_TOTAL'], 4, ',', '.');
+		document.getElementById('SALDO_TOTAL_H_' + vl_row).value 			= result[i]['SALDO_TOTAL'];
+		document.getElementById('SALDO_TOTAL_SIN_DESCTO_H_' + vl_row).value = result[i]['SALDO_TOTAL'];  
+		document.getElementById('SALDO_TOTAL_PESOS_' + vl_row).innerHTML 	= number_format(result[i]['SALDO_TOTAL_PESOS'], 0, ',', '.');
+		document.getElementById('SALDO_TOTAL_PESOS_H_' + vl_row).value 		= result[i]['SALDO_TOTAL_PESOS'];  
+		document.getElementById('MONTO_PAGO_' + vl_row).innerHTML 			= number_format(result[i]['MONTO_PAGO'], 4, ',', '.');
+		document.getElementById('MONTO_PAGO_H_' + vl_row).value 			= result[i]['MONTO_PAGO'];  
+		document.getElementById('MONTO_PAGO_PESOS_' + vl_row).innerHTML 	= number_format(result[i]['MONTO_PAGO_PESOS'], 0, ',', '.');
+		document.getElementById('MONTO_PAGO_PESOS_H_' + vl_row).value 		= result[i]['MONTO_PAGO_PESOS'];  
+		document.getElementById('COD_FAMILIA_DEUDA_H_' + vl_row).value 		= result[i]['COD_FAMILIA_DEUDA_H'];
+		document.getElementById('ITEM_INGRESO_' + vl_row).style.display 	= result[i]['DISPLAY_TR'];
+		if (result[i]['EN_CR'] == 'S'){ //CONVENIO O RENEGOCIACION
+			document.getElementById('ITEM_INGRESO_' + vl_row).setAttribute('class', "convenio");
+		}
+		var vl_monto_a_pagar = document.getElementById('MONTO_CHEQUE_FECHA_0').value;
+		var cant_ch_fecha = document.getElementById('CANT_CHEQUE_FECHA_0').value;
+		if(vl_monto_a_pagar != '' && cant_ch_fecha != ''){
+			document.getElementById("COD_TIPO_DESCUENTO_"+vl_row).disabled=true;
+		}
+		
+		if(document.getElementById('PORC_DESCUENTO_' + vl_row)){
+			document.getElementById('PORC_DESCUENTO_' + vl_row).style.display 	= 'none';
+		
+			//de acuerdo al tipo de familia despliega los descuentos, 14/05/2012   IS		
+			var cod_familia = result[i]['COD_FAMILIA_DEUDA_H'];
+			var ajax = nuevoAjax();
+			var php = "ajax_tipo_descuento.php?cod_familia="+cod_familia;
+			ajax.open("GET", php, false);
+		
+			ajax.send(null);	
+			var resp1 = URLDecode(ajax.responseText);
+			var result1 = eval("(" + resp1 + ")");
+			
+			var tipo_descuento = document.getElementById('COD_TIPO_DESCUENTO_' + vl_row);
+			
+			while(tipo_descuento.options.length > 0){
+				tipo_descuento.options[tipo_descuento.options.length-1] = null;
+			}		
+			
+			var k = 1; //crear y manejar indices de options
+			for(var j=0;j<result1.length;j++){
+		    	var selOpcion = new Option(result1[j]['NOM_TIPO_DESCUENTO'], result1[j]['COD_TIPO_DESCUENTO']);//creacion de options con ajax
+				selOpcion.dataset.dropdown = result1[j]['PORC_DESCUENTO'];
+				eval(tipo_descuento.options[k]=selOpcion);//asiganacion de valores				
+				k++;  
+		    }
+		}
+	}
+	
+}
+
+function sum_total_documento_pago_ch_fecha(){
+	var sum_documento_pago_ch_fecha = 0;
+	var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+	for (i=0; i<aTR.length; i++){
+		var rec_tr = get_num_rec_field(aTR[i].id);
+		var sum_documento_pago_ch_fecha = sum_documento_pago_ch_fecha + parseInt(document.getElementById('MONTO_CH_FECH_' + rec_tr).value);
+	}
+	var vl_monto_a_pagar = document.getElementById('MONTO_CHEQUE_FECHA_0').value;
+	if (vl_monto_a_pagar == '')
+		var vl_monto_a_pagar = 0;
+	
+	var vl_interes = sum_documento_pago_ch_fecha - parseInt(vl_monto_a_pagar); 
+	document.getElementById('STATIC_MONTO_INTERES_0').innerHTML = number_format(vl_interes, 0, ',', '.');
+	document.getElementById('STATIC_MONTO_INTERES2_0').innerHTML = number_format(vl_interes, 0, ',', '.');
+	document.getElementById('SUMA_MONTO_CH_FECHA_0').innerHTML = number_format(sum_documento_pago_ch_fecha, 0, ',', '.'); 
+	asigna_totales();
+}
+/* Esta funcion calcula los cheques a fecha
+	Se llama al modificar cualquiera de los parametros que inciden en el calculo de ch a fecha:
+		monto_a_pagar, cant_cheque, fecha_1er_cheque, tasa
+*/
+function calc_cheque_fecha() {
+	var nom_tabla = document.getElementById('NOM_TABLA').value; // 'simulacion'  ó  'ingreso'
+    var vl_monto_a_pagar = document.getElementById('MONTO_CHEQUE_FECHA_0').value;
+    if (vl_monto_a_pagar == '')
+		var vl_monto_a_pagar = 0;
+
+    document.getElementById('STATIC_MONTO_CHEQUE_FECHA_H_0').value = vl_monto_a_pagar;
+    var vl_fecha_1er_cheque = document.getElementById('FECHA_PRIMER_CHEQUE_FECHA_0').value;	
+    var vl_tasa = document.getElementById('TASA_INTERES_0').value;	
+    var vl_cant_cheque = document.getElementById('CANT_CHEQUE_FECHA_0').value; 
+    if(nom_tabla == 'ingreso'){
+    	var rut			= document.getElementById('RUT_H_0').value;
+    	var dig_verif	= document.getElementById('DIG_VERIF_0').innerHTML;
+    	var usar_rut_deudor_girador 	= document.getElementById('USAR_RUT_DEUDOR_GIRADOR_0').checked;
+    }
+    var vl_max_cheque = document.getElementById('MAX_CH_H_0').value;
+    if (parseInt(vl_cant_cheque) > parseInt(vl_max_cheque)) {
+    	alert('El máximo de cheques permitido es ' + vl_max_cheque);
+    	document.getElementById('CANT_CHEQUE_FECHA_0').value = vl_max_cheque;
+    	vl_cant_cheque =  parseInt(vl_max_cheque);
+    }
+	// borra todo lo anterior    
+	var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+	for (i=0; i<aTR.length; i++){
+		var rec_tr = get_num_rec_field(aTR[i].id);
+		del_line('DOCUMENTO_PAGO_CH_FECHA_'+rec_tr, nom_tabla);
+	}
+	modifica_fecha_monto(false);
+	
+	var ajax = nuevoAjax();
+	ajax.open("GET", "../ingreso/ajax_cheque_fecha.php?cant_cheque="+vl_cant_cheque+"&monto_a_pagar="+vl_monto_a_pagar+"&fecha_1er_cheque="+vl_fecha_1er_cheque+"&tasa="+vl_tasa, false);
+	ajax.send(null);
+    var resp = URLDecode(ajax.responseText);
+	if (resp != '') {
+		var result = eval("(" + resp + ")");
+		for (i=0; i < result.length; i++) {
+			var vl_row = add_line('DOCUMENTO_PAGO_CH_FECHA', nom_tabla);
+			var fecha = result[i]['FECHA_DOCUMENTO_PAGO'];
+			document.getElementById('FECHA_DOCUMENTO_PAGO_CH_FECH_' + vl_row).value = result[i]['FECHA_DOCUMENTO_PAGO'];
+			document.getElementById('MONTO_CH_FECH_' + vl_row).value				= result[i]['MONTO'];
+			
+			if (usar_rut_deudor_girador == true && nom_tabla == 'ingreso'){
+				document.getElementById('RUT_GIRADOR_' + vl_row).value = rut;
+				document.getElementById('DIG_VERIF_GIRADOR_' + vl_row).value = dig_verif;
+			}
+		}
+		
+		if (vl_tasa == 0) {
+			var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+			//suma todos los item_documento_pago_ch_fecha
+			var sum_item_doc_pago_ch_fecha = 0;
+			for (i=0; i<aTR.length; i++){
+				var rec_tr = get_num_rec_field(aTR[i].id);
+				var vl_monto_ch_fech = document.getElementById('MONTO_CH_FECH_' + rec_tr).value;
+				sum_item_doc_pago_ch_fecha = parseInt(sum_item_doc_pago_ch_fecha) + parseInt(vl_monto_ch_fech);
+			}
+			//seteamos el ultimo item para que cuadre los montos
+			var vl_calculo_descuadre = parseInt(vl_monto_a_pagar) - parseInt(sum_item_doc_pago_ch_fecha);
+			var vl_monto_ultimo_item = document.getElementById('MONTO_CH_FECH_' + rec_tr).value;
+			document.getElementById('MONTO_CH_FECH_' + rec_tr).value = parseInt(vl_monto_ultimo_item) + parseInt(vl_calculo_descuadre);
+		}
+	}
+	sum_total_documento_pago_ch_fecha();
+}
+
+function usa_rut_deudor_girador(){
+	var usar_rut_deudor_girador 	= document.getElementById('USAR_RUT_DEUDOR_GIRADOR_0').checked;
+	var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+	for (i=0; i<aTR.length; i++){
+		var rec_tr = get_num_rec_field(aTR[i].id);
+		if(usar_rut_deudor_girador == true){
+			document.getElementById('RUT_GIRADOR_'+ rec_tr).value = document.getElementById('RUT_H_0').value;
+			document.getElementById('DIG_VERIF_GIRADOR_'+ rec_tr).value = document.getElementById('DIG_VERIF_0').innerHTML; 
+		}
+		else{
+			document.getElementById('RUT_GIRADOR_'+ rec_tr).value = null;
+			document.getElementById('DIG_VERIF_GIRADOR_'+ rec_tr).value = null;
+		}
+	}
+}
+
+function sum_total_documento_pago(){
+	var sum_documento_pago = 0;
+	var aTR = get_TR('DOCUMENTO_PAGO');
+	for (i=0; i<aTR.length; i++){
+		var rec_tr = get_num_rec_field(aTR[i].id);
+		var vl_monto_doc = document.getElementById('MONTO_' + rec_tr).value;
+		if (vl_monto_doc=='')
+			vl_monto_doc = 0;
+		var sum_documento_pago = sum_documento_pago + parseInt(vl_monto_doc);
+	}
+	document.getElementById('SUMA_MONTO_0').innerHTML = number_format(sum_documento_pago, 0, ',', '.');
+	document.getElementById('SUMA_MONTO_H_0').value = sum_documento_pago;
+	
+	asigna_totales();
+}
+
+function valida_morosa(seleccion){
+	var K_MOROSA = 4;
+	if(seleccion.checked == true){
+		var reg_actual = get_num_rec_field(seleccion.id);
+		var cod_plan_pago_h = document.getElementById('COD_PLAN_PAGO_'+reg_actual).value;
+			var ajax = nuevoAjax();
+			ajax.open("GET", "../ingreso/ajax_valida_cuota_morosa.php?cod_plan_pago="+cod_plan_pago_h, false);
+			ajax.send(null);
+	   		var resp = URLDecode(ajax.responseText);
+	   		var resp_plan = resp.split('|');
+	   		
+	   	if(resp_plan[0] == K_MOROSA){
+			for (j=0; j<reg_actual; j++){
+				//se llama ajax nuevamente comprobando los pp anteriores
+				var cod_plan_pago_anterior = document.getElementById('COD_PLAN_PAGO_'+j).value;
+				var sel_plan_anterior = document.getElementById('SELECCION_'+j).checked;
+				
+				//se podria ver si es que no esta seleccionado y a partir de eso entrar a comparar
+				if(sel_plan_anterior == false){
+					var ajax = nuevoAjax();
+					ajax.open("GET", "../ingreso/ajax_valida_cuota_morosa.php?cod_plan_pago="+cod_plan_pago_anterior, false);
+					ajax.send(null);
+	   				var resp_anterior = URLDecode(ajax.responseText);
+	   				var resp_plan_anterior = resp_anterior.split('|');
+	   				
+	   				if(resp_plan_anterior[0] == K_MOROSA){
+	   					alert('Tiene la cuota a\u00F1o '+resp_plan_anterior[1]+' Morosa, es anterior a la que esta pagando');
+	   				}
+				}
+			}
+		}
+	}
+}
+
+function asigna_totales(ve_tr_id){
+	var nom_tabla = document.getElementById('NOM_TABLA').value; // 'simulacion'  ó  'ingreso'
+	if(document.getElementById('MONTO_OTROS_GASTOS_0').value == '')
+		var monto_otros_gastos = 0;
+	else
+		var monto_otros_gastos = parseInt(document.getElementById('MONTO_OTROS_GASTOS_0').value);
+	
+	if(!document.getElementById('MONTO_EXCEDENTE_0')){
+		var monto_excedente = 0;
+	}
+	else{
+		if(document.getElementById('MONTO_EXCEDENTE_0').value == '')
+			var monto_excedente = 0;
+		else
+			var monto_excedente = parseInt(document.getElementById('MONTO_EXCEDENTE_0').value);
+	}
+				
+	//muestra suma de cuotas seleccionadas
+	var saldo_total_pesos = 0;
+	var saldo_total = 0;
+	var cuota_cero_cri = 0;
+	var cuotas_otras_cri = 0;
+	var marca_cuota_cero_cri = 0;
+	var ano_cuota_cero_cri = 0;
+	var marca_otra_cuota_cri = 0;
+	var msg = false;
+	var aTR = get_TR('ITEM_INGRESO');
+	for (i=0; i<aTR.length; i++){
+		var rec_tr = get_num_rec_field(aTR[i].id);
+		var seleccion = document.getElementById('SELECCION_' + rec_tr).checked;
+		
+		var tipo_deuda= document.getElementById('COD_TIPO_DEUDA_' + rec_tr).innerHTML;
+		var nro_cuota_cri= document.getElementById('NRO_CUOTA_H_' + rec_tr).value;
+		
+		if(seleccion == true){
+			if(tipo_deuda=='CRI' && nro_cuota_cri== 0){
+			    cuota_cero_cri = 1;
+			    ano_cuota_cero_cri= document.getElementById('ANO_COBRO_' + rec_tr).innerHTML;
+			/*}
+			if(tipo_deuda=='CRI' && nro_cuota_cri > 0){
+				cuotas_otras_cri= 1;
+				marca_otra_cuota_cri= 1;
+			}
+		
+			if(cuota_cero_cri== 1 && cuotas_otras_cri== 1){
+			    alert('Primero debe pagar cuota N° 0 (cuota del año '+ano_cuota_cero_cri+') para la deuda tipo CRI, antes de pagar otras cuotas para este tipo de deuda');
+			    ve_tr_id.checked = false;
+			    return false; */
+			}
+					
+			var saldo_total_pesos = saldo_total_pesos + parseInt(document.getElementById('SALDO_TOTAL_PESOS_H_' + rec_tr).value);
+			var saldo_total = saldo_total + parseFloat(document.getElementById('SALDO_TOTAL_H_' + rec_tr).value);
+		}else{//si se desmarca, fuerza que quede todo en cero 
+				if(tipo_deuda=='CRI' && nro_cuota_cri== 0){
+			    	marca_cuota_cero_cri = 1;
+			    	ano_cuota_cero_cri= document.getElementById('ANO_COBRO_' + rec_tr).innerHTML;
+				}
+				
+				if(marca_cuota_cero_cri== 1 && marca_otra_cuota_cri== 1){
+				    alert('Primero debe pagar la cuota N° 0 (cuota del a\u00F1o '+ano_cuota_cero_cri+') para el Tipo Deuda CRI');
+				    ve_tr_id.checked = false;
+				    return false; 
+				}
+				
+				document.getElementById('MONTO_PAGO_' + rec_tr).innerHTML = number_format(0, 4, ',', '.');;
+				document.getElementById('MONTO_PAGO_H_' + rec_tr).value = 0;
+				document.getElementById('MONTO_PAGO_PESOS_' + rec_tr).innerHTML = 0;
+				document.getElementById('MONTO_PAGO_PESOS_H_' + rec_tr).value = 0;
+		}
+		
+			
+	}
+	
+	document.getElementById('SUMA_SALDO_TOTAL_0').innerHTML = number_format(saldo_total, 4, ',', '.');
+	document.getElementById('SUMA_SALDO_TOTAL_PESOS_0').innerHTML = number_format(saldo_total_pesos, 0, ',', '.');
+
+	//calcula el valor residual
+	var sum_documento_pago = parseInt(document.getElementById('SUMA_MONTO_H_0').value);
+	var sum_cheque_fecha = parseInt(document.getElementById('STATIC_MONTO_CHEQUE_FECHA_H_0').value);
+	var total = sum_documento_pago + sum_cheque_fecha - monto_otros_gastos - monto_excedente;
+	document.getElementById('STATIC_TOTAL_0').innerHTML = number_format(total, 0, ',', '.');
+	var por_pagar = saldo_total_pesos - total;
+	document.getElementById('POR_PAGAR_0').innerHTML = number_format(por_pagar, 0, ',', '.');
+	document.getElementById('POR_PAGAR2_0').innerHTML = number_format(por_pagar, 0, ',', '.');
+
+	var monto_interes = document.getElementById('STATIC_MONTO_INTERES_0').innerHTML;
+	var monto_interes = parseInt(to_num(monto_interes));
+	
+	var ch_fecha_con_interes = sum_cheque_fecha + monto_interes;
+	document.getElementById('STATIC_CH_FECHA_INT_0').innerHTML = number_format(ch_fecha_con_interes, 0, ',', '.');
+	var por_pagar_con_interes = parseInt(sum_documento_pago + ch_fecha_con_interes);
+	document.getElementById('STATIC_TOTAL_PAGAR_0').innerHTML = number_format(por_pagar_con_interes, 0, ',', '.');
+	
+	//asignar_pago();
+}
+
+
+function del_line_doc(ve_tr_id, ve_nom_mantenedor) {
+	del_line_standard(ve_tr_id, ve_nom_mantenedor);
+	sum_total_documento_pago();
+}
+
+function modifica_fecha_monto(ve_habilita) {
+	if (ve_habilita) {
+		document.getElementById('MODIFICA_FECHA_MONTO').removeAttribute('disabled');
+		document.getElementById('NECESITA_RECALCULA').value = 'S';
+	}
+	else {	
+		document.getElementById('MODIFICA_FECHA_MONTO').setAttribute('disabled', "disable");
+		document.getElementById('NECESITA_RECALCULA').value = 'N';
+	}
+}
+function calcula_monto() {
+	var vl_datos = '';
+	var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+	for (i=0; i<aTR.length; i++){
+		var vl_row = get_num_rec_field(aTR[i].id);
+		vl_datos = vl_datos + document.getElementById('FECHA_DOCUMENTO_PAGO_CH_FECH_' + vl_row).value + "|"; 
+		vl_datos = vl_datos + document.getElementById('MONTO_CH_FECH_' + vl_row).value + "|"; 
+	}
+
+    var vl_tasa = document.getElementById('TASA_INTERES_0').value;	
+    var vl_monto_a_pagar = document.getElementById('MONTO_CHEQUE_FECHA_0').value;	
+	var ajax = nuevoAjax();
+	ajax.open("GET", "../ingreso/ajax_ultimo_fecha.php?datos="+vl_datos + "&tasa="+vl_tasa + "&monto_a_pagar="+vl_monto_a_pagar, false);
+	ajax.send(null);
+    var resp = URLDecode(ajax.responseText);
+
+	// actualiza el monto del ultimo documento
+	var vl_row = get_num_rec_field(aTR[aTR.length - 1].id);
+	document.getElementById('MONTO_CH_FECH_' + vl_row).value = resp;
+	
+	modifica_fecha_monto(false);
+	sum_total_documento_pago_ch_fecha();
+}
+
+function replaceChars(entry) {
+	var out = ".";
+	var add = "";
+	var temp = "" + entry;
+	while (temp.indexOf(out) > -1) {
+		pos = temp.indexOf(out);
+		temp = ""
+				+ (temp.substring(0, pos) + add + temp.substring(
+						(pos + out.length), temp.length));
+	}
+	return temp;
+}
+
+function change_familia_deuda(ve_cod_familia_deuda) {
+	
+	//funcion que solo cuando sea uach habilitara un TR
+	var familia = ve_cod_familia_deuda.value;
+	if (document.getElementById('TR_DESCUENTO') != null)
+		habilita_descuento_uach(familia);
+	
+	var vl_ind = 0;
+	var aTR = get_TR('ITEM_INGRESO');
+	for (i=0; i<aTR.length; i++){
+		var rec_tr = get_num_rec_field(aTR[i].id);
+		var vl_seleccion = document.getElementById('SELECCION_' + rec_tr);
+		vl_seleccion.checked = false;
+		var vl_cod_familia_deuda = document.getElementById('COD_FAMILIA_DEUDA_H_' + rec_tr).value;
+		if (vl_cod_familia_deuda == ve_cod_familia_deuda.value) {
+			aTR[i].style.display = '';
+			if (vl_ind % 2 == 0)
+				aTR[i].setAttribute('class', "claro");
+			else	
+				aTR[i].setAttribute('class', "oscuro");
+			vl_ind++
+		}
+		else {
+			aTR[i].style.display = 'none';
+		}
+	}
+
+	// como se deselecciono todo deja todo en cero	
+	document.getElementById('SUMA_SALDO_TOTAL_0').innerHTML = 0; 
+	document.getElementById('SUMA_SALDO_TOTAL_PESOS_0').innerHTML = 0;
+	
+	//asigna valor moneda
+	var ajax = nuevoAjax();
+	var php = "ajax_valor_moneda.php?cod_familia_deuda="+ve_cod_familia_deuda.value+"&fecha_ingreso=null";
+	ajax.open("GET", php, false);
+	ajax.send(null);
+	var resp = URLDecode(ajax.responseText);
+	var result = eval("(" + resp + ")");
+	document.getElementById('VALOR_MONEDA_0').value = result;
+
+}
+
+
+function distribuye_descuento(){
+	if(typeof(document.getElementById('MONTO_DESCTO_0')) != "undefined")
+	{
+		if(document.getElementById('MONTO_DESCTO_0') != null){
+			var descuento = document.getElementById('MONTO_DESCTO_0').value;
+			var valor_moneda = parseFloat(document.getElementById('VALOR_MONEDA_0').value);
+			
+			if(descuento == '')
+				descuento = 0;
+				
+			var descuento_moneda = descuento / valor_moneda;
+			var aTR = get_TR('ITEM_INGRESO');
+			var saldo_descuento = number_format(parseFloat(descuento_moneda), 4, '.', ',');
+			
+			for (i=0; i<aTR.length; i++){
+				var rec_tr = get_num_rec_field(aTR[i].id);
+				var seleccion = document.getElementById('SELECCION_' + rec_tr).checked;
+				if(seleccion == true){
+					if(saldo_descuento < 0)
+						saldo_descuento = 0;
+					
+					if(saldo_descuento >= 0){
+						var saldo_cuota = parseFloat(document.getElementById('SALDO_CUOTA_H_' + rec_tr).value);
+						var interes_penal = parseFloat(document.getElementById('SALDO_MULTA_H_' + rec_tr).value);
+						if(saldo_descuento > interes_penal){
+							saldo_descuento = number_format(parseFloat(saldo_descuento - interes_penal), 4, '.', ',');
+							document.getElementById('MONTO_DESCUENTO_' + rec_tr).innerHTML = number_format(interes_penal, 4, ',', '.');
+							document.getElementById('MONTO_DESCUENTO_H_' + rec_tr).value = number_format(interes_penal, 4, '.', ',');
+							var nuevo_saldo_cuota = number_format(parseFloat(saldo_cuota), 4, '.', ',');
+							document.getElementById('SALDO_TOTAL_' + rec_tr).innerHTML = number_format(nuevo_saldo_cuota, 4, ',', '.');
+							document.getElementById('SALDO_TOTAL_H_' + rec_tr).value = number_format(nuevo_saldo_cuota, 4, '.', ',');
+							var saldo_pesos = Math.round(nuevo_saldo_cuota * valor_moneda);
+							document.getElementById('SALDO_TOTAL_PESOS_' + rec_tr).innerHTML = number_format(saldo_pesos, 0, ',', '.');
+							document.getElementById('SALDO_TOTAL_PESOS_H_' + rec_tr).value = saldo_pesos;
+							if(descuento == 0)
+								saldo_descuento = 0;
+						}
+						else{
+							document.getElementById('MONTO_DESCUENTO_' + rec_tr).innerHTML = number_format(saldo_descuento, 4, ',', '.');
+							document.getElementById('MONTO_DESCUENTO_H_' + rec_tr).value = number_format(saldo_descuento, 4, '.', ',');
+							var nuevo_saldo_cuota = number_format(parseFloat(saldo_cuota + interes_penal - saldo_descuento), 4, '.', ',');
+							saldo_descuento = number_format(parseFloat(saldo_descuento - interes_penal), 4, '.', ',');
+							document.getElementById('SALDO_TOTAL_' + rec_tr).innerHTML = number_format(nuevo_saldo_cuota, 4, ',', '.');
+							document.getElementById('SALDO_TOTAL_H_' + rec_tr).value = number_format(nuevo_saldo_cuota, 4, '.', ',');
+							var saldo_pesos = Math.round(nuevo_saldo_cuota * valor_moneda);
+							document.getElementById('SALDO_TOTAL_PESOS_' + rec_tr).innerHTML = number_format(saldo_pesos, 0, ',', '.');
+							document.getElementById('SALDO_TOTAL_PESOS_H_' + rec_tr).value = saldo_pesos;
+							if(descuento == 0)
+								saldo_descuento = 0;
+						}
+					}
+				}
+			}
+			
+			if(saldo_descuento >= 0){
+				for (i=0; i<aTR.length; i++){
+					var rec_tr = get_num_rec_field(aTR[i].id);
+					var seleccion = document.getElementById('SELECCION_' + rec_tr).checked;
+					if(seleccion == true){
+						if(saldo_descuento >= 0){
+							var saldo_cuota = parseFloat(document.getElementById('SALDO_CUOTA_H_' + rec_tr).value);
+							var interes_penal = parseFloat(document.getElementById('SALDO_MULTA_H_' + rec_tr).value);
+							var monto_descuento = parseFloat(document.getElementById('MONTO_DESCUENTO_H_' + rec_tr).value);
+							if(saldo_descuento > saldo_cuota){
+								alert('El Descuento no puede ser mayor al total de las deudas seleccionadas.');
+							}
+							else{
+								var descuento_total = number_format(parseFloat(monto_descuento)+parseFloat(saldo_descuento), 4, '.', ',');
+								document.getElementById('MONTO_DESCUENTO_' + rec_tr).innerHTML = number_format(parseFloat(monto_descuento)+parseFloat(saldo_descuento), 4, ',', '.');
+								document.getElementById('MONTO_DESCUENTO_H_' + rec_tr).value = number_format(parseFloat(monto_descuento)+parseFloat(saldo_descuento), 4, '.', ',');
+								var nuevo_saldo_cuota = number_format(parseFloat(saldo_cuota + interes_penal - descuento_total), 4, '.', ',');
+								document.getElementById('SALDO_TOTAL_' + rec_tr).innerHTML = number_format(nuevo_saldo_cuota, 4, ',', '.');
+								document.getElementById('SALDO_TOTAL_H_' + rec_tr).value = number_format(nuevo_saldo_cuota, 4, '.', ',');
+								var saldo_pesos = Math.round(nuevo_saldo_cuota * valor_moneda);
+								document.getElementById('SALDO_TOTAL_PESOS_' + rec_tr).innerHTML = number_format(saldo_pesos, 0, ',', '.');
+								document.getElementById('SALDO_TOTAL_PESOS_H_' + rec_tr).value = saldo_pesos;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+function asignar_pago(){
+	distribuye_descuento();
+	var total = to_num(document.getElementById('STATIC_TOTAL_0').innerHTML);
+	var valor_moneda = parseFloat(document.getElementById('VALOR_MONEDA_0').value);
+	var aTR = get_TR('ITEM_INGRESO');
+	for (i=0; i<aTR.length; i++){
+		var rec_tr = get_num_rec_field(aTR[i].id);
+		var seleccion = document.getElementById('SELECCION_' + rec_tr).checked;
+		if(seleccion == true){
+			var total_pesos_cuota = parseInt(document.getElementById('SALDO_TOTAL_PESOS_H_' + rec_tr).value);
+
+			if(total ==0){
+				document.getElementById('SELECCION_' + rec_tr).checked = false;
+				document.getElementById('MONTO_PAGO_' + rec_tr).innerHTML = number_format(0, 4, ',', '.');
+				document.getElementById('MONTO_PAGO_H_' + rec_tr).value = 0;
+				document.getElementById('MONTO_PAGO_PESOS_' + rec_tr).innerHTML = 0;
+				document.getElementById('MONTO_PAGO_PESOS_H_' + rec_tr).value = 0;
+				
+			}	
+			else if (total >= total_pesos_cuota){
+				var monto_pago = roundNumber(total_pesos_cuota / valor_moneda, 4);				
+				document.getElementById('MONTO_PAGO_' + rec_tr).innerHTML = number_format(monto_pago, 4, ',', '.');
+				document.getElementById('MONTO_PAGO_H_' + rec_tr).value = monto_pago;
+				document.getElementById('MONTO_PAGO_PESOS_' + rec_tr).innerHTML = number_format(total_pesos_cuota, 0, ',', '.');
+				document.getElementById('MONTO_PAGO_PESOS_H_' + rec_tr).value = total_pesos_cuota;
+				var total = total - total_pesos_cuota;
+			}	
+			else{
+				var monto_pago = roundNumber(total / valor_moneda, 4);
+				document.getElementById('MONTO_PAGO_' + rec_tr).innerHTML = number_format(monto_pago, 4, ',', '.');
+				document.getElementById('MONTO_PAGO_H_' + rec_tr).value = monto_pago;
+				document.getElementById('MONTO_PAGO_PESOS_' + rec_tr).innerHTML = number_format(total, 0, ',', '.');
+				document.getElementById('MONTO_PAGO_PESOS_H_' + rec_tr).value = total;
+				var total = 0;
+			}
+		}
+	}
+	
+}
+
+function change_descuento(ve_cod_tipo_descuento){
+	var record = get_num_rec_field(ve_cod_tipo_descuento.id);
+	var cod_familia_deuda = document.getElementById('COD_FAMILIA_DEUDA_H_'+record).value;
+
+	var saldo_sin_descto = parseFloat(document.getElementById('SALDO_TOTAL_SIN_DESCTO_H_' + record).value);
+	var valor_moneda = parseFloat(document.getElementById('VALOR_MONEDA_0').value);
+	
+	if (cod_familia_deuda == 1){
+		
+		//los desctos son aplicables a cuotas 9999 o CSR cuota futura
+		var ano_cobro = document.getElementById('ANO_COBRO_' + record).innerHTML; 
+		var vl_cod_tipo_deuda = document.getElementById('COD_TIPO_DEUDA_' + record).innerHTML;
+	
+		var vl_fecha_ingreso = get_value('FECHA_INGRESO_0');
+		var aFecha_ingreso = vl_fecha_ingreso.split('/'); 
+		var vl_ano_ingreso = aFecha_ingreso[2]; 
+
+		if (ano_cobro == 9999 || (vl_cod_tipo_deuda=='CSR' && ano_cobro > vl_ano_ingreso)){
+			document.getElementById('COD_TIPO_DESCUENTO_' + record).disabled = false;
+		}else{
+			document.getElementById('COD_TIPO_DESCUENTO_' + record).selectedIndex=0;	
+			document.getElementById('COD_TIPO_DESCUENTO_' + record).disabled = true;
+		}
+		
+		if (ve_cod_tipo_descuento.selectedIndex == 0){ //se deja descto vacio
+			document.getElementById('MONTO_DESCUENTO_' + record).innerHTML = 0;
+			document.getElementById('MONTO_DESCUENTO_H_' + record).value = 0;
+			document.getElementById('SALDO_TOTAL_H_' + record).value = saldo_sin_descto;
+			document.getElementById('SALDO_TOTAL_' + record).innerHTML = number_format(saldo_sin_descto, 4, ',', '.');
+			var saldo_pesos_sin_descto = roundNumber(saldo_sin_descto * valor_moneda, 0);
+			document.getElementById('SALDO_TOTAL_PESOS_H_' + record).value = saldo_pesos_sin_descto;
+			document.getElementById('SALDO_TOTAL_PESOS_' + record).innerHTML = number_format(saldo_pesos_sin_descto, 0, ',', '.');
+		}
+		else{
+			var porc_descto = parseFloat(ve_cod_tipo_descuento.options[ve_cod_tipo_descuento.selectedIndex].dataset.dropdown); 
+			var monto_descto = roundNumber((saldo_sin_descto * porc_descto) / 100, 4);
+
+			document.getElementById('MONTO_DESCUENTO_' + record).innerHTML = number_format(monto_descto, 4, ',', '.');
+			document.getElementById('MONTO_DESCUENTO_H_' + record).value = monto_descto;
+			var saldo_con_descto = saldo_sin_descto - monto_descto;
+			document.getElementById('SALDO_TOTAL_H_' + record).value = saldo_con_descto;
+			document.getElementById('SALDO_TOTAL_' + record).innerHTML = number_format(saldo_con_descto, 4, ',', '.');	
+			var saldo_pesos_con_descto = roundNumber(saldo_con_descto * valor_moneda, 0);		
+			document.getElementById('SALDO_TOTAL_PESOS_H_' + record).value = saldo_pesos_con_descto;
+			document.getElementById('SALDO_TOTAL_PESOS_' + record).innerHTML = number_format(saldo_pesos_con_descto, 0, ',', '.');
+		}
+	}
+	else{//familia <> 1	
+			
+		if (ve_cod_tipo_descuento.selectedIndex == 0){ //se deja descto vacio
+			document.getElementById('MONTO_DESCUENTO_' + record).innerHTML = 0;
+			document.getElementById('MONTO_DESCUENTO_H_' + record).value = 0;
+			document.getElementById('SALDO_TOTAL_H_' + record).value = saldo_sin_descto;
+			document.getElementById('SALDO_TOTAL_' + record).innerHTML = number_format(saldo_sin_descto, 4, ',', '.');
+			var saldo_pesos_sin_descto = roundNumber(saldo_sin_descto * valor_moneda, 0);
+			document.getElementById('SALDO_TOTAL_PESOS_H_' + record).value = saldo_pesos_sin_descto;
+			document.getElementById('SALDO_TOTAL_PESOS_' + record).innerHTML = number_format(saldo_pesos_sin_descto, 0, ',', '.');
+		}
+		else{
+			var porc_descto = to_num(document.getElementById('PORC_DESCUENTO_' + record).value);
+			if(isNaN(porc_descto)==true){
+				var monto_descto = 0;
+			}else{			
+				var monto_descto = roundNumber((saldo_sin_descto * porc_descto) / 100, 4);
+			}
+
+			document.getElementById('MONTO_DESCUENTO_' + record).innerHTML = number_format(monto_descto, 4, ',', '.');
+			document.getElementById('MONTO_DESCUENTO_H_' + record).value = monto_descto;
+			var saldo_con_descto = saldo_sin_descto - monto_descto;
+			document.getElementById('SALDO_TOTAL_H_' + record).value = saldo_con_descto;
+			document.getElementById('SALDO_TOTAL_' + record).innerHTML = number_format(saldo_con_descto, 4, ',', '.');	
+			var saldo_pesos_con_descto = roundNumber(saldo_con_descto * valor_moneda, 0);		
+			document.getElementById('SALDO_TOTAL_PESOS_H_' + record).value = saldo_pesos_con_descto;
+			document.getElementById('SALDO_TOTAL_PESOS_' + record).innerHTML = number_format(saldo_pesos_con_descto, 0, ',', '.');
+		}
+	}
+	asigna_totales();
+}
+
+function change_porc_descuento(ve_campo){
+	var record = get_num_rec_field(ve_campo.id);
+	var cod_familia_deuda = document.getElementById('COD_FAMILIA_DEUDA_H_'+record).value;
+
+	var cod_tipo_descto = document.getElementById('COD_TIPO_DESCUENTO_' + record);
+	change_descuento(cod_tipo_descto);		
+}
+	
+function valida_fecha_ch_fecha (ve_campo){
+	var vl_fecha_1er_cheque = document.getElementById('FECHA_PRIMER_CHEQUE_FECHA_H_0').value;
+
+	var fecha = ve_campo.value.split('/');	
+	var ano = fecha[2];
+	if ((ano.length )== 2){ //se ingreso el año en dos digitos, ejemplo = 17/01/11
+		var ano_final = parseInt(ano) + 2000; //deja el año en cuatro digitos, ejemplo = 17/01/2011
+	}	
+	else{
+		ano_final = fecha[2];
+	}
+	var fecha_cheque = new Date(ano_final,fecha[1]-1,fecha[0]);  	
+	
+	var fecha_actual = new Date();
+	var month = fecha_actual.getMonth();
+	var day = fecha_actual.getDate();
+	var year = fecha_actual.getFullYear();
+	var fecha_actual = new Date(year,month,day); 
+
+	if (fecha_cheque <= fecha_actual){
+		alert('¡La fecha ingresada no puede ser anterior o igual a la actual!');
+		ve_campo.value = vl_fecha_1er_cheque;
+		ve_campo.focus();
+	}
+}
+
+/// Manejo del deposito
+var K_TIPO_DOC_DEPOSITO = 3;
+
+function add_line(ve_tabla_id, ve_nom_tabla) {
+	if (ve_tabla_id == 'DOCUMENTO_PAGO') {
+		var vl_row = add_line_standard(ve_tabla_id, ve_nom_tabla);
+		var vl_cod_tipo_doc = document.getElementById('COD_TIPO_DOCUMENTO_PAGO_' + vl_row);
+		var vl_option  = vl_cod_tipo_doc.firstChild;	
+		while (vl_option) {
+			if (vl_option.value == K_TIPO_DOC_DEPOSITO)	// deposito NO es visible
+				vl_option.style.display = 'none';
+			else
+				vl_option.style.display = '';
+			
+			vl_option = vl_option.nextSibling;
+		}
+		return vl_row;
+	}
+	else
+		return add_line_standard(ve_tabla_id, ve_nom_tabla);
+}
+function es_deposito(ve_deposito) {
+	var nom_tabla = document.getElementById('NOM_TABLA').value; // 'simulacion'  ó  'ingreso'
+	
+	if (ve_deposito.checked) {
+		document.getElementById('ADD_DOCUMENTO_PAGO').style.display = 'none';
+		if(nom_tabla == 'ingreso') //hace las validaciondes en los documentos pagos
+			document.getElementById('TAB_CH_FECHA').style.display = 'none';
+		else // simulación
+			document.getElementById('TABLA_CH_FECHA').style.display = 'none';
+			
+		// BORRA TODOS LOS MONTOS INGRESADOS COMO PAGO		
+		// borra todos los DOCUMENTO_PAGO si existen
+		var aTR = get_TR('DOCUMENTO_PAGO');
+		for (i=0; i<aTR.length; i++){
+			var rec_tr = get_num_rec_field(aTR[i].id);
+			del_line('DOCUMENTO_PAGO_'+rec_tr, nom_tabla);
+		}
+		// borra todos los DOCUMENTO_PAGO_CH_FECHA si existen
+		var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+		for (i=0; i<aTR.length; i++){
+			var rec_tr = get_num_rec_field(aTR[i].id);
+			del_line('DOCUMENTO_PAGO_CH_FECHA_'+rec_tr, nom_tabla);
+		}
+		document.getElementById('MONTO_CHEQUE_FECHA_0').value = '';
+		document.getElementById('CANT_CHEQUE_FECHA_0').value = '';
+		document.getElementById('SUMA_MONTO_0').innerHTML = 0;
+		document.getElementById('SUMA_MONTO_H_0').value = 0;
+		document.getElementById('STATIC_MONTO_INTERES_0').innerHTML = 0;
+		document.getElementById('STATIC_MONTO_CHEQUE_FECHA_H_0').value = 0;
+		document.getElementById('STATIC_TOTAL_0').innerHTML = 0;
+		document.getElementById('SUMA_MONTO_CH_FECHA_0').innerHTML = 0;
+		document.getElementById('STATIC_MONTO_INTERES2_0').innerHTML = 0;
+		
+		document.getElementById('STATIC_CH_FECHA_INT_0').innerHTML = 0;
+		document.getElementById('STATIC_TOTAL_PAGAR_0').innerHTML = 0;
+
+		asigna_totales();
+		// Crea la linea de DEPOSITO
+		var vl_row = add_line('DOCUMENTO_PAGO', nom_tabla);
+		var vl_cod_tipo_doc = document.getElementById('COD_TIPO_DOCUMENTO_PAGO_' + vl_row);
+		var vl_option  = vl_cod_tipo_doc.firstChild;	
+		while (vl_option) {
+			if (vl_option.value == K_TIPO_DOC_DEPOSITO) {	// solo deposito es VISIBLE 
+				vl_option.style.display = '';
+				vl_cod_tipo_doc.value = K_TIPO_DOC_DEPOSITO	// deposito
+			}
+			else
+				vl_option.style.display = 'none';
+			
+			vl_option = vl_option.nextSibling;
+		}
+		// Deja solo los banco donde se tiene cuenta correiente
+		if(nom_tabla == 'ingreso'){ //hace las validaciondes en los documentos pagos
+			var vl_cod_tipo_doc = document.getElementById('COD_BANCO_' + vl_row);
+			var vl_option  = vl_cod_tipo_doc.firstChild;	
+			while (vl_option) {
+				if (vl_option.dataset.dropdown > 0) {	// tiene cuenta corriente 
+					vl_option.style.display = '';
+					vl_option.removeAttribute('disabled');				
+				}
+				else {
+					vl_option.style.display = 'none';
+					vl_option.setAttribute('disabled', "disabled");				
+				}
+				
+				vl_option = vl_option.nextSibling;
+			}
+		}
+	}
+	else {
+		document.getElementById('ADD_DOCUMENTO_PAGO').style.display = '';
+		if(nom_tabla == 'ingreso') //hace las validaciondes en los documentos pagos
+			document.getElementById('TAB_CH_FECHA').style.display = '';
+		else // simulación
+			document.getElementById('TABLA_CH_FECHA').style.display = '';
+
+		// elimina el DOCUMENTO_PAGO de DEPOSITO
+		var aTR = get_TR('DOCUMENTO_PAGO');
+		for (i=0; i<aTR.length; i++){
+			var rec_tr = get_num_rec_field(aTR[i].id);
+			del_line('DOCUMENTO_PAGO_'+rec_tr, nom_tabla);
+		}
+	}
+}
+function alert_doc_protestado(){
+	var rut = document.getElementById('RUT_0').value;
+	if(rut == ''){
+		document.getElementById('val').style.display = 'none';
+		return false;
+	}
+	var ajax = nuevoAjax();
+	ajax.open("GET", "../ingreso/ajax_alert_doc_protestado.php?rut="+rut, false);
+	ajax.send(null);
+	var resp = URLDecode(ajax.responseText);
+	if(resp == 0){
+		document.getElementById('val').style.display = 'none';
+	}
+	else{
+		document.getElementById('val').style.display = '';		
+	}
+}
+function valida_ch_al_dia(ve_fecha, ve_fecha_60){
+    var K_DEPOSITO = 3;    // cod_tipo_documento_pago => desposito
+    var fecha_ult_dia_mes = ve_fecha;
+    var fecha_60_dias_antes = ve_fecha_60;
+    var aTR = get_TR('DOCUMENTO_PAGO');
+    for (i=0; i<aTR.length; i++){
+        var record     = get_num_rec_field(aTR[i].id);
+        
+    	if(document.getElementById('COD_TIPO_DOCUMENTO_PAGO_'+ record)){
+            var vl_cod_tipo_documento = document.getElementById('COD_TIPO_DOCUMENTO_PAGO_'+ record);
+            vl_cod_tipo_documento     = vl_cod_tipo_documento.options[vl_cod_tipo_documento.selectedIndex].value;
+        }else
+            vl_cod_tipo_documento = document.getElementById('COD_TIPO_DOCUMENTO_PAGO_H_'+ record).value;
+
+		// Se salta los ajuste saldo
+		if (vl_cod_tipo_documento != 99){
+	        var fecha_entrante     = document.getElementById('FECHA_DOCUMENTO_PAGO_'+record).value;
+	
+	        var fecha_ult_dia_mes1 = fecha_ult_dia_mes.split('/');
+	        var fecha_entrante1 = fecha_entrante.split('/');
+	        var fecha_60_dias_antes1 = fecha_60_dias_antes.split('/');
+	
+	
+	        var fecha_ult_dia_mes2 = new Date(fecha_ult_dia_mes1[2],fecha_ult_dia_mes1[1],fecha_ult_dia_mes1[0]);
+	        if ((fecha_entrante1[2].length)== 2){ //se ingreso el año en dos digitos, ejemplo = 17/01/11
+				var ano_final = parseInt(fecha_entrante1[2]) + 2000; //deja el año en cuatro digitos, ejemplo = 17/01/2011
+			}	
+			else{
+				ano_final = fecha_entrante1[2];
+			}
+	        var fecha_entrante2 = new Date(ano_final,fecha_entrante1[1],fecha_entrante1[0]);
+	        var fecha_60_dias_antes2 = new Date(fecha_60_dias_antes1[2],fecha_60_dias_antes1[1],fecha_60_dias_antes1[0]);
+	        if(fecha_entrante2 > fecha_ult_dia_mes2){
+	            alert('La fecha ingresada no puede ser sobrepasar al mes en curso.');
+	            document.getElementById('FECHA_DOCUMENTO_PAGO_'+record).value = null;
+	            document.getElementById('FECHA_DOCUMENTO_PAGO_'+record).focus();
+	            return false;
+	        }
+	        
+        } // for
+    }
+} 
+
+function cambia_rut_girador(ve_campo){
+	var record = get_num_rec_field(ve_campo.id);
+	var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+	for (i=0; i<aTR.length; i++){
+		var record_i = get_num_rec_field(aTR[i].id);
+		if (parseInt(record) < parseInt(record_i)){
+			document.getElementById('RUT_GIRADOR_'+record_i).value = document.getElementById('RUT_GIRADOR_'+record).value;
+			document.getElementById('DIG_VERIF_GIRADOR_'+record_i).value = document.getElementById('DIG_VERIF_GIRADOR_'+record).value;
+		}
+	}
+}
+
+function cambia_banco(ve_campo){
+	var record = get_num_rec_field(ve_campo.id);
+	var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+	for (i=0; i<aTR.length; i++){
+		var record_i = get_num_rec_field(aTR[i].id);
+		if (parseInt(record) < parseInt(record_i)){
+			document.getElementById('COD_BANCO_CH_FECH_'+record_i).value = document.getElementById('COD_BANCO_CH_FECH_'+record).value;
+		}
+	}
+}
+
+function cambia_plaza(ve_campo){
+	var record = get_num_rec_field(ve_campo.id);
+	var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+	for (i=0; i<aTR.length; i++){
+		var record_i = get_num_rec_field(aTR[i].id);
+		if (parseInt(record) < parseInt(record_i)){
+			document.getElementById('COD_PLAZA_CH_FECH_'+record_i).value = document.getElementById('COD_PLAZA_CH_FECH_'+record).value;
+		}
+	}
+}
+
+function cambia_nro_documento(ve_campo){
+	var record = get_num_rec_field(ve_campo.id);
+	var aTR = get_TR('DOCUMENTO_PAGO_CH_FECHA');
+	var nro_documento = document.getElementById('NRO_DOCUMENTO_PAGO_CH_FECH_'+record).value;
+	
+	//si se borra el nro documento, copia este cambio a los demás registros
+	if (nro_documento == ''){
+		for (i=0; i<aTR.length; i++){
+			var record_i = get_num_rec_field(aTR[i].id);
+			if (parseInt(record) < parseInt(record_i))
+				document.getElementById('NRO_DOCUMENTO_PAGO_CH_FECH_'+record_i).value = '';
+		}
+		return;
+	}
+	
+	var nro_documento = parseInt(nro_documento);
+	for (i=0; i<aTR.length; i++){
+		var record_i = get_num_rec_field(aTR[i].id);
+		if (parseInt(record) < parseInt(record_i)){
+			var nro_documento = nro_documento + 1;
+			document.getElementById('NRO_DOCUMENTO_PAGO_CH_FECH_'+record_i).value =  nro_documento;
+		}
+	}
+}
+
+function fecha_deposito_ingreso(ve_campo){
+	var rut = document.getElementById('RUT_0');
+	if (rut == null)
+		var rut = document.getElementById('RUT_H_0');
+	
+	if (rut.value.length == 0){
+		alert('Debe ingresar el rut');
+		return false;
+	}
+	
+	var fecha_deposito = ve_campo;
+	load_cuotas(rut, fecha_deposito);	
+}
+
+function verifica_descuento(){
+	var vl_monto_a_pagar = document.getElementById('MONTO_CHEQUE_FECHA_0').value;
+	var cant_ch_fecha = document.getElementById('CANT_CHEQUE_FECHA_0').value;
+	if(vl_monto_a_pagar != '' && cant_ch_fecha != ''){
+		
+		var aTR = get_TR('ITEM_INGRESO');
+		var rec_tr = get_num_rec_field(aTR[0].id);
+		for (i=rec_tr; i<(parseInt(aTR.length) + parseInt(rec_tr)); i++){
+			document.getElementById('MONTO_DESCUENTO_'+i).innerHTML = '';
+			document.getElementById('MONTO_DESCUENTO_H_'+i).value = '';
+			document.getElementById("COD_TIPO_DESCUENTO_"+i).disabled=true;
+			var saldo_sin_descto = parseFloat(document.getElementById('SALDO_TOTAL_SIN_DESCTO_H_' + i).value);
+			var valor_moneda = parseFloat(document.getElementById('VALOR_MONEDA_0').value);
+			document.getElementById('SALDO_TOTAL_H_' + i).value = saldo_sin_descto;
+			document.getElementById('SALDO_TOTAL_' + i).innerHTML = number_format(saldo_sin_descto, 4, ',', '.');
+			var saldo_pesos_sin_descto = roundNumber(saldo_sin_descto * valor_moneda, 0);
+			document.getElementById('SALDO_TOTAL_PESOS_H_' + i).value = saldo_pesos_sin_descto;
+			document.getElementById('SALDO_TOTAL_PESOS_' + i).innerHTML = number_format(saldo_pesos_sin_descto, 0, ',', '.');
+		}
+	
+	}else{
+		var aTR = get_TR('ITEM_INGRESO');
+		var rec_tr = get_num_rec_field(aTR[0].id);
+		for (i=rec_tr; i<(parseInt(aTR.length) + parseInt(rec_tr)); i++){
+			document.getElementById("COD_TIPO_DESCUENTO_"+i).disabled=false;
+		}
+	
+	}
+	asigna_totales();
+	
+
+}

@@ -1,0 +1,331 @@
+<?php
+//ini_set('display_errors',1);
+require_once(dirname(__FILE__)."/../../../../../commonlib_seven/trunk/php/auto_load.php");
+ini_set('display_errors', 'Off');
+class print_boleta extends reporte {
+	function __construct($sql, $xml, $labels=array(), $titulo, $con_logo, $vuelve_a_presentacion=false) {
+		base::clean_files(dirname(__FILE__)."/../../../tmp",'jpg');
+		parent::__construct($sql, $xml, $labels, $titulo, $con_logo, $vuelve_a_presentacion);
+	}
+	function dibuja_uno(&$pdf, $result, $iniX, $iniY, $copia) {
+		$pdf->SetFont('Helvetica','B',6);
+		$pdf->Rect($iniX + 30, $iniY + 5, 197, 300, 'f');
+		$factor = 0.2;
+		$pdf->Image(dirname(__FILE__)."/../../../images_appl/".K_CLIENTE."/scotiabank.jpg",$iniX + 40,$iniY + 20, $factor * 500, $factor *90);
+		$pdf->SetFont('Helvetica','',7);
+		$pdf->Text($iniX + 40, $iniY + 67,'Comprobante de Pago de Convenio de Recaudación');
+
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 40, $iniY + 78,'Señor(a):');
+		$pdf->SetFont('Helvetica','',7);
+		$pdf->Text($iniX + 40, $iniY + 88, $result	['APELLIDO_PATERNO'].'  '.$result['APELLIDO_MATERNO'].'  '.$result['NOMBRE']);
+
+		$s = sprintf("%07d%03d", $result['COD_BOLETA'], $result['NRO_SUB_BOLETA']);
+
+		$pdf->Rect($iniX + 38, $iniY + 71, 180, 60, 'f');
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 40, $iniY + 110,'Cód. Cliente');
+		$pdf->SetFont('Helvetica','',7);
+
+		// Codigo para obtener los ceros restantes en el codigo del deudor 
+		$cuenta_digito = strlen($result['RUT']);
+		$ceros = 16 - $cuenta_digito;
+		$cadena = '';
+
+		for($i = 0; $i < $ceros; $i++){
+			$cadena = $cadena.'0';
+		}
+		$codigo_deudor = $cadena.''.$result['RUT'];
+		// Fin de Cï¿½digo 
+		
+		$bol_final = $result['COD_SUB_BOLETA']; // self::ceros(10, $result['COD_SUB_BOLETA']);
+		//Fin Boleta-Sub_boleta 
+
+		//Ceros Codigo Cupon 
+		$ceros_cupon = '';
+
+		$cuenta_digito_cupon = strlen($result['NRO_SUB_BOLETA']);
+		$cant_ceros_cupon = 3 - $cuenta_digito_cupon;
+
+		for($a = 0; $a < $cant_ceros_cupon; $a++){
+			$ceros_cupon = $ceros_cupon.'0';
+		}
+		$cod_cupon = $ceros_cupon.''.$result['NRO_SUB_BOLETA'].'01';
+
+		$cod_cupon1 = substr($cod_cupon, -3); // Para obtener el codigo del cupï¿½n sin los ceros delanteros para el codigo de barra
+		// Fin Script Ceros Codigo Cupon 
+
+		$pdf->Text($iniX + 40, $iniY + 120, $bol_final);
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 112, $iniY + 110,'N° Cuota');
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->Text($iniX + 122, $iniY + 120, $result['NRO_SUB_BOLETA'].'/'.$result['CANT']);
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 150, $iniY + 110,'Fecha Vencimiento');
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->Text($iniX + 160, $iniY + 120,$result['FECHA_VENCTO']);
+
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->Text($iniX + 50, $iniY + 100,$result['NOM_UNIVERSIDAD']);
+		$pdf->Rect($iniX + 38, $iniY + 140, 180, 130, 'f');
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 42, $iniY + 150,'Item');
+		$pdf->Text($iniX + 120, $iniY + 150,'Monto');
+		$pdf->SetFont('Helvetica','',7);
+		$pdf->Text($iniX + 42, $iniY + 160,'Subcuota');
+		$pdf->Text($iniX + 120, $iniY + 160,number_format($result['MONTO_CAPITAL'], 4, ',', '.'));
+		$pdf->Text($iniX + 185, $iniY + 160,$result['SIMBOLO']);
+
+		$pdf->Text($iniX + 42, $iniY + 170,'Interes Normal');
+		$pdf->Text($iniX + 120, $iniY + 170,number_format($result['MONTO_INTERES'], 4, ',', '.'));
+		$pdf->Text($iniX + 185, $iniY + 170,$result['SIMBOLO']);
+
+		$pdf->Text($iniX + 42, $iniY + 180,'Interes Penal');
+		$pdf->Text($iniX + 120, $iniY + 180,number_format($result['MONTO_MULTA'], 4, ',', '.'));
+		$pdf->Text($iniX + 185, $iniY + 180,$result['SIMBOLO']);
+
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 170, $iniY + 150,'Tipo Moneda');
+
+		
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 170, $iniY + 235,'Total a Pagar');
+		$pdf->Text($iniX + 80, $iniY + 265,'Total');
+		$pdf->Text($iniX + 120, $iniY + 265,number_format($result['VALOR_SUB_CUOTA'], 4, ',', '.'));
+
+		$pdf->SetFont('Helvetica','',7);
+		$pdf->Text($iniX + 40, $iniY + 285,'Valido solo con timbre y firma cajero');
+		$pdf->Text($iniX + 40, $iniY + 293,'Comprobante de Pago de Convenio de Recaudación');
+
+		// Menu Derecha
+		$pdf->Image(dirname(__FILE__)."/../../../images_appl/".K_CLIENTE."/logo-color.jpg",$iniX + 500,$iniY + 230, $factor * 250, $factor * 350);
+		$pdf->Image(dirname(__FILE__)."/../../../images_appl/".K_CLIENTE."/scotiabank.jpg",$iniX + 240,$iniY + 272, $factor * 500, $factor * 90);
+
+		$pdf->Rect($iniX + 235, $iniY + 55, 350, 25, 'f');
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 240, $iniY + 65,'Señor(a):'.$result	['APELLIDO_PATERNO'].'  '.$result['APELLIDO_MATERNO'].'  '.$result['NOMBRE']);
+		$pdf->Text($iniX + 240, $iniY + 75,'Convenio:');
+		$pdf->Text($iniX + 275, $iniY + 75,$result['NOM_UNIVERSIDAD']);
+
+		$pdf->Rect($iniX + 235, $iniY + 113, 77, 90, 'f');
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 235, $iniY + 110,'Rut:');
+		$pdf->Text($iniX + 250, $iniY + 110, number_format($result['RUT'], 0, ',', '.').' - '.$result['DIG_VERIF']);
+		$pdf->Text($iniX + 240, $iniY + 125,'Monto');
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->Text($iniX + 275, $iniY + 135,number_format($result['MONTO_CAPITAL'], 4, ',', '.'));
+		$pdf->Text($iniX + 275, $iniY + 145,number_format($result['MONTO_INTERES'], 4, ',', '.'));
+		$pdf->Text($iniX + 275, $iniY + 155,number_format($result['MONTO_MULTA'], 4, ',', '.'));
+		$pdf->SetFont('Helvetica','B',7);
+		
+		$pdf->Text($iniX + 240, $iniY + 190,'Total a Pagar');
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->Text($iniX + 275, $iniY + 201,number_format($result['VALOR_SUB_CUOTA'], 4, ',', '.'));
+
+		$pdf->Rect($iniX + 330, $iniY + 113, 255, 60, 'f');
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 350, $iniY + 122,'Codigo Causa');
+
+		
+		$convenio = $result['NRO_CONVENIO'];
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->Text($iniX + 365, $iniY + 135, $convenio);
+
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 440, $iniY + 122,'Fecha Vto.');
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->Text($iniX + 438, $iniY + 135,$result['FECHA_VENCTO']);
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 530, $iniY + 122,'Moneda');
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->Text($iniX + 535, $iniY + 135,$result['SIMBOLO']);
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 350, $iniY + 152,'Codigo Cliente');
+		$pdf->SetFont('Helvetica','',8);
+
+		$pdf->Text($iniX + 340, $iniY + 165, $bol_final);
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 440, $iniY + 152,'Cód. Cupón');
+		$pdf->SetFont('Helvetica','',8);
+
+		$pdf->Text($iniX + 450, $iniY + 165, $cod_cupon);
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->Text($iniX + 530, $iniY + 152,'N° Cuota');
+		$pdf->SetFont('Helvetica','',8);
+		$pdf->Text($iniX + 540, $iniY + 165, $result['NRO_SUB_BOLETA'].'/'.$result['CANT']);
+
+		$pdf->SetFont('Helvetica','B',9);
+		$mes_atraso = (int)substr(substr($result['FECHA_VENCTO'], -7), 0, 2);
+		$meses = array('','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre');
+		$mes_atraso = $meses[$mes_atraso];
+
+		$pdf->Text($iniX + 236, $iniY + 250,'SI NO PAGO A '.strtoupper($mes_atraso));
+		$pdf->Text($iniX + 236, $iniY + 260,substr($result['FECHA_VENCTO'], -4).' GENERA INTERES');
+		$pdf->SetFont('Helvetica','B',8);
+		
+		
+		$pdf->Text($iniX + 330, $iniY + 200,'EN CASO DE MORA,EL PAGO SERA REBAJADO DE DICHA MORA');
+		
+		$pdf->Text($iniX + 350, $iniY + 220,'Valido solo con timbre y firma de cajero');
+		$pdf->Text($iniX + 350, $iniY + 230,'Comprobante de Pago, Convenio de Recaudación');
+
+		///////////////////// CODIGO DE BARRA
+		require_once(dirname(__FILE__)."/../../../../../commonlib_seven/trunk/php/barcode/barcode.php");
+		require_once(dirname(__FILE__)."/../../../../../commonlib_seven/trunk/php/barcode/c128bobject.php");
+
+		//Cï¿½digo para Monto Total
+		$variable = $result['VALOR_SUB_CUOTA'];
+		$array_sub_cuota = explode('.', $variable);
+		$monto_bol_entero = str_replace(' ', '', $array_sub_cuota[0]);;
+		$monto_bol_decimal = $array_sub_cuota[1];
+		$digito = substr($monto_bol_decimal,0,1);
+		
+		//recursividad para los ceros  del decimal a la isquierda.
+		if($digito == 0 and $monto_bol_entero < 1){
+			$decimal = substr($monto_bol_decimal,-3);
+			$digito = substr($decimal,0,1);
+			if($digito == 0){
+				$decimal = substr($monto_bol_decimal,-2);
+				$digito = substr($decimal,0,1);
+				if($digito == 0){
+					$decimal = substr($monto_bol_decimal,-1);
+				}else{
+					$decimal = substr($monto_bol_decimal,-2);
+				}
+			}else{
+				$decimal = substr($monto_bol_decimal,-3);	
+			}
+		}else{
+			$decimal = $monto_bol_decimal;
+		}
+		$monto_total_cod_bar = $monto_bol_entero.$decimal;
+		
+		$fecha1 = substr($result['FECHA_VENCTO_CB'], 0,4);
+		$fecha2 = substr($result['FECHA_VENCTO_CB'], -2);
+		$fecha_venc = $fecha1.''.$fecha2;
+		// Fin del Cï¿½digo 
+
+		// Checksum
+		$cod_moneda = $result['COD_MONEDA'];
+		$cupon_barra = $result['NRO_SUB_BOLETA'].'01';
+		$cadena = $result['COD_SUB_BOLETA'].' '.$convenio.' '.$monto_total_cod_bar.' '.$fecha_venc.' '.$cod_moneda.' '.$cupon_barra;
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+
+		$sql = "select f_barra('$cadena') CHECKSUM from DUAL";
+		$result = $db->build_results($sql);
+		$checksum = $result[0]['CHECKSUM'];
+		// Fin Checksum 
+		$barcode2 = 'BNS-CCON-'.$bol_final.'-'.$convenio.'-'.$monto_total_cod_bar.'-'.$fecha_venc.'-'.$cod_moneda.'-'.$cupon_barra.$checksum;
+
+		$style = 60;
+		$width = 500;
+		$height = 50;
+		$xres = 1;
+		$font = 1;
+			
+		$obj = new C128BObject($width, $height, $style, $barcode2);
+		if ($obj){
+			$obj->SetFont($font);
+			$obj->DrawObject($xres);
+			$nombre_temp = tempnam(dirname(__FILE__)."/../../../tmp", "tmp");
+			$obj->FlushObjectToFile ($nombre_temp);
+			$obj->DestroyObject();	// La imagen es elumnada despues de entregar el PDF
+			unset($obj);
+
+			//$factor = 0.3;
+			$factor = 0.7;
+			$pdf->Image($nombre_temp.".jpg",$iniX + 230, $iniY + 7, $factor * $width, $factor * $height);
+			$pdf->SetFont('Helvetica','B',7);
+
+			$pdf->Text($iniX + 335, $iniY + 45,$barcode2);
+			$pdf->Rect($iniX + 30, $iniY + 5, 197, 300, 'f');
+			$pdf->Image(dirname(__FILE__)."/../../../images_appl/".K_CLIENTE."/logo-color.jpg",$iniX + 180,$iniY + 5, $factor * 60, $factor * 80);
+			$pdf->Rect($iniX + 30, $iniY + 5, 563, 300, 'f');
+		}
+	}
+	//Boleta-Sub_boleta 
+	function ceros($num_digit, $chain){
+		$num_ceros_digit = $num_digit - strlen($chain);
+		$ceros_comienzo = '';
+			
+		for($w = 0; $w < $num_ceros_digit; $w++){
+			$ceros_comienzo = $ceros_comienzo.'0';
+		}
+		$chain_join = $ceros_comienzo.''.$chain;
+		return $chain_join;
+	}
+	function select_boleta(){
+		$sql_boleta =	"SELECT 	DE.NOMBRE
+										,DE.APELLIDO_PATERNO
+										,DE.APELLIDO_MATERNO
+										,DE.RUT
+										,DE.DIG_VERIF
+                 					    ,U.NOM_UNIVERSIDAD
+				        				,CASE 
+				            				WHEN 		DIG_VERIF = 'K' 
+				          					THEN 		'0'
+				            			ELSE 		DIG_VERIF
+         								END DIG_VERIF_CB
+										,D.COD_TIPO_DEUDA
+										,D.COD_DEUDA
+										,D.COD_DEUDOR
+										,F_DEUDA_SALDO_TOTAL(D.COD_DEUDA, B.FECHA_BOLETA) SALDO_DEUDA
+										,(B.MONTO_CAPITAL + B.MONTO_INTERES + B.MONTO_MULTA) - (B.DSCTO_CAPITAL + B.DSCTO_INTERES + B.DSCTO_MULTA) VALOR_CUOTA
+										,B.COD_BOLETA
+										,B.CANT
+										,S.NRO_SUB_BOLETA
+										,S.COD_SUB_BOLETA 
+										,S.FECHA_VENCTO
+										,S.MONTO_CAPITAL
+										,S.MONTO_INTERES
+										,S.MONTO_MULTA
+										,to_char(NVL(S.MONTO_CAPITAL, 0) + NVL(S.MONTO_INTERES, 0) + NVL(S.MONTO_MULTA, 0), '999D9999') VALOR_SUB_CUOTA
+										,To_Char(FECHA_VENCTO,'dd/mm/yyyy')FECHA_VENCTO
+				        				,To_Char(FECHA_VENCTO,'ddmmyyyy')FECHA_VENCTO_CB
+        								,M.SIMBOLO
+        								,M.COD_MONEDA
+        								,D.COD_ESTADO_DEUDA
+        								,f_get_nro_convenio_boleta(B.COD_BOLETA) NRO_CONVENIO
+        								, B.COD_BOLETA||'-'||404||'-'||(NVL(S.MONTO_CAPITAL, 0) + NVL(S.MONTO_INTERES, 0) + NVL(S.MONTO_MULTA, 0))||'-'||RUT||'-'||To_Char(FECHA_VENCTO,'ddmmyy')||'-'||M.COD_MONEDA      CODIGO 
+							FROM 		SUB_BOLETA S, BOLETA B, DEUDA D, DEUDOR DE, TIPO_DEUDA TD, MONEDA M, UNIVERSIDAD U
+							WHERE 		S.COD_BOLETA = {KEY1}
+										AND B.COD_BOLETA = S.COD_BOLETA
+										AND D.COD_DEUDA = B.COD_DEUDA
+										AND DE.COD_DEUDOR = D.COD_DEUDOR
+  										AND D.COD_TIPO_DEUDA = TD.COD_TIPO_DEUDA
+  										AND TD.COD_MONEDA = M.COD_MONEDA
+                      					AND D.COD_UNIVERSIDAD = U.COD_UNIVERSIDAD
+                      		ORDER BY S.NRO_SUB_BOLETA ASC";
+		return $sql_boleta;
+	}
+	
+	function modifica_pdf(&$pdf) {
+		
+		$sql_1_boleta = $this->select_boleta();
+		
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$result_cod_boleta = $db->build_results($this->sql);
+		
+		$count = count($result_cod_boleta);
+		$deudor = 'Deudor';
+		$banco = 'Banco';
+		
+		for ($i = 0; $i < $count; $i++) {
+			$sql = $this->replace_KEYS($sql_1_boleta, array($result_cod_boleta[$i]['COD_BOLETA']));
+			
+			$result = $db->build_results($sql);
+			$row_count = $db->count_rows();
+			if($i > 0){
+				$pdf->AddPage();
+			}
+			
+			for ($h = 0; $h < $row_count; $h++) {
+				$this->dibuja_uno($pdf, $result[$h],0, 10, $deudor);
+				if($h <$row_count - 1){
+					$pdf->AddPage();
+				}	
+			}
+		}
+	}
+}
+?>

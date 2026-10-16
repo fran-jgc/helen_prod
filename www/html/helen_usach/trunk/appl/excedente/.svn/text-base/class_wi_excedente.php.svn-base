@@ -1,0 +1,190 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+/*
+ Clase : WI_EXCEDENTE
+ */
+class wi_excedente_base extends w_input {
+    
+	const K_FONDO_SOLIDARIO        = 1;
+    const K_CREDITO_INSTITUCIONAL  = 2;
+    
+    function __construct($cod_item_menu) {
+        parent::__construct('excedente', $cod_item_menu);
+
+		$this->b_delete_visible = false;
+
+		$sql = sql_excedente::get_sql('INPUT');
+
+		$this->dws['dw_excedente'] = new datawindow($sql);
+
+		// asigna los formatos
+		$this->dws['dw_excedente']->add_control(new static_num('COD_USUARIO'));
+		$this->dws['dw_excedente']->add_control(new static_num('COD_DEUDOR'));
+		$this->dws['dw_excedente']->add_control(new static_num('COD_EXCEDENTE'));
+		$this->dws['dw_excedente']->add_control(new static_num('MONTO_EXCEDENTE'));
+		$this->dws['dw_excedente']->add_control(new static_text('FECHA_EXCEDENTE'));
+		$this->dws['dw_excedente']->add_control(new static_num('RUT'));
+		$this->dws['dw_excedente']->add_control(new static_text('NOMBRE'));
+		$this->dws['dw_excedente']->add_control(new static_link('COD_ABONO', '../../../../commonlib_seven/trunk/php/link_wi.php?modulo_origen=excedente&modulo_destino=abono&cod_modulo_destino=[COD_ABONO]&cod_item_menu=1025'));
+		
+		$this->dws['dw_excedente']->add_control(new static_num('MONTO_EXCEDENTE'));
+		$sql_ee = sql_excedente::get_sql('DD_COD_ESTADO_EXCEDENTE');
+		$this->dws['dw_excedente']->add_control($control =new drop_down_dw('COD_ESTADO_EXCEDENTE', $sql_ee,200,'',false));
+		$control->set_onChange("f_get_anulado($this->cod_usuario);f_valida_estado();");
+		$this->dws['dw_excedente']->add_control(new edit_date('FECHA_EGRESO'));
+		$this->dws['dw_excedente']->add_control(new static_text('NOM_USUARIO'));
+		$this->dws['dw_excedente']->add_control(new static_link('COD_COMPROBANTE', '../../../../commonlib_seven/trunk/php/link_wi.php?modulo_origen=excedente&modulo_destino=comprobante&cod_modulo_destino=[COD_COMPROBANTE]&cod_item_menu=2005'));
+		
+		$sql_cta_cte = sql_excedente::get_sql('DD_COD_CUENTA_CORRIENTE');
+		$this->dws['dw_excedente']->add_control($control =new drop_down_dw('COD_CUENTA_CORRIENTE', $sql_cta_cte, 200));
+		$this->dws['dw_excedente']->add_control($control = new edit_num('NRO_CHEQUE',10));
+		//$control->set_onChange("f_valida_estado();");
+		
+	}
+	function new_record() {
+		$this->dws['dw_excedente']->insert_row();
+	}
+	function load_record() {
+		$COD_EXCEDENTE = $this->get_item_wo($this->current_record, 'COD_EXCEDENTE');
+		$this->dws['dw_excedente']->retrieve($COD_EXCEDENTE);
+
+		$ESTADO_COMPROBANTE = $this->dws['dw_excedente']->get_item(0, 'COD_ESTADO_EXCEDENTE');
+			
+		IF ($ESTADO_COMPROBANTE == 1)
+		{
+			$this->b_print_visible = true;
+			$this->b_save_visible = true;
+			$this->b_no_save_visible = true;
+			$this->b_modify_visible = true;
+			
+		}
+		else {
+			$this->b_print_visible = true;
+			$this->b_save_visible = false;
+			$this->b_no_save_visible = false;
+			$this->b_modify_visible = false;
+		}
+	}
+	function get_key() {
+		return $this->dws['dw_excedente']->get_item(0, 'COD_EXCEDENTE');
+	}
+
+	function validate_record() {
+		$estado_excedente	= $this->dws['dw_excedente']->get_item(0, 'COD_ESTADO_EXCEDENTE');
+		$nro_cheque 		= $this->dws['dw_excedente']->get_item(0, 'NRO_CHEQUE');
+		
+		$K_ESTADO_CON_EGRESO = 2;
+		
+		if(($estado_excedente == $K_ESTADO_CON_EGRESO) && ($nro_cheque == '')){
+			$this->set_first_focus('NRO_CHEQUE');
+			return 'Debe Ingresar un Nro. de Cheque';		
+		}
+	}
+
+	function save_record($db) {
+		$COD_EXCEDENTE		  = $this->get_key();
+		$COD_ESTADO_EXCEDENTE = $this->dws['dw_excedente']->get_item(0, 'COD_ESTADO_EXCEDENTE');
+		$COD_DEUDOR 	      = $this->dws['dw_excedente']->get_item(0, 'COD_DEUDOR');
+		$MONTO_EXCEDENTE	  = $this->dws['dw_excedente']->get_item(0, 'MONTO_EXCEDENTE');
+		$COD_USUARIO 	      = $this->dws['dw_excedente']->get_item(0, 'COD_USUARIO');
+		$COD_ABONO	 	      = $this->dws['dw_excedente']->get_item(0, 'COD_ABONO');
+		$COD_CUENTA_CORRIENTE = $this->dws['dw_excedente']->get_item(0, 'COD_CUENTA_CORRIENTE');
+		$NRO_CHEQUE 		  = $this->dws['dw_excedente']->get_item(0, 'NRO_CHEQUE');
+		$FECHA_EGRESO 		  = $this->dws['dw_excedente']->get_item(0, 'FECHA_EGRESO');
+
+		$COD_EXCEDENTE = ($COD_EXCEDENTE=='') ? "null" : $COD_EXCEDENTE;
+		$COD_CUENTA_CORRIENTE = ($COD_CUENTA_CORRIENTE=='') ? "null" : $COD_CUENTA_CORRIENTE;
+		$NRO_CHEQUE = ($NRO_CHEQUE=='') ? "null" : $NRO_CHEQUE;
+		$COD_ABONO = ($COD_ABONO=='') ? "null" : $COD_ABONO;
+		$FECHA_EGRESO = ($FECHA_EGRESO=='') ? "null" : $FECHA_EGRESO;
+		
+		if($FECHA_EGRESO != "null"){
+			$FECHA_EGRESO = "to_date('$FECHA_EGRESO', 'dd/mm/yyyy')";
+		}
+		
+		if ($COD_USUARIO == ''){
+			$COD_USUARIO = $this->cod_usuario;
+		}
+			
+		$sp = 'spu_excedente';
+		if ($this->is_new_record()){
+			$operacion = 'INSERT';
+		}
+		else{
+			$operacion = 'UPDATE';
+		}
+
+		$param	= "'$operacion'
+		, $COD_EXCEDENTE
+		, null
+		, $COD_DEUDOR
+		, $MONTO_EXCEDENTE
+		, $COD_ESTADO_EXCEDENTE
+		, $FECHA_EGRESO
+		, $COD_USUARIO
+		, null
+		, $COD_ABONO
+		, $COD_CUENTA_CORRIENTE
+		, $NRO_CHEQUE";
+	
+		if ($db->EXECUTE_SP($sp, $param)){
+			if ($this->is_new_record()) {
+				$COD_EXCEDENTE = $db->GET_IDENTITY("excedente");
+				$this->dws['dw_excedente']->set_item(0, 'COD_EXCEDENTE', $COD_EXCEDENTE);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	/////////////////// PRINT_EXCEDENETE /////////////////////	
+	function print_record() {
+		$cod_excedente = $this->get_key();
+		
+		$cod_deudor = $this->dws['dw_excedente']->get_item(0, 'COD_DEUDOR');
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$sql_familia_deuda = "SELECT FD.COD_FAMILIA_DEUDA
+							FROM FAMILIA_DEUDA FD, DEUDA D, TIPO_DEUDA TD, DEUDOR DE
+					   		WHERE DE.COD_DEUDOR = $cod_deudor
+					   		AND DE.COD_DEUDOR = D.COD_DEUDOR
+					    	AND D.COD_TIPO_DEUDA = TD.COD_TIPO_DEUDA
+					    	AND TD.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA";
+
+		$result_familia = $db->build_results($sql_familia_deuda);
+		$cod_familia_deuda 	= $result_familia[0]['COD_FAMILIA_DEUDA'];
+		// reporte
+		$familia_deuda = '';
+		$universidad = '';
+		if(session::get('K_CLIENTE') == 'UACH'){
+        if($cod_familia_deuda == self::K_FONDO_SOLIDARIO){
+			$familia_deuda ='FONDO SOLIDARIO DE CRÉDITO UNIVERSITARIO';
+		}else if($cod_familia_deuda == self::K_CREDITO_INSTITUCIONAL){ 
+			$familia_deuda = 'CRÉDITO INSTITUCIONAL';	
+		}
+		$universidad = 'UNIVERSIDAD AUSTRAL DE CHILE';	
+
+        }
+		
+		$sql= sql_excedente::get_sql('PRINT_RECORD',$cod_excedente);						
+		$labels = array();
+		$labels['str_familia'] = $familia_deuda;
+		$labels['str_universidad'] = $universidad;
+		$labels['strCOD_EXCEDENTE'] = $cod_excedente;
+		$rpt = new reporte_helen($sql,$this->root_dir.'appl/excedente/excedente.xml', $labels, "Excedente".$cod_excedente,1);
+		$this->redraw();
+	}
+}
+/////////////////////////////////////////////////////////////
+// Se separa por UNIVERSIDAD
+$file_name = dirname(__FILE__)."/".K_CLIENTE."/class_wi_excedente.php";
+if (file_exists($file_name)) 
+	require_once($file_name);
+else {
+	class wi_excedente extends wi_excedente_base {
+	    function __construct($cod_item_menu) {
+	        parent::__construct($cod_item_menu); 
+		}
+	}
+}
+?>

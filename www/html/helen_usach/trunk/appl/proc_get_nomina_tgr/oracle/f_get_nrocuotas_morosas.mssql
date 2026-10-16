@@ -1,0 +1,59 @@
+CREATE OR REPLACE  FUNCTION f_get_nrocuotas_morosas (ve_cod_deudor NUMBER)
+   RETURN varchar
+AS
+/******************************************************************************
+   NAME:       f_get_nrocuotas_morosas
+   PURPOSE:     Obtiene las cuotas morosas y las retorna siempre en un varchar de largo 30
+
+   REVISIONS:
+   Ver        Date        Author           Description
+   ---------  ----------  ---------------  ------------------------------------
+   1.0        14/03/2014   Bernardo Pinochet
+
+   NOTES:
+******************************************************************************/
+BEGIN
+      DECLARE
+			countador                  	NUMBER :=1;
+			vc_nro_cuota         	  	varchar2(10);
+			vl_cuotas_morosas           varchar2(30):= '';
+			vl_largo					NUMBER :=0;
+			vl_ano_actual				VARCHAR2(4):= extract(YEAR FROM SYSDATE);
+			K_FECHA_LIQUIDACION		    DATE := to_date('31/05/'||vl_ano_actual||'23:59:59', 'dd/mm/yyyy hh24:mi:ss');
+			
+	 			
+	 CURSOR C_CUOTAS  IS
+				SELECT	distinct(pp.nro_cuota) NRO_CUOTA
+				FROM    deuda de, plan_pago pp , deudor do
+				WHERE de.cod_deudor = do.cod_deudor
+				AND de.cod_deuda = pp.cod_deuda
+				AND	de.cod_deudor = ve_cod_deudor
+				and pp.cod_estado_plan_pago in (1,2,4)
+				and de.cod_estado_deuda = 2
+				and pp.fecha_vencto < K_FECHA_LIQUIDACION
+				and de.cod_cartera = 6
+   				and de.cod_tipo_deuda not in('CAM', 'CAME', 'CD', 'CRI')
+				order by pp.nro_cuota;
+	 BEGIN
+   			 FOR a IN C_CUOTAS LOOP
+					
+					IF(countador = 1)THEN
+						vl_cuotas_morosas := A.NRO_CUOTA;
+					END IF; 
+				    IF(countador <> 1)THEN
+						vl_cuotas_morosas := vl_cuotas_morosas ||','||A.NRO_CUOTA;
+					END IF;
+					
+					countador := countador + 1;
+					
+				END LOOP;
+
+		if(vl_cuotas_morosas is NULL)THEN
+			vl_cuotas_morosas := RPAD(' ',30, ' ');
+		END IF;  
+		IF(vl_cuotas_morosas is not NULL)THEN
+			vl_cuotas_morosas := RPAD(vl_cuotas_morosas,30, ' '); 
+		END IF;  		
+RETURN vl_cuotas_morosas;	
+END;
+END;

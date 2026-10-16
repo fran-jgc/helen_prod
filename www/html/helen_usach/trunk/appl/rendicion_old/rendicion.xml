@@ -1,0 +1,102 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="7" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="RENDICION Nº {strCOD_RENDICION}" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell newline="1"/>			
+		
+		<Cell text="Ley" width="17%" align="L" font="Arial"/>
+		<Cell text=":" width="2%" align="C" font="ArialBoldBlue"/>
+		<Cell text="{strCOD_TIPO_DEUDA}" width="25%" border="B" align="L"  font="Arial" redl="192" greenl="192" bluel="192"/>
+		<Cell text="" width="2%" align="C" font="ArialBoldBlue"/>
+		
+		<Cell text="Fecha Rendición" width="17%" align="R" font="ArialBoldBlue"/>		
+		<Cell text=":" width="2%" align="C" font="ArialBoldBlue"/>
+		<Cell text="{strFECHA_RENDICION}" width="25%" border="B" font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+		
+		<Cell text="Universidad" width="17%" align="L" font="ArialBoldBlue"/>		
+		<Cell text=":" width="2%" align="C" font="ArialBoldBlue"/>
+		<Cell text="{str_NOM_UNIVERSIDAD}" width="25%" border="B" font="Arial" redl="192" greenl="192" bluel="192"/>
+		<Cell text="" width="2%" align="C" font="ArialBoldBlue"/>
+		
+		<Cell text="Fecha Inicio" width="17%" align="R" font="ArialBoldBlue"/>
+		<Cell text=":" width="2%" align="C" font="ArialBoldBlue"/>
+		<Cell text="{strFECHA_INICIO}" width="25%" border="B" font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+		
+		<Cell text="" width="46%" align="C" font="ArialBoldBlue"/>
+		<Cell text="Fecha Termino" width="17%" align="R" font="ArialBoldBlue"/>
+		<Cell text=":" width="2%" align="C" font="ArialBoldBlue"/>
+		<Cell text="{strFECHA_TERMINO}" width="25%" border="B" font="Arial" redl="192" greenl="192" bluel="192" newline="1"/>
+		
+		<Cell text="" width="2%" align="C" font="ArialBoldBlue"/>
+		<Cell text="" height="10" newline="1"/>
+		<Cell text="" width="2%" align="C" font="ArialBoldBlue"/>
+		<Cell text="" width="2%" align="C" font="ArialBoldBlue"/>
+		<Cell newline="1"/>			
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{TIPO_DATO}" width="5%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{RUT}" width="6%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_DEUDOR}" width="21%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{ANO_COBRO}" width="4%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{NRO_CUOTA}" width="3%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO_CUOTA}" width="5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{FECHA_PAGO}" width="6%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{CAPITAL_UTM}" width="5%" align="R" border="LRTB" format="N4,." font="Arial"/>	
+		<Cell text="{INTERES_PENAL_UTM}" width="5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{TOTAL_UTM}" width="5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{TOTAL_PESOS}" width="5%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{PORC}" width="4%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{PORC_CAPITAL_UTM}" width="5%" align="R" border="LRTB" format="N4,." font="Arial"/>	
+		<Cell text="{PORC_INTERES_PENAL_UTM}" width="5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{PORC_TOTAL_UTM}" width="5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{PORC_TOTAL_PESOS}" width="5%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="sum_porc_capital_utm" function="SUM" value="PORC_CAPITAL_UTM"/>
+		<Variable name="sum_porc_interes_penal_utm" function="SUM" value="PORC_INTERES_PENAL_UTM"/>
+		<Variable name="sum_porc_total_utm" function="SUM" value="PORC_TOTAL_UTM"/>
+		<Variable name="sum_porc_total_pesos" function="SUM" value="PORC_TOTAL_PESOS"/>
+
+		<GroupHeader>
+			<Cell width="50%" align="C" font="ArialSmallBlue"/>
+			<Cell text="Abono Total" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell width="4%" align="C" font="ArialSmallBlue"/>
+			<Cell text="Abono Rendido" width="20%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell newline="1"/>		
+			<Cell text="Tipo Dato" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Rut" width="6%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Deudor" width="21%" align="L" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Año Cobro" width="4%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Nº Cuota" width="3%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto Cuota" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Fecha Pago" width="6%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Capital UTM" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Int. Penal UTM" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Total UTM" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Total Pesos" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="% Univ." width="4%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Capital UTM" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Int. Penal UTM" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Total UTM" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Total Pesos" width="5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell newline="1"/>
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="" width="66%" align="R" border="" font="ArialBold"/>	
+			<Cell text="TOTALES:" width="8%" border="" font="ArialBold"/>
+			<Cell text="{sum_porc_capital_utm}" width="5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_porc_interes_penal_utm}" width="5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_porc_total_utm}" width="5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_porc_total_pesos}" width="5%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>	
+		</GroupFooter>
+	</Group>
+</Report>

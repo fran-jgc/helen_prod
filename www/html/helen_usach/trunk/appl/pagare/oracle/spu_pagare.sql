@@ -1,0 +1,183 @@
+CREATE OR REPLACE PROCEDURE spu_pagare (
+   VE_OPERACION             IN       VARCHAR
+ , VE_COD_PAGARE            IN       NUMBER
+ , VE_FECHA_PAGARE          IN       date	  := NULL
+ , VE_FOLIO_PAGARE          IN       VARCHAR2 := NULL
+ , VE_MONTO_MONEDA          IN       NUMBER   := NULL
+ , VE_MONTO_PESOS           IN       NUMBER   := NULL
+ , VE_ESTADO_PAGARE         IN       NUMBER   := NULL
+ , VE_COD_DEUDA             IN       NUMBER   := NULL
+ , VE_COD_USUARIO           IN       NUMBER   := NULL
+ , VE_FECHA_PROTESTO		IN       date	  := NULL	
+ , VE_COD_USUARIO_PROTESTO  IN 		 NUMBER   := NULL
+ , VE_COD_TIPO_REBAJA_PAGARE IN      NUMBER   := NULL
+ , VE_MONTO_MONEDA_REBAJA	IN       NUMBER	  := NULL	
+ , VE_MONTO_PESOS_REBAJA	IN 		 NUMBER   := NULL)
+AS
+BEGIN
+    DECLARE
+    VE_MONTO_PESOS_ANTES  NUMBER;
+    VE_MONTO_PESOS_REBAJA_ANTES NUMBER;
+    VE_FAMILIA_DEUDA      NUMBER;
+    VE_MONTO_MODIF        NUMBER;
+    VE_CONCEPTO_CUENTA_A  NUMBER;
+    VE_CONCEPTO_CUENTA_B  NUMBER;
+    VE_COD_TIPO_DEUDA     VARCHAR2(10);
+    VE_FOLIO_PAGARE_DEUDA VARCHAR2(20);
+    VE_COD_DEUDA_PAGARE	  NUMBER;
+    KL_SVP                NUMBER:=1;
+    KL_BANCO              NUMBER:=11;
+    KL_MODIFICA_PAGARE    NUMBER:=5;
+	K_INST_EDUCACION_SUPERIOR NUMBER := 11;
+	K_SIN_VENCIMIENTO_PACTADO NUMBER := 1;
+    VL_CTA_SVP            NUMBER;
+    VL_CTA_BANCO          NUMBER;
+    VL_CTA_UNIV			  NUMBER;
+    VE_COD_DEUDOR         NUMBER;
+    VL_COD_COMPROBANTE    NUMBER;
+    K_PARAM_UNIV_DEFECTO	NUMBER:=3;
+    vl_univ_defecto			VARCHAR2(100);
+
+
+    BEGIN
+		IF (VE_OPERACION = 'INSERT')
+		THEN
+
+        SELECT f_get_parametro (K_PARAM_UNIV_DEFECTO)
+        INTO vl_univ_defecto
+        FROM dual;
+
+				INSERT INTO pagare
+						(cod_pagare
+						, folio_pagare
+						, fecha_pagare
+						, cod_deuda
+						, monto_moneda
+						, monto_pesos
+						, cod_estado_pagare
+						, fecha_protesto
+						, cod_usuario_protesto
+            , cod_universidad)
+				VALUES (pagare_sq.NEXTVAL
+						, VE_FOLIO_PAGARE
+						, VE_FECHA_PAGARE
+						, VE_COD_DEUDA
+						, VE_MONTO_MONEDA
+						, VE_MONTO_PESOS
+						, VE_ESTADO_PAGARE
+						, VE_FECHA_PROTESTO
+						, VE_COD_USUARIO_PROTESTO
+            , vl_univ_defecto);
+		ELSIF (VE_OPERACION = 'UPDATE')
+		THEN
+			--hacer comprobante si se modifican cantidades de dinero
+			SELECT  P.MONTO_PESOS, TD.COD_FAMILIA_DEUDA, TD.COD_TIPO_DEUDA
+			INTO VE_MONTO_PESOS_ANTES, VE_FAMILIA_DEUDA, VE_COD_TIPO_DEUDA
+			FROM  PAGARE P, DEUDA D, TIPO_DEUDA TD
+			WHERE P.COD_PAGARE      = VE_COD_PAGARE
+			  AND D.COD_DEUDA       = P.COD_DEUDA
+			  AND TD.COD_TIPO_DEUDA = D.COD_TIPO_DEUDA;
+
+			UPDATE pagare
+			SET FOLIO_PAGARE      = VE_FOLIO_PAGARE
+			  , FECHA_PAGARE      = VE_FECHA_PAGARE
+			  , MONTO_MONEDA      = VE_MONTO_MONEDA
+			  , MONTO_PESOS       = VE_MONTO_PESOS
+			  , COD_ESTADO_PAGARE = VE_ESTADO_PAGARE
+			  , FECHA_PROTESTO	  = VE_FECHA_PROTESTO
+			  , COD_USUARIO_PROTESTO = VE_COD_USUARIO_PROTESTO
+			WHERE COD_PAGARE = VE_COD_PAGARE;
+
+			IF (VE_MONTO_PESOS_ANTES != VE_MONTO_PESOS) THEN
+				VL_CTA_SVP   := f_comp_get_cuenta_tipo_deuda(VE_COD_TIPO_DEUDA, KL_SVP);
+				VL_CTA_BANCO := f_comp_get_cuenta_tipo_deuda(VE_COD_TIPO_DEUDA, KL_BANCO);
+
+				spu_comprobante( 'INSERT', null, SYSDATE , VE_COD_USUARIO ,
+								'Modificación Pagaré Folio '|| TO_CHAR(VE_FOLIO_PAGARE) || ', Deuda '|| TO_CHAR(VE_COD_DEUDA), VE_FAMILIA_DEUDA,
+								1, -- pendiente
+								3, -- Traspaso
+								2, -- origen = modificacion pagare
+								NULL, -- usuario estado
+								NULL);
+
+				SELECT COMPROBANTE_SQ.CURRVAL INTO vl_cod_comprobante FROM dual;
+
+				IF  (VE_MONTO_PESOS_ANTES > VE_MONTO_PESOS) THEN  --monto BAJÓ
+					VE_MONTO_MODIF := VE_MONTO_PESOS_ANTES -  VE_MONTO_PESOS;
+
+					spu_item_comprobante('INSERT', NULL, VL_COD_COMPROBANTE, VL_CTA_SVP, VE_MONTO_MODIF, 0);
+					spu_item_comprobante('INSERT', NULL, VL_COD_COMPROBANTE, VL_CTA_BANCO, 0, VE_MONTO_MODIF);
+
+					spu_analitico('INSERT',NULL, VL_COD_COMPROBANTE , VE_COD_DEUDA, VL_CTA_SVP, VE_MONTO_MODIF, 0);
+					spu_analitico('INSERT',NULL, VL_COD_COMPROBANTE , VE_COD_DEUDA, VL_CTA_BANCO, 0,VE_MONTO_MODIF);
+
+				ELSIF(VE_MONTO_PESOS_ANTES < VE_MONTO_PESOS) THEN
+					VE_MONTO_MODIF := VE_MONTO_PESOS -  VE_MONTO_PESOS_ANTES;
+
+					spu_item_comprobante('INSERT', NULL, VL_COD_COMPROBANTE, VL_CTA_SVP, 0, VE_MONTO_MODIF);
+					spu_item_comprobante('INSERT', NULL, VL_COD_COMPROBANTE, VL_CTA_BANCO, VE_MONTO_MODIF, 0);
+
+					spu_analitico('INSERT',NULL, VL_COD_COMPROBANTE , VE_COD_DEUDA, VL_CTA_SVP, 0, VE_MONTO_MODIF);
+					spu_analitico('INSERT',NULL, VL_COD_COMPROBANTE , VE_COD_DEUDA, VL_CTA_BANCO, VE_MONTO_MODIF,0);
+				END IF;
+
+				SELECT  DA.COD_DEUDOR
+				INTO VE_COD_DEUDOR
+				FROM  DEUDA DA WHERE DA.COD_DEUDA = VE_COD_DEUDA;
+				spu_bitacora_deudor ('Modificación pagare folio ' || To_Char(VE_FOLIO_PAGARE) || ' de la deuda ' || To_Char(VE_COD_DEUDA), KL_MODIFICA_PAGARE, VE_COD_DEUDOR, VE_COD_USUARIO);
+			END IF;
+		ELSIF (VE_OPERACION = 'REBAJA_PAGARE_DEUDA')
+		THEN
+			--hacer comprobante si se modifican rebajas pagare
+			SELECT   NVL(P.MONTO_PESOS_REBAJA,0)	,TD.COD_FAMILIA_DEUDA		,TD.COD_TIPO_DEUDA		
+					,P.FOLIO_PAGARE					,P.COD_DEUDA
+			INTO	 VE_MONTO_PESOS_REBAJA_ANTES	,VE_FAMILIA_DEUDA			,VE_COD_TIPO_DEUDA		
+					,VE_FOLIO_PAGARE_DEUDA			,VE_COD_DEUDA_PAGARE
+			FROM  PAGARE P, DEUDA D, TIPO_DEUDA TD
+			WHERE P.COD_PAGARE      = VE_COD_PAGARE
+			  AND D.COD_DEUDA       = P.COD_DEUDA
+			  AND TD.COD_TIPO_DEUDA = D.COD_TIPO_DEUDA;
+			  
+			UPDATE pagare
+			SET COD_TIPO_REBAJA_PAGARE = VE_COD_TIPO_REBAJA_PAGARE
+			  , MONTO_MONEDA_REBAJA    = VE_MONTO_MONEDA_REBAJA
+			  , MONTO_PESOS_REBAJA     = VE_MONTO_PESOS_REBAJA
+			WHERE COD_PAGARE = VE_COD_PAGARE;
+			
+			IF (VE_MONTO_PESOS_REBAJA_ANTES != VE_MONTO_PESOS_REBAJA) THEN
+				VL_CTA_SVP   := f_comp_get_cuenta_tipo_deuda (VE_COD_TIPO_DEUDA, K_SIN_VENCIMIENTO_PACTADO);
+				VL_CTA_UNIV  := f_comp_get_cuenta_tipo_deuda (VE_COD_TIPO_DEUDA, K_INST_EDUCACION_SUPERIOR);
+
+				spu_comprobante( 'INSERT', null, SYSDATE , VE_COD_USUARIO ,
+								'Modificación Rebaja Pagaré Folio '|| TO_CHAR(VE_FOLIO_PAGARE_DEUDA) || ', Deuda '|| TO_CHAR(VE_COD_DEUDA_PAGARE), VE_FAMILIA_DEUDA,
+								1, -- pendiente
+								3, -- Traspaso
+								2, -- origen = modificacion pagare
+								NULL, -- usuario estado
+								NULL);
+
+				SELECT COMPROBANTE_SQ.CURRVAL INTO vl_cod_comprobante FROM dual;
+				
+				IF  (VE_MONTO_PESOS_REBAJA_ANTES > VE_MONTO_PESOS_REBAJA) THEN  --monto BAJÓ
+					VE_MONTO_MODIF := VE_MONTO_PESOS_REBAJA_ANTES -  VE_MONTO_PESOS_REBAJA;
+					
+					spu_item_comprobante('INSERT', NULL, VL_COD_COMPROBANTE, VL_CTA_SVP, VE_MONTO_MODIF, 0);
+					spu_item_comprobante('INSERT', NULL, VL_COD_COMPROBANTE, VL_CTA_UNIV, 0, VE_MONTO_MODIF);
+
+					spu_analitico('INSERT',NULL, VL_COD_COMPROBANTE , VE_COD_DEUDA_PAGARE, VL_CTA_SVP, VE_MONTO_MODIF, 0);
+					spu_analitico('INSERT',NULL, VL_COD_COMPROBANTE , VE_COD_DEUDA_PAGARE, VL_CTA_UNIV, 0,VE_MONTO_MODIF);
+
+				ELSIF(VE_MONTO_PESOS_REBAJA_ANTES < VE_MONTO_PESOS_REBAJA) THEN
+					VE_MONTO_MODIF := VE_MONTO_PESOS_REBAJA -  VE_MONTO_PESOS_REBAJA_ANTES;
+
+					spu_item_comprobante('INSERT', NULL, VL_COD_COMPROBANTE, VL_CTA_SVP, 0, VE_MONTO_MODIF);
+					spu_item_comprobante('INSERT', NULL, VL_COD_COMPROBANTE, VL_CTA_UNIV, VE_MONTO_MODIF, 0);
+
+					spu_analitico('INSERT',NULL, VL_COD_COMPROBANTE , VE_COD_DEUDA_PAGARE, VL_CTA_SVP, 0, VE_MONTO_MODIF);
+					spu_analitico('INSERT',NULL, VL_COD_COMPROBANTE , VE_COD_DEUDA_PAGARE, VL_CTA_UNIV, VE_MONTO_MODIF,0);
+				END IF;
+			END IF;
+		END IF;
+	END;
+END;
+/

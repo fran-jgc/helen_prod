@@ -1,0 +1,83 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="LIBRO DEUDAS EXIGIBLES" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{RUT}-{DIG_VERIF}" width="8%" align="C" border="LRTB" font="Arial"/>	
+		<Cell text="{SALDO_DEUDA}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>	
+		<Cell text="{MONTO_ANO1}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO2}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO3}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO4}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO5}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO6}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO7}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO8}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO9}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO10}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO11}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO12}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_ANO13}" width="6.5%" align="R" border="LRTB" format="N4,." font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="sum_saldo" function="SUM" value="SALDO_DEUDA"/>
+		<Variable name="sum_ano1" function="SUM" value="MONTO_ANO1"/>
+		<Variable name="sum_ano2" function="SUM" value="MONTO_ANO2"/>
+		<Variable name="sum_ano3" function="SUM" value="MONTO_ANO3"/>
+		<Variable name="sum_ano4" function="SUM" value="MONTO_ANO4"/>
+		<Variable name="sum_ano5" function="SUM" value="MONTO_ANO5"/>
+		<Variable name="sum_ano6" function="SUM" value="MONTO_ANO6"/>
+		<Variable name="sum_ano7" function="SUM" value="MONTO_ANO7"/>
+		<Variable name="sum_ano8" function="SUM" value="MONTO_ANO8"/>
+		<Variable name="sum_ano9" function="SUM" value="MONTO_ANO9"/>
+		<Variable name="sum_ano10" function="SUM" value="MONTO_ANO10"/>
+		<Variable name="sum_ano11" function="SUM" value="MONTO_ANO11"/>
+		<Variable name="sum_ano12" function="SUM" value="MONTO_ANO12"/>
+		<Variable name="sum_ano13" function="SUM" value="MONTO_ANO12"/>
+		<GroupHeader>				
+			<Cell text="RUT" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="Saldo" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>	
+			<Cell text="{str_ano1}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano2}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano3}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano4}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano5}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano6}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano7}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano8}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano9}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano10}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano11}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano12}" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="{str_ano13} y más" width="6.5%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>	
+		</GroupHeader>
+		<GroupFooter>
+			<Cell text="TOTALES:" width="8%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_saldo}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano1}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>	
+			<Cell text="{sum_ano2}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano3}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano4}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano5}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano6}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano7}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano8}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano9}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano10}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano11}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_ano12}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>		
+			<Cell text="{sum_ano13}" width="6.5%"  align="R" border="LRTB" format="N4,." font="ArialBold" newline="1"/>
+		</GroupFooter>
+	</Group>
+</Report>

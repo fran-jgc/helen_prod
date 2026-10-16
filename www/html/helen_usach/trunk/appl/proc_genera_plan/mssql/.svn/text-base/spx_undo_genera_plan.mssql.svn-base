@@ -1,0 +1,51 @@
+alter PROCEDURE spx_undo_genera_plan
+AS
+BEGIN
+
+declare
+	@vc_cod_plan_pago		numeric
+
+
+DECLARE C_PLAN_PAGO CURSOR FOR
+SELECT  cod_plan_pago
+from plan_pago
+WHERE cod_deuda IN (SELECT cod_deuda FROM deuda
+                  WHERE   cod_estado_deuda = 2
+                      AND fecha_inicio_cobro =  '01/01/2010'
+                      AND cod_cartera = dbo.f_get_parametro (2))
+
+OPEN C_PLAN_PAGO
+FETCH C_PLAN_PAGO INTO @vc_cod_plan_pago
+WHILE @@FETCH_STATUS = 0 BEGIN
+	delete abono
+	where cod_plan_pago = @vc_cod_plan_pago
+
+	delete descuento
+	where cod_plan_pago = @vc_cod_plan_pago
+
+	delete cambio_estado_plan_pago
+	where cod_plan_pago = @vc_cod_plan_pago
+
+	delete sub_boleta
+	where cod_boleta in (select cod_boleta from boleta where cod_plan_pago = @vc_cod_plan_pago)
+
+	delete boleta
+	where cod_plan_pago = @vc_cod_plan_pago
+
+	DELETE plan_pago
+	where cod_plan_pago = @vc_cod_plan_pago
+
+	FETCH C_PLAN_PAGO INTO @vc_cod_plan_pago
+END
+CLOSE C_PLAN_PAGO
+DEALLOCATE C_PLAN_PAGO
+
+
+UPDATE deuda
+SET cod_estado_deuda = 1
+WHERE   cod_estado_deuda = 2
+  AND fecha_inicio_cobro = '01/01/2010'
+  AND cod_cartera = dbo.f_get_parametro (2)
+
+
+END

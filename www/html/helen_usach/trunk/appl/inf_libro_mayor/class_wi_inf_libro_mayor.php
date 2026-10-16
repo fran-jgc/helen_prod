@@ -1,0 +1,122 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_w_param_informe_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+ini_set('memory_limit', '720M');
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes
+
+class wi_inf_libro_mayor extends w_param_informe_helen {
+    
+	function __construct($cod_item_menu) {
+		$xml = session::get('K_ROOT_DIR').'appl/inf_libro_mayor/inf_libro_mayor.xml';
+		
+		$sql_informe = sql_inf_libro_mayor::get_sql('INPUT');
+		parent::__construct('inf_libro_mayor', $cod_item_menu, 'Libro mayor.pdf', $xml, $sql_informe, 'spi_libro_mayor');
+
+		$sql = sql_inf_libro_mayor::get_sql('INPUT_CONTABLE');
+
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$result = $db->build_results($sql);
+		$cta_ini = $result[0]['COD_CUENTA_INICIO'];
+		$cta_tno = $result[0]['COD_CUENTA_TERMINO'];
+
+		$fecha = getdate();
+		$ano   = $fecha["year"];
+
+		$sql = sql_inf_libro_mayor::get_sql('INPUT_PARAM', $ano, $cta_ini, $cta_tno);
+
+		$this->dws['dw_param'] = new datawindow($sql);
+
+		$this->dws['dw_param']->add_control(new edit_date('FECHA_INICIO'));
+		$this->dws['dw_param']->add_control(new edit_date('FECHA_TERMINO'));
+
+
+		$sql_cta_ini = sql_inf_libro_mayor::get_sql('INPUT_DD_CUENTA');
+
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_CUENTA_INICIO', $sql_cta_ini, 180));
+
+		$sql_cta_tno = sql_inf_libro_mayor::get_sql('INPUT_DD_CUENTA_TNO');
+
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_CUENTA_TERMINO', $sql_cta_tno, 180));
+
+		$sql_cod_fam = sql_inf_libro_mayor::get_sql('INPUT_DD_COD_FAN');
+		if(K_CLIENTE == 'UCM'){
+			/*para UCM1 solo pueden pedir famiula 1 y 2*/
+			$sql_cod_fam = "select	 COD_FAMILIA_DEUDA
+									,NOM_FAMILIA_DEUDA 
+							from	FAMILIA_DEUDA
+							where COD_FAMILIA_DEUDA <> 3
+							order by 	COD_FAMILIA_DEUDA";
+		}else if(K_CLIENTE == 'UCM2'){
+			/*para UCM2 solo familia 3*/
+			$sql_cod_fam = "select	 COD_FAMILIA_DEUDA
+									,NOM_FAMILIA_DEUDA 
+							from	FAMILIA_DEUDA
+							where COD_FAMILIA_DEUDA = 3
+							order by 	COD_FAMILIA_DEUDA";
+		}
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_FAMILIA_DEUDA', $sql_cod_fam, 180));
+		
+		$sql_estado_aprobado = sql_inf_libro_mayor::get_sql('INPUT_ESTADO_APROBADO');
+		$result = $db->build_results($sql_estado_aprobado);		
+		$aprobado=$result[0]['NOM_ESTADO_COMPROBANTE'];
+		$this->dws['dw_param']->add_control(new edit_check_box('APROBADO', 'S', 'N', $aprobado));
+		
+		$sql_estado_pendiente = sql_inf_libro_mayor::get_sql('INPUT_ESTADO_PENDIENTE');
+		$result = $db->build_results($sql_estado_pendiente);		
+		$pendiente=$result[0]['NOM_ESTADO_COMPROBANTE'];
+		$this->dws['dw_param']->add_control(new edit_check_box('PENDIENTE', 'S', 'N', $pendiente));
+
+		$this->dws['dw_param']->add_control(new edit_check_box('ANALITICO', 'S', 'N', ''));
+		
+		// mandatorys
+		$this->dws['dw_param']->set_mandatory('FECHA_INICIO', 'Fecha Inicio');
+		$this->dws['dw_param']->set_mandatory('FECHA_TERMINO', 'Fecha Termino');
+		$this->dws['dw_param']->set_mandatory('COD_CUENTA_INICIO', 'Cuenta Inicio');
+		$this->dws['dw_param']->set_mandatory('COD_CUENTA_TERMINO', 'Cuenta Termino');
+		$this->dws['dw_param']->set_mandatory('COD_FAMILIA_DEUDA', 'Familia Deuda');
+	}
+	function make_filtro() {
+		$fecha_inicio 	    = $this->dws['dw_param']->get_item(0, 'FECHA_INICIO');
+		$fecha_termino 	    = $this->dws['dw_param']->get_item(0, 'FECHA_TERMINO');
+		$cod_cuenta_inicio 	= $this->dws['dw_param']->get_item(0, 'COD_CUENTA_INICIO');
+		$cod_cuenta_termino = $this->dws['dw_param']->get_item(0, 'COD_CUENTA_TERMINO');
+		$cod_familia_deuda  = $this->dws['dw_param']->get_item(0, 'COD_FAMILIA_DEUDA');
+		$aprobado		    = $this->dws['dw_param']->get_item(0, 'APROBADO');
+		$pendiente		    = $this->dws['dw_param']->get_item(0, 'PENDIENTE');
+		$analitico			= $this->dws['dw_param']->get_item(0, 'ANALITICO');
+
+		// Filtro
+		$this->filtro = "Fecha Inicio = $fecha_inicio; Fecha Término = $fecha_termino;\nEstado = ";
+		if ($aprobado=='S')
+		$this->filtro .= "Contabilizado; ";
+		if ($pendiente=='S')
+		$this->filtro .= "Aprobado;\n ";
+
+		$nom_cta_ini = $this->dws['dw_param']->controls['COD_CUENTA_INICIO']->get_label_from_value($cod_cuenta_inicio);
+		$this->filtro .= "Cuenta Inicio = $nom_cta_ini;\n";
+		$nom_cta_tno = $this->dws['dw_param']->controls['COD_CUENTA_TERMINO']->get_label_from_value($cod_cuenta_termino);
+		$this->filtro .= "Cuenta Termino = $nom_cta_tno;\n";
+		$nom_familia = $this->dws['dw_param']->controls['COD_FAMILIA_DEUDA']->get_label_from_value($cod_familia_deuda);
+		$this->filtro .= "Familia Deuda = $nom_familia";
+
+		// Arma los paramaetros para el SP
+		$fecha_inicio 	= $this->str2date($fecha_inicio);
+		$fecha_termino	= $this->str2date($fecha_termino, '23:59:59');
+				
+		if ($analitico == 'S'){
+			$this->filtro .= ";\nCon Analítico";
+			$this->param = "$fecha_inicio, $fecha_termino, $cod_familia_deuda, $cod_cuenta_inicio, $cod_cuenta_termino, '$aprobado', '$pendiente', '$analitico'";
+			
+			$this->sp = 'spi_libro_mayor';
+			$this->xml = session::get('K_ROOT_DIR').'appl/inf_libro_mayor/inf_libro_mayor_analitico.xml';
+		}else{
+			$this->param = "$fecha_inicio, $fecha_termino, $cod_familia_deuda, $cod_cuenta_inicio, $cod_cuenta_termino, '$aprobado', '$pendiente', '$analitico'";
+			$this->sp = 'spi_libro_mayor';
+			$this->xml = session::get('K_ROOT_DIR').'appl/inf_libro_mayor/inf_libro_mayor.xml';
+		}
+	}
+}
+?>

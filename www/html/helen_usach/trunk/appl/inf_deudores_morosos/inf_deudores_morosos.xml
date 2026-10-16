@@ -1,0 +1,51 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="7" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="DEUDORES MOROSOS" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="9" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{RUT}" width="10%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{NOMBRE}" width="15%" align="L" border="LRTB" font="Arial"/>		
+		<Cell text="{APELLIDO_PATERNO}" width="15%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{APELLIDO_MATERNO}" width="15%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{MONTO_MORA}" width="10%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_MULTA}" width="10%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_TOTAL}" width="10%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{NOM_CARTERA}" width="15%" align="L" border="LRTB" font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="cant_reg" function="COUNT"  value="RUT"/>
+		<Variable name="monto_mora" function="SUM"  value="MONTO_MORA"/>
+		<Variable name="monto_multa" function="SUM"  value="MONTO_MULTA"/>
+		<Variable name="monto_total" function="SUM"  value="MONTO_TOTAL"/>
+		<GroupHeader>
+			<Cell text="Cantidad de Registros: " width="17%" align="L"  font="ArialBold"/>
+			<Cell text="{cant_reg}" width="10%" align="L" font="ArialBold" newline="1"/>
+			
+			<Cell text="Rut" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Nombre" width="15%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Paterno" width="15%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Materno" width="15%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Mora" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Multa" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Total" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Cartera" width="15%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+			
+		</GroupHeader>
+			<Cell text="Totales: " width="55%" align="R" font="ArialBold"/>
+			<Cell text="{monto_mora}" width="10%" align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{monto_multa}" width="10%" align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{monto_total}" width="10%" align="R" border="LRTB" format="N4,." font="ArialBold" newline="1"/>
+		<GroupFooter>
+		</GroupFooter>
+	</Group>
+</Report>

@@ -1,0 +1,2 @@
+13548615	9	ANDREA XIMENA PEREZ PARRA	60911000-7	Universidad  de  Santiago  de  Chile                                                                	69265	2025	149482	2	20-10-2025	50,74	0,1979	13708	0	0	0	0	13708	0,1979	21033461	8	31-12-2025	1	12	17-11-2025
+15960234	6	GONZALO SAMUEL SANCHEZ DAVIDOVICH	60911000-7	Universidad  de  Santiago  de  Chile                                                                	69265	2025	149417	7	09-10-2025	25,6	3,7222	257818	0	0	0	0	257818	3,7222	21028573	8	31-12-2025	1	12	17-11-2025

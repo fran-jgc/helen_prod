@@ -1,0 +1,7 @@
+SetEnv CLAVEUNICA_CLIENT_ID "c0083c55cdbf4eeaaa607f7b6861eeb1"
+SetEnv CLAVEUNICA_CLIENT_SECRET "01651c22e02c4bb7a530017dc3facdad"
+SetEnv CLAVEUNICA_REDIRECT_URI "https://fondocredito.usach.cl/helen_usach/trunk/appl/webpay_usach/claveunica_callback.php"
+
+SetEnv CLAVEUNICA_AMBIENTE "produccion"
+
+SetEnv CLAVEUNICA_LOGOUT_REDIRECT "https://fondocredito.usach.cl/helen_usach/trunk/appl/webpay_usach/"

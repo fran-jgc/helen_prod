@@ -1,0 +1,68 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/../common_appl/class_w_param_informe_helen.php");
+require_once(dirname(__FILE__)."/../common_appl/class_reporte_helen.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+ini_set('memory_limit', '480M');
+ini_set('max_execution_time', 900); //900 seconds = 15 minutes
+
+
+class wi_inf_deudores_con_declaracion extends w_param_informe_helen {
+    function __construct($cod_item_menu) {
+		$xml = session::get('K_ROOT_DIR').'appl/inf_deudores_con_declaracion/inf_deudores_con_declaracion.xml';
+		$sql_informe = sql_inf_deudores_con_declaracion::get_sql('INPUT');
+		parent::__construct('inf_deudores_con_declaracion', $cod_item_menu, 'Deudores con Declaración', $xml, $sql_informe, 'spi_deudores_con_declaracion');
+		
+		$fecha = getdate();
+  		$ano   = $fecha["year"];
+		$sql = sql_inf_deudores_con_declaracion::get_sql('FECHA', $ano - 1);
+		
+		$this->dws['dw_param'] = new datawindow($sql);
+
+		$this->dws['dw_param']->add_control(new edit_num('ANO', 4, 4));
+		$sql = sql_inf_deudores_con_declaracion::get_sql('DD_COD_ESTADO_DECLARACION');
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_ESTADO_DECLARACION', $sql, 150));
+
+		$sql = sql_inf_deudores_con_declaracion::get_sql('DD_COD_VIA_DECLARACION');
+		$this->dws['dw_param']->add_control(new drop_down_dw('COD_VIA_DECLARACION', $sql, 150));
+		
+		// mandatorys		
+		$this->dws['dw_param']->set_mandatory('ANO', 'Año');	
+		$this->dws['dw_param']->set_mandatory('COD_ESTADO_DECLARACION', 'Estado Declaración');
+		$this->dws['dw_param']->set_mandatory('COD_VIA_DECLARACION', 'Vía Declaración');			
+	}
+	function make_filtro() {
+	 
+		$ano 				    = $this->dws['dw_param']->get_item(0, 'ANO'); 
+		$cod_estado_declaracion = $this->dws['dw_param']->get_item(0, 'COD_ESTADO_DECLARACION');
+		$cod_via_declaracion 	= $this->dws['dw_param']->get_item(0, 'COD_VIA_DECLARACION');
+				
+		if($cod_estado_declaracion == 100)
+			$nom_estado_declaracion= 'Todas';			
+		else
+			$nom_estado_declaracion = $this->dws['dw_param']->controls['COD_ESTADO_DECLARACION']->get_label_from_value($cod_estado_declaracion);
+			
+		if($cod_via_declaracion == 100)
+			$nom_via_declaracion = 'Todas';			
+		else
+			$nom_via_declaracion = $this->dws['dw_param']->controls['COD_VIA_DECLARACION']->get_label_from_value($cod_via_declaracion);
+			
+		// Filtro
+		$this->filtro = "Estado Declaración = $nom_estado_declaracion\n";
+		$this->filtro .= "Vía Declaración = $nom_via_declaracion\n";
+		$this->filtro .= "Año de Ingreso = $ano\n";
+				
+		// Arma los paramaetros para el SP
+		$this->param = "$ano, $cod_estado_declaracion, $cod_via_declaracion";			
+	}
+
+	function genera_pdf($labels = array(), $con_logo = true,$orientation='P',$unit='pt',$format='letter') {
+		$labels['str_filtro'] = $this->filtro;
+
+		$sql_informe = $this->sql_informe;
+		$orientation = 'L';
+		$rpt = new reporte_helen($sql_informe, $this->xml, $labels, $this->nom_informe, $con_logo, true, $this->sp, $this->param,$orientation,$unit,$format);
+	}
+}
+?>

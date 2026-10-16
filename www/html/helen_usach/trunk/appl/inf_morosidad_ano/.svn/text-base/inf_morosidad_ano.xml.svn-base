@@ -1,0 +1,54 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="MOROSIDAD POR AÑO" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{ANO}" width="10%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{CANT_DEUDOR}" width="10%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_MORA}" width="13.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_MORA_PESOS}" width="13.5%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_MULTA}" width="13.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_MULTA_PESOS}" width="13.5%" align="R" border="LRTB" format="N0,." font="Arial"/>
+		<Cell text="{MONTO_TOTAL}" width="13.5%" align="R" border="LRTB" format="N4,." font="Arial"/>
+		<Cell text="{MONTO_TOTAL_PESOS}" width="13.5%" align="R" border="LRTB" format="N0,." font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="sum_cant_deudor" function="SUM" value="CANT_DEUDOR"/>
+		<Variable name="sum_mora" function="SUM" value="MONTO_MORA"/>
+		<Variable name="sum_mora_p" function="SUM" value="MONTO_MORA_PESOS"/>
+		<Variable name="sum_multa" function="SUM" value="MONTO_MULTA"/>
+		<Variable name="sum_multa_p" function="SUM" value="MONTO_MULTA_PESOS"/>
+		<Variable name="sum_total" function="SUM" value="MONTO_TOTAL"/>
+		<Variable name="sum_total_p" function="SUM" value="MONTO_TOTAL_PESOS"/>
+		<GroupHeader>
+			<Cell text="Año" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Cant. Deudores" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto Mora" width="13.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto Mora Pesos" width="13.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto Multa" width="13.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Monto Multa Pesos" width="13.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="TOTAL" width="13.5%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="TOTAL $" width="13.5%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+</GroupHeader>
+		<GroupFooter>
+			<Cell text="Totales:" width="10%" align="R" font="ArialBold"/>	
+			<Cell text="{sum_cant_deudor}" width="10%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_mora}" width="13.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>	
+			<Cell text="{sum_mora_p}" width="13.5%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_multa}" width="13.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_multa_p}" width="13.5%"  align="R" border="LRTB" format="N0,." font="ArialBold"/>
+			<Cell text="{sum_total}" width="13.5%"  align="R" border="LRTB" format="N4,." font="ArialBold"/>
+			<Cell text="{sum_total_p}" width="13.5%"  align="R" border="LRTB" format="N0,." font="ArialBold" newline="1"/>
+		</GroupFooter>
+	</Group>
+</Report>

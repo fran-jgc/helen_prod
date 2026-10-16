@@ -1,0 +1,349 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+/*
+ Clase : WI_ABONO
+ */
+class radio_anula extends edit_radio_button {	
+	function __construct($field) {
+	    parent::__construct($field, 'S', 'N', '', $field);
+	}
+	function draw_entrable($dato, $record) {
+		$value_true = $this->value_true;
+		$this->value_true = $this->value_true.'_'.$record;
+		$dato = $dato.'_'.$record;
+		$draw = parent::draw_entrable($dato, $record);
+		$this->value_true = $value_true;
+		return $draw;
+	}		
+	function get_values_from_POST($record) {
+		$value_true = $this->value_true.'_'.$record;
+		$field_post = $this->group;
+		if (isset($_POST[$field_post]) && $_POST[$field_post]==$value_true)
+			return $this->value_true;
+		else 
+			return $this->value_false;
+	}
+}
+
+class dw_abono extends datawindow {
+    function __construct() {
+
+		$sql = sql_anula_abono::get_sql('DW_ABONO');
+			
+		parent::__construct($sql, 'ABONO', true, true);
+
+		// asigna los formatos
+		$this->add_control(new static_text('NOM_ORIGEN_PAGO',5,5));
+		$this->add_control(new static_text('FECHA_ABONO',5,5));
+
+		$this->add_control(new static_text('COD_ABONO'));
+		$this->add_control(new static_num('MONTO_CAPITAL', 4));
+		$this->add_control(new static_num('MONTO_INTERES', 4));
+		$this->add_control(new static_num('MONTO_MULTA', 4));
+		$this->add_control(new static_num('MONTO_MONEDA', 4));
+		$this->add_control(new static_num('MONTO_PESOS', 0));
+
+		$this->add_control(new edit_check_box('ANULA_ABONO', 'S', 'N', '', 'ANULA_ABONO'));
+		$this->add_control(new edit_check_box('ENVIAR_A_EXCEDENTE', 'S', 'N'));
+	}
+}
+
+/*
+ Clase : WI_ANULA_ABONO
+ */
+class wi_anula_abono extends w_input {
+    function __construct($cod_item_menu) {
+        parent::__construct('anula_abono', $cod_item_menu);
+
+		$this->b_delete_visible = false;
+
+		$sql = sql_anula_abono::get_sql('INPUT');
+
+		$this->dws['dw_anula_abono'] = new datawindow($sql);
+		$this->dws['dw_abono'] = new dw_abono();
+
+		// asigna los formatos
+		$this->dws['dw_anula_abono']->add_control(new edit_text('RUT_H', 10, 10, 'hidden'));
+		$this->dws['dw_anula_abono']->add_control(new edit_text('COD_DEUDOR_H', 10, 10, 'hidden'));
+
+		$this->dws['dw_anula_abono']->add_control($control = new edit_num('RUT', 10, 10));
+
+		$control->set_drop_down_dependiente('anula_abono', 'COD_DEUDA_DD');
+		$js = $control->get_onChange();
+		$control->set_onChange($js." f_get_name_user();");
+		$this->dws['dw_anula_abono']->add_control(new static_num('DIG_VERIF'));
+		$this->dws['dw_anula_abono']->add_control(new static_text('NOMBRE'));
+		$this->dws['dw_anula_abono']->add_control(new edit_text('EXISTE', 2,2, 'hidden'));
+
+		$sql = sql_anula_abono::get_sql('DD_COD_ABONO');		
+		$this->dws['dw_anula_abono']->add_control($control = new drop_down_dw('COD_DEUDA_DD', $sql, 90));
+		$control->set_drop_down_dependiente('anula_abono', 'COD_PLAN_PAGO_PP');
+		$js = $control->get_onChange();
+		$control->set_onChange($js."get_tipo_deuda(this);");
+
+		$this->dws['dw_anula_abono']->add_control($control = new static_text('COD_DEUDA'));
+		$this->dws['dw_anula_abono']->add_control($control = new static_text('SIMBOLO'));
+
+		$sql = sql_anula_abono::get_sql('DD_PLAN_PAGO');
+		$this->dws['dw_anula_abono']->add_control($control = new drop_down_dw('COD_PLAN_PAGO_PP', $sql, 90));
+		$js = $control->get_onChange();
+		$control->set_onChange($js." get_ano_cobro(this);");
+
+		$this->dws['dw_anula_abono']->add_control($control = new static_text('NRO_CUOTA'));
+		$this->dws['dw_anula_abono']->add_control($control = new static_text('SALDO_CUOTA'));
+		$this->dws['dw_anula_abono']->add_control(new static_num('COD_ANULA_ABONO'));
+		$this->dws['dw_anula_abono']->add_control(new edit_text_multiline('OBS',54,5));
+		$this->dws['dw_anula_abono']->add_control(new static_num('COD_EXCEDENTE'));
+		
+		$this->set_first_focus('RUT');
+
+		//mandatory
+		$this->dws['dw_anula_abono']->set_mandatory('RUT', 'Rut');
+		$this->dws['dw_anula_abono']->set_mandatory('COD_DEUDA_DD', 'Tipo Deuda');
+	}
+	function new_record() {
+		$this->dws['dw_anula_abono']->insert_row();
+		$this->dws['dw_anula_abono']->set_item(0, 'FECHA_ANULA_ABONO', $this->current_date());
+		$this->dws['dw_anula_abono']->set_item(0, 'NOM_USUARIO', $this->nom_usuario);
+	}
+	function load_record() {
+		$COD_ANULA_ABONO = $this->get_item_wo($this->current_record, 'COD_ANULA_ABONO');
+		$this->load_record_by_key($COD_ANULA_ABONO);
+	}
+	function load_record_by_key($COD_ANULA_ABONO) {
+		$this->b_no_save_visible = false;
+		$this->b_save_visible 	 = false;
+		$this->b_modify_visible	 = false;
+
+		$this->dws['dw_anula_abono']->retrieve($COD_ANULA_ABONO);
+		$this->dws['dw_abono']->retrieve($COD_ANULA_ABONO);
+
+		$rut = $this->dws['dw_anula_abono']->get_item(0, 'RUT');
+		$this->dws['dw_anula_abono']->controls['COD_DEUDA_DD']->retrieve($rut);
+		$cod_deuda = $this->dws['dw_anula_abono']->get_item(0, 'COD_DEUDA');
+		$this->dws['dw_anula_abono']->controls['COD_PLAN_PAGO_PP']->retrieve($cod_deuda);
+	}
+	function get_key() {
+		return $this->dws['dw_anula_abono']->get_item(0, 'COD_ANULA_ABONO');
+	}
+	function get_selected_abono(&$cod_abono, &$enviar_a_excedente) {
+		$cod_abono = null;
+		$enviar_a_excedente = 'N';
+		for ($i = 0; $i < $this->dws['dw_abono']->row_count(); $i++){
+			$anula_abono = $this->dws['dw_abono']->get_item($i, 'ANULA_ABONO');
+			if ($anula_abono != 'S')
+				continue;
+
+			$cod_abono = $this->dws['dw_abono']->get_item($i, 'COD_ABONO');
+			$enviar_a_excedente = $this->dws['dw_abono']->get_item($i, 'ENVIAR_A_EXCEDENTE');
+			break;
+		}
+	}
+	function get_msg_valida_excedente($db, $cod_abono, $result_comp) {
+		$K_CONCEPTO_CUENTA_EXCEDENTE = 19;
+		if (count($result_comp) == 0 || $result_comp[0]['COD_COMPROBANTE'] == '')
+			return '';
+
+		if (K_TIPO_BD == 'oci') {
+			$sql = "SELECT TEXT
+					FROM USER_SOURCE
+					WHERE NAME = 'SPU_ANULA_ABONO'
+					  AND TYPE = 'PROCEDURE'
+					ORDER BY LINE";
+			$result_source = $db->build_results($sql);
+			$call_spu_excedente = '';
+			$inside_call = false;
+			for ($j = 0; $j < count($result_source); $j++) {
+				$text = strtoupper($result_source[$j]['TEXT']);
+				if (!$inside_call && strpos($text, "SPU_EXCEDENTE('INSERT'") !== false)
+					$inside_call = true;
+				if ($inside_call) {
+					$call_spu_excedente .= $text;
+					if (strpos($text, ');') !== false)
+						break;
+				}
+			}
+			if ($call_spu_excedente != '' && strpos($call_spu_excedente, 'VE_COD_USUARIO') === false)
+				return 'La base Oracle aun no tiene desplegada la correccion de excedente para spu_anula_abono. Debe compilarse el script oracle/spu_anula_abono.sql.';
+		}
+
+		$sql = "SELECT f_comp_get_cuenta_tipo_deuda(d.cod_tipo_deuda, $K_CONCEPTO_CUENTA_EXCEDENTE) COD_CUENTA_CONTABLE
+				FROM ABONO A, DEUDA D
+				WHERE A.COD_ABONO = $cod_abono
+				  AND D.COD_DEUDA = A.COD_DEUDA";
+		$result_cta = $db->build_results($sql);
+		if (count($result_cta) == 0 || $result_cta[0]['COD_CUENTA_CONTABLE'] == '')
+			return 'No existe una cuenta contable configurada para excedente en el tipo de deuda del abono.';
+
+		return '';
+	}
+	function validate_record() {
+		$this->get_selected_abono($cod_abono, $enviar_a_excedente);
+		if ($cod_abono === null) {
+			return 'Debe seleccionar un abono';
+		}
+
+		$obs = trim((string)$this->dws['dw_anula_abono']->get_item(0, 'OBS'));
+		if ($obs == '') {
+			$this->set_first_focus('OBS');
+			return 'Debe ingresar "Observaciones" antes de grabar';
+		}
+
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$K_COMP_APROBADO = 2;
+		$sql = sql_anula_abono::get_sql('COMP_APROBADO', $cod_abono);
+		$result = $db->build_results($sql);
+		if (count($result) > 0
+				&& $result[0]['COD_COMPROBANTE'] != ''
+				&& $result[0]['COD_ESTADO_COMPROBANTE'] != $K_COMP_APROBADO) {
+			return 'Para poder anular el abono el comprobante original de pago debe estar en estado "APROBADO".';
+		}
+
+		if ($enviar_a_excedente == 'S') {
+			$msg_excedente = $this->get_msg_valida_excedente($db, $cod_abono, $result);
+			if ($msg_excedente != '')
+				return $msg_excedente;
+		}
+		return '';
+	}
+	function make_msg_error_oci($error_oci, $sql = '') {
+		$error_number = '';
+		$error_line = '';
+		$error_message = '';
+		$error_sqltext = '';
+
+		if (is_array($error_oci)) {
+			$error_number = isset($error_oci['code']) ? $error_oci['code'] : '';
+			$error_line = isset($error_oci['offset']) ? $error_oci['offset'] : '';
+			$error_message = isset($error_oci['message']) ? trim(preg_replace('/\s+/', ' ', $error_oci['message'])) : '';
+			$error_sqltext = isset($error_oci['sqltext']) ? trim(preg_replace('/\s+/', ' ', $error_oci['sqltext'])) : '';
+		}
+		else if ($error_oci !== false && $error_oci !== null && $error_oci !== '')
+			$error_message = trim((string)$error_oci);
+
+		if ($error_message == '')
+			$error_message = 'Oracle no devolvio detalle adicional.';
+		if ($error_sqltext == '' && $sql != '')
+			$error_sqltext = trim(preg_replace('/\s+/', ' ', $sql));
+
+		$err = "ERROR_NUMBER: $error_number\n";
+		$err .= "ERROR_SEVERITY: ORACLE\n";
+		$err .= "ERROR_STATE: \n";
+		$err .= "ERROR_PROCEDURE: SPU_ANULA_ABONO\n";
+		$err .= "ERROR_LINE: $error_line\n";
+		$err .= "ERROR_MESSAGE: $error_message\n";
+		if ($error_sqltext != '')
+			$err .= "ERROR_SQLTEXT: $error_sqltext\n";
+		return str_replace("\n", "\\n", $err);
+	}
+	function save_record_oci($db, $cod_usuario, $obs, $cod_abono, $enviar_a_excedente) {
+		$sp = 'spu_anula_abono';
+		$sql = "BEGIN ".$sp."(:ve_operacion, NULL, :ve_cod_usuario, :ve_obs, :ve_cod_abono, :ve_enviar_a_excedente); END;";
+		$ve_operacion = 'INSERT';
+		$ve_cod_usuario = (int)$cod_usuario;
+		$ve_obs = $obs;
+		$ve_cod_abono = (int)$cod_abono;
+		$ve_enviar_a_excedente = ($enviar_a_excedente == 'S') ? 'S' : 'N';
+
+		$statement = oci_parse($db->con, $sql);
+		if (!$statement) {
+			$error_oci = oci_error($db->con);
+
+$this->alert('No se pudo grabar el registro.\n\n'.$this->make_msg_error_oci($error_oci, $sql));
+			return false;
+		}
+
+		oci_bind_by_name($statement, ':ve_operacion', $ve_operacion, 10);
+		oci_bind_by_name($statement, ':ve_cod_usuario', $ve_cod_usuario);
+		oci_bind_by_name($statement, ':ve_obs', $ve_obs, 4000);
+		oci_bind_by_name($statement, ':ve_cod_abono', $ve_cod_abono);
+		oci_bind_by_name($statement, ':ve_enviar_a_excedente', $ve_enviar_a_excedente, 1);
+
+		if (!oci_execute($statement, OCI_DEFAULT)) {
+			$error_oci = oci_error($statement);
+			oci_free_statement($statement);
+			$this->alert("No se pudo grabar el registro.\n\n".$this->make_msg_error_oci($error_oci, $sql));
+			return false;
+		}
+
+		oci_free_statement($statement);
+		$COD_ANULA_ABONO = $db->GET_IDENTITY("anula_abono");
+		$this->dws['dw_anula_abono']->set_item(0, 'COD_ANULA_ABONO', $COD_ANULA_ABONO);
+		return true;
+	}
+	function save_record($db) {
+		$this->get_selected_abono($cod_abono, $enviar_a_excedente);
+
+		if ($cod_abono === null) {
+			$this->alert('Debe seleccionar un abono');
+			return false;
+		}
+
+		$K_COMP_APROBADO = 2;
+		$sql = sql_anula_abono::get_sql('COMP_APROBADO', $cod_abono);
+		$result = $db->build_results($sql);
+		if (count($result) > 0
+				&& $result[0]['COD_COMPROBANTE'] != ''
+				&& $result[0]['COD_ESTADO_COMPROBANTE'] != $K_COMP_APROBADO) {
+			$this->alert('Para poder anular el abono el comprobante original de pago debe estar en estado "APROBADO".');
+			return false;
+		}
+		if ($enviar_a_excedente == 'S') {
+			$msg_excedente = $this->get_msg_valida_excedente($db, $cod_abono, $result);
+			if ($msg_excedente != '') {
+				$this->alert($msg_excedente);
+				return false;
+			}
+		}
+
+		$cod_usuario = $this->cod_usuario;
+		$obs = trim((string)$this->dws['dw_anula_abono']->get_item(0, 'OBS'));
+		if ($obs == '') {
+			$this->alert('Debe ingresar "Observaciones" antes de grabar');
+			return false;
+		}
+
+		if (K_TIPO_BD == 'oci')
+			return $this->save_record_oci($db, $cod_usuario, $obs, $cod_abono, $enviar_a_excedente);
+
+		$obs = str_replace("'", "''", $obs);
+		$sp = 'spu_anula_abono';
+		$param	= "'INSERT'
+				, null
+				, $cod_usuario
+				,'$obs'
+				, $cod_abono
+				,'$enviar_a_excedente'";
+
+		if (!$db->EXECUTE_SP($sp, $param))
+			return false;
+
+		$COD_ANULA_ABONO = $db->GET_IDENTITY("anula_abono");
+		$this->dws['dw_anula_abono']->set_item(0, 'COD_ANULA_ABONO', $COD_ANULA_ABONO);
+		return true;
+	}
+	function procesa_event() {
+		if (K_TIPO_BD == 'oci' && isset($_POST['b_save_x'])) {
+			$this->dws['dw_anula_abono']->get_values_from_POST();
+			$this->dws['dw_abono']->get_values_from_POST();
+
+			$msg = $this->validate_record();
+			if ($msg != '') {
+				$this->alert($msg);
+				return;
+			}
+
+			$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+			$db->BEGIN_TRANSACTION();
+			if ($this->save_record($db)) {
+				$db->COMMIT_TRANSACTION();
+				$this->load_record_by_key($this->get_key());
+			}
+			else
+				$db->ROLLBACK_TRANSACTION();
+			return;
+		}
+		parent::procesa_event();
+	}
+}
+?>

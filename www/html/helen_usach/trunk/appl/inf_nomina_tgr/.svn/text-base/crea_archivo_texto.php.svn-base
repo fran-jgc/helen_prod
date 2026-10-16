@@ -1,0 +1,79 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(session::get('K_ROOT_DIR')."appl.ini");
+
+ini_set('memory_limit', '750M');
+ini_set('max_execution_time', 1200); //1200 seconds = 40 minutes 
+ini_set('mssql.connect_timeout','400');
+ini_set('mssql.timeout','400');
+//ini_set('display_errors', 'On');  
+
+class wo_archivo_texto extends w_base {
+    function __construct() {
+	    parent::__construct('', '2521');
+		
+		$this->work_directory = getcwd();
+	}
+	
+    function print_txt(){
+		$archivo = "DEUDORES_NOMINA_TGR_".K_CLIENTE.".txt";
+		$ruta_dcto = "documentos/".$archivo;
+		$linea = "";
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		$cod_usuario = $_POST['COD_USUARIO'];
+		// se crea el archivo en documentos/
+		$file = fopen($ruta_dcto,"w");
+		// si se puede escribir en el archivo
+		if (is_writable($ruta_dcto)) {
+			if (!$handle = fopen($ruta_dcto, 'a')) {
+				$this->alert("No se puede Abrir el Archivo: $archivo");
+				exit;
+			}			
+				
+			///////////////// CLASS_SQL = OUTPUT  ///////////////
+			if (K_TIPO_BD == "mssql"){
+				$sql = "EXEC spi_nomina_tgr $cod_usuario";
+				$result = $db->build_results($sql);
+			}
+			else if (K_TIPO_BD == "oci"){
+				$db->EXECUTE_SP('spi_nomina_tgr', "$cod_usuario");
+				$sql = "SELECT	LINEA
+						FROM	TEMP_NOMINA_TGR
+						ORDER BY LINEA";	
+				$result = $db->build_results($sql);				
+			}
+			for($i = 0; $i < count($result); $i++){
+				$linea 		= $result[$i][0];
+				
+				if($i < count($result)){
+					if($i == (count($result)-1))
+					{
+						$linea = $linea;	
+					}else{
+						$linea = $linea."\r\n";
+					}
+				}
+				if (fwrite($handle, $linea) === FALSE) {
+					$this->alert("No se puede escribir en el Archivo: $archivo");
+					exit;
+				}
+			}
+		}
+		else{
+			$this->alert("El Archivo: $archivo no puede ser escrito.");
+		}
+		header("Content-type: application/octet-stream");
+		header("Content-Disposition: attachment; filename=\"$archivo\"\n");
+		//$this->alert(file_get_contents($ruta_dcto));
+		print file_get_contents($ruta_dcto);
+		
+		// SE BORRA EL ARCHIVO DEL SERVIDOR
+		//unlink('documentos/'.$archivo);
+	}
+}
+
+$w = new wo_archivo_texto();
+if (isset($_POST['b_file_xls'])) {
+	$w->print_txt();
+}
+?>

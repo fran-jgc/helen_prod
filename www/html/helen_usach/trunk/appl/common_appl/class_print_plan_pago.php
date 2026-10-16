@@ -1,0 +1,180 @@
+<?php
+require_once(dirname(__FILE__)."/../../../../commonlib_seven/trunk/php/auto_load.php");
+require_once(dirname(__FILE__)."/class_MySQLRD_helen.php");
+class print_plan_pago extends reporte {
+	const K_PARAM_UNIVERSIDAD	= 5;
+	const K_ESTADO_SIMULACION	= 1000;
+	const K_COD_ORIGEN_PAGO_CAJA =1;
+	const K_FONDO_SOLIDARIO      = 1;
+    const K_CREDITO_INSTITUCIONAL = 2;
+	var $cod_plan_pago;
+	
+	function __construct ($cod_plan_pago, $sql, $xml, $labels=array(), $titulo, $con_logo, $vuelve_a_presentacion=false) {
+    	$this->cod_plan_pago = $cod_plan_pago; 
+    	parent::__construct($sql, $xml, $labels, $titulo, $con_logo, $vuelve_a_presentacion);
+
+    }
+    
+	function modifica_pdf(&$pdf) {
+
+		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+		//echo $this->sql.'<br>';
+		$param = "$this->cod_plan_pago, ".self::K_COD_ORIGEN_PAGO_CAJA.", 'PRINT'";
+		$db->EXECUTE_SP('sp_input_dw_pp_detalle_pago', $param);
+		$result = $db->build_results($this->sql);
+		
+        // PRINT UACH: FS, CI
+        $cod_deuda = $result[0]['COD_DEUDA'];
+        $db_familia = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+        $cod_deuda	= $result[0]['COD_DEUDA'];
+       	$sql_familia_deuda = "SELECT FD.COD_FAMILIA_DEUDA
+							FROM FAMILIA_DEUDA FD, DEUDA D, TIPO_DEUDA TD
+					   		WHERE D.COD_DEUDA = $cod_deuda
+					    	AND D.COD_TIPO_DEUDA = TD.COD_TIPO_DEUDA
+					    	AND TD.COD_FAMILIA_DEUDA = FD.COD_FAMILIA_DEUDA";
+
+		$result_familia = $db_familia->build_results($sql_familia_deuda);
+		$cod_familia_deuda = $result_familia[0]['COD_FAMILIA_DEUDA'];
+        
+		if(K_TIPO_BD == "oci"){
+			$param = "$this->cod_plan_pago, ".self::K_COD_ORIGEN_PAGO_CAJA.", 'PRINT'";
+			$db->EXECUTE_SP('sp_input_dw_pp_detalle_pago', $param);
+			}
+
+		$db_uni = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
+        $sql_uni= sql_ingreso::get_sql('PRINT_PARAM',self::K_PARAM_UNIVERSIDAD);
+        $result_uni = $db_uni->build_results($sql_uni);
+
+		$factor = 0.2;
+    	$pdf->Image(dirname(__FILE__)."/../../images_appl/".session::get('K_CLIENTE')."/logo_universidad.jpg", 40, 20, $factor * 400, $factor * 457);
+		
+        $pdf->SetFont('Helvetica','',8);
+        $pdf->Text(130, 42,'FONDO SOLIDARIO DE CRÉDITO UNIVERSITARIO');
+        $pdf->Text(130, 51,$result_uni[0]['NOM_UNIVERSIDAD']);
+		
+		
+        //titulo de impresion
+        $pdf->SetFont('Helvetica','B',20);
+        $pdf->Text(220, 140,'Detalle Pago');
+        
+        $pdf->SetFont('Helvetica','B',20);
+        $pdf->Text(490, 60,'N°:');
+        $pdf->SetFont('Helvetica','',20);
+        $cod_plan_pago = $result[0]['COD_PLAN_PAGO'];
+        $pdf->Text(520, 60, $cod_plan_pago);
+
+        $pdf->SetFont('Helvetica','B',9);
+        $pdf->Text(50, 190,'Rut');
+        $pdf->Text(105, 190,':');
+        $pdf->SetFont('Helvetica','',8);
+        $pdf->Text(110, 190,number_format($result [0]['RUT'], 0, ',', '.').' - '.$result[0]['DIG_VERIF']);
+
+        $pdf->SetFont('Helvetica','B',9);
+        $pdf->Text(50, 205,'Nombre');
+        $pdf->Text(105, 205,':');
+        $pdf->SetFont('Helvetica','',8);
+        $pdf->Text(110, 205,utf8_decode($result[0]['APELLIDO_PATERNO'].' '.$result[0]['APELLIDO_MATERNO'].' '.$result[0]['NOMBRE']));
+        
+        $pdf->SetFont('Helvetica','B',9);
+        $pdf->Text(50, 220,'Nro. Deuda');
+        $pdf->Text(105, 220,':');
+        $pdf->SetFont('Helvetica','',8);
+        $pdf->Text(110, 220, $result[0]['COD_DEUDA']);
+        
+        $pdf->SetFont('Helvetica','B',9);
+        $pdf->Text(160, 220,'Tipo Deuda');
+        $pdf->Text(215, 220,':');
+        $pdf->SetFont('Helvetica','',8);
+        $pdf->Text(225, 220, $result[0]['COD_TIPO_DEUDA']);
+        
+        $pdf->SetFont('Helvetica','B',9);
+        $pdf->Text(270, 220,'Año');
+        $pdf->Text(293, 220,':');
+        $pdf->SetFont('Helvetica','',8);
+        $pdf->Text(305, 220, $result[0]['ANO_COBRO']);
+        
+        $pdf->SetFont('Helvetica','B',9);
+        $pdf->Text(350, 220,'Nro. Cuota');
+        $pdf->Text(400, 220,':');
+        $pdf->SetFont('Helvetica','',8);
+        $pdf->Text(410, 220, $result[0]['NRO_CUOTA']);
+        
+        //TITULOS  para Detalle Pago.
+        $pdf->SetFont('Helvetica','B',7);
+        $pdf->Text(50, 255, 'FORMA PAGO');
+        $pdf->SetFont('Helvetica','B',8);
+		$pdf->SetXY(50, 265);
+		$pdf->Cell(45, 15, 'F. Abono', 'LBRT', '','C');
+		$pdf->SetXY(95, 265);
+		$pdf->Cell(80, 15, 'Tipo Docto.', 'BRT', '','C');
+		$pdf->SetXY(175, 265);
+		$pdf->Cell(45, 15, 'F. Docto.', 'BRT', '','C');
+		$pdf->SetXY(220, 265);
+		$pdf->Cell(100, 15, 'Banco', 'BRT', '','C');
+		$pdf->SetXY(320, 265);
+		$pdf->Cell(60, 15, 'N° Docto.', 'BRT', '','C');
+		$pdf->SetXY(380, 265);
+		$pdf->Cell(80, 15, 'Plaza', 'BRT', '','C');
+		$pdf->SetXY(460, 265);
+		$pdf->Cell(60, 15, 'Monto Docto.', 'BRT', '','C');
+		$pdf->SetXY(520, 265);
+		$pdf->Cell(60, 15, 'Tot. Abono $', 'BRT', '','C');
+		
+		
+		//TABLA DE DETALLE PAGO 
+		$SUM_MONTO_DOCUMENTO = 0;
+		$SUM_MONTO_PESOS_ABONO = 0;
+		for ($i=0, $y=0; $i < count($result); $i++,$y++) {
+			$fecha_abono		= $result[$i]['FECHA_ABONO_DETALLE_PAGO'];
+			$nom_doc_pago		= $result[$i]['NOM_TIPO_DOCUMENTO_PAGO'];
+			$fecha_doc			= $result[$i]['FECHA_DOCUMENTO_PAGO'];
+			$nom_banco			= utf8_decode($result[$i]['NOM_BANCO']);
+			$nro_documento_pago	= $result[$i]['NRO_DOCUMENTO_PAGO'];
+			$nom_plaza			= $result[$i]['NOM_PLAZA'];
+			$monto_documento	= number_format($result[$i]['MONTO_DOCUMENTO'], 0, ',', '.');
+			$monto_pesos_abono	= number_format($result[$i]['MONTO_PESOS_ABONO'], 0, ',', '.');
+			
+			$pdf->SetFont('Helvetica','',7);
+			$pdf->SetXY(50, 280 +(15 * $y));
+			$pdf->Cell(45, 15, $fecha_abono, 'LBR', '','C');
+			
+			$pdf->SetXY(95, 280 +(15 * $y));
+			$pdf->Cell(80, 15, $nom_doc_pago, 'BR', '','C');
+			
+			$pdf->SetXY(175, 280 +(15 * $y));
+			$pdf->Cell(45, 15, $fecha_doc, 'BR', '','C');
+			
+			$pdf->SetXY(220, 280 +(15 * $y));
+			$pdf->Cell(100, 15, $nom_banco, 'BR', '','L');
+			
+			$pdf->SetXY(320, 280 +(15 * $y));
+			$pdf->Cell(60, 15, $nro_documento_pago, 'BR', '','C');
+			
+			$pdf->SetXY(380, 280 +(15 * $y));
+			$pdf->Cell(80, 15, $nom_plaza, 'BR', '','L');
+			
+			$pdf->SetXY(460, 280 +(15 * $y));
+			$pdf->Cell(60, 15, $monto_documento, 'BR', '','R');
+			$SUM_MONTO_DOCUMENTO	+= $result[$i]['MONTO_DOCUMENTO'];
+			
+			$pdf->SetXY(520, 280 +(15 * $y));
+			$pdf->Cell(60, 15, $monto_pesos_abono, 'BR', '','R');
+			$SUM_MONTO_PESOS_ABONO	+= $result[$i]['MONTO_PESOS_ABONO'];
+			
+		}
+		//totales de deuda
+		$pdf->SetFont('Helvetica','B',7);
+		$pdf->SetXY(380, 280 +(15 * $y));
+		$pdf->Cell(80, 15, 'Total:', 'LBR', '','R');
+		$pdf->SetFont('Helvetica','B',8);
+		$SUM_MONTO_DOCUMENTO = number_format($SUM_MONTO_DOCUMENTO,0, ',', '.');
+		$pdf->SetXY(460, 280 +(15 * $y));
+		$pdf->Cell(60, 15, $SUM_MONTO_DOCUMENTO, 'BR', '','R');
+		$SUM_MONTO_PESOS_ABONO = number_format($SUM_MONTO_PESOS_ABONO,0, ',', '.');
+		$pdf->SetXY(520, 280 +(15 * $y));
+		$pdf->Cell(60, 15, $SUM_MONTO_PESOS_ABONO, 'BR', '','R');
+		
+        
+    }
+}    	
+?>

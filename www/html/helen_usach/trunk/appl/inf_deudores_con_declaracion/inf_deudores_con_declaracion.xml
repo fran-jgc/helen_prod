@@ -1,0 +1,44 @@
+<Report>
+	<Font name="Arial" size="7" style="" id="ArialSmall"/>
+	<Font name="Arial" size="7" style="" id="ArialSmallBlue" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="17" style="B" id="ArialBoldBigB" red="0" green="0" blue="128"/>
+	<Font name="Arial" size="8" style="B" id="ArialBold"/>
+	<Font name="Arial" size="8" style="" id="Arial"/>
+	<PageHeader>	
+		<Cell text="" height="40" newline="1"/>
+		<Cell text="{str_fecha_hora}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="Pag. {SectionPageNumber}/{snb}" align="R" font="ArialSmall" newline="1" />
+		<Cell text="DEUDORES CON DECLARACIÓN" width="100%" align="C" newline="1" font="ArialBoldBigB"/>
+		<Cell text="{str_filtro}" width="100%" align="C" newline="1" font="ArialSmallBlue"/>
+		<Cell text="" height="10" newline="1"/>		
+	</PageHeader>
+	<Content font="Arial">
+		<Cell text="{RUT}" width="6%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{NOMBRE}" width="18%" align="L" border="LRTB" font="Arial"/>		
+		<Cell text="{APELLIDO_PATERNO}" width="10%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{APELLIDO_MATERNO}" width="10%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{DIRECCION}" width="12%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_COMUNA}" width="8%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{NOM_CIUDAD}" width="8%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{TELEFONO}" width="6%" align="C" border="LRTB" font="Arial"/>
+		<Cell text="{EMAIL}" width="16%" align="L" border="LRTB" font="Arial"/>
+		<Cell text="{FECHA_INGRESO}" width="6%" align="C" border="LRTB" font="Arial" newline="1"/>
+	</Content>
+	<Group>
+		<Variable name="cant_reg" function="COUNT"  value="RUT"/>
+		<GroupHeader>
+			<Cell text="Cantidad de Registros: " width="17%" align="L"  font="ArialBold"/>
+			<Cell text="{cant_reg}" width="10%" align="L" font="ArialBold" newline="1"/>
+			<Cell text="Rut" width="6%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Nombre" width="18%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Paterno" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Materno" width="10%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Dirección" width="12%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Comuna" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Ciudad" width="8%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Teléfono" width="6%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Email" width="16%" align="C" border="LRTB" font="ArialSmallBlue"/>
+			<Cell text="Fecha Ingreso" width="6%" align="C" border="LRTB" font="ArialSmallBlue" newline="1"/>
+		</GroupHeader>
+	</Group>
+</Report>
