@@ -76,7 +76,7 @@ class sql_deuda_base extends sql_tabla {
 						  										, 5, ''
 						  										,21, ''
 						  										, '') DISPLAY_DEVOLUCION
-						  			, 'EN COBRANZA EXTERNA' TITULO_DEUDA_MOROSA
+						  			, 'DEUDA INTERNALIZADA' TITULO_DEUDA_MOROSA
 						  			, 'none' VISIBLE_CAMPO
 						  			, '' TITULO_DEUDOR_CRUZADO
 									, 'none' VISIBLE_DEUDOR_CRUZADO
@@ -144,7 +144,7 @@ class sql_deuda_base extends sql_tabla {
 									end DISPLAY_DEVOLUCION
 									, '' TITULO_DEUDOR_CRUZADO
 									, 'none' VISIBLE_DEUDOR_CRUZADO
-									, 'EN COBRANZA EXTERNA' TITULO_DEUDA_MOROSA
+									, 'DEUDA INTERNALIZADA' TITULO_DEUDA_MOROSA
 									, 'none' VISIBLE_CAMPO
 									, 'N' SELECCIONA_DICOM
 									, '' COD_EMPRESA_COBRANZA

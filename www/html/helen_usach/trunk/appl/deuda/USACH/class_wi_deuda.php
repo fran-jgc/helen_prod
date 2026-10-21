@@ -47,7 +47,7 @@ function __construct($cod_item_menu) {
 						  										, 5, ''
 						  										,21, ''
 						  										, '') DISPLAY_DEVOLUCION
-						  			, 'EN COBRANZA EXTERNA' TITULO_DEUDA_MOROSA
+						  			, 'DEUDA INTERNALIZADA' TITULO_DEUDA_MOROSA
 						  			, 'none' VISIBLE_CAMPO
 						  			, '' TITULO_DEUDOR_CRUZADO
 									, 'none' VISIBLE_DEUDOR_CRUZADO

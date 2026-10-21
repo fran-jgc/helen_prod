@@ -21,7 +21,7 @@ class sql_deudor extends sql_deudor_base {
 			   						,'' TITULO_DEUDOR_CRUZADO
 									,'none' VISIBLE_DEUDOR_CRUZADO
 			   						,'none' VISIBLE_CAMPO
-			   						,'EN COBRANZA EXTERNA' TITULO_DEUDOR_MOROSO
+			   						,'DEUDA INTERNALIZADA' TITULO_DEUDOR_MOROSO
 			   						, 'none' VISIBLE_CAMPO_PROTES
 			   						, 'DEUDOR CON DOCUMENTOS PROTESTADOS' TITULO_DOC_PROTES
 			   						, f_get_constante('K_CHILE') K_CHILE_H
