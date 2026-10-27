@@ -107,7 +107,7 @@ class wi_suspension_base extends w_input {
 			$this->b_modify_visible	 	= true;
 			$this->b_save_visible	 	= true;
 			$this->b_no_save_visible	= true;
-			$this->b_print_visible		= false;
+			$this->b_print_visible		= true;
 			
 			/*select que permite ver la cantidad de suspensiones que se pueden hacer por tipo*/
 			$cod_tipo_suspension = $this->dws['dw_suspension']->get_item(0, 'COD_TIPO_SUSPENSION');
