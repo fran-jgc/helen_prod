@@ -28,7 +28,7 @@ class w_consulta_deuda{
 							WHEN CANDIDATO_17_BIS = 'N' THEN 'none'
 							WHEN CANDIDATO_17_BIS = 'S' THEN
 								case 
-									when (select count(*) from deudor dr, deuda de where dr.cod_deudor = de.cod_deudor and dr.cod_deudor = D.cod_deudor and de.cod_tipo_deuda = 'CS' and de.cod_cartera in(6,26) and cod_deuda not in(select cod_deuda from cruzado)) > 0
+									when (select count(*) from deudor dr, deuda de where dr.cod_deudor = de.cod_deudor and dr.cod_deudor = D.cod_deudor and de.cod_tipo_deuda in ('CS','CSN','CF','RD','CU','CFU') and de.cod_cartera in(6,26) and cod_deuda not in(select cod_deuda from cruzado)) > 0
 									then 
 										case
 											WHEN f_repro_rcs_es_candidato(D.COD_DEUDOR,'WEBPAY') = 'N' THEN 'none'
@@ -38,7 +38,7 @@ class w_consulta_deuda{
                                     end                                    
 							WHEN CANDIDATO_17_BIS IS null THEN
 								case
-									when (select count(*) from deudor dr, deuda de where dr.cod_deudor = de.cod_deudor and dr.cod_deudor = D.cod_deudor and de.cod_tipo_deuda = 'CS' and de.cod_cartera in(6,26) and cod_deuda not in(select cod_deuda from cruzado)) > 0
+									when (select count(*) from deudor dr, deuda de where dr.cod_deudor = de.cod_deudor and dr.cod_deudor = D.cod_deudor and de.cod_tipo_deuda in ('CS','CSN','CF','RD','CU','CFU') and de.cod_cartera in(6,26) and cod_deuda not in(select cod_deuda from cruzado)) > 0
 									then 
 										case  
 											WHEN f_repro_rcs_es_candidato(D.COD_DEUDOR,'WEBPAY') = 'N' THEN 'none'
@@ -51,7 +51,7 @@ class w_consulta_deuda{
 							WHEN CANDIDATO_17_BIS = 'N' THEN ''
 							WHEN CANDIDATO_17_BIS = 'S' THEN
 								case
-									when (select count(*) from deudor dr, deuda de where dr.cod_deudor = de.cod_deudor and dr.cod_deudor = D.cod_deudor and de.cod_tipo_deuda = 'CS' and de.cod_cartera in(6,26) and cod_deuda not in(select cod_deuda from cruzado)) > 0
+									when (select count(*) from deudor dr, deuda de where dr.cod_deudor = de.cod_deudor and dr.cod_deudor = D.cod_deudor and de.cod_tipo_deuda in ('CS','CSN','CF','RD','CU','CFU') and de.cod_cartera in(6,26) and cod_deuda not in(select cod_deuda from cruzado)) > 0
 									then 
 										case
 											WHEN f_repro_rcs_es_candidato(D.COD_DEUDOR,'WEBPAY') = 'N' THEN ''
@@ -61,7 +61,7 @@ class w_consulta_deuda{
 								end
 							WHEN CANDIDATO_17_BIS IS null THEN
 								case
-									when (select count(*) from deudor dr, deuda de where dr.cod_deudor = de.cod_deudor and dr.cod_deudor = D.cod_deudor and de.cod_tipo_deuda = 'CS' and de.cod_cartera in(6,26) and cod_deuda not in(select cod_deuda from cruzado)) > 0
+									when (select count(*) from deudor dr, deuda de where dr.cod_deudor = de.cod_deudor and dr.cod_deudor = D.cod_deudor and de.cod_tipo_deuda in ('CS','CSN','CF','RD','CU','CFU') and de.cod_cartera in(6,26) and cod_deuda not in(select cod_deuda from cruzado)) > 0
 									then 
 										case
 											WHEN f_repro_rcs_es_candidato(D.COD_DEUDOR,'WEBPAY') = 'N' THEN ''
