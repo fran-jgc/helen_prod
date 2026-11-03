@@ -136,7 +136,7 @@
 		<table>
 				<tr>
 					<td style=display:{DIV_REPRO} align="center">
-					<a href="#" id="gif-alerta" aria-label="Revisar datos personales"> <!--RESTAURAR CUANDO PASE EL PERIODO TGR-->
+					<a href="{URL}" id="gif-alerta" aria-label="Revisar datos personales"> <!--RESTAURAR CUANDO PASE EL PERIODO TGR-->
 					<img src="imagen/logo_final.gif" alt="Revisar datos personales" style="cursor: pointer;"/>  <!--RESTAURAR CUANDO PASE EL PERIODO TGR-->
 						<!--<img src="mensaje_repro.jpg" />-->  <!--COMENTAR CUANDO PASE EL PERIODO TGR-->
 						</a>
@@ -324,11 +324,23 @@ function mostrarPopupDatosPersonales() {
 }
 
 $(document).ready(function () {
+    var gifClickCount = 0;
+    var gifLink = $('#gif-alerta');
+
     mostrarPopupDatosPersonales();
 
-    $('#gif-alerta').on('click', function (event) {
-        event.preventDefault();
-        mostrarPopupDatosPersonales();
+    gifLink.on('click', function (event) {
+        gifClickCount++;
+
+        if (gifClickCount === 1) {
+            event.preventDefault();
+            mostrarPopupDatosPersonales();
+            return;
+        }
+
+        if (gifLink.attr('href') && gifLink.attr('href') !== '#') {
+            window.location.href = gifLink.attr('href');
+        }
     });
 });
 
