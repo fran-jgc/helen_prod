@@ -535,10 +535,10 @@ class sql_suspension extends sql_tabla {
 										, ANO_SUSPENSION
 										, TS.NOM_TIPO_SUSPENSION
 										, TO_CHAR (DE.FECHA_INICIO_COBRO, 'YYYY') ANO_COBRO
-										, To_Char(S.FECHA_CONFIRMA, 'dd') DIA
-										, f_get_nom_mes(to_number(To_Char(S.FECHA_CONFIRMA, 'mm'))) MES
-										, To_Char(S.FECHA_CONFIRMA, 'yyyy') ANO_SYS
-										, To_Char(S.FECHA_CONFIRMA, 'YYYY') ANO
+										, CASE WHEN S.COD_ESTADO_SUSPENSION = 1 THEN To_Char(S.FECHA_SUSPENSION, 'dd') ELSE To_Char(S.FECHA_CONFIRMA, 'dd') END DIA
+										, CASE WHEN S.COD_ESTADO_SUSPENSION = 1 THEN f_get_nom_mes(to_number(To_Char(S.FECHA_SUSPENSION, 'mm'))) ELSE f_get_nom_mes(to_number(To_Char(S.FECHA_CONFIRMA, 'mm'))) END MES
+										, CASE WHEN S.COD_ESTADO_SUSPENSION = 1 THEN To_Char(S.FECHA_SUSPENSION, 'yyyy') ELSE To_Char(S.FECHA_CONFIRMA, 'yyyy') END ANO_SYS
+										, CASE WHEN S.COD_ESTADO_SUSPENSION = 1 THEN To_Char(S.FECHA_SUSPENSION, 'YYYY') ELSE To_Char(S.FECHA_CONFIRMA, 'YYYY') END ANO
 										, To_Char(S.FECHA_CONFIRMA, 'DD/MM/YYYY') ANO_CONFI
 							FROM 		DEUDOR D
 										, SUSPENSION S
@@ -570,9 +570,9 @@ class sql_suspension extends sql_tabla {
 										, ANO_SUSPENSION
 										, TS.NOM_TIPO_SUSPENSION
 										, convert(varchar(4), datepart(year, DE.FECHA_INICIO_COBRO)) ANO_COBRO
-										, convert(varchar(2), datepart(day, getdate())) DIA
-										, dbo.f_get_nom_mes(month(getdate())) MES
-										, YEAR(getdate()) ANO
+										, CASE WHEN S.COD_ESTADO_SUSPENSION = 1 THEN convert(varchar(2), datepart(day, S.FECHA_SUSPENSION)) ELSE convert(varchar(2), datepart(day, getdate())) END DIA
+										, CASE WHEN S.COD_ESTADO_SUSPENSION = 1 THEN dbo.f_get_nom_mes(month(S.FECHA_SUSPENSION)) ELSE dbo.f_get_nom_mes(month(getdate())) END MES
+										, CASE WHEN S.COD_ESTADO_SUSPENSION = 1 THEN YEAR(S.FECHA_SUSPENSION) ELSE YEAR(getdate()) END ANO
 							FROM 		DEUDOR D
 										, SUSPENSION S
 										, DEUDA DE
