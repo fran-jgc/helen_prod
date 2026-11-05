@@ -604,8 +604,46 @@
         }
       });
     }
+
+    var modalDatos = document.getElementById('modal-datos-basicos');
+    if (modalDatos){
+      var backdropDatos = modalDatos.querySelector('.modal-17bis-backdrop');
+      var closeDatos = modalDatos.querySelector('.modal-17bis-close');
+
+      function openDatosModal(){
+        modalDatos.classList.add('is-open');
+        modalDatos.setAttribute('aria-hidden','false');
+      }
+      function closeDatosModal(){
+        modalDatos.classList.remove('is-open');
+        modalDatos.setAttribute('aria-hidden','true');
+      }
+
+      closeDatos.addEventListener('click', closeDatosModal);
+      backdropDatos.addEventListener('click', closeDatosModal);
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && modalDatos.classList.contains('is-open')){
+          closeDatosModal();
+        }
+      });
+
+      openDatosModal();
+    }
   });
 </script>
+
+<div id="modal-datos-basicos" class="modal-17bis" aria-hidden="true">
+  <div class="modal-17bis-backdrop"></div>
+  <div class="modal-17bis-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-datos-basicos-title">
+    <button type="button" class="modal-17bis-close" aria-label="Cerrar">×</button>
+    <h3 id="modal-datos-basicos-title">Revise sus datos antes de continuar</h3>
+    <div class="modal-17bis-body">
+      <p>Verifique que su nombre esté escrito en forma completa y que sus apellidos se encuentren actualizados, en caso de haber experimentado algún cambio.</p>
+      <p>Cualquier inconsistencia podría ocasionar el rechazo del pagaré en notaría, obligándolo a solicitar la anulación de la reprogramación y realizar nuevamente el proceso.</p>
+      <p>Si necesita actualizar sus datos, escriba a <a href="mailto:agfcu@usach.cl">agfcu@usach.cl</a>, adjuntando los documentos que acrediten los cambios.</p>
+    </div>
+  </div>
+</div>
 
 <div id="modal-17bis" class="modal-17bis" aria-hidden="true">
   <div class="modal-17bis-backdrop"></div>
