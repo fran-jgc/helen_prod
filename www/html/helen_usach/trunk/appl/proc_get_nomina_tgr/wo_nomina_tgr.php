@@ -89,43 +89,42 @@ class wo_nomina_tgr extends w_base {
 		$ruta_dcto = "documentos/nomina_tgr/".$archivo;
 		$linea = "";
 		$db = new database(K_TIPO_BD, K_SERVER, K_BD, K_USER, K_PASS);
-		
-		// se crea el archivo en documentos/
-		$file = fopen($ruta_dcto,"w");
-		// si se puede escribir en el archivo
-		if (is_writable($ruta_dcto)) {
-			if (!$handle = fopen($ruta_dcto, 'a')) {
-				$this->alert("No se puede Abrir el Archivo: $archivo");
-				exit;
-			}			
-				
-			///////////////// CLASS_SQL = OUTPUT  ///////////////
 
-			$db->EXECUTE_SP('spi_nomina_tgr', "$cod_usuario");
-			$sql = "SELECT	LINEA
-					FROM	TEMP_NOMINA_TGR
-					ORDER BY LINEA";	
-			$result = $db->build_results($sql);				
+		if (!$db->EXECUTE_SP('spi_nomina_tgr', "$cod_usuario")) {
+			return "ERROR : No se pudo ejecutar spi_nomina_tgr";
+		}
+		$sql = "SELECT	LINEA
+				FROM	TEMP_NOMINA_TGR
+				ORDER BY LINEA";
+		$result = $db->build_results($sql);
+		if ($result === false) {
+			return "ERROR : No se pudieron obtener las líneas de TEMP_NOMINA_TGR";
+		}
 
-			for($i = 0; $i < count($result); $i++){
-				$linea 		= $result[$i][0];
-				
-				if($i < count($result)){
-					if($i == (count($result)-1))
-					{
-						$linea = $linea;	
-					}else{
-						$linea = $linea."\r\n";
-					}
-				}
-				if (fwrite($handle, $linea) === FALSE) {
-					$this->alert("No se puede escribir en el Archivo: $archivo");
-					exit;
-				}
+		$ruta_absoluta = K_ROOT_DIR."appl/common_appl/".$ruta_dcto;
+		$directorio = dirname($ruta_absoluta);
+		if (!is_dir($directorio) && !mkdir($directorio, 0775, true) && !is_dir($directorio)) {
+			return "ERROR : No se puede crear el directorio: $directorio";
+		}
+		if (!is_writable($directorio)) {
+			return "ERROR : El directorio no permite escritura: $directorio";
+		}
+		if (!$handle = fopen($ruta_absoluta, 'w')) {
+			return "ERROR : No se puede Abrir el Archivo: $archivo";
+		}
+
+		for ($i = 0; $i < count($result); $i++) {
+			$linea = $result[$i][0];
+			if ($i < count($result) - 1) {
+				$linea .= "\r\n";
+			}
+			if (fwrite($handle, $linea) === FALSE) {
+				fclose($handle);
+				return "ERROR : No se puede escribir en el Archivo: $archivo";
 			}
 		}
-		else{
-			$this->alert("El Archivo: $archivo no puede ser escrito.");
+		if (!fclose($handle)) {
+			return "ERROR : No se pudo cerrar el Archivo: $archivo";
 		}
 		//header("Content-type: application/octet-stream");
 		//header("Content-Disposition: attachment; filename=\"$archivo\"\n");
