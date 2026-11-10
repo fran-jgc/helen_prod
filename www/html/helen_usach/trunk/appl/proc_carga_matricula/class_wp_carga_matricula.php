@@ -59,7 +59,7 @@ upload_max_filesize = 16M
 		$archivo->open();
 		$i = 1;
 		while (!$archivo->feof()){
-			if (count($archivo->error) == $archivo->K_MAX_ERROR) {
+			if (count($archivo->error) >= $archivo->K_MAX_ERROR) {
 				$this->alert('Demasiados errores, no se seguira cargando el archivo.');
 				break;
 			}
@@ -68,6 +68,15 @@ upload_max_filesize = 16M
                 $cod_carrera	= $record['COD_CARRERA'];
                 $rut      		= $record['RUT'];
                 $nom_carrera    = $record['NOM_CARRERA'];
+
+                // El TXT de matrícula se recibe en Windows-1252 (ANSI).
+                // Normalizar el texto a UTF-8 antes de enviarlo a Oracle.
+                if (!mb_check_encoding($nom_carrera, 'UTF-8')) {
+                    $nom_carrera = mb_convert_encoding($nom_carrera, 'UTF-8', 'Windows-1252');
+                }
+
+                // Escapar apóstrofes para que no rompan el parámetro SQL.
+                $nom_carrera = str_replace("'", "''", $nom_carrera);
                 $ano_matricula  = $record['ANO_MATRICULA'];
                 $semestre  		= $record['SEMESTRE'];
                 
@@ -162,7 +171,7 @@ upload_max_filesize = 16M
 	    ob_end_flush();
 	    
 	    $error = false;
-	    $conn = oci_connect(K_USER, K_PASS, K_SERVER);
+	    $conn = oci_connect(K_USER, K_PASS, K_SERVER, 'AL32UTF8');
 	    $stid = oci_parse($conn, "begin spp_cm_carga_matricula ($COD_EJECUCION_PROCESO, $this->fecha_carga); end;");
 	    if (oci_execute($stid)){
 	        print "<script>document.getElementById('img_loader').style.display = 'none';</script>";
